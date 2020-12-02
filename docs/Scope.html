@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Scope - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The ViviFire programming language has four scopes: block, procedure, module, and namespace.">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Scope.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+<li><a href="Declared_Elements.html">Declared Elements</a></li>
+<li><a href="Declared_Element_Qualities.html">Declared Element Qualities</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Scope</h1>
+<p>The <dfn>scope</dfn> of a declared element is the set of all code that can get access to it directly, without a qualified name or made available by <a href="Require_Statement.html"><code>Require</code></a>.
+An element can have scope at one of these positions:</p>
+<dl>
+<dt>Block scope</dt>
+<dd>Available only in the block of code in which it is declared.
+This is the smallest scope available.</dd>
+<dt>Procedure scope</dt>
+<dd>Available to all code in the procedure in which it is declared.</dd>
+<dt>Module scope</dt>
+<dd>Available to all code in the module, class, or trait in which it is declared.</dd>
+<dt>Namespace scope</dt>
+<dd>Available to all code in the namespace in which it is declared.
+This is the largest scope available.</dd>
+</dl>
+<h2>Specifying scope</h2>
+<p>You specify the scope of an element with its declaration.
+The scope is an effect of these decisions:</p>
+<ul>
+<li>The position at which you declare the element &ndash; block, procedure, etc.</li>
+<li>The access level of the element.</li>
+</ul>
+<p>Be careful when you make variables with the same name in different scopes, because the results can be incorrect.
+See <a href="References_to_Declared_Elements.html">References to Declared Elements</a> for more information.</p>
+<h2>Positions</h2>
+<h3>Block scope</h3>
+<p>A <dfn>block</dfn> is a set of statements between an initial statement clause and an end clause.
+Some examples of blocks follow.</p>
+<ul>
+<li><code class="kw">Do</code> and <code class="kw">Loop</code></li>
+<li><code class="kw">For</code> and <code class="kw">End For</code></li>
+<li><code class="kw">If</code> and <code class="kw">End If</code></li>
+<li><code class="kw">Select</code> and <code class="kw">End Select</code></li>
+<li><code class="kw">Try</code> and <code class="kw">End Try</code></li>
+<li><code class="kw">While</code> and <code class="kw">End While</code></li>
+</ul>
+<p>If you declare a variable in a block, then you can use that variable only in that block.</p>
+<h3>Procedure scope</h3>
+<p>TODO</p>
+<h3>Module scope</h3>
+<p>TODO</p>
+<h3>Namespace scope</h3>
+<p>TODO</p>
+<h2>Selection of scope</h2>
+<h3>Advantages of local variables</h3>
+<p>TODO</p>
+<h3>Minimizing scope</h3>
+<p>TODO</p>
+<h2>See also</h2>
+<p>TODO</p>
+</main>
+<script src="common.js"></script>
+</body>
+</html>

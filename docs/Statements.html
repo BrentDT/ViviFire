@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Statements - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Statements.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+</ul>
+</nav>
+<main id="stub">
+<h1 id="top">Statements</h1>
+<p>TODO</p>
+<h2>Declaration statements</h2>
+<p>You use declaration statements to identify and make procedures, variables, constants, and more.
+When you declare a programming construct, you can also identify its data type, access level, and scope.
+See <a href="Declared_Element_Qualities.html">Declared Element Qualities</a> for more information,.</p>
+<h3>Initial values</h3>
+<p>TODO</p>
+<h2>Executable statements</h2>
+<p>An executable statement causes changes.
+It can move to different parts of the code, execute other statements again and again, or calculate a result.</p>
+<h2>Assignment statements</h2>
+<p>An assignment statement is a special type of executable statement.
+It gets the value on the right side of the assignment operator (<code class="op">=</code>), then stores that in the element on the left side.
+An example follows.</p>
+<div class="language-vivifire listing">
+<pre><code>x = 42&#10;</code></pre>
+</div>
+<p>Here the assignment statement stores the literal value 42 in the variable x.</p>
+<h3>Eligible elements</h3>
+<p>TODO</p>
+<h3>Data types and conversions</h3>
+<p>TODO</p>
+<h3>Compound assignment</h3>
+<p>TODO</p>
+<h3>Chained assignment</h3>
+<p>You can give many variables the same value with one statement.
+<dfn>Chained assignment</dfn> uses a special operator (<code class="op">:=</code>).
+You put this operator after each of the variables, then put an expression last.
+You cannot use other assignment operators with this statement.
+An example follows.</p>
+<div class="language-vivifire listing">
+<pre><code>' Reset the coordinates.
+x := y := z := 0.0&#10;</code></pre>
+</div>
+<p>Note: You also can use the operator <code class="op">:=</code> in arguments passed to procedures.
+See <a href="Parameter_List.html">Parameter List</a> for more information.</p>
+<h2>Statements divided into many lines</h2>
+<p>Most statements are short, but can become too long to read easily.
+You can divide a long statement into two or more lines of code.
+You write a space and an underscore (<code class="op">_</code>) before the end-of-line.</p>
+<p>In the example that follows, a name and address returned from a database table are printed to a label.</p>
+<div class="language-vivifire listing">
+<pre><code>#address_label.Text = _
+    #row!Name &amp; $N &amp; _
+    #row!Address&#10;</code></pre>
+</div>
+<h3>Divided statements without the underscore</h3>
+<p>Some conditions let you continue a statement on a different line without the underscore character (<code class="op">_</code>).
+In the table that follows are the elements of a statement and conditions in which the compiler ignores an end-of-line.</p>
+<style media="all and (max-width: 40em)">
+	#tilc td:nth-of-type(1):before { content: "Element"; }
+	#tilc td:nth-of-type(2):before { content: "Example"; }
+</style>
+<table id="tilc" class="wide language-vivifire listing">
+<thead>
+<tr><th>Element</th><th>Example</th></tr>
+</thead>
+<tbody>
+<tr><td>After a comma (<code class="op">,</code>)</td>
+<td><pre><code>Method ChangePassword(user_id As String,
+        password_to_change As String,
+        password_to_be As String) As Boolean
+    ' ...
+End Method&#10;</code></pre></td></tr>
+<tr><td>After a left parenthesis (<code class="op">(</code>)</td>
+<td><pre><code>@Abstract Method Read_in_list [Type] (
+    ByRef List[Type] #user_data )&#10;</code></pre></td></tr>
+<tr><td>After a left brace (<code class="op">{</code>) or between two right braces (<code class="op">}</code>)</td>
+<td><pre><code>Dim numbers() As Int32 = {
+    { 1, 2, 3, 4, 5 },
+    { 6, 7, 8, 9, 10 }
+}&#10;</code></pre></td></tr>
+<tr><td>After a modifier that starts with the at-sign (<code class="op">@</code>)</td>
+<td><pre><code>@Deprecated "Use foobar as an alternative"
+Method foo(a As Int32, b As String)&#10;</code></pre></td></tr>
+</tbody>
+</table>
+<p>For information about using comments after a line continuation sequence, see the section below.</p>
+<h2>Adding comments</h2>
+<p>TODO</p>
+<h3>comments and divided statements</h3>
+<p>TODO</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Assignment_Operators.html">Assignment Operators</a></li>
+<li><a href="Operators_and_Expressions.html">Operators and Expressions</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

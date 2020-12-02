@@ -1,0 +1,11 @@
+﻿program i18n
+
+العربية$ = "Arabic"
+ᏣᎳᎩ_ᎦᏬᏂᎯᏍᏗ$ = "Cherokee"
+English$ = "English"
+ελληνικά$ = "Greek"
+עִבְרִית$ = "Hebrew"
+हिन्दी$ = "Hindi"
+普通話$ = "Mandarin Chinese"
+русский$ = "Russian"
+español$ = "Spanish"

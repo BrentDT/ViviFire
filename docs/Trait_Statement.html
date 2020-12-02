@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Trait Statement - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Trait_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_3.html">Q&ndash;Z Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Trait Statement</h1>
+<p>Makes a trait, a construct that changes how a class behaves.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>[ @Abstract ] Trait trait_name [ type_list ] [ Does parent_trait ]&hellip;
+    [ Where generic_constraints ]
+    &hellip;
+    [ statements ]
+End [ Trait ]&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="at">@Abstract</code></dt>
+<dd>Optional modifier specifies that the trait contains only signatures of procedures, not executable statements or variables.</dd>
+<dt><code class="id">trait_name</code></dt>
+<dd>Mandatory name for the trait</dd>
+<dt><code class="id">type_list</code></dt>
+<dd>Optional one or more type parameters, with a comma between each, all between brackets (<code class="op">[ ]</code>).
+See <a href="Type_List.html#">Type List</a> for more information.</dd>
+<dt><code class="kw">Does</code></dt>
+<dd>Optional, you can use again and again.</dd>
+<dt><code class="id">parent_trait</code></dt>
+<dd>Mandatory after <code class="kw">Does</code>, a different trait from which <code class="id">trait_name</code> inherits methods.</dd>
+<dt><code class="kw">Where</code></dt>
+<dd>Optional, you can use again and again.
+See <a href="Where_Clause_Generics.html">Where Clause (Generics)</a> for more information.</dd>
+<dt><code class="id">statements</code></dt>
+<dd>Optional declarative statements.</dd>
+<dt><code class="kw">End</code></dt>
+<dd>Completes the statement.
+You can also use <code class="kw">End Trait</code>.</dd>
+<dd>You can change this part of the syntax.
+See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>TODO</p>
+<h2>Examples</h2>
+<p>TODO</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Class_Statement.html">Class Statement</a></li>
+<li><a href="Method_Statement.html">Method Statement</a></li>
+<li><a href="Traits.html">Traits</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

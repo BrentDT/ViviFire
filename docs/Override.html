@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>@Override - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Override.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Modifiers.html">Modifiers</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">@Override</h1>
+<p>Specifies that a method or property overrides the same method or property inherited from a parent class.</p>
+<h2>Instructions</h2>
+<dl>
+<dt>Declaration contexts</dt>
+<dd>You can use <code class="at">@Override</code> only with <code class="kw">Method</code> and <code class="kw">Property</code>.
+These procedures must be open in the parent class or trait.
+Open procedures have one of the modifiers <code class="at">@Open</code> or <code class="at">@Abstract</code>.</dd>
+<dt>Mixd modifiers</dt>
+<dd>You cannot put <code class="at">@Override</code> together with <code class="at">@Abstract</code> and <code class="at">@Shared</code> in the same declaration.</dd>
+<dt>Equivalent signatures</dt>
+<dd>A method or property with <code class="at">@Override</code> must have a signature that is almost the same as the procedure it overrides:
+<ul>
+<li>The visible names must be the same.</li>
+<li>The return types must be the same.</li>
+<li>If the procedure is generic, then the number of generic parameters must be the same.
+And if the procedure has constraints (<code class="kw">Where</code>), then these must also be the same.</li>
+<li>For <code class="kw">Method</code>, the parameters must be the same number, in the same sequence, with the same data types and modifiers, such as <code class="kw">ByRef</code>.</li>
+</ul>
+</dd>
+</dl>
+<h2>Applies to</h2>
+<ul class="articles">
+<li><a href="Method_Statement.html">Method Statement</a></li>
+<li><a href="Property_Statement.html">Property Statement</a></li>
+</ul>
+<h2>Examples</h2>
+<h3>Basic example</h3>
+<div class="language-vivifire listing">
+<pre><code>@Open Class BaseClass
+    @Open Method MyMethod()
+    End Method
+End Class
+
+Class DerivedClass Is BaseClass
+    @Override Method MyMethod()
+    End Method
+End Class&#10;</code></pre>
+</div>
+<h3>Override an abstract class</h3>
+<div class="language-vivifire listing">
+<pre><code>Require ViviFire.Math
+
+@Abstract Class Shape
+    Method Area() As Real
+End Class
+
+Class Circle Is Shape
+    Constructor Var
+        radius As Real
+    End Constructor
+    @Override Method Area() As Real
+        Return Pi * radius ^ 2
+    End Method
+End Class&#10;</code></pre>
+</div>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

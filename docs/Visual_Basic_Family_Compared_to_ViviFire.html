@@ -1,0 +1,211 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Visual Basic Family Compared to ViviFire - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Visual_Basic_Family_Compared_to_ViviFire.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Appendices.html">Appendices</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Visual Basic Family Compared to ViviFire</h1>
+<p>ViviFire has many of the same features as Visual Basic and VB.NET.
+This appendix tries to show what is different.</p>
+<h2>Equivalent features</h2>
+<table>
+<thead>
+<tr><th>Feature</th><th>Shared</th><th>Different</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>Arithmetic operators</td>
+<td><span class="ops"><code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>Mod</code>, <code>^</code></span></td>
+<td>Does not have <code>\</code></td>
+</tr>
+<tr>
+<td>Assignment operators</td>
+<td><span class="ops"><code>&amp;=</code>, <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code></span></td>
+<td>Does not have <code>\=</code> and <code>^=</code>.
+<code>&lt;&lt;=</code> &rarr; <code class="op">SHL=</code>, <code>&gt;&gt;=</code> &rarr; <code class="op">SHR=</code></td>
+</tr>
+<tr>
+<td><code>Call</code></td>
+<td>Almost the same</td>
+<td></td>
+</tr>
+<tr>
+<td>Comparison Operators</td>
+<td>Almost the same</td>
+<td></td>
+</tr>
+<tr>
+<td><code>Const</code></td>
+<td>Almost the same</td>
+<td></td>
+</tr>
+<tr>
+<td><code>Do&hellip;Loop</code></td>
+<td>Almost the same</td>
+<td></td>
+</tr>
+<tr>
+<td><code>Exit</code></td>
+<td>Almost the same</td>
+<td>Does not have <code>Exit Select</code>.</td>
+</tr>
+<tr>
+<td><code>For</code></td>
+<td>Almost the same</td>
+<td><code>Next</code> &rarr; <code>End For</code></td>
+</tr>
+<tr>
+<td><code>If&hellip;Then&hellip;Else</code></td>
+<td>Almost the same</td>
+<td><code>ElseIf</code> &rarr; <code>Else If</code></td>
+</tr>
+<tr>
+<td>Logical and bitwise operators</td>
+<td><code>And</code>, <code>Or</code>, <code>Xor</code></td>
+<td><code>AndAlso</code> &rarr; <code>And Then</code>, <code>OrElse</code> &rarr; <code>Or Else</code></td>
+</tr>
+<tr>
+<td><code>ReDim</code></td>
+<td>Almost the same</td>
+<td>Does not have <code>Preserve</code>.</td>
+</tr>
+<tr>
+<td><code>Return</code></td>
+<td>Almost the same</td>
+<td></td>
+</tr>
+<tr>
+<td><code>Select&hellip;Case</code></td>
+<td>Almost the same</td>
+<td><code>Is</code> is not optional.</td>
+</tr>
+<tr>
+<td><code>Try&hellip;Catch&hellip;Finally</code></td>
+<td>Almost the same</td>
+<td>Does not have <code>Catch&hellip;When</code></td>
+</tr>
+<tr>
+<td><code>While</code></td>
+<td>Almost the same</td>
+<td><code>Wend</code> &rarr; <code>End While</code></td>
+</tr>
+</tbody>
+</table>
+<h2>Easy translations</h2>
+<p>The table that follows shows elements of VB that have a different name in ViviFire.</p>
+<table>
+<thead>
+<tr><th>In VB</th><th>In ViviFire</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;&lt;</code> and <code>&gt;&gt;</code></td>
+<td><a href="SHL_Operator.html#"><code>SHL</code></a> and <a href="SHR_Operator.html#"><code>SHR</code></a></td>
+</tr>
+<tr>
+<td><code>AddressOf</code></td>
+<td><a href="Sub_Operator.html"><code>Sub</code></a></td>
+</tr>
+<tr>
+<td><code>Inherits</code></td>
+<td><a href="Class_Statement.html#"><code>Is</code></a></td>
+</tr>
+<tr>
+<td><code>Is</code> and <code>IsNot</code></td>
+<td><a href="Is_Operator.html#"><code>Is</code></a></td>
+</tr>
+<tr>
+<td><code>Me</code> and <code>MyBase</code></td>
+<td><a href="Self_and_Base.html#"><code>Self</code> and <code>Base</code></a></td>
+</tr>
+<tr>
+<td><code>MustInherit</code> and <code>MustOverride</code></td>
+<td><a href="Abstract.html#"><code>@Abstract</code></a></td>
+</tr>
+<tr>
+<td><code>Overridable</code> and <code>Overrides</code></td>
+<td><a href="Open.html"><code>@Open</code></a> and <a href="Override.html#"><code>@Override</code></a></td>
+</tr>
+<tr>
+<td><code>RaiseEvent</code></td>
+<td><a href="Call_Event_Statement.html#"><code>Raise Event</code></a></td>
+</tr>
+<tr>
+<td><code>ReadOnly</code> and <code>WriteOnly</code></td>
+<td><a href="Property_Statement.html"><code>@ReadOnly</code> and <code>@WriteOnly</code></a></td>
+</tr>
+<tr>
+<td><code>Shared</code> and <code>Static</code></td>
+<td><a href="Shared.html"><code>@Shared</code></a></td>
+</tr>
+<tr>
+<td><code>Throw</code></td>
+<td><a href="Throw_Statement.html"><code>Raise</code></a></td>
+</tr>
+</tbody>
+</table>
+<h3>Data types</h3>
+<table>
+<thead>
+<tr><th>In VB</th><th>In ViviFire</th><th>In VB</th><th>In ViviFire</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Boolean</code></td><td><code>Boolean</code></td><td><code>String</code></td><td><code>String</code></td></tr>
+<tr><td><code>SByte</code></td><td><code>Int8</code></td><td><code>Byte</code></td><td><code>UInt8</code></td></tr>
+<tr><td><code>Short</code></td><td><code>Int16</code></td><td><code>UShort</code></td><td><code>UInt16</code></td></tr>
+<tr><td><code>Integer</code></td><td><code>Int32</code></td><td><code>UInteger</code></td><td><code>UInt32</code></td></tr>
+<tr><td><code>Long</code></td><td><code>Int64</code></td><td><code>ULong</code></td><td><code>UInt64</code></td></tr>
+<tr><td><code>Date</code></td><td><code>DateTime</code></td><td><code>Decimal</code></td><td><code>Fixed128</code></td></tr>
+<tr><td><code>Single</code></td><td><code>Real32</code></td><td><code>Double</code></td><td><code>Real64</code></td></tr>
+</tbody>
+</table>
+<p>ViviFire also has <span class="kws"><code>Int</code>, <code>UInt</code>, <code>Int128</code>, <code>UInt128</code>, <code>Fixed64</code>, <code>Real</code>, and <code>Real128</code></span>.</p>
+<h2>Features almost the same</h2>
+<table>
+<thead>
+<tr><th>In VB</th><th>In ViviFire</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Delegate</code></td><td><a href="Event_Statement.html#"><code>Event</code></a></td></tr>
+<tr><td><code>Handles</code></td><td><code>Handles</code> (<a href="Sub_Statement.html#"><code>Sub</code></a>)</td></tr>
+<tr><td><code>If()</code></td><td><a href="Conditional_Operator.html#">Conditional Operator</a></td></tr>
+<tr><td><code>Implements</code> (<code>Class</code>)</td><td><code>Does</code> (<a href="Class_Statement.html#"><code>Class</code></a>)</td></tr>
+<tr><td><code>Interface</code></td><td><a href="Trait_Statement.html#"><code>Trait</code></a></td></tr>
+<tr><td><code>Module</code></td><td><a href="Modules.html#"><code>Program</code> and <code>Library</code></a></td></tr>
+<tr><td><code>New</code> (operator)</td><td><a href="New_Statement.html#"><code>New</code> (statement)</a></td></tr>
+<tr><td><code>Nothing</code></td><td><a href="Default_Values.html"><code>#Null</code></a></td></tr>
+<tr><td><code>Structure</code></td><td><a href="Struct_Statement.html#"><code>Struct</code></a></td></tr>
+<tr><td><code>TypeOf&hellip;Is</code></td><td><a href="Is_Operator.html#"><code>Is</code></a></td></tr>
+</tbody>
+</table>
+<h2>Features not available</h2>
+<ul>
+<li>Access levels: <code>Private</code>, <code>Protected</code>, <code>Public</code>, and <code>Friend</code></li>
+<li><code>Custom Property</code></li>
+<li><code>GoSub</code> and <code>GoTo</code> label</li>
+<li>Labels and line numbers as targets of <code>GoSub</code> and <code>GoTo</code></li>
+<li><code>Like</code> operator</li>
+<li><code>NotInheritable</code> and <code>NotOverridable</code>, because these are the defaults</li>
+<li>Operator overloading</li>
+<li>&ldquo;Partial&rdquo; classes and structures</li>
+<li><code>Variant</code> data type</li>
+</ul>
+</main>
+<script src="common.js"></script>
+</body>
+</html>

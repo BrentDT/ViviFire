@@ -1,0 +1,100 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Pre-Calculated Constants - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Pre_calculated_Constants.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Appendices.html">Appendices</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Pre-Calculated Constants</h1>
+<h2>Integer constants</h2>
+<table>
+<thead>
+<tr><th>Name</th><th>Information</th></tr>
+</thead>
+<tbody>
+<tr><th><code>%ANSI</code></th><td>See <a href="Declare_Statement.html">Declare</a></td></tr>
+<tr><th><code>%CDECL</code></th><td>See <a href="Declare_Statement.html">Declare</a></td></tr>
+<tr><th><code>%DONE</code></th><td>See <a href="Begin_When_Statements.html">Begin&hellip;When</a></td></tr>
+<tr><th><code>%FALSE</code></th><td><code>Boolean.False As Int</code></td></tr>
+<tr><th><code>%NONE</code></th><td>See <a href="Begin_When_Statements.html">Begin&hellip;When</a></td></tr>
+<tr><th><code>%TRUE</code></th><td><code>Boolean.True As Int</code></td></tr>
+<tr><th><code>%UTF16</code></th><td>See <a href="Declare_Statement.html">Declare</a></td></tr>
+</tbody>
+</table>
+<h3>Characters</h3>
+<table>
+<thead>
+<tr><th>Code point</th><th>Name</th><th>Information</th></tr>
+</thead>
+<tbody>
+<tr><td>0 (&amp;H0000)</td><td><code>%NUL, %NULL</code></td><td>Null</td></tr>
+<tr><td>7 (&amp;H0007)</td><td><code>%BEL, %BELL</code></td><td>Audible bell</td></tr>
+<tr><td>8 (&amp;H0008)</td><td><code>%BS, %BACKSPC</code></td><td>Backspace</td></tr>
+<tr><td>9 (&amp;H0009)</td><td><code>%T, %TAB</code></td><td>Horizontal tab</td></tr>
+<tr><td>10 (&amp;H000A)</td><td><code>%LF, %LINEFEED</code></td><td>Line feed</td></tr>
+<tr><td>11 (&amp;H000B)</td><td><code>%VT, %VTAB</code></td><td>Vertical tab</td></tr>
+<tr><td>12 (&amp;H000C)</td><td><code>%FF, %FORMFEED</code></td><td>Form feed</td></tr>
+<tr><td>13 (&amp;H000D)</td><td><code>%CR, %RETURN</code></td><td>Carriage return</td></tr>
+<tr><td>27 (&amp;H001B)</td><td><code>%E, %ESCAPE</code></td><td>Escape</td></tr>
+<tr><td>32 (&amp;H0020)</td><td><code>%SPC, %SPACE</code></td><td>Space</td></tr>
+</tbody>
+</table>
+<h2>String constants</h2>
+<p>For the syntax of string constants, see <a href="String_Basics.html">String Basics</a>.</p>
+<h3>Named string constants</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Information</th><th>Equivalents</th></tr>
+</thead>
+<tbody>
+<tr><td><code>$CR, $RETURN</code></td><td>Carriage return</td><td><code>$13, $HD, $O15, $B1101</code></td></tr>
+<tr><td><code>$E, $ESCAPE</code></td><td>Escape</td><td><code>$27, $H1B, $O33, $B11011</code></td></tr>
+<tr><td><code>$FF, $FORMFEED</code></td><td>Form feed</td><td><code>$12, $HC, $O14, $B1100</code></td></tr>
+<tr><td><code>$LF, $LINEFEED</code></td><td>Line feed</td><td><code>$10, $HA, $O12, $B1010</code></td></tr>
+<tr><td><code>$N, $NEWLINE</code></td><td>Newline</td><td>(Platform-controlled)</td></tr>
+<tr><td><code>$PD, $PARENTDIR</code></td><td>Parent directory</td><td>(Platform-controlled)</td></tr>
+<tr><td><code>$PS, $PATHSEP</code></td><td>File path separator</td><td><code>&quot;&quot;/&quot;&quot;, &quot;&quot;\&quot;&quot;</code></td></tr>
+<tr><td><code>$RD, $ROOTDIR</code></td><td>Root directory</td><td>(Platform-controlled)</td></tr>
+<tr><td><code>$S, $SPACE</code></td><td>Space</td><td><code>$32, $H20, $O40, $B100000</code></td></tr>
+<tr><td><code>$T, $TAB</code></td><td>Horizontal tab</td><td><code>$9, $H9, $O11, $B1001</code></td></tr>
+</tbody>
+</table>
+<h3>Magic constants</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Information</th></tr>
+</thead>
+<tbody>
+<tr><th><code>$DATE</code></th><td>The date during compilation in UTC</td></tr>
+<tr><th><code>$DATE_DMY</code></th><td>The date in DD-MM-YYYY format</td></tr>
+<tr><th><code>$DATE_MDY</code></th><td>The date in MM-DD-YYYY format</td></tr>
+<tr><th><code>$DATE_YMD</code></th><td>The date in YYYY-MM-DD format</td></tr>
+<tr><th><code>$FILE</code></th><td>The name of the source file</td></tr>
+<tr><th><code>$LINE</code></th><td>The line number in the source file</td></tr>
+<tr><th><code>$OBJ</code></th><td>The name of the class, object, trait, or module</td></tr>
+<tr><th><code>$PROC</code></th><td>The name of the procedure</td></tr>
+<tr><th><code>$TIME</code></th><td>The time during compilation in UTC</td></tr>
+<tr><th><code>$TIME_12</code></th><td>The time in 12-hour format ("1:37 PM")</td></tr>
+<tr><th><code>$TIME_12_SEC</code></th><td>The time in 12-hour format ("1:37:55 PM")</td></tr>
+<tr><th><code>$TIME_24</code></th><td>The time in 24-hour format ("13:37")</td></tr>
+<tr><th><code>$TIME_24_SEC</code></th><td>The time in 24-hour format ("13:37:55")</td></tr>
+</tbody>
+</table>
+</main>
+<script src="common.js"></script>
+</body>
+</html>

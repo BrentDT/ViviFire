@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>@Shared - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Shared.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Modifiers.html">Modifiers</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top"><code>@Shared</code></h1>
+<p>Specifies that an element is related to the container in which it is declared, and not some instance of that container.</p>
+<h2>Instructions</h2>
+<p>When you make an element with <code class="at">@Shared</code> in a class or structure, the member is available to all instances.
+Usually each instance keeps a different copy.
+With <code class="at">@Shared</code>, you can make a variable that all instances of a class have access to, but other code cannot.</p>
+<p>When you declare a local variable with <code class="at">@Shared</code> in a procedure, it keeps its value between procedure calls.
+Usually a local variable releases its memory when execution in the scope completes.
+With <code class="at">@Shared</code>, the next time your code calls the procedure, the variable is not initialized again, and keeps the same value.</p>
+<h2>You must know</h2>
+<dl>
+<dt>Declaration context</dt>
+<dd><code class="at">@Shared</code> is permitted in <span class="kws"><code>Class</code>, <code>Struct</code>, <code>Trait</code>, <code>Function</code>, <code>Method</code>, and <code>Sub</code></span>.</dd>
+<dt>Mixed modifiers</dt>
+<dd>You cannot put <code class="at">@Shared</code> together with most other modifiers.
+But you can put it together with <a href="Deprecated.html"><code>@Deprecated</code></a></dd>
+<dt>Accessing</dt>
+<dd>You get access to a shared member of a class or structure through its qualified name.
+That is the name of the class or structure, a dot (<code class="op">.</code>), and the name of the member.
+You cannot get access to a shared member through a variable of the class or structure.</dd>
+<dt>Always shared</dt>
+<dd>Some declarations cannot accept <code class="at">@Shared</code>, but are shared the same.
+These include <a href="Const_Statement.html#"><code>Const</code></a>, in all scopes, and all declarations in module scope.</dd>
+</dl>
+<h2>Applies to</h2>
+<ul class="articles">
+<li><a href="Dim_Statement.html#">Dim Statement</a></li>
+<li><a href="Function_Statement.html#">Function Statement</a></li>
+<li><a href="Method_Statement.html#">Method Statement</a></li>
+<li><a href="New_Statement.html#">New Statement</a></li>
+<li><a href="Object_Statement.html#">Object Statement</a></li>
+<li><a href="Property_Statement.html#">Property Statement</a></li>
+<li><a href="Sub_Statement.html#">Sub Statement</a></li>
+</ul>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Lifetime.html">Lifetime</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+</body>
+</html>

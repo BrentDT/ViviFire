@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Keywords as Element Names - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Keywords_as_Element_Names.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Program_Structure_and_Code_Conventions.html">Program Structure and Code Conventions</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Keywords as Element Names</h1>
+<p>Usually a code element (examples are a variable, class, or member) cannot have the same name as a keyword.
+This is because keywords are special names in the language.
+But there can be times that it becomes necessary to use one.</p>
+<p>For example, you can make a variable with the name <code>Object</code>.
+But to refer to it as a variable and not a keyword, you must write it between backticks (<code class="op">`</code>).
+An example follows.</p>
+<div class="language-vivifire listing">
+<pre><code>`Object`.Visible = True&#10;</code></pre>
+</div>
+<p>If you do not do this, then ViviFire sees the name as the keyword <code class="kw">Object</code>.
+The keyword <code class="kw">Object</code> here causes an error, as shown below.</p>
+<div class="language-vivifire listing">
+<pre><code><mark class="err">Object.Visible = True</mark>&#10;</code></pre>
+</div>
+<p>It can be easy to forget to include backticks, and thus cause errors.
+Because of this, we recommend that you do not use keywords as the names of program elements.
+But, it is possible that a newer version of ViviFire could add a keyword that your code used as a name.
+Then you can use backticks around names that cause errors with the newer version of ViviFire.</p>
+<p>Names between backticks must contain a minimum of two letters.
+This is because one character between backticks is a literal of type <a href="Char_Data_Type.html#Character_literal"><code class="kw">Char</code></a>.
+But this is not a problem because all ViviFire keywords have two or more letters.</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Standard_Procedures_for_Names.html">Standard Procedures for Names</a></li>
+<li><a href="Keywords.html">Keywords</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

@@ -1,0 +1,1846 @@
+/*
+* ViviFire Programming Language
+*
+* Copyright 2012-2020 Brent D. Thorn
+*
+* You can get the latest version at http://vivifire.com/.
+*
+* Use of this source code is governed by an MIT-style license that can be
+* found in the LICENSE file.
+*/
+
+#include <stdio.h>
+#include "Args.h"
+extern Args args;
+
+COMPILER ViviFire
+
+enum case_type { case_zero, case_expr, case_else };
+enum option_type { option_default, then_found, then_not_found };
+enum ternary_option { option_0, option_1, option_2, with_option = option_1, without_option = option_2 };
+enum when_type { when_zero = 0, when_done = 1, when_none = 2, when_else = 3 };
+
+struct {
+	//TODO: charset
+	ternary_option Dim_or_Var           = option_0;
+	ternary_option End_For_x_name       = option_0;
+	ternary_option End_x_block          = option_0;
+	bool           Enum_with_name       = false;
+	bool           Enum_with_type       = false;
+	bool           Enum_with_equals     = false;
+	bool           If_with_End          = false;
+	ternary_option If_x_Then            = option_0;
+	bool           last                 = false;
+	ternary_option New_x_New            = option_0;
+	bool           Optional_with_equals = false;
+	ternary_option Select_x_Case        = option_0;
+	bool           Select_with_Else     = false;
+	bool           unit_with_name       = false;
+	bool           warning_as_error     = false;
+
+	void Parse() {
+		static const wchar_t *block = L"block", *equals = L"equals", *name = L"name";
+		switch (la->kind) {
+		case _Dim:
+			Get();
+			if (with_or_without() == with_option) {
+				if (la->kind == _Dim) Dim_or_Var = option_1;      // Dim with Dim
+				else if (la->kind == _Var) Dim_or_Var = option_2; // Dim with Var
+				else goto bad_option;
+				Get();
+			} else goto bad_option;
+			break;
+		case _End:
+			Get();
+			if (la->kind == _For) { // End For
+				Get();
+				ternary_option x = with_or_without();
+				if (x == option_0 || !id(name)) goto bad_option;
+				End_For_x_name = x;
+			} else if (la->kind == _identifier) {
+				ternary_option x = with_or_without();
+				if (x == option_0 || !id(block)) goto bad_option;
+				End_x_block = x; // End with(out) block
+			} else goto bad_option;
+			break;
+		case _Enum:
+			Get();
+			if (with_or_without() != with_option || la->kind != _identifier) goto bad_option;
+			Get();
+			if (wcscmp(name, t-val) == 0) Enum_with_name = true;           // Enum with name
+			else if (wcscmp(L"type", t->val) == 0) Enum_with_type = true;  // Enum with type
+			else if (wcscmp(equals, t->val) == 0) Enum_with_equals = true; // Enum with equals
+			else goto bad_option;
+			break;
+		case _If: {
+			Get();
+			ternary_option x = with_or_without();
+			if (x == option_0 || la->kind != _End || la->kind != _Then) goto bad_option;
+			Get();
+			if (t->kind == _End && x == with_option) If_with_End = true; // If with End
+			else if (t->kind == _Then) If_x_Then = x;                    // If with(out) Then
+			else goto bad_option;
+			break;
+		}
+		case _New: {
+			Get();
+			ternary_option x = with_or_without();
+			if (x == option_0 || la->kind != _New) goto bad_option;
+			Get();
+			New_x_New = x; // New with(out) New
+			break;
+		}
+		case _Optional:
+			Get();
+			if (with_or_without() != with_option || !id(equals)) goto bad_option;
+			Optional_with_equals = true; // Optional with equals
+			break;
+		case _Select: {
+			Get();
+			ternary_option x = with_or_without();
+			if (x == option_0 || la->kind != _Case || la->kind != _Else) goto bad_option;
+			Get();
+			if (t->kind == _Else && x == with_option) Select_with_Else = true; // SELECT with ELSE
+			else if (t->kind == _Case) Select_x_Case = x;                      // SELECT with(out) CASE
+			else goto bad_option;
+			break;
+		}
+		case _Unit:
+			Get();
+			if (with_or_without() != with_option || !id(name)) goto bad_option;
+			unit_with_name = true; // Unit with name
+			break;
+		case _identifier:
+			Get();
+			// For each addition, remember to "break" when correct.
+			if (wcscmp(L"last", t->val) == 0) {
+				last = true; // Last
+				break;
+			} else if (wcscmp(L"warning", t->val) == 0 && la->kind == _As) {
+				Get();
+				if (id(L"error")) {
+					warning_as_error = true; // Warning as error
+					break;
+				}
+			}
+			// Fall through for error
+		default:
+		bad_option:
+			Err(L"Unknown or missing option");
+			break;
+		}
+	}
+private:
+	bool id(const wchar_t *s) const {
+		if (la->kind == _identifier) {
+			Get();
+			return (wcscmp(s, t->val) == 0);
+		}
+		return false;
+	}
+	ternary_option with_or_without() const {
+		if (la->kind == _identifier) {
+			Get();
+			if (wcscmp(L"with", t->val) == 0) return with_option;
+			if (wcscmp(L"without", t->val) == 0) return without_option;
+		}
+		return option_0;
+	}
+} option;
+
+class param_type {
+	int m_parent;
+	bool m_byref = false;
+	bool m_optional = false;
+public:
+	param_type(int parent): m_parent(parent) {}
+	void modifier(int kind = -1) {
+		switch (kind) {
+		case -1:
+			m_byref = false;  // by value
+			break;
+		case _ByRef:
+			if (m_optional) Err(L"Optional parameter cannot be BYREF");
+			else m_byref = true;
+			break;
+		case _Optional:
+			if (m_optional) Warn(L"OPTIONAL is not necessary again");
+			else m_optional = true;
+			break;
+		default:
+			#if defined(DEBUG)
+			errors->Exception(L"Bad kind in param_type::modifier");
+			#endif
+			break;
+		}
+	}
+	bool optional() const { return bOptional; }
+};
+
+void Err(const wchar_t *msg) {
+	errors->Error(t->line, t->col, msg);
+}
+
+void Err(int line, int col, const wchar_t *msg) {
+	errors->Error(line, col, msg);
+}
+
+void Warn(const wchar_t *msg) {
+	if (option.warning_as_error) Err(msg);
+	else errors->Warning(msg);
+}
+
+void Optional(int kind, option_type nOption = option_default) {
+	switch (kind) {
+	case _Case:  // Select [ Case ]
+		if (la->kind == _Case) {
+			Get();
+			if (option.Select_x_Case == without_option) Err(L"Select cannot have CASE because of @Option");
+		}
+		else if (option.Select_x_Case == with_option) Err(L"SELECT must have CASE because of @Option");
+		break;
+	case _Class:        // End [ Class ]
+	case _Constructor:  // End [ Constructor ]
+	case _Declare:      // End [ Declare ]
+	case _Destructor:   // End [ Destructor ]
+	case _Enum:         // End [ Enum ]
+	case _Function:     // End [ Function ]
+	case _If:           // End [ If ]
+	case _Method:       // End [ Method ]
+	case _Namespace:    // End [ Namespace ]
+	case _Object:       // End [ Object ]
+	case _Property:     // End [ Property ]
+	case _Select:       // End [ Select ]
+	case _Struct:       // End [ Struct ]
+	case _Sub:          // End [ Sub ]
+	case _Trait:        // End [ Trait ]
+	case _Try:          // End [ Try ]
+	case _While:  // End [ While ]
+		if (la->kind == kind) {
+			Get();
+			if (option.End_x_block == without_option) Err(L"END cannot have block type because of @Option");
+		}
+		else if (option.End_x_block == with_option) Err(L"END must have block type because of @Option");
+		break;
+	case _For:  // End [ For [ name ] ]
+		if (la->kind == _For) {
+			Get();
+			if (option.End_x_block == without_option) Err(L"END cannot have block type because of @Option");
+			if (IsIdentifier()) {
+				Name();
+				if (option.End_For_x_name == without_option) Err(L"END FOR cannot have name because of @Option");
+			}
+			else if (option.End_For_x_name == with_option) Err(L"END FOR must have name because of @Option");
+		}
+		//TODO: else if (end_with_block)
+		break;
+	case _Then:
+		if (nOption == option_default && la->kind == _Then) {
+			nOption = then_found;
+			Get();
+		}
+		if (nOption == then_found && option.If_x_Then == without_option)
+			Err(L"IF cannot have THEN because of @Option");
+		else if (nOption == then_not_found && option.If_x_Then == with_option)
+			Err(L"IF must have THEN because of @Option");
+		break;
+	default:
+		#if defined(DEBUG)
+		errors->Exception(L"Bad kind in Optional");
+		#endif
+		break;
+	}
+}
+
+class Modifier {
+public:
+	enum { Abstract, Backed, Deprecated, Flags, Open, Override, ReadOnly, Shared, SI, WriteOnly, LAST };
+private:
+///	const wchar_t *text[] = { L"abstract", L"backed", L"deprecated", L"final", L"flags", L"override", L"readonly", L"shared", L"si", L"writeonly" };
+	Parser *parser;
+	struct {
+		int64_t hash;
+		bool present, allowed;
+		int line, col;
+		int order;
+	} mods[LAST];
+	int count;
+public:
+	Modifier(Parser *p): parser(p), mods(), count(0) {
+///		for (int i = 0; i < LAST; i++) {
+///			mods[i].hash = hash(text[i]);
+///		}
+	}
+	int count() const { return count; }
+	void add(int m) {
+///		int hash = hash(t->val);
+		if (m_mods[m].present) parser->errors->Error(mods[m].line, mods[m].col, L"Duplicate modifier");
+		mods[m].present = true;
+		mods[m].allowed = false;
+		mods[m].line = t->line;
+		mods[m].col = t->col;
+		mods[m].order = m_count++;
+	}
+	bool allow(int m) {
+		bool present = mods[m].present;
+		if (present) {
+			mods[m].allowed = true;
+		}
+		return present;
+	}
+	void check_disallowed() const {
+		if (m_count == 0) return;
+		for (int i = 0; i < LAST; i++) {
+			if (mods[i].present && !mods[i].allowed) {
+				wchar_t *msg = coco_string_create_append(name(i), L" not allowed here");
+				parser->errors->Error(m_mods[i].line, m_mods[i].col, msg);
+				coco_string_delete(msg);
+			}
+		}
+// Abstract, Backed, Deprecated, Flags, Open, Override, ReadOnly, Shared, SI, WriteOnly
+		// Abstract v any except Deprecated, ReadOnly, or WriteOnly
+		if ( mods[Abstract].present && count > 1 && !mods[Deprecated].present && !mods[ReadOnly].present && !mods[WriteOnly].present ) Err
+		// ReadOnly v WriteOnly
+		if (mods[ReadOnly].present && mods[WriteOnly].present) Err
+	}
+
+};
+
+int cc_depth, cc_exec;
+
+void CCInit() {
+	cc_depth = cc_exec = 0;
+}
+
+void CCGet() {
+	delete t;
+	t = la;
+	la = scanner->Scan();
+}
+
+bool CCTest() {
+	if (la->kind == _NOT) {
+		CCGet();
+	}
+	if (la->kind != _identifier) Err(L"identifier expected");
+	// test it
+	CCGet();
+}
+
+void CCEval() {
+	switch (la->kind) {
+	case _atIf: {
+		bool test = false;
+		CCGet();
+		test = CCTest();
+		while (la->kind == _And || la->kind == _Or) {
+			CCGet();
+			if (t->kind == _And)
+				test &= CCTest();
+			else
+				test |= CCTest();
+		}
+		if (la->kind == _THEN) CCGet();
+		if (la->kind != _line_break) Err(L"line_break expected");
+		cc_depth++;
+		if (test) cc_exec = cc_depth;
+		break;
+	}
+	case _atElse:
+		if (cc_exec == cc_depth - 1) cc_exec++;
+		break;
+	case _atEnd:
+		if (cc_depth > 0) cc_depth--; else Err(L"@End If without @If");
+		if (cc_exec > cc_depth) cc_exec = cc_depth;
+		break;
+	}
+	if (cc_exec == cc_depth) {
+		while (la->kind < _atError) CCGet();
+	}
+}
+
+bool IsCall() {
+	// Disambiguate "("[args]")" from "("["Is"]("<"|"<="|">"|">="|"<>"|"=")")".
+	if (la->kind == _left_parenthesis) {
+		int first = scanner->Peek()->kind;
+		if (first == _Is || (first >= _less_than && first <= _equals_operator)) return false;
+		return true;
+	}
+	return false;
+}
+
+bool IsDeclareParameterList() {
+	if (la->kind == _left_parenthesis) {
+		int k = scanner->Peek()->kind;
+		if (k == _line_break) k = scanner->Peek()->kind;
+		if (k == _Optional) k = scanner->Peek()->kind;
+		return (k == _integer_literal);
+	}
+	return false;
+}
+
+bool IsFixedPointArgument() {
+	return (la->kind == _left_parenthesis && scanner->Peek()->kind == _integer_literal);
+}
+
+bool IsIdentifier(int kind) {
+	return (kind == _identifier || kind == _typed_identifier || kind == _nullable_identifier);
+}
+
+bool IsNamedArgument() {
+	return (IsIdentifier(la->kind) && scanner->Peek()->kind == _colon_equals);
+}
+
+bool IsNewStatement() {
+	if (la->kind == _New) return true;
+	if (la->kind == _identifier) { // FIXME: could be qualified name
+		int next = scanner->Peek()->kind;
+		return (next == _nullable_identifier || next == _less_than);
+	}
+	return false;
+}
+
+bool IsUnit() {
+	if (la->kind == _identifier) return true;
+	if (la->kind == _left_parenthesis && scanner->Peek()->kind == _identifier) return true;
+	return false;
+}
+
+bool IsUnorderedInit() {
+	int k = la->kind;
+	return ((k == _char_literal || k == _integer_constant || k == _integer_literal) && scanner->Peek()->kind == _colon_equals);
+}
+
+
+void ExpectEndNew(const wchar_t *tn) {
+	if (la->kind == _End) {
+		Get();
+		if (tn == NULL && la->kind != _New) {
+			Err(L"End New expected);
+			return;
+		}
+		else if (tn != NULL && wcscmp(tn, la->val) != 0) {
+			Err(L"End %ls expected"); // FIXME: show ident
+			return;
+		}
+	}
+	Get();
+}
+
+IGNORECASE
+
+CHARACTERS
+
+// Single characters
+
+n = '\n'.
+r = '\r'.
+t = '\t'.
+
+// Character sets
+
+ctrl = '\u0000' .. '\u001f'.
+eol = n + r.
+notEOL = ANY - ctrl - eol.
+
+alpha = 'A' .. 'Z'.
+alnum = alpha + '0' .. '9'.
+sigil = "!$%".
+
+bin = "01".
+dec = '0' .. '9'.
+hex = '0' .. '9' + 'A' .. 'F'.
+oct = '0' .. '7'.
+
+nonbin = alnum - bin.
+nonhex = alnum - hex.
+nonoct = alnum - oct.
+
+currency = ANY - dec - "_" - ctrl.
+
+str = ANY - ctrl - eol - '"'.
+char = ANY - ctrl - eol.
+
+TOKENS
+
+comma = ",".
+dot = ".".
+line_break = eol{eol}.
+
+plus = "+".
+minus = "-".
+
+less_than          = "<".
+less_or_equal      = "<=".
+greater_than       = ">".
+greater_or_equal   = ">=".
+inequality         = "<>".
+equals_operator    = "=".
+spaceship_operator = "<=>".
+
+left_parenthesis  = "(".
+right_parenthesis = ")".
+left_bracket      = "[".
+right_bracket     = "]".
+left_brace        = "{".
+right_brace       = "}".
+
+concatenation_operator =
+	( ";" | "&"
+	// Prevent misparsing as binary, hexadecimal, or octal integer.
+	| "&" CONTEXT ( ("B"{bin}nonbin) | ("H"{hex}nonhex) | ("O"{oct}nonoct) )
+	).
+
+colon_equals = ":=".
+
+// Literals
+
+char_literal =
+	'`'char'`'.
+
+malformed_char_literal =
+	'`'[char].
+
+date_literal =
+	'@'dec{dec}
+	( '/'dec{dec}'/'dec{dec}  // yyyy/mm/dd
+	| '.'dec{dec}'.'dec{dec}  // yyyy.mm.dd
+	| '-'dec{dec}'-'dec{dec}  // yyyy-mm-dd
+	).
+
+//TODO: malformed_date_literal
+
+fixed_literal =
+	( '¤' | '@'[currency] )
+	dec{['_']dec}['.'dec{dec}].
+
+malformed_fixed_literal =
+	( ('¤'|'@'currency)[dec{dec|'_'}('_'|'.')]
+	| '@'[currency]dec{dec|'_'}("__"|".."){dec|'_'}
+	).
+
+integer_constant =
+	'%'alpha{['_']alnum}.
+
+integer_literal =
+	( "&B"bin{['_']bin}
+	| "&O"oct{['_']oct}
+	| "&H"hex{['_']hex}
+	| dec{['_']dec}
+	// Prevent misparsing units (eg "312electronvolts") as real_literal.
+	| dec{['_']dec} CONTEXT ("E"alpha)
+	).
+
+malformed_integer_literal =
+	( "&B"bin{bin|'_'}"__"{bin|'_'}
+	| "&O"oct{oct|'_'}"__"{oct|'_'}
+	| "&H"hex{hex|'_'}"__"{hex|'_'}
+	| dec{dec|'_'}"__"{dec|'_'}
+	).
+
+null_literal =
+	'|'{'-'}.
+
+real_literal =
+	( [dec{['_']dec}]'.'dec{['_']dec}['E'['+'|'-']dec{dec}]['!']
+	| dec{['_']dec}'E'['+'|'-']dec{dec}['!']
+	| dec{['_']dec}'!'
+	).
+
+malformed_real_literal =
+	( dec{dec|'_'}"__"{dec|'_'}'.'{'.'}{dec|'_'}['E'['+'|'-']{dec}]['!']
+	| {dec|'_'}'.'{'.'}dec{dec|'_'}"__"{dec|'_'}['E'['+'|'-']{dec}]['!']
+	| dec{dec|'_'}"__"{dec|'_'}'!'
+	).
+
+string_constant =
+	'$'alnum{['_']alnum}.
+
+string_literal =
+	['_']          // continuation
+	'"'{str}'"'    // normal string
+	{ ['/'|'\\']   // path string
+	  '"'{str}'"'  // double quotes
+	}.
+
+malformed_string_literal =
+	['_']'"'{str}{'"'['/'|'\\']'"'{str}}['"'('/'|'\\')].
+
+time_literal =
+	'@'dec{dec}':'dec{dec}[':'dec{dec}['.'dec{dec}]].
+
+//TODO: malformed_time_literal
+
+version_literal =
+	dec{dec}'.'dec{dec}'.'dec{dec}['.'dec{dec}].
+
+//TODO: malformed_version_literal
+
+// Identifiers
+
+identifier =
+	( alpha{["_"]alnum}
+	// Use keywords, eg `Class`
+	| "`"alpha alnum{alnum}"`"
+	// Prevent misparsing "obj!name" as typed_identifier.
+	| alpha{["_"]alnum} CONTEXT ("!"alpha)
+	).
+
+nullable_identifier =
+	( "#"alnum{["_"]alnum}
+	// Prevent misparsing "#obj!name" as typed_identifier.
+	| "#"alnum{["_"]alnum} CONTEXT ("!"alpha)
+	).
+
+typed_identifier =
+	(alpha|"#"){["_"]alnum}sigil.
+
+// Keywords
+
+And         = "And".
+As          = "As".
+Base        = "Base".
+Begin       = "Begin".
+Boolean     = "Boolean".
+ByRef       = "ByRef".
+Call        = "Call".
+Case        = "Case".
+Catch       = "Catch".
+Char        = "Char".
+Class       = "Class".
+Const       = "Const".
+Constructor = "Constructor".
+DateTime        = "DateTime".
+Declare     = "Declare".
+Destructor  = "Destructor".
+Dim         = "Dim".
+Do          = "Do".
+Does        = "Does".
+Each        = "Each".
+Else        = "Else".
+End         = "End".
+Enum        = "Enum".
+Event       = "Event".
+Exit        = "Exit".
+Finally     = "Finally".
+Fixed64     = "Fixed64".
+Fixed128    = "Fixed128".
+For         = "For".
+Function    = "Function".
+Get         = "Get".
+GoTo        = "GoTo".
+Handles     = "Handles".
+If          = "If".
+In          = "In".
+Int         = "Int".
+Int8        = "Int8".
+Int16       = "Int16".
+Int32       = "Int32".
+Int64       = "Int64".
+Int128      = "Int128".
+Is          = "Is".
+Let         = "Let".
+Library     = "Library".
+Loop        = "Loop".
+Method      = "Method".
+Mod         = "Mod".
+Namespace   = "Namespace".
+New         = "New".
+Not         = "Not".
+Object      = "Object".
+Optional    = "Optional".
+Or          = "Or".
+Out         = "Out".
+Program     = "Program".
+Property    = "Property".
+Raise       = "Raise".
+Real        = "Real".
+Real32      = "Real32".
+Real64      = "Real64".
+Real128     = "Real128".
+ReDim       = "ReDim".
+Rem         = "Rem".
+Require     = "Require".
+Return      = "Return".
+SBits       = "SBits".
+Select      = "Select".
+Self        = "Self".
+Set         = "Set".
+SHL         = "SHL".
+SHR         = "SHR".
+Step        = "Step".
+String      = "String".
+Struct      = "Struct".
+Sub         = "Sub".
+Then        = "Then".
+To          = "To".
+Tol         = "Tol".
+Trait       = "Trait".
+Try         = "Try".
+UBits       = "UBits".
+UInt        = "UInt".
+UInt8       = "UInt8".
+UInt16      = "UInt16".
+UInt32      = "UInt32".
+UInt64      = "UInt64".
+UInt128     = "UInt128".
+Unit        = "Unit".
+Until       = "Until".
+Var         = "Var".
+Wait        = "Wait".
+When        = "When".
+Where       = "Where".
+While       = "While".
+Xor         = "Xor".
+
+PRAGMAS
+
+LineContinuation = '_'{notEOL}eol[n].
+
+// Directives
+
+atOption = "@Option". (. option.Parse(); .)
+atError  = "@Error". (.
+	int l = la->line, c = la->col;
+	Get(); //FIXME: necessary?
+	Expect(_string_literal);
+	errors->Error(l, c, t->val); .)
+atWarn   = "@Warn". (.
+	Get(); //FIXME: necessary?
+	Expect(_string_literal);
+	Warn(t->val); .)
+
+// Conditional compilation
+
+atIf   = "@If".    (. CCEval(); .)
+atElse = "@Else".  (. CCEval(); .)
+atEnd  = "@End"{notEOL}.   (. CCEval(); .)
+
+// Comments
+
+InlineComment = ("'"|"//"){notEOL}.
+MidLineComment = "/'"{notEOL}"'/".
+
+COMMENTS FROM "/*" TO "*/" NESTED  // C-style
+
+IGNORE t + '\u00a0' // non-breaking space
+
+PRODUCTIONS
+
+ViviFire
+=
+	(. bool bProcEntry = false; .)
+	[ Newline ]
+	( "Program"
+		[ "=" (. bProcEntry = true; .) ]
+	| "Library"
+	)
+	identifier
+	SYNC Newline
+	{ WhereStatement }
+	{ RequireStatement }
+	{ ModuleMember | ModuleStatement<bProcEntry> }
+	EOF
+	(. printf("\n-- %d %s\n", errors->count, (errors->count == 1) ? "error" : "errors"); .)
+.
+
+/*A*/
+AdditiveExpression
+=
+	MultiplicativeExpression { ( '+' | '-' ) MultiplicativeExpression }
+///	[ InUnitClause ]
+.
+Argument
+=
+	( null_literal
+	| [ IF (IsNamedArgument()) Name ":=" ]
+	  EnclosedExpression
+	)
+.
+ArgumentList
+=
+	// Disambiguate "("args")" from "("expr")".
+	( IF (la->kind == _left_parenthesis) EnclosedArgumentList
+	| UnenclosedArgumentList
+	)
+.
+ArrayDimensionList
+=
+	'('
+	[ Rank                             // Eg 'Dim matrix(*2)'
+	| Expression { comma Expression }  // Eg 'Dim matrix(3, 3)'
+	]
+	')'
+.
+AssignmentOperator
+=
+	[ "&" | "+" | "-" | "*" | "/" | "Mod" | "Rem" | "SHL" | "SHR" | "And" | "Or" | "Xor" ]
+	"="
+.
+AssignmentStatement
+=
+	( AssignmentOperator Expression
+	| ":=" Expression { ":=" Expression }
+	)
+.
+AsTypeClause<bool bBits>
+=
+	"As"
+	( UserType [ EnclosedArgumentList ]
+	| PrimitiveType<bBits>
+	)
+	[ Rank ]
+.
+/*B*/
+BaseUnitStatement<Modifier &mods>
+=
+	(. mods.allow(Modifier::Deprecated); .)
+	(. mods.check_disallowed(); .)
+	"Base" "Unit" identifier InUnitClause
+	[ "=" MultiplicativeExpression ]
+	SYNC Newline
+.
+BitFieldType<int &tkn>
+=
+	(. tkn = la->kind; .)
+	( "SBits" | "UBits" ) "(" integer_literal ")"
+.
+BitShiftExpression
+=
+	ConcatenationExpression { ( "SHL" | "SHR" ) ConcatenationExpression }
+.
+Block<int &tkn>
+=
+	(. tkn = la->kind; .)
+	( "Do" | "For" | "Function" | "Method" | "Property" | "Sub" | "While" )
+.
+/*C*/
+CallOrNew<int which>
+=
+	UserType ObjectName
+	[ comma[line_break] UnenclosedArgumentList ]
+	SYNC Newline
+.
+CallStatement
+=
+	"Call"
+	( Name
+	| "Base"
+	)
+	[ ArgumentList ]
+.
+CaseClause<case_type &clause>
+=
+	"Case"
+		(. if (clause == case_else) Err(L"CASE cannot follow CASE ELSE in SELECT"); .)
+	( "Else"
+		(. if (clause == case_zero) Err(L"CASE ELSE cannot be first CASE in SELECT"); .)
+		(. clause = case_else; .)
+	| CaseExpression { WEAK comma[line_break] CaseExpression }
+		(. clause = case_expr; .)
+	)
+	SYNC Newline
+	{ Statement }
+.
+CaseExpression
+=
+	( "Is" ComparisonOperator Expression
+	| Expression [ "To" Expression ]
+	)
+.
+ClassMember
+=
+	(. Modifier mods(this); .)
+	[ ModifiersClause<mods> ]
+	( ConstructorStatement<mods>
+	| DestructorStatement<mods>
+	| DimStatement<mods>
+	| FunctionStatement<mods>
+	| MethodStatement<mods>
+	| PropertyStatement<mods>
+	| StructStatement<mods>
+	| SubStatement<mods>
+	)
+.
+ClassStatement<Modifier &mods>
+=
+	(. bool bAbstract = mods.allow(Modifier::Abstract); .)
+	(. mods.allow(Modifier::Deprecated); .)
+	(. bool bOpen = mods.allow(Modifier::Open); .)
+	(. mods.check_disallowed(); .)
+	"Class" identifier
+	[ TypeParameterList ]
+	[ "Is" UserType ]
+	{ DoesClause }
+	[ WhereClause<false> ]
+	SYNC Newline
+	{ WhereClause<false> SYNC Newline }
+//	{ Statement } // Conflict: assignment vs var decl
+	{ ClassMember }
+	"End"
+	(. Optional(_Class); .)
+	Newline
+.
+ComparisonExpression
+=
+	BitShiftExpression { ComparisonOperator BitShiftExpression }
+.
+ComparisonOperator
+=
+	[ "~" ]
+	( "=" | "<>" | "<" | "<=" | ">" | ">=" )
+.
+CompoundIfStatement<option_type nThen>
+=
+	(. bool bElseSeen = false; .)
+	(. Optional(_Then, nThen); .)
+	SYNC Newline
+	{ Statement }
+	{	"Else" (. if (bElseSeen) Err(L"ELSE or ELSE IF cannot follow ELSE"); .)
+		( "If" Expression (. Optional(_Then); .)
+		| (. bElseSeen = true; .)
+		)
+		SYNC Newline
+		{ Statement }
+	}
+	"End"
+	(. Optional(_If); .)
+.
+CompoundStatement
+=
+	( DoStatement
+	| ForStatement
+	| IfStatement
+	| SelectStatement
+	| TryStatement
+	| WhileStatement
+	)
+.
+ConcatenationExpression
+=
+	AdditiveExpression { concatenation_operator AdditiveExpression }
+.
+ConditionalComparison
+=
+	"(" [ "Is" ] ComparisonOperator ")" EnclosedExpression
+.
+ConditionalExpression
+=
+	( EnclosedExpression
+	| "If" EnclosedExpression
+		( "Then" EnclosedExpression "Else" EnclosedExpression
+		| "<=>" EnclosedExpression ConditionalComparison { ConditionalComparison }
+		)
+	)
+.
+ConstantDeclarator
+=
+	identifier [ TypeClause<false> ] "=" Expression
+.
+ConstStatement<Modifier &mods>
+=
+	(. mods.allow(Modifier::Deprecated); .)
+	(. mods.check_disallowed(); .)
+	"Const" ConstantDeclarator { comma ConstantDeclarator }
+.
+Constraint<bool bTrait>
+=
+	( identifier
+		( ( "<" | "<=" ) identifier [ ( "<" | "<=" ) identifier ] [ IsConstraint ] { DoesConstraint } [ ConstructorConstraint ]
+		| IsConstraint { DoesConstraint } [ ConstructorConstraint ]
+		| DoesConstraint { DoesConstraint } [ ConstructorConstraint ]
+		| ConstructorConstraint
+		)
+	| SelfConstraint  // TODO: only traits
+	)
+.
+ConstructorConstraint
+=
+	"Constructor" "(" ")"
+.
+ConstructorStatement<Modifier &mods>
+=
+	(. mods.allow(Modifier::Deprecated); .)
+	(. mods.check_disallowed(); .)
+	"Constructor"
+	[ FormalParameterList<_Constructor> | DimOrVar ]
+	SYNC Newline
+	{ Statement }
+	"End"
+	(. Optional(_Constructor); .)
+	Newline
+.
+ConvertibleType
+=
+	( PrimitiveType<false> | UserType )
+.
+/*D*/
+DateTimeExpression
+=
+	( date_literal [ time_literal ]
+	| time_literal
+	)
+.
+Declarator<bool bBits>
+=
+	Name
+	[ ArrayDimensionList ]
+	[ TypeClause<bBits> ]
+	[ '=' InitializationExpression ]
+.
+DeclaratorList<bool bBits>
+=
+	Declarator<bBits> { comma Declarator<bBits> }
+.
+DeclareParameter<bool &isOptional>
+=
+	[ "Optional" (. isOptional = true; .) ]
+	integer_literal
+	[ '=' Expression ]
+.
+DeclareParameterList
+=
+	(. bool isOptional; .)
+	( IF (IsDeclareParameterList())
+		"("[line_break]
+		[ DeclareParameter<isOptional> { WEAK comma[line_break] DeclareParameter<isOptional> } ]
+		")"
+	| EnclosedParameterList<_Declare> [ TypeClause<false> ]
+	)
+.
+DeclareSignature<bool isAlias>
+=
+	( "Function" | "Sub" )
+	Name
+	[ "Is" ( string_literal | QualifiedName ) ]
+	[ DeclareParameterList ]
+.
+DeclareStatement<Modifier &mods>
+=
+	(. mods.allow(Modifier::Deprecated); .)
+	(. mods.check_disallowed(); .)
+	(. bool isAlias = true; .)
+	"Declare"
+	[ string_literal { WEAK comma integer_constant }
+		(. isAlias = false; .)
+	]
+	( DeclareSignature<isAlias>
+	| SYNC Newline
+		{ DeclareSignature<isAlias> Newline }
+		"End"
+		(. Optional(_Declare); .)
+	)
+	SYNC Newline
+.
+DestructorStatement<Modifier &mods>
+=
+	(. mods.check_disallowed(); .)
+	"Destructor" Newline
+	{ Statement }
+	"End"
+	(. Optional(_Destructor); .)
+	Newline
+.
+DimOrVar
+=
+	( "Dim"  (. if (option.Dim_or_Var == option_2) Err(L"Must use VAR because of @OPTION"); .)
+	| "Var"  (. if (option.Dim_or_Var == option_1) Err(L"Must use DIM because of @OPTION"); .)
+	)
+.
+DimStatement<Modifier &mods>
+=
+	// Allow @Deprecated?
+	(. bool bShared = mods.allow(Modifier::Shared); .)
+	(. mods.check_disallowed(); .)
+	DimOrVar
+	DeclaratorList<false>
+.
+DoesClause
+=
+	"Does" UserType
+.
+DoesConstraint
+=
+	"Does" UserType
+.
+DoStatement
+=
+	"Do"
+	(	// Do...Loop While/Until
+		Newline
+		[ LoopBody<false> ]
+		"Loop" WhileOrUntil Expression
+		SYNC Newline
+	|	// Do While/Until...Loop
+		WhileOrUntil Expression
+		SYNC Newline
+		[ LoopBody<true> ]
+		"Loop" Newline
+	)
+.
+/*E*/
+EnclosedArgumentList
+=
+	"("[line_break]
+	[ Argument ]
+	{ WEAK comma[line_break]
+		[ Argument ]
+	}
+	")"
+.
+EnclosedExpression
+=
+	LogicalXorExpression
+.
+EnclosedParameterList<int parent>
+=
+	(. param_type param(parent); .)
+	"("[line_break]
+	[ FormalParameter<param> { WEAK comma[line_break] FormalParameter<param> } ]
+	")"
+.
+EnumMember
+=
+	identifier
+	( "=" Expression
+	| (. if (option.Enum_with_equals) Err(L"Enumeration constant must have initializer because of @OPTION"); .)
+	)
+	SYNC Newline
+.
+EnumStatement<Modifier &mods>
+=
+	(. mods.allow(Modifier::Deprecated); .)
+	(. bool bFlags = mods.allow(Modifier::Flags); .)
+	(. bool bOpen = mods.allow(Modifier::Open); .)
+	(. mods.check_disallowed(); .)
+	"Enum"
+	( identifier
+	| (. if (bFlags || bOpen || option.Enum_with_name) {
+		const wchar_t *reason = (bFlags) ? L"@FLAGS" : (bOpen) ? L"@OPEN" : L"@OPTION";
+		wchar_t *msg = coco_string_create_append(L"Enumeration type must have a name because of ", reason);
+		Err(msg);
+		coco_string_delete(msg);
+	} .)
+	)
+	( IntegerTypeOrExtension
+	| (. if (bFlags || option.Enum_with_type) {
+		const wchar_t *reason = (bFlags) ? L"@FLAGS" : L"@OPTION";
+		wchar_t *msg = coco_string_create_append(L"Enumeration must specify a width because of ", reason);
+		Err(msg);
+		coco_string_delete(msg);
+	} .)
+	)
+	SYNC Newline
+	{ EnumMember }
+	"End"
+	(. Optional(_Enum); .)
+	Newline
+.
+ExitStatement
+=
+	(. int tkn = 0; .)
+	"Exit"
+	( identifier
+	| Block<tkn> { WEAK comma Block<tkn> }
+	| "Program" [ Expression ]
+	)
+.
+Expression
+=
+	ConditionalExpression
+	(. if (la->kind == _right_parenthesis) { Get(); Err(L"Mismatched parentheses"); } .)
+	[ "Tol" real_literal ]
+.
+/*F*/
+FixedPointType<int &tkn>
+=
+	(. tkn = la->kind; .)
+	( "Fixed64" | "Fixed128" ) [ IF (IsFixedPointArgument()) "(" integer_literal ")" ]
+.
+FloatingPointType<int &tkn>
+=
+	(. tkn = la.kind; .)
+	( "Real32" | "Real64" | "Real" | "Real128" )
+.
+FormalParameter<param_type param>
+=
+	( FormalParameterModifier<param>
+	| (. param.modifier(); .)
+	)
+	Name
+	[ '(' [ Rank ] ')' ]
+	[ TypeClause<false> ]
+	( "=" Expression
+	| (. if (param.optional() && option.Optional_with_equals) Err(L"Optional parameter must have initializer because of @OPTION"); .)
+	)
+.
+FormalParameterList<int parent>
+=
+	( EnclosedParameterList<parent> | UnenclosedParameterList<parent> )
+.
+FormalParameterModifier<param_type param>
+=
+	( "ByRef"     (. param.modifier(_ByRef); .)
+	| "Optional"  (. param.modifier(_Optional); .)
+	)
+.
+ForStatement
+=
+	"For"
+	( "Each" LoopControlVariable
+		"In" InitializationExpression
+	| LoopControlVariable
+		"=" Expression
+		"To" Expression
+		[ "Step" Expression ]
+	)
+	SYNC Newline
+	[ LoopBody<true> ]
+	"End"
+	(. Optional(_For); .)
+	Newline
+.
+FunctionStatement<Modifier &mods>
+=
+	(. mods.allow(Modifier::Deprecated); .)
+	(. bool bShared = mods.allow(Modifier::Shared); .)
+	(. mods.check_disallowed(); .)
+	(. bool bodied = true; .)
+	FunctionSignature<mods, bodied>
+	[ IF (bodied)
+		{ WhereClause<false> SYNC Newline }
+		{ Statement }
+	"End"
+	(. Optional(_Function); .)
+		Newline
+	]
+.
+FunctionSignature<Modifier &mods, bool &bodied>
+=
+	"Function" Name
+	( [ TypeParameterList ]
+		[ EnclosedParameterList<_Function> ]
+		[ ReturnTypeClause ] //TODO: mandatory if name is not typed_identifier
+		[ WhereClause<false> ]
+	| "Does" identifier dot identifier
+		(. bodied = false; .)
+	)
+	SYNC Newline
+.
+/*G*/
+GotoStatement
+=
+	"Goto" "Case" ( "Else" | Expression )
+.
+/*H*/
+/*I*/
+IdentifierExpression
+=
+	PropertyOrCall { WEAK dot PropertyOrCall }
+.
+IdentifierStatement
+=
+	IdentifierExpression [ AssignmentStatement ]
+.
+IfStatement
+=
+	"If" Expression
+	(	"Then"
+		( CompoundIfStatement<then_found>
+		| (. if (option.If_with_End) Err(L"IF statement must use block construct because of @OPTION"); .)
+			SimpleStatement
+			[ "Else" SimpleStatement ]
+		)
+	|	CompoundIfStatement<then_not_found>
+	)
+	SYNC Newline
+.
+InitializationElement
+=
+	[ IF (IsUnorderedInit()) IntegerConstant ":=" ]
+	InitializationExpression
+.
+InitializationExpression
+=
+	( Expression
+	| "{"[line_break] InitializationElement { WEAK comma[line_break] InitializationElement } "}"
+	  // Permit isolated right brace.
+	  [ IF (la->kind == _line_break && scanner->Peek()->kind == _right_brace) line_break ]
+	)
+.
+IntegerConstant
+=
+	( char_literal | integer_constant | integer_literal )
+.
+IntegerType<int &tkn>
+=
+	(. tkn = la->kind; .)
+	( "Int8"  | "Int16"  | "Int32"  | "Int"  | "Int64"  | "Int128"
+	| "UInt8" | "UInt16" | "UInt32" | "UInt" | "UInt64" | "UInt128"
+	)
+.
+IntegerTypeOrExtension
+=
+	(. int tkn = 0; .)
+	"Is" ( identifier | IntegerType<tkn> )
+.
+InUnitClause
+=
+	"In" UnitOfMeasure
+.
+IsConstraint
+=
+	"Is" ( "Class" | "Struct" )
+.
+IsExpression
+=
+	"Is" ( IF (IsUserType()) UserType | IdentifierExpression | "Object" )
+.
+/*J*/
+/*K*/
+/*L*/
+LogicalAndExpression
+=
+	ComparisonExpression { "And" [ "Then" ] ComparisonExpression }
+.
+LogicalOrExpression
+=
+	LogicalAndExpression { "Or" [ "Else" ] LogicalAndExpression }
+.
+LogicalXorExpression
+=
+	LogicalOrExpression { "Xor" LogicalOrExpression }
+.
+LoopControlVariable
+=
+	( ObjectName [ "As" ( PrimitiveType<false> | UserType ) ]
+	| typed_identifier
+	)
+.
+LoopBody<bool isPreconditional>
+=
+	( Statement { Statement }
+	| (. when_type whens = when_zero; .)
+		"Begin" [ identifier { WEAK comma identifier } ] SYNC Newline
+		{ Statement }
+		WhenStatement<isPreconditional, whens>
+		{ WhenStatement<isPreconditional, whens> }
+	)
+.
+/*M*/
+MethodStatement<Modifier &mods>
+=
+	(. bool bAbstract = mods.allow(Modifier::Abstract); .)
+	(. mods.allow(Modifier::Deprecated); .)
+	(. bool bOpen = mods.allow(Modifier::Open); .)
+	(. bool bOverride = mods.allow(Modifier::Override); .)
+	(. bool bShared = mods.allow(Modifier::Shared); .)
+	(. mods.check_disallowed(); .)
+	MethodSignature<mods>
+	{ Statement }
+	"End"
+	(. Optional(_Method); .)
+	Newline
+.
+MethodSignature<Modifier &mods>
+=
+	"Method" Name
+	[ EnclosedParameterList<_Method> [ ReturnTypeClause ]
+	| UnenclosedParameterList<_Method>
+	]
+	SYNC Newline
+.
+Modifier<int &m>
+=
+	( "@Abstract"    (. m = Modifier::Abstract; .)
+	| "@Backed"      (. m = Modifier::Backed; .)
+	| "@Deprecated"  (. m = Modifier::Deprecated; .)
+	| "@Flags"       (. m = Modifier::Flags; .)
+	| "@Open"        (. m = Modifier::Open; .)
+	| "@Override"    (. m = Modifier::Override; .)
+	| "@ReadOnly"    (. m = Modifier::ReadOnly; .)
+	| "@Shared"      (. m = Modifier::Shared; .)
+	| "@SI"          (. m = Modifier::SI; .)
+	| "@WriteOnly"   (. m = Modifier::WriteOnly; .)
+	)
+	[ line_break ]
+.
+ModifiersClause<Modifier &mods>
+=
+	(. int m; .)
+	Modifier<m>  (. mods.add(m); .)
+	{ Modifier<m>  (. mods.add(m); .) 
+	}
+.
+ModuleMember
+=
+	(. Modifier mods(this); .)
+	[ ModifiersClause<mods> ]
+	( BaseUnitStatement<mods>
+	| ClassStatement<mods>
+	| ConstStatement<mods>
+	| DeclareStatement<mods>
+	| EnumStatement<mods>
+	| FunctionStatement<mods>
+	| MethodStatement<mods>
+	| NamespaceStatement<mods>
+	| ObjectStatement<mods>
+	| StructStatement<mods>
+	| SubStatement<mods>
+	| TraitStatement<mods>
+	| UnitStatement<mods>
+	)
+.
+ModuleStatement<bool bProcEntry>
+=
+	(. if (bProcEntry) Warn(L"Executable statements at module level ignored when entry point is a procedure"); .)
+	Statement
+.
+MultiplicativeExpression
+=
+	PowerExpression { MultiplicativeOperator PowerExpression }
+.
+MultiplicativeOperator
+=
+	( '*' | '/' | "Mod" | "Rem" )
+.
+/*N*/
+Name
+=
+	( identifier
+	| nullable_identifier
+	| typed_identifier
+	)
+.
+NamespaceStatement<Modifier &mods>
+=
+	(. mods.allow(Modifier::Deprecated); .)
+	(. mods.check_disallowed(); .)
+	"Namespace" QualifiedName SYNC Newline
+	{ ModuleMember }
+	"End"
+	(. Optional(_Namespace); .)
+	Newline
+.
+NewMember
+=
+	( "New" CallOrNew<2>
+	| ArgumentList SYNC Newline
+	)
+.
+NewStatement
+=
+	(. bool bNew = false; .)
+	(. wchar_t *typename = NULL; .)
+	( "New" (. bNew = true; if (option.New_x_New == option_without) Err(L"NEW is not permitted because of @OPTION"); .)
+	| (. if (option.New_x_New == option_with) Err(L"NEW is mandatory  because of @OPTION"); .)
+	)
+	CallOrNew<0> // FIXME: not 0
+	[	"Begin" [ [ "Call" ] UserType ] SYNC Newline
+		{ NewMember }
+		"End"
+	[ "New" | identifier ] // TODO: test typename
+		SYNC Newline
+	]
+	(. if (typename) coco_string_delete(typename); .)
+.
+Newline
+=
+	line_break { line_break }
+.
+/*O*/
+ObjectName
+=
+	( identifier
+	| nullable_identifier
+	)
+.
+ObjectStatement<Modifier &mods>
+=
+	(. mods.allow(Modifier::Deprecated); .)
+	(. bool bShared = mods.allow(Modifier::Shared); .)
+	(. mods.check_disallowed(); .)
+	"Object" ObjectName
+	[ "Is" UserType ]
+	{ DoesClause }
+	SYNC Newline
+//	{ ObjectMember }
+	"End"
+	(. Optional(_Object); .)
+	Newline
+.
+/*P*/
+PassableType
+=
+	( PrimitiveType<false> | UserType )
+	[ Rank ]
+.
+PowerExpression
+=
+//-	UnaryExpression { '^' UnaryExpression }
+	UnaryExpression [ '^' PowerExpression ]
+.
+PrimaryExpression
+=
+	( char_literal
+	| integer_constant
+	| integer_literal [ IF (IsUnit()) UnitOfMeasure ]
+	| real_literal [ IF (IsUnit()) UnitOfMeasure ]
+	| fixed_literal
+	| DateTimeExpression
+	| StringExpression
+	| IdentifierExpression [ IsExpression ]
+	| PrimitiveType<true> dot IdentifierExpression
+	| "Sub" Name
+	| "(" EnclosedExpression ")"
+	)
+.
+PrimitiveType<bool bBits>
+=
+	(. int tkn = 0; .)
+	( "Boolean" | "Char" | "DateTime" | "String"
+	| IntegerType<tkn>
+	| FloatingPointType<tkn>
+	| FixedPointType<tkn>
+	| BitFieldType<tkn>  (. if (!bBits) Err(L"Bit field not permitted here"); .)
+	)
+.
+PropertyOrCall
+=
+	Name
+	[ IF (IsCall()) EnclosedArgumentList ]
+.
+PropertyStatement<Modifier &mods>
+=
+	(. bool bAbstract = mods.allow(Modifier::Abstract); .)
+	(. bool bBacked = mods.allow(Modifier::Backed); .)
+	(. mods.allow(Modifier::Deprecated); .)
+	(. bool bOpen = mods.allow(Modifier::Open); .)
+	(. bool bOverride = mods.allow(Modifier::Override); .)
+	(. bool bReadOnly = mods.allow(Modifier::ReadOnly); .)
+	(. bool bShared = mods.allow(Modifier::Shared); .)
+	(. bool bWriteOnly = mods.allow(Modifier::WriteOnly); .)
+	(. mods.check_disallowed(); .)
+	PropertySignature<mods>
+	[ IF (la->kind == _Begin || la->kind == _Get || la->kind == _Set)
+		[	"Begin" EnclosedParameterList<_Property> SYNC Newline ]
+		[	"Get" Newline
+			{ Statement }
+		]
+		[	"Set" [ FormalParameterList<_Set> ] SYNC Newline  //TODO: only one param
+			{ Statement }
+		]
+		"End"
+	(. Optional(_Property); .)
+		Newline
+	]
+.
+PropertySignature<Modifiers &mods>
+=
+	"Property" DeclaratorList<false>
+	[ "Does" identifier dot identifier ]
+	SYNC Newline
+.
+/*Q*/
+QualifiedName
+=
+	identifier { dot identifier }
+.
+/*R*/
+RaiseStatement
+=
+	"Raise"
+	( "Event" Name [ ArgumentList ]
+	| Expression
+	)
+.
+Rank
+=
+	"*" integer_literal
+.
+RequireComparison
+=
+	// TODO: strings can only be = or <>.
+	[ version_literal ( "<" | "<=" ) ]  // Eg 1.0.0 <= version < 2.0.0
+	identifier ComparisonOperator ( string_literal | version_literal )
+.
+RequireStatement
+=
+	"Require" QualifiedName
+	[ "Where" RequireComparison
+	{ ( "And" | "Or" ) RequireComparison } ]
+	SYNC Newline
+.
+ReturnStatement
+=
+	"Return" [ Expression ]
+.
+ReturnTypeClause
+=
+	( AsTypeClause<false>
+	| InUnitClause
+	)
+.
+/*S*/
+SelectStatement
+=
+	(. case_type clause = case_zero; .)
+	"Select"
+	(. Optional(_Case); .)
+	Expression
+	SYNC Newline
+	{ CaseClause<clause> }
+	"End"
+		(. if (clause == case_zero) Err(L"SELECT must have a minimum of one CASE"); .)
+		(. if (option.select_with_else && clause != case_else) Err(L"SELECT must have CASE ELSE because of @OPTION"); .)
+	(. Optional(_Select); .)
+	Newline
+.
+SelfConstraint
+=
+	"Self"
+	( "<" | "<=" | "Is" ) UserType
+.
+SimpleStatement
+=
+	( CallStatement
+	| GotoStatement
+	| ExitStatement
+	| IdentifierStatement
+	| RaiseStatement
+	| ReturnStatement
+	)
+.
+Statement
+=
+	( IF (IsNewStatement()) NewStatement
+	| SimpleStatement SYNC Newline
+	| CompoundStatement
+	)
+.
+StringExpression
+=
+	( string_literal | string_constant )
+	{ string_literal | string_constant }
+.
+StructStatement<Modifiers &mods>
+=
+	(. mods.allow(Modifier::Deprecated); .)
+	(. mods.check_disallowed(); .)
+	"Struct" identifier
+	[ TypeParameterList ]
+	[ "Is" ValueType ]
+	SYNC Newline
+	{ StructState }
+	{ StructProcedure }
+	"End"
+	(. Optional(_Struct); .)
+	Newline
+.
+StructProcedure
+=
+	(. Modifier mods(this); .)
+	ConstructorStatement<mods>
+.
+StructState
+=
+	(. Modifier mods(this); .)
+	[ ModifiersClause<mods> ]
+	(. mods.allow(Modifier::Deprecated); .)
+	(. mods.allow(Modifier::Shared); .)
+	(. mods.check_disallowed(); .)
+
+	[ DimOrVar ] Declarator<true>
+.
+SubStatement<Modifier &mods>
+=
+	(. mods.allow(Modifier::Deprecated); .)
+	(. bool bShared = mods.allow(Modifier::Shared); .)
+	(. mods.check_disallowed(); .)
+	SubSignature
+	{ WhereClause<false> SYNC Newline }
+	{ Statement }
+	"End"
+	(. Optional(_Sub); .)
+	Newline
+.
+SubSignature
+=
+	"Sub" Name
+	[ TypeParameterList ]
+	[ EnclosedParameterList<_Sub> [ ReturnTypeClause ]
+	| UnenclosedParameterList<_Sub>
+	]
+	[ "Handles" QualifiedName ]
+	[ WhereClause<false> ]
+	SYNC Newline
+.
+/*T*/
+TraitMember
+=
+	(. Modifier mods(this); .)
+	[ ModifiersClause<mods> ]
+	( DimStatement<mods>
+	| FunctionStatement<mods>
+	| MethodStatement<mods>
+	| PropertyStatement<mods>
+	| StructStatement<mods>
+	| SubStatement<mods>
+	)
+.
+TraitStatement<Modifier &mods>
+=
+	(. bool bAbstract = mods.allow(Modifier::Abstract); .)
+	(. mods.allow(Modifier::Deprecated); .)
+	(. mods.check_disallowed(); .)
+	"Trait" Name
+	[ TypeParameterList ]
+	{ DoesClause }
+	[ WhereClause<true> ]
+	SYNC Newline
+	{ WhereClause<true> SYNC Newline }
+	{ TraitMember }
+	"End"
+	(. Optional(_Trait); .)
+	Newline
+.
+TryStatement
+=
+	"Try" Newline
+	{ Statement }
+	{	"Catch" Newline
+		{ Statement }
+	}
+	[	"Finally" Newline
+		{ Statement }
+	]
+	"End"
+	(. Optional(_Try); .)
+	Newline
+.
+TypeArgumentList
+=
+	'[' PassableType { WEAK comma PassableType } ']'
+.
+TypeClause<bool bBits>
+=
+	( AsTypeClause<bBits>
+	| InUnitClause
+	)
+.
+TypeConversion
+=
+	( "As" ConvertibleType
+	| InUnitClause
+	)
+.
+TypeParameter
+=
+	[ "In" | "Out" ] identifier
+.
+TypeParameterList
+=
+	'[' TypeParameter { WEAK comma TypeParameter } ']'
+.
+/*U*/
+UnaryExpression
+=
+	{ UnaryOperator } PrimaryExpression [ TypeConversion ]
+.
+UnaryOperator
+=
+	( '+' | '-' | "Not" )
+.
+UnenclosedArgument
+=
+	( line_break Argument
+	| Argument
+	)
+.
+UnenclosedArgumentList
+=
+	( Argument | comma UnenclosedArgument )
+	{ WEAK comma UnenclosedArgument }
+.
+UnenclosedParameterList<int parent>
+=
+	(. param_type param(parent); .)
+	FormalParameter<param> { WEAK comma[line_break] FormalParameter<param> }
+.
+UnitOfMeasure
+=
+	( identifier
+	| "(" identifier { [ "*" | "/" ] identifier } ")"
+	)
+.
+UnitAlias
+=
+	identifier [ ( "-" | "+" ) identifier ] // Plurals by "prefix-unit" or "unit+suffix"
+.
+UnitStatement<Modifier &mods>
+=
+	(. mods.allow(Modifier::Deprecated); .)
+	(. bool bSI = mods.allow(Modifier::SI); .)
+	(. mods.check_disallowed(); .)
+	"Unit" [ UnitParameter ]
+	UnitAlias { UnitAlias }
+	[ '=' AdditiveExpression ]
+	SYNC Newline
+.
+UnitParameter
+=
+	'(' identifier InUnitClause ')'
+.
+UserType
+=
+	QualifiedName [ TypeArgumentList ]
+.
+/*V*/
+ValueType
+=
+	( PrimitiveType<false> | UserType )
+.
+/*W*/
+WhenStatement<bool isPreconditional, when_type &whens>
+=
+	"When"
+	( identifier
+	| integer_constant
+		// TODO: Check for "%Done" or "%None"
+		(. if (whens == when_else) Err(L"WHEN %DONE and WHEN %NONE cannot be in the same loop with WHEN ELSE"); .)
+	| "Else"
+		(. if (whens == when_done || whens == when_none) Err(L"WHEN ELSE cannot be in the same loop with WHEN %DONE or WHEN %NONE"); .)
+		(. whens = when_else; .)
+	) Newline
+	{ Statement }
+.
+WhereClause<bool bTrait>
+=
+	"Where" Constraint<bTrait> { WEAK comma[line_break] Constraint<bTrait> }
+.
+WhereStatement
+=
+	"Where"
+	identifier '='
+	( string_literal | version_literal )
+	SYNC Newline
+.
+WhileOrUntil
+=
+	( "While"
+	| "Until"
+	)
+.
+WhileStatement
+=
+	"While" Expression SYNC Newline
+	[ LoopBody<true> ]
+	"End"
+	(. Optional(_While); .)
+	Newline
+.
+/*X*/
+/*Y*/
+/*Z*/
+
+END ViviFire.

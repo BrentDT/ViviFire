@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Object Statement - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Object_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_2.html">F&ndash;P Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Object Statement</h1>
+<p>Makes a singleton object.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>[ @Shared ] Object object_name [ Is class_name ] [ Does trait_name ]&hellip;
+    [ statements ]
+End [ Object ]&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="at">@Shared</code></dt>
+<dd>Optional modifier specifies that the object can have a small scope, but its lifetime continues until the program completes.</dd>
+<dt><code class="id">object_name</code></dt>
+<dd>Mandatory name for the object.</dd>
+<dt><code class="id">class_name</code></dt>
+<dd>Optional name of a class from which the object inherits methods and properties.</dd>
+<dt><code class="kw">Does</code></dt>
+<dd>Optional keyword that you can use again and again.</dd>
+<dt><code class="id">trait_name</code></dt>
+<dd>Mandatory after <code class="kw">Does</code>.
+See <a href="Does_Clause_Traits.html">Does Clause (Traits)</a> for more information.</dd>
+<dt><code class="id">statements</code></dt>
+<dd>Optional declarations and executable statements.</dd>
+<dt><code class="kw">End</code></dt>
+<dd>Completes the statement.
+You can also use <code class="kw">End Object</code></dd>
+<dd>You can change this part of the syntax.
+See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
+</dl>
+<h2>Instructions</h2>
+<p><code class="kw">Object</code> operates almost the same as <code class="kw">Class</code> and <code class="kw">New</code> put together.
+The result is an object called a <dfn>singleton</dfn>.
+The object is the only instance of its class, and you cannot make a copy of it.</p>
+<p>You make an object almost the same as a class.
+It is divided into two parts &ndash; data and code.</p>
+<p>All members of an object are shared.
+Thus it is not necessary to declare a member with <code class="at">@Shared</code>.</p>
+<h3>Permitted members</h3>
+<p>You can make most of the same members in <code class="kw">Object</code> that you can in <code class="kw">Class</code>.
+But you cannot use <code class="kw">Constructor</code> and <code class="kw">Destructor</code>.
+A list of permitted members follows.</p>
+<ul class="articles">
+<li><a href="Class_Statement.html">Class</a></li>
+<li><a href="Const_Statement.html">Const</a></li>
+<li><a href="Dim_Statement.html">Dim</a></li>
+<li><a href="Enum_Statement.html">Enum</a></li>
+<li><a href="Function_Statement.html">Function</a></li>
+<li><a href="Method_Statement.html">Method</a></li>
+<li><a href="New_Statement.html">New</a></li>
+<li>Object</li>
+<li><a href="Property_Statement.html">Property</a></li>
+<li><a href="Struct_Statement.html">Struct</a></li>
+<li><a href="Sub_Statement.html">Sub</a></li>
+</ul>
+<h2>Examples</h2>
+<p>TODO</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Class_Statement.html">Class Statement</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

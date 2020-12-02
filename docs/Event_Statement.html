@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Event Statement - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Event_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_1.html">A&ndash;E Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Event Statement</h1>
+<p>Declares the signature for an event handler.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>Event event_name [ type_list ] [ parameter_list ] [ Where constraints ]&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">event_name</code></dt>
+<dd>Mandatory name for the event</dd>
+<dt><code class="id">type_list</code></dt>
+<dd>Optional.
+See <a href="Type_List.html">Type List</a> for more information.</dd>
+<dt><code class="id">parameter_list</code></dt>
+<dd>Optional one or more variable declarations with a comma between each.
+See <a href="Parameter_List.html">Parameter List</a> for more information.</dd>
+<dt><code class="id">constraints</code></dt>
+<dd>Optional.
+See <a href="Where_Clause_Generics.html">Where Clause (Generics)</a> for more information.</dd>
+</dl>
+<h2>Instructions</h2>
+<p><code class="id">event_name</code> is a type that can be used in a parameter passed to a constructor or method.
+Such procedures must be passed the name of a procedure of type <code class="kw">Sub</code> that has a signature that agrees with that specified by <code class="id">parameter_list</code>.</p>
+<h2>Examples</h2>
+<div class="language-vivifire listing">
+<div>In a library module</div>
+<pre><code>Event WindowCloseEvent(#win As Window)
+' ...
+Dim closer as WindowCloseEvent
+' ...
+Method WhenClose(evt As WindowCloseEvent)
+    closer = evt
+End Method&#10;</code></pre>
+<div>In the program module</div>
+<pre><code>' Set the window's close event handler
+#w.WhenClose Sub Quit
+
+Sub Quit Handles WindowCloseEvent
+    ' The "Handles" clause is the same as
+    ' Sub Quit(#win As Window)
+    #win.Close
+End Sub&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Call_Event_Statement.html">Raise Event Statement</a></li>
+<li><a href="Sub_Operator.html">Sub Operator</a></li>
+<li><a href="Sub_Statement.html">Sub Statement</a></li>
+<li><a href="Events.html">Events</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

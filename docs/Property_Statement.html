@@ -1,0 +1,174 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Property Statement - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Property_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_2.html">F&ndash;P Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Property Statement</h1>
+<p>Declares the names of properties and the procedures used to change and return values.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<h3>One-line construct</h3>
+<pre><code>[ modifier ] Property declarator [ , declarator ]&hellip; [ Does trait_name . supplied_name ]&#10;</code></pre>
+<h3>Block construct</h3>
+<pre><code>[ modifier ] Property declarator
+[ Begin parameter_list ]
+[ Get
+    [ statements ] ]
+[ Set parameter
+    [ statements] ]
+End [ Property ]&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">modifier</code></dt>
+<dd>Optional
+	<ul>
+	<li><code class="at">@Abstract</code> &ndash; The property contains no implementation and must be overridden in a concrete child class. Only applicable in an abstract class or trait.</li>
+	<li><code class="at">@Backed</code> &ndash; The property is backed. The one-line construct is always backed.</li>
+	<li><code class="at">@Deprecated</code> &ndash; The property is deprecated. See <a href="Deprecated.html">@Deprecated</a> for more information.</li>
+	<li><code class="at">@Open</code> &ndash; The property can be overridden in a child class. Only applicable in an open class.</li>
+	<li><code class="at">@Override</code> &ndash; The property is a re-implementation of a property inherited from a parent class.</li>
+	<li><code class="at">@ReadOnly</code> &ndash; The property is read-only.
+	It must return the value with <code class="kw">Get</code>.
+	It cannot change the value with <code class="kw">Set</code>.</li>
+	<li><code class="at">@Shared</code> &ndash; The property is owned by the class around it and not an instance of that class.</li>
+	<li><code class="at">@WriteOnly</code> &ndash; The property is write-only.
+	It must change the value with <code class="kw">Set</code>.
+	It cannot return the value with <code class="kw">Get</code>.</li>
+	</ul>
+</dd>
+<dd>You can put <code class="at">@Abstract</code> together with <code class="at">@ReadOnly</code> or <code class="at">@WriteOnly</code>.
+You can put <code class="at">@Backed</code> and <code class="at">@Deprecated</code> together with all other modifiers.<!-- TBD: except @Abstract? --></dd>
+<dt><code class="id">declarator</code></dt>
+<dd>Mandatory one or more declarations that have almost the same syntax as the statement <code class="kw">Dim</code>.
+The one-line construct lets you write many declarators with a comma between each.
+	<div class="language-vivifire syntax">
+	<h3>Declarator</h3>
+	<pre><code>name [ ( [ dimensions ] ) ] [ As type | In unit ] [ = initializer ]&#10;</code></pre>
+	</div>
+	<dl class="parts">
+	<dt><code class="id">name</code></dt>
+	<dd>Mandatory name.</dd>
+	<dt><code class="id">dimensions</code></dt>
+	<dd>Optional one or more integer expressions with a comma between each.
+	Not permitted with unbacked properties.</dd>
+	<dt><code class="id">type</code></dt>
+	<dd>Optional data type</dd>
+	<dt><code class="id">unit</code></dt>
+	<dd>Optional unit of measure</dd>
+	<dt><code class="id">initializer</code></dt>
+	<dd>Optional expression with a data type compatible with <code class="id">type</code> or <code class="id">unit</code>.</dd>
+	</dl>
+</dd>
+<dt><code class="kw">Begin</code></dt>
+<dd>Optional in the block construct.
+Lets you specify that the property is an array.</dd>
+<dt><code class="id">parameter_list</code></dt>
+<dd>Mandatory after <code class="kw">Begin</code>, a list of integer parameters, with a comma between each, which hold the array indices supplied by the caller.</dd>
+<dt><code class="kw">Get</code></dt>
+<dd>Identifies the start of a block of code that returns the value of the property.</dd>
+<dt><code class="kw">Set</code></dt>
+<dd>Identifies the start of a block of code that changes the value of the property.</dd>
+<dt><code class="id">parameter</code></dt>
+<dd>Mandatory after <code class="kw">Set</code>.
+It must be the same data type as the property.
+If you do not specify a data type, then the compiler uses the type of the property.</dd>
+<dt><code class="id">statements</code></dt>
+<dd>Optional executable statements</dd>
+<dt><code class="kw">End</code></dt>
+<dd>Completes the block construct.
+You can also use <code class="kw">End Property</code>.</dd>
+<dd>You can change this part of the syntax.
+See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>A property has many of the same qualities as a method.
+A property has public visibility.
+You can declare a property in libraries, classes, and traits.</p>
+<p>A property can have one of two constructs: a one-line construct or a block construct.</p>
+<h3>One-line construct</h3>
+<p>The one-line construct is always backed.
+Thus it automatically allocates memory with each instance of its owner.</p>
+<h3>Block construct</h3>
+<p>The block construct is usually not backed.
+Thus it does not automatically allocate memory with each instance of its owner.
+If necessary, then use the modifier <code class="at">@Backed</code>.</p>
+<h2>Examples</h2>
+<h3>One-line property</h3>
+<div class="language-vivifire listing">
+<pre><code>' Declare a Person class.
+Class Person
+    Property Name As String
+End Class
+
+' Make a Person object.
+Person JD
+
+' Assign it a value.
+JD.Name = "John Doe"
+
+' Show its value.
+PrintLine JD.Name&#10;</code></pre>
+</div>
+<h3>One-line array property</h3>
+<div class="language-vivifire listing">
+<pre><code>Class Person
+    Const MaxAddresses = 2
+    Property Address(MaxAddresses) As String
+End Class&#10;</code></pre>
+</div>
+<h3>Block property, backed</h3>
+<div class="language-vivifire listing">
+<pre><code>Class Person
+    @Backed Property Name As String
+    Get
+        ' do something
+    Set value
+        ' do something
+    End Property
+End Class
+
+' do something&#10;</code></pre>
+</div>
+<h3>Block property, not backed</h3>
+<div class="language-vivifire listing">
+<pre><code>Class Person
+    Property Name As String
+    Get
+        ' do something
+    Set value
+        ' do something
+    End Property
+End Class
+
+' do something&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Dim_Statement.html">Dim Statement</a></li>
+<li><a href="Method_Statement.html">Method Statement</a></li>
+<li><a href="Property_Procedures.html">Property Procedures</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

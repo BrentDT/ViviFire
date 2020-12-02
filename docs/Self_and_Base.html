@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Self and Base - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Self_and_Base.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Program_Structure_and_Code_Conventions.html">Program Structure and Code Conventions</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Self and Base</h1>
+<p>The objects <code class="kw">Self</code> and <code class="kw">Base</code> are special in ViviFire.</p>
+<h2>Self</h2>
+<p>You use <code class="kw">Self</code> to refer to the instance of the class that owns the block of code in which it is used.
+It shows as an object reference, but you cannot change which object it references.
+<code class="kw">Self</code> is most useful for passing the current object instance to other objects, methods, etc. that require its services. </p>
+<h2>Base</h2>
+<p>You use <code class="kw">Base</code> to call methods and properties in the parent class from a child class.
+This is necessary only when you overrode a procedure in your child class.
+Without <code class="kw">Base</code>, you will call the procedure in the child class, and not the one in the parent class.</p>
+<div class="language-vivifire listing">
+<pre><code>@Open Class BaseClass
+    @Open Method Foo bar
+    End Method
+End Class
+
+Class DerivedClass Is BaseClass
+    @Override Method Foo bar
+        Base.Foo bar
+    End Method
+End Class&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Call_Base_Statement.html">Call Base statement</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

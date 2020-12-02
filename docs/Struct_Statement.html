@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Struct Statement - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Struct_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_3.html">Q&ndash;Z Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Struct Statement</h1>
+<p>Makes a simple compound data type.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>Struct struct_name [ type_list ] [ Is base_type ]
+    [ Where generic_constraints ]
+    &hellip;
+    element_name As element_type
+    &hellip;
+    [ statements ]
+End [ Struct ]&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">struct_name</code></dt>
+<dd>Mandatory name for the structure.</dd>
+<dt><code class="id">type_list</code></dt>
+<dd>Optional.
+See <a href="Type_List.html#">Type List</a> for more information.</dd>
+<dt><code class="id">base_type</code></dt>
+<dd>Optional value type:
+an elementary data type (<code class="kw">Int</code> for example) or the name of a different structure.</dd>
+<dt><code class="kw">Where</code></dt>
+<dd>Optional keyword that you can use again and again.
+See <a href="Where_Clause_Generics.html">Where Clause (Generics)</a> for more information.</dd>
+<dt><code class="id">element_name</code></dt>
+<dd>Mandatory name for an element of the structure.</dd>
+<dt><code class="id">element_type</code></dt>
+<dd>Mandatory value type:
+an elementary data type or the name of a different structure.</dd>
+<dt><code class="id">statements</code></dt>
+<dd>Optional procedure declarations.</dd>
+<dt><code class="kw">End</code></dt>
+<dd>Completes the statement.
+You can also use <code class="kw">End Struct</code>.</dd>
+<dd>You can change this part of the syntax.
+See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
+</dl>
+<h2>Instructions</h2>
+<p><code class="kw">Struct</code> is short for &ldquo;structure&rdquo;.</p>
+<p>You can put a structure only in some locations.
+These include modules (<span class="kws"><code>Program</code> and <code>Library</code>), and declarations of <code>Class</code>, <code>Object</code>, and <code>Trait</code></span>.
+You cannot put a structure in a procedure.
+See <a href="Declaration_Contexts_and_Default_Access_Levels.html">Declaration Contexts and Default Access Levels</a> for more information.</p>
+<h3>Permitted members</h3>
+<ul class="articles">
+<li><a href="Constructor_Statement.html">Constructor</a></li>
+</ul>
+<h3>Bit fields</h3>
+<p>A <dfn>bit field</dfn> is an integer member with a width in bits specified in code.
+You use the data types <code class="kw">SBits</code> and <code class="kw">UBits</code> only in a structure.
+You must supply the width between parentheses immediately after <code class="kw">SBits</code> or <code class="kw">UBits</code>.
+The width must be an integer literal in the range 1 thru 128.</p>
+<p><code class="kw">UBits</code> is short for &ldquo;unsigned bit field&rdquo;.</p>
+<p><code class="kw">SBits</code> is short for &ldquo;signed bit field&rdquo;.
+When you use <code class="kw">SBits</code>, the most significant bit is reserved as a sign bit.</p>
+<p>A base type is most important when used with bit fields.
+When you supply a base type, you set the width of the structure.
+If the width of the members put together is more than the width of the base type, then this is an error.
+If the width of the members is less than the base type, then there are bits that are not used, known as <dfn>padding</dfn>.</p>
+<p>If a structure mixes bit fields and named types, then the named types will usually be put in boundaries.
+The type of CPU sets the boundaries, counted from the start of the Struct:
+Intel processors usually have 8-bit boundaries, while Motorola processors usually have 16-bit boundaries.
+A bit field must not go across a boundary.</p>
+<h2>Examples</h2>
+<div class="language-vivifire listing">
+<pre><code>Struct point
+    x As Real64
+    y As Real64
+End Struct&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Class_Statement.html">Class Statement</a></li>
+<li><a href="SBits_and_UBits_Data_Types.html">SBits and UBits Data Types</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

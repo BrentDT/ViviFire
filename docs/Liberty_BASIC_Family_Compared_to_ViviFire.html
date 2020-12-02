@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Liberty BASIC Family Compared to ViviFire - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Liberty_BASIC_Family_Compared_to_ViviFire.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Appendices.html">Appendices</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Liberty BASIC Family Compared to ViviFire</h1>
+<p>The syntax of Liberty BASIC and Run BASIC had an effect on ViviFire, but it is not the same language.
+This article gives a summary of the elements that are different.</p>
+<h2>Names</h2>
+<p>ViviFire lets you use Unicode in names of elements, such as variables and functions.
+You can use many scripts, such as Latin with diacritics, Greek, Cyrillic, Arabic, Chinese, and more.</p>
+<p>All keywords and almost all names ignore letter case.
+Only units of measure must keep the same letter case.
+If a person writes a library with a different style, then frequently you can ignore it and use your style.
+See <a href="Declared_Element_Names.html#">Declared Element Names</a> for more information.</p>
+<h2>Scoping</h2>
+<p>Scope in LB and RB is not as easy compared to ViviFire.
+In ViviFire, a named element declared in an outer code block is visible in it.
+Thus in ViviFire, <code>GLOBAL</code> is not necessary, because elements declaredd at the top level are automatically global.</p>
+<p>As with RB, block constructs (such as loops) make a new local scope.
+Thus variables declared in these blocks are not visible in outer blocks.</p>
+<p>Although RB and ViviFire let you make objects, ViviFire gives you much more functionality.
+While RB uses function procedures to identify an object's methods, ViviFire has the keyword <a href="Method_Statement.html#"><code>Method</code></a>.
+In ViviFire, <a href="Sub_Statement.html#">Subs</a> and <a href="Function_Statement.html#">Functions</a> are always private to the object in which they are declared.</p>
+<h2>Labels</h2>
+<p>ViviFire does not have branch labels.
+Although ViviFire has elements that can make you think they are labels, they are not labels.
+Thus all control flow must be structured.
+These include:</p>
+<ol>
+<li>procedures:
+	<ul>
+	<li><a href="Function_Statement.html#">Function</a></li>
+	<li><a href="Method_Statement.html#">Method</a>)</li>
+	<li><a href="Sub_Statement.html#">Sub</a></li>
+	</ul>
+</li>
+<li>Structured loops:
+	<ul>
+	<li><a href="Do_Loop_Statement.html#">Do&hellip;Loop</a></li>
+	<li><a href="While_Statement.html#">While</a></li>
+	<li><a href="For_To_Statement.html#">For</a></li>
+	<li><a href="For_Each_In_Statement.html#">For Each</a></li>
+	<li><a href="Exit_Statement.html#">Exit</a></li>
+	</ul>
+</li>
+<li>Conditional statements:
+	<ul>
+	<li><a href="If_Then_Else_Statement.html#">If&hellip;Then&hellip;Else</a></li>
+	<li><a href="Select_Case_Statement.html#">Select&hellip;Case</a></li>
+	</ul>
+</li>
+</ol>
+<p>ViviFire does not have GOSUB, but does have something almost the same as GOTO.
+The statement <a href="GoTo_Case_Statement.html#">GoTo Case</a> is permitted in <a href="Select_Case_Statement.html#">Select&hellip;Case</a>.</p>
+<p>Also, ViviFire does not have ON ERROR GOTO.
+The alternative that ViviFire uses is structured exceptions, which use <a href="Try_Catch_Finally_Statement.html#">Try&hellip;Catch&hellip;Finally</a>.</p>
+<h2>Comparison of features</h2>
+<h3>Equivalent features</h3>
+<p>Some features of LB and ViviFire are almost the same.</p>
+<table>
+<thead>
+<tr><th>Feature</th>
+<th>Information</th></tr>
+</thead>
+<tbody>
+<tr><td>Arithmetic operators</td>
+<td><code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>Mod</code>, <code>^</code></td></tr>
+<tr><td>Comparison operators</td>
+<td><code>&lt;</code>, <code>&lt;=</code>, <code>=</code>, <code>&lt;&gt;</code>, <code>&gt;</code>, <code>&gt;=</code></td></tr>
+<tr><td><code>Do&hellip;Loop</code></td>
+<td>Block construct only</td></tr>
+<tr><td><code>Exit</code></td>
+<td></td></tr>
+<tr><td><code>Function</code></td>
+<td>RB semantics ignored</td></tr>
+<tr><td><code>If&hellip;Then&hellip;Else</code></td>
+<td>Block construct only</td></tr>
+<tr><td>Logical operators</td>
+<td><code>And</code>, <code>Or</code>, <code>Xor</code>; precedence ignored</td></tr>
+<tr><td><code>ReDim</code></td>
+<td></td></tr>
+<tr><td><code>Sub</code></td>
+<td>RB semantics ignored</td></tr>
+</tbody>
+</table>
+<h3>Incompatibilities</h3>
+<p>The table that follows gives the times where LB/RB and ViviFire use the same keywords for different functions.</p>
+<table>
+<thead>
+<tr><th>Feature</th>
+<th>Information</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="GoTo_Case_Statement.html#">GoTo</a></td>
+<td>
+	<ul>
+	<li>In LB, it is used to unconditionally move to a label.</li>
+	<li>In ViviFire, it is used only in the statement <code class="kw">GoTo Case</code> which is available only in <code class="kw">Select&hellip;Case</code>.</li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><a href="Rem_Operator.html#">Rem</a></td>
+<td>
+	<ul>
+	<li>In LB, it is short for &ldquo;remark&rdquo; and marks the start of a remark that extends to the end of the line.</li>
+	<li>In ViviFire, it is short for &ldquo;remainder&rdquo; and is an operator related to <code class="kw">Mod</code>.</li>
+	</ul>
+</td>
+</tr>
+<tr>
+<td><a href="Return_Statement.html#">Return</a></td>
+<td>
+	<ul>
+	<li>In LB, it is the end of a block of code executed with <code>GOSUB</code>.</li>
+	<li>In ViviFire, it uses a smaller number of statements  to set the return value of a function or method then do <code class="kw">Exit</code>, or is an alternative to <code class="kw">Exit Sub</code>.</li>
+	</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</main>
+<script src="common.js"></script>
+</body>
+</html>

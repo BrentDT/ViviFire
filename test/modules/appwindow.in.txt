@@ -1,0 +1,12 @@
+program appwindow
+require ViviFire.GUI
+
+object #w is window
+  title = "Simple app"
+  new menu #f, "&File"
+  begin
+    "E&xit", DoExit
+  end menu
+  sub DoExit handles ClickEvent
+  end sub
+end object

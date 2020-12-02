@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Operators and Expressions - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Operators_and_Expressions.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Operators and Expressions</h1>
+<p>An <dfn>operator</dfn> is a code element that does an operation on one or more elements that hold values.
+Value elements include variables, properties, constants, literals, and results of procedures and expressions.</p>
+<p>An <dfn>expression</dfn> puts together a sequence of values and operators, and makes a new value.
+The operators have an effect on the value elements to calculate, compare, or do other operations.</p>
+<h2>Types of operators</h2>
+<p>ViviFire has many types of operators.</p>
+<ul>
+<li><a href="Arithmetic_Operators.html">Arithmetic operators</a> calculate with numeric values.</li>
+<!-- li><a href="Assignment_Operators.html">Assignment operators</a></li -->
+<li><a href="Comparison_Operators.html">Comparison operators</a> compare values and return a Boolean value as a result of how they compare.</li>
+<li><a href="Concatenation_Operators.html">Concatenation operators</a> put together many strings into one string.</li>
+<li><a href="Logical_and_Bitwise_Operators.html">Logical and bitwise operators</a> put together Boolean or numeric values and return a result of the same data type.</li>
+</ul>
+<h2>Evaluation of expressions</h2>
+<div class="language-vivifire listing">
+<pre><code>2 + 4
+' The result is 6
+4 * Math.Sqrt(36)
+' The result is 24.0
+"Vivi" &amp; "Fire"
+' The result is "ViviFire"
+321 &lt; 234
+' The result is False&#10;</code></pre>
+</div>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

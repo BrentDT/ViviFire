@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>String Basics - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/String_Basics.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+<li><a href="Strings.html">Strings</a></li>
+<li><a href="Introduction_to_Strings.html">Introduction to Strings</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">String Basics</h1>
+<p>A <dfn>string</dfn> is a sequence of text characters that is frequently used to get information from a user and to show text on a screen.
+ViviFire code can contain string literals, string constants, and string variables.</p>
+<h2>String literals</h2>
+<p>A <dfn>string literal</dfn> is a indication of a string value written in code.
+ViviFire's string literals can show most characters.</p>
+<p>A basic string literal contains printable characters between double quotation marks (&quot;).
+Here is an example:</p>
+<div class="language-vivifire listing">
+<pre><code>"This is a basic string literal."&#10;</code></pre>
+</div>
+<h3>Multi-line strings</h3>
+<p>A string literal can become long.
+It can become too long to read easily if you must scroll horizontally.
+One solution is to divide the string into many smaller strings and concatenate them at runtime.
+If this code executes a small number of times, then this could be a good solution.
+But, if this code must execute frequently, then it could make your program slower.</p>
+<p>ViviFire lets you write one string literal on many lines.
+You write an underscore (<code class="op">_</code>) after the first line.
+All lines between the first and last have one underscore before and one underscore after.
+Then the last line starts with an underscore.
+An example follows.</p>
+<div class="language-vivifire listing">
+<pre><code>quote =
+    "The following two statements are usually both true: "_
+    _"There's not enough documentation. "_
+    _"There's too much documentation. "_
+    _"-- Larry Wall"&#10;</code></pre>
+</div>
+<h2>String constants</h2>
+<div class="language-vivifire syntax">
+<div>One of these</div>
+<pre><code>$ decimal
+$B binary
+$H hexadecimal
+$O octal
+$ name&#10;</code></pre>
+</div>
+<dl class="parts">
+<dt><code class="id">decimal</code></dt>
+<dd>A decimal (base-10) integer.</dd>
+<dt><code class="id">binary</code></dt>
+<dd>A binary (base-2) integer.</dd>
+<dt><code class="id">hexadecimal</code></dt>
+<dd>A hexadecimal (base-16) integer.</dd>
+<dt><code class="id">octal</code></dt>
+<dd>An octal (base-8) integer.</dd>
+<dt><code class="id">name</code></dt>
+<dd>An abbreviation for a frequently used string.</dd>
+</dl>
+<p>For a list, see <a href="Pre_calculated_Constants.html">Pre-Calculated Constants</a>.</p>
+<h3>Mixtures of string constants and string literals</h3>
+<p>TODO</p>
+<h2>String variables</h2>
+<p>TODO</p>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

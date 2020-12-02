@@ -1,0 +1,6 @@
+library test
+
+event mouseEvent(#sender, x, y)
+
+Method When_leftButtonDown(e as mouseEvent)
+end method

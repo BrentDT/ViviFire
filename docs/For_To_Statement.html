@@ -1,0 +1,100 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>For Statement - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/For_To_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_2.html">F&ndash;P Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">For Statement</h1>
+<p>Executes a sequence of statements for all values in a range.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>For counter [ As type ] = start_value To end_value [ Step step_value ]
+    [ statements ]
+End [ For [ counter ] ]&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">counter</code></dt>
+<dd>Mandatory in the line that starts with <code class="kw">For</code> &ndash; a numeric variable.</dd>
+<dd>Optional in the line that starts with <code class="kw">End</code></dd>
+<dt><code>type</code></dt>
+<dd>Optional data type of <code class="id">counter</code>.
+Permitted types include: <span class="kws"><code>Int8</code>, <code>Int16</code>, <code>Int32</code>, <code>Int</code>, <code>Int64</code>, <code>Int128</code>, <code>UInt8</code>, <code>UInt16</code>, <code>UInt32</code>, <code>UInt</code>, <code>UInt64</code>, and <code>UInt128</code></span>.</dd>
+<dt><code class="id">start_value</code></dt>
+<dd>Mandatory integer expression &ndash; the initial value of <code class="id">counter</code>. </dd>
+<dt><code class="id">end_value</code></dt>
+<dd>Mandatory integer expression &ndash; the last value of <code class="id">counter</code>.</dd>
+<dt><code class="id">step_value</code></dt>
+<dd>Optional integer expression &ndash; the increment for <code class="id">counter</code>.
+The default is one (1).</dd>
+<dt><code class="id">statements</code></dt>
+<dd>Optional One or more executable statements between the lines that start with <code class="kw">For</code> and <code class="kw">End</code>.
+They execute for each value between <code class="id">start_value</code> and (<code class="id">end_value</code>.</dd>
+<dd>The alternative is two or more groups of statements.
+The initial group starts with <code class="kw">Begin</code>, and executes the same as specified above.
+The subsequent groups start with <code class="kw">When</code>, and execute when the group after <code class="kw">Begin</code> cannot start, or after it completes.
+See the <a href="#When_statements">When statements section</a> for more information.</dd>
+<dt><code class="kw">End</code></dt>
+<dd>Completes the statement.
+You can also use <code class="kw">End For</code>.
+The optional variable <code class="id">counter</code> can only follow <code class="kw">End For</code>.</dd>
+<dd>You can change the syntax of this part.
+See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
+</dl>
+<h2>Instructions</h2>
+<p><code class="kw">End For</code> is not the same as <a href="Exit_Statement.html"><code>Exit For</code></a>.</p>
+<p>Use the construct <code class="kw">For</code> when you must execute one or more statements again and again.
+It is recommended when you can be sure how many times the statements must execute.
+Control is connected with the variable <code class="id">counter</code> specified in the line that starts with <code class="kw">For</code>.
+Other loop structures are possibly more flexible.
+See the <a href="#See_also">See also</a> section below for more information.</p>
+<h3>Usual execution</h3>
+<p>TODO</p>
+<h3>Exit For</h3>
+<p>The statement <code class="kw">Exit For</code> can stop such loops.
+<code class="kw">Exit For</code> immediately moves control to the statement after <code class="kw">End For</code>.</p>
+<h3 id="When_statements">When statements</h3>
+<p>To find if a loop of type <code class="kw">For</code> completed because <code class="id">counter</code> became more than <code class="id">end</code>, use <code>When %Done</code>.
+</p>
+<p>To find if a loop of type <code class="kw">For</code> did not execute because <code class="id">counter</code> was initially out-of-range, use <code>When %None</code>.
+</p>
+<p>See <a href="Begin_When_Statements.html">Begin&hellip;When Statements</a> for more information.</p>
+<h2>Examples</h2>
+<div class="language-vivifire listing">
+<pre><code>For index As Int = 1 To 5
+    #Debug.Print index
+End For
+#Debug.PrintLine&#10;</code></pre>
+</div>
+<h2 id="See_also">See also</h2>
+<ul class="articles">
+<li><a href="Do_Loop_Statement.html">Doo...Loop Statement</a> &ndash; Executes given a pre-condition or a post-condition.</li>
+<li><a href="For_Each_In_Statement.html">For Each Statement</a> &ndash; Executes given a data structure.</li>
+<li><a href="While_Statement.html">While Statement</a> &ndash; Executes given a pre-condition.</li>
+<li><a href="Begin_When_Statements.html">Begin&hellip;When Statements</a></li>
+<li><a href="Exit_Statement.html">Exit Statement</a></li>
+<li><a href="Loop_Constructs.html">Loop Constructs</a></li>
+<li><a href="Option_Directive.html">@Option Directive</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>#Debug Object - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Debug_Object.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Objects.html">Objects</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">#Debug Object</h1>
+<p>Lets you more easily debug your programs.</p>
+<h2 id="Methods">Methods</h2>
+<dl class="language-vivifire listing">
+<dt><pre><code>Method Print ( message As String )
+Method PrintLine ( message As String )</code></pre></dt>
+<dd>Shows some text in the debugger.
+Typically this is the value of a variable, to make sure it is correct.</dd>
+<dt><pre><code>Method Assert ( test As Boolean, Optional message As String )</code></pre></dt>
+<dd>TBD</dd>
+<dt><pre><code>Method Log ( message As String )
+Method LogInfo ( message As String )
+Method LogWarning ( message As String )
+Method LogError ( message As String )
+Method LogFatal ( message As String )</code></pre></dt>
+<dd>Writes information to the log file.</dd>
+<dt><pre><code>Method Run</code></pre></dt>
+<dd>Causes the debugger to start executing the code at full speed.</dd>
+<dt><pre><code>Method Stop&#10;</code></pre></dt>
+<dd>Causes the debugger to stop execution, almost the same as a breakpoint.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>Only debug builds cause <code>#Debug</code> to operate fully.
+Release builds ignore <code>#Debug</code>, the same as a comment.</p>
+<h2>Examples</h2>
+<p>TODO2</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Log_Object.html">#Log Object</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

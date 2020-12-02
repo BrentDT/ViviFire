@@ -1,0 +1,4 @@
+program arrayinitializer
+dim a() = { 1, 2, 3, 4, 5 }
+dim a$() = { "one", "two", "three", "four", "five" }
+end

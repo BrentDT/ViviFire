@@ -1,0 +1,122 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Comparison Operators - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Comparison_Operators.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Operators.html">Operators</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Comparison Operators</h1>
+<p>Compare two values or a range of values.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<h3>Usual comparison</h3>
+<pre><code>value_1 comparison_op value_2&#10;</code></pre>
+<h3>Range comparison</h3>
+<pre><code>value_1 { &lt; | &lt;= } value_2 { { &lt; | &lt;= } value_n }&hellip;&#10;</code></pre>
+<h3>Tolerant comparison</h3>
+<pre><code>value_1 tolerant_comparison value_2 [ tolerant_comparison value_n ]&hellip; Tol tolerance&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">value_1</code></dt>
+<dd>An expression to compare.</dd>
+<dt><code class="id">comparison_op</code></dt>
+<dd>One of the comparison operators:
+<span class="ops"><code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>=</code>, or <code>&lt;&gt;</code></span>.</dd>
+<dt><code class="id">value_2</code></dt>
+<dd>An expression of a type compatible with that of <code class="id">value_1</code>.</dd>
+<dt><code class="id">value_n</code></dt>
+<dd>For a range comparison, an expression of a type compatible with that of <code class="id">value_1</code> and <code class="id">value_2</code>.</dd>
+<dt><code class="id">tolerant_comparison</code></dt>
+<dd>One of the comparison operators with an optional tilde (<code class="op">~</code>) before it.
+Not all comparisons must be tolerant, but all tolerant comparisons use the same tolerance in the full expression.</dd>
+<dt><code class="id">tolerance</code></dt>
+<dd>After <code class="kw">Tol</code>, a numeric expression to specify the floating-point error tolerance of the comparisons.
+See <a href="Tol_Clause.html">Tol Clause</a> for more information.</dd>
+</dl>
+<h2>Instructions</h2>
+<table>
+<thead>
+<tr><th>Operator</th>
+<th>True if</th>
+<th>False if</th></tr>
+</thead>
+<tbody>
+<tr><td><code class="op">&lt;</code> (Less than)</td>
+<td><code class="id">value_1</code> &lt; <code class="id">value_2</code></td>
+<td><code class="id">value_1</code> &gt;= <code class="id">value_2</code></td></tr>
+<tr><td><code class="op">&lt;=</code> (Less than or equal)</td>
+<td><code class="id">value_1</code> &lt;= <code class="id">value_2</code></td>
+<td><code class="id">value_1</code> &gt; <code class="id">value_2</code></td></tr>
+<tr><td><code class="op">&gt;</code> (More than)</td>
+<td><code class="id">value_1</code> &gt; <code class="id">value_2</code></td>
+<td><code class="id">value_1</code> &lt;= <code class="id">value_2</code></td></tr>
+<tr><td><code class="op">&gt;=</code> (More than or equal)</td>
+<td><code class="id">value_1</code> &gt;= <code class="id">value_2</code></td>
+<td><code class="id">value_1</code> &lt; <code class="id">value_2</code></td></tr>
+<tr><td><code class="op">=</code> (Equal)</td>
+<td><code class="id">value_1</code> = <code class="id">value_2</code></td>
+<td><code class="id">value_1</code> &lt;&gt; <code class="id">value_2</code></td></tr>
+<tr><td><code class="op">&lt;&gt;</code> (Not equal)</td>
+<td><code class="id">value_1</code> &lt;&gt; <code class="id">value_2</code></td>
+<td><code class="id">value_1</code> = <code class="id">value_2</code></td></tr>
+</tbody>
+</table>
+<h3>Comparing numbers</h3>
+<p>TODO</p>
+<h4>Comparing floating-point numbers</h4>
+<p>You can use the keyword <code class="kw">Tol</code> to make floating-point comparisons with a tolerance to rounding errors.
+A comparison expression without this clause could possibly give incorrect results because of how calculated results can have small rounding errors.
+The tolerance value is the maximum the two values can be different but compare as equal.</p>
+<h3>Comparing strings</h3>
+<p>TODO</p>
+<h3>Range comparisons</h3>
+<p>You can find if a value is in a range with a special syntax.
+You use two operators from the set of <code class="op">&lt;</code> and <code class="op">&lt;=</code> to connect the three values.
+You put the values in the sequence (1) lower value, (2) test value, and (3) higher value.
+This syntax is almost the same as that used by mathamatics.</p>
+<p>It is almost the same as what follows:</p>
+<div class="language-vivifire syntax">
+<pre><code>value_1 { &lt; | &lt;= } value_2 And value_2 { &lt; | &lt;= } value_3&#10;</code></pre>
+</div>
+<p>If you wrote code the same as above and <code class="id">value_2</code> is an expression with side effects, then the results could be unknown.
+The range comparison makes sure that each expression does not calculate more than one time.</p>
+<p>Only the operators <code class="op">&lt;</code> and <code class="op">&lt;=</code> are correct in this type of comparison.
+It is not a syntax error to use other comparison operators the same.
+But it is usually a programming error.
+Each comparison will evaluate from left to right, then the Boolean result will be compared to the next value in the chain.
+Thus this usually makes incorrect code.</p>
+<h3>Comparing objects</h3>
+<p>Unlike other values, objects can only be compared for equality with the <a href="Is_Operator.html">Is operator</a>.</p>
+<h2>Other comparison operators</h2>
+<p>The operator <code class="op">&lt;=&gt;</code> is available only as part of the <a href="Conditional_Operator.html">Conditional Operator</a>.
+It does a test of two values to find if one is less than, equal to, or more than the other.
+A different name for it is the &ldquo;spaceship operator&rdquo; because of how it looks.</p>
+<h2>Examples</h2>
+<div class="language-vivifire listing">
+<pre><code>If x ~= 4.5 Tol 1e-2 Then
+End If
+
+If 0.0 ~&lt;= y ~&lt;= 1.0 Tol 1e-8 Then
+End If&#10;</code></pre>
+</div>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

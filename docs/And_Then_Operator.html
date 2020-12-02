@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>And Then Operator - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/And_Then_Operator.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Operators.html">Operators</a></li>
+<li><a href="Logical_and_Bitwise_Operators.html">Logical and Bitwise Operators</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">And Then Operator</h1>
+<p>Returns &ldquo;false&rdquo; if one or more Boolean expressions are false, but stops after the first false expression.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>expression_1 And Then expression_2&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">expression_1</code></dt>
+<dd>A Boolean expression.</dd>
+<dt><code class="id">expression_2</code></dt>
+<dd>A Boolean expression.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>The result has the type <code class="kw">Boolean</code>.</p>
+<p><code class="kw">And Then</code> is almost the same as the operator <code class="kw">And</code>.
+They are different when <code class="id">expression_1</code> is false.
+When this occurs, <code class="id">expression_2</code> is not calculated.
+This is correct because if one expression is false, then the result is always false.
+This is known as <dfn>short-circuit evaluation</dfn>.</p>
+<table>
+<caption>Truth table for <code>expression_1 And Then expression_2</code></caption>
+<thead>
+<tr><th>If <code class="id">expression_1</code> is</th>
+<th>And <code class="id">expression_2</code> is</th>
+<th>Then the result is</th></tr>
+</thead>
+<tbody>
+<tr><td>True</td><td>True</td><td>True</td></tr>
+<tr><td>True</td><td>False</td><td>False</td></tr>
+<tr><td>False</td><td>not calculated</td><td>False</td></tr>
+</tbody>
+</table>
+<h2>Examples</h2>
+<h3>Example 1</h3>
+<p>In this example, &ldquo;<code>parts</code>&rdquo; was supplied by the user.</p>
+<div class="language-vivifire listing">
+<pre><code>If parts > 0 And Then all / parts >= minimum Then
+    ' do something
+End If&#10;</code></pre>
+</div>
+<h3>Example 2</h3>
+<div class="language-vivifire listing">
+<pre><code>If #h Is Object And Then #h.SomeMethod? Then
+    ' do something
+End If&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="And_Operator.html">And Operator</a></li>
+<li><a href="Or_Else_Operator.html">Or Else Operator</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

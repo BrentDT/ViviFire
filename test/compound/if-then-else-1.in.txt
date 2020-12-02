@@ -1,0 +1,8 @@
+program ifthenelse1
+
+if 1 then call s
+if 1 then call s1 else call s2
+if x < 10 then call s
+if x > 0 and y > 0 then call s
+if 1 <= x <= 10 then call s1 else call s2
+end

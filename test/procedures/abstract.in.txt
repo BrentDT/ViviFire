@@ -1,0 +1,7 @@
+library TestAbstract
+
+@abstract class AClass
+@abstract method AMethod
+method CMethod
+end method
+end class

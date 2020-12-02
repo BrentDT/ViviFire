@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Program Entry Point - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Program_Entry_Point.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Program_Structure_and_Code_Conventions.html">Program Structure and Code Conventions</a></li>
+</ul>
+</nav>
+<main id="stub">
+<h1 id="top">Program Entry Point</h1>
+<p>All ViviFire programs must contain one module that starts with <code class="kw">Program</code> and a name.
+This module is where your program starts execution.</p>
+<p>The name of the program can be the same as one procedure.
+When you write <code class="op">=</code> before the name, then that procedure becomes where the program starts execution.
+But, if <code class="op">=</code> is not given, then execution starts at the top of the module.</p>
+<h2>Declaration of the procedure</h2>
+<p>There are four different mixtures of parameters and return types.
+It can have one parameter or none.
+And it can return a value or not.</p>
+<h3>TODO</h3>
+<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>Program = Zero
+
+Sub Zero
+    MessageBox "Start of program"
+    MessageBox "End of program"
+End Sub&#10;</code></pre>
+</div>
+<h3>TODO</h3>
+<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>Program = One
+
+Sub One As Int
+    MessageBox "Start of program"
+    MessageBox "End of program"
+End Sub&#10;</code></pre>
+</div>
+<h3>TODO</h3>
+<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>Program = Two
+
+Sub Two(args() As String) As Int
+    MessageBox "Start of program"
+    For Each arg As String In args
+    Begin
+        MessageBox arg, "arg"
+    When %NONE
+        MessageBox "No args"
+    End For
+    MessageBox "End of program"
+End Sub&#10;</code></pre>
+</div>
+<h3>TODO</h3>
+<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>Program = Three
+
+Sub Three(args() As String)
+    MessageBox "Start of program"
+    For Each arg As String In args
+    Begin
+        MessageBox arg, "arg"
+    When %NONE
+        MessageBox "No args"
+    End For
+    MessageBox "End of program"
+End Sub&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Structure_of_a_ViviFire_Program.html">Structure of a ViviFire Program</a></li>
+<li><a href="Modules.html">Modules</a></li>
+<li><a href="Sub_Statement.html">Sub Statement</a></li>
+<li><a href="Int_Data_Type.html">Int Data Type</a></li>
+<li><a href="String_Data_Type.html">String Data Type</a></li>
+<li><a href="For_Each_In_Statement.html">For Each Statement</a></li>
+<li><a href="Begin_When_Statements.html">Begin&hellip;When Statements</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

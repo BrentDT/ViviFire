@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Loop Constructs - The ViviFire Programming Language</title><!-- Was: Loop Structures -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Loop_Constructs.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+<li><a href="Control_Flow.html">Control Flow</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Loop Constructs</h1>
+<p>ViviFire's loop constructs let you execute a set of statements many times.
+You can execute statements while a condition is true, until a condition becomes false, a given number of times, or for each element in a collection.</p>
+<h2><code>While</code> loops</h2>
+<p>The construct <code class="kw">While</code> executes a block of statements while the condition you give at the start is true.
+See <a href="While_Statement.html">While Statement</a> for more information.</p>
+<h2><code>Do</code> loops</h2>
+<p>The construct <code class="kw">Do&hellip;Loop</code> is almost the same as <code class="kw">While</code>, but can adapt better.
+You can do the test at the start or at the end.
+You specify if the loop executes while the condition is true or until it becomes true.
+See <a href="Do_Loop_Statement.html">Do&hellip;Loop Statement</a> for more information.</p>
+<h2><code>For</code> loops</h2>
+<p>The construct <code class="kw">For</code> executes a block of statements a specified number of times.
+It goes through a range of values and changes a variable, known as the counter, to a different value each time through the loop.
+You can optionally specify the interval of the step, which has a default of one (1).
+See <a href="For_To_Statement.html">For Statement</a> for more information.</p>
+<h2><code>For Each</code> loops</h2>
+<p>The construct <code class="kw">For Each</code> executes a block of statements one time for each element in a collection.
+It is best used where you can safely ignore qualities such as the dimensions and configuration of the collection.
+See <a href="For_Each_In_Statement.html">For Each Statement</a> for more information.</p>
+<h2><code>Begin&hellip;When</code> clauses</h2>
+<p>For most loop constructs, ViviFire lets you write statements that are in the loop but execute externally.
+The line <code>When %DONE</code> executes only if the body of the loop executed fully and completed as usual.
+The line <code>When %NONE</code> executes only if the body of the loop did not start.
+See <a href="Begin_When_Statements.html">Begin&hellip;When Statements</a> for more information.</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Decision_Constructs.html">Decision Constructs</a></li>
+<li><a href="Nested_Control_Constructs.html">Nested Control Constructs</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+</body>
+</html>

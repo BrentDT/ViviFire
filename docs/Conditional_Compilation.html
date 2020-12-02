@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Conditional Compilation - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Conditional_Compilation.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Program_Structure_and_Code_Conventions.html">Program Structure and Code Conventions</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Conditional Compilation</h1>
+<div class="language-vivifire listing">
+<pre><code>@If POSIX
+' Unix-like code goes here.
+@ElseIf WINDOWS
+' Windows-only code goes here.
+@End&#10;</code></pre>
+</div>
+<h2>Conditional compilation constants</h2>
+<h3>Scope</h3>
+<table>
+<thead>
+<tr><th>How it is supplied</th>
+<th>Scope</th></tr>
+</thead>
+<tbody>
+<tr><td>Command line</td>
+<td>Global to all modules</td></tr>
+<tr><td><code class="at">@Const</code> directive</td>
+<td>Local to the module</td></tr>
+</tbody>
+</table>
+<h3>Platform constants</h3>
+<table>
+<thead>
+<tr><th>Constant</th><th>Platform</th></tr>
+</thead>
+<tbody>
+<tr><td><kbd>ANDROID</kbd></td><td>Google Android</td></tr>
+<tr><td><kbd>ARM_32</kbd></td><td>32-bit ARM processor</td></tr>
+<tr><td><kbd>ARM_64</kbd></td><td>64-bit ARM processor</td></tr>
+<tr><td><kbd>DESKTOP</kbd></td><td>Desktop operating system</td></tr>
+<tr><td><kbd>IOS</kbd></td><td>Apple iOS</td></tr>
+<tr><td><kbd>LINUX</kbd></td><td>Linux kernel</td></tr>
+<tr><td><kbd>MACOS</kbd></td><td>Apple Mac OS X</td></tr>
+<tr><td><kbd>MOBILE</kbd></td><td>Mobile operating system</td></tr>
+<tr><td><kbd>POSIX</kbd></td><td>POSIX-compliant operating system</td></tr>
+<tr><td><kbd>WINDOWS</kbd></td><td>Microsoft Windows</td></tr>
+<tr><td><kbd>X86_32</kbd></td><td>32-bit Intel x86-compatible processor</td></tr>
+<tr><td><kbd>X86_64</kbd></td><td>64-bit Intel x86-compatible processor</td></tr>
+</tbody>
+</table>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Const_Directive.html">@Const Directive</a></li>
+<li><a href="If_Then_Else_Directives.html">@If Directive</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>GoTo Case Statement - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/GoTo_Case_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_2.html">F&ndash;P Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">GoTo Case Statement</h1>
+<p>Causes a statement <code class="kw">Select&hellip;Case</code> to calculate again with a different expression.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>GoTo Case expression [ Tol tolerance ]&#10;</code></pre>
+<div>or</div>
+<pre><code>GoTo Case Else&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">expression</code></dt>
+<dd>An expression with a data type compatible with the test expression in the line <code class="kw">Select</code>.</dd>
+<dt><code class="id">tolerance</code></dt>
+<dd>Optional floating-point expression.
+See <a href="Tol_Clause.html">Tol Clause</a> for more information.</dd>
+<dt><code class="kw">Else</code></dt>
+<dd>Causes execution to move to <code class="kw">Case Else</code>.</dd>
+</dl>
+<h2>Instructions</h2>
+<p><code class="kw">GoTo Case</code> typically causes the construct <code class="kw">Select</code> to execute again with a different test expression.
+Each <code class="kw">Case</code> calculates again, until a test is true.
+Then its related block executes.</p>
+<p>If no expressions of <code class="kw">Case</code> are true, or you use <code class="kw">GoTo Case Else</code>, then execution moves to the block after <code class="kw">Case Else</code>, if there is one, or to the statement after <code class="kw">End Select</code>.</p>
+<h2>Examples</h2>
+<p>TODO</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Select_Case_Statement.html">Select&hellip;Case Statement</a></li>
+<li><a href="Tol_Clause.html">Tol Clause</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

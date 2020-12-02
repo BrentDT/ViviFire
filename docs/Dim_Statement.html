@@ -1,0 +1,114 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Dim Statement - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Dim_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_1.html">A&ndash;E Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Dim Statement</h1>
+<p>Declares variables and allocates memory for them.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>[ @Shared ] { Dim | Var } declarator [ , declarator ]&hellip;&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="at">@Shared</code></dt>
+<dd>Optional modifier specifies that each variable can have a small scope but keeps its value during an application's full run-time.</dd>
+<dt><code class="kw">Dim</code></dt>
+<dd>Mandatory unless you use <code class="kw">Var</code>.</dd>
+<dd>Mandatory if you use the directive <code class="at">@Option Dim with Dim</code>.
+See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
+<dt><code class="kw">Var</code></dt>
+<dd>Mandatory unless you use <code class="kw">Dim</code></dd>
+<dd>Mandatory if you use the directive <code class="at">@Option Dim with Var</code>.</dd>
+<dt><code class="id">declarator</code></dt>
+<dd>Mandatory one or more declarations with a comma between each.
+	<div class="language-vivifire syntax">
+	<h3>Declarator</h3>
+	<pre><code>name [ ( [ dimensions ] ) ] [ As type | In unit ] [ = initializer ]&#10;</code></pre>
+	</div>
+	<dl class="parts">
+	<dt><code class="id">name</code></dt>
+	<dd>Mandatory name for a variable</dd>
+	<dt><code class="id">dimensions</code></dt>
+	<dd>Optional one or more integer expressions with a comma between each</dd>
+	<dt><code class="id">type</code></dt>
+	<dd>Optional data type</dd>
+	<dt><code class="id">unit</code></dt>
+	<dd>Optional unit of measure</dd>
+	<dt><code class="id">initializer</code></dt>
+	<dd>Optional expression having a data type compatible with <code class="id">type</code> or <code class="id">unit</code>.</dd>
+	</dl>
+</dd>
+</dl>
+<h2>Instructions</h2>
+<h3>Setting an initial value</h3>
+<p>TODO</p>
+<h3>Declaring multiple variables</h3>
+<h3>Arrays</h3>
+<p>See <a href="Arrays.html">Arrays</a>.</p>
+<h3>Default types and values</h3>
+<p>If you do not give a data type, then the compiler selects a data type.
+If you supply an initializer, then the variable's data type comes from the data type of the initializer.
+See the table that follows for the rules.</p>
+<table class="language-vivifire">
+<thead>
+<tr><th>If you specify</th>
+<th>The compiler sees it as</th></tr>
+</thead>
+<tbody>
+<tr><td><pre><code>Dim a = 42&#10;</code></pre></td>
+<td><pre><code>Dim a As Int64 = 42&#10;</code></pre></td></tr>
+<tr><td><pre><code>Dim b = 3.14159&#10;</code></pre></td>
+<td><pre><code>Dim b As Real64 = 3.14159&#10;</code></pre></td></tr>
+<tr><td><pre><code>Dim c = 2.54cm&#10;</code></pre></td>
+<td><pre><code>Dim c In centimeters = 2.54cm&#10;</code></pre></td></tr>
+<tr><td><pre><code>Dim d = "Hello"&#10;</code></pre></td>
+<td><pre><code>Dim d As String = "Hello"&#10;</code></pre></td></tr>
+</tbody>
+</table>
+<p>If you do not supply a data type or <code class="id">initializer</code>, then the name of the variable selects the data type.</p>
+<div class="language-vivifire listing">
+<div>If you specify</div>
+<pre><code>Dim a%, b!, c$, #d&#10;</code></pre>
+<div>The compiler sees it as</div>
+<pre><code>Dim a% As Int = 0
+Dim b! As Real = 0.0
+Dim c$ As String = ""
+'??? Dim #d As Object = #Null&#10;</code></pre>
+</div>
+<h3>Shared lifetime</h3>
+<p>All variables declared at module level have shared lifetime if <code class="at">@Shared</code> is specified or not.</p>
+<h2>Examples</h2>
+<p>TODO</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Const_Statement.html">Const Statement</a></li>
+<li><a href="New_Statement.html">New Statement</a></li>
+<li><a href="Object_Statement.html">Object Statement</a></li>
+<li><a href="Property_Statement.html">Property Statement</a></li>
+<li><a href="ReDim_Statement.html">ReDim Statement</a></li>
+<li><a href="Option_Directive.html">@Option Directive</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

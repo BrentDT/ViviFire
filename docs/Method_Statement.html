@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Method Statement - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Method_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_2.html">F&ndash;P Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Method Statement</h1>
+<p>Makes a method procedure for a class or library.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<h3>Usual construct</h3>
+<pre><code>[ modifiers ] Method method_name [ type_list ] [ parameter_list ] [ return_type ]
+    [ Where generic_constraints ]&hellip;
+    [ statements ]
+End [ Method ]&#10;</code></pre>
+<h3>Abstract construct</h3>
+<pre><code>@Abstract Method method_name [ parameter_list ]&#10;</code></pre>
+<h3>Name-change construct</h3>
+<pre><code>[ modifiers ] Method method_name Does trait_name.supplied_name&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">modifiers</code></dt>
+<dd>Optional, usually one, but possibly two of these:
+	<ul>
+	<li><code class="at">@Abstract</code> &ndash; The method must be overridden by a concrete child class. Only applicable in an abstract class or trait.</li>
+	<li><code class="at">@Open</code> &ndash; The method can be overridden by a child class. Only applicable in an open class.</li>
+	<li><code class="at">@Override</code> &ndash; The method overrides one inherited from a parent class or trait.</li>
+	<li><code class="at">@Shared</code> &ndash; The method is a child of its parent construct, not an instance of some object.</li>
+	</ul>
+</dd>
+<dt><code class="id">method_name</code></dt>
+<dd>Mandatory name for the method.</dd>
+<dt><code class="id">type_list</code></dt>
+<dd>Optional.
+See <a href="Type_List.html">Type List</a> for more information.</dd>
+<dd>Not permitted in the name-change construct.</dd>
+<dt><code class="id">parameter_list</code></dt>
+<dd>Optional in the usual construct.
+One or more local variables with a comma between each.
+The caller gives them their values.
+See <a href="Parameter_List.html">Parameter List</a> for more information.</dd>
+<dd>Not permitted in the name-replacement construct.</dd>
+<dt><code class="id">return_type</code></dt>
+<dd>Optional in the usual construct.</dd>
+<dd>Not permitted in the name-replacement construct.</dd>
+<dd>
+	<div class="language-vivifire syntax">
+	<h3>Return type</h3>
+	<pre><code>{ As type } | { In unit }&#10;</code></pre>
+	</div>
+	<dl class="parts">
+	<dt><code class="id">type</code></dt>
+	<dd>A data type.</dd>
+	<dt><code class="id">unit</code></dt>
+	<dd>A unit of measure.</dd>
+	</dl>
+</dd>
+<dt><code class="id">generic_constraints</code></dt>
+<dd>Optional. See <a href="Where_Clause_Generics.html">Where Clause (Generics)</a> for more information.</dd>
+<dt><code class="id">statements</code></dt>
+<dd>Optional in the usual construct.</dd>
+<dd>Not permitted in the abstract and aliasing constructs.</dd>
+<dt><code class="kw">End</code></dt>
+<dd>Completes the statement.
+You can also use <code class="kw">End Method</code>.</dd>
+<dd>You can change this part of the syntax.
+See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
+<dd>Not permitted in the abstract and aliasing constructs.</dd>
+<dt><code class="id">trait_name</code></dt>
+<dd>Mandatory in the name-replacement construct, the name of one trait that the class applies.</dd>
+<dt><code class="id">supplied_name</code></dt>
+<dd>Mandatory in the name-replacement construct, the name of the procedure supplied by a trait.</dd>
+</dl>
+<h2>Instructions</h2>
+<p><code class="kw">End Method</code> is not the same as <a href="Exit_Statement.html"><code>Exit Method</code></a>.</p>
+<p><code class="kw">Method</code> is the most usual type of procedure contained in a <span class="kws"><code>Class</code>, <code>Object</code>, <code>Trait</code>, or <code>Library</code></span>.
+You can call such procedures (along with <code class="kw">Property</code>) from all parts of a program where its container is in scope.
+Procedures of the types <code class="kw">Function</code> and <code class="kw">Sub</code> can only be seen by other procedures in the same container.</p>
+<h3>Usual construct</h3>
+<p>TODO</p>
+<h3>Abstract construct</h3>
+<p>The abstract construct is almost the same as a template.
+It is used in an abstract class or trait.
+It makes sure that a concrete child class or the user of a trait will supply its own implementation of the method.
+Thus, it cannot contain statements.</p>
+<h3>Name replacement construct</h3>
+<p>You use the name-change construct when you must change the name of a method supplied by a trait which has the same name as a procedure in your class.</p>
+<p>If you must keep a method out of your class, then <a href="Function_Statement.html"><code>Function</code></a> has an equivalent construct that can change a public method into a private function.</p>
+<h2>Examples</h2>
+<p>TODO</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Class_Statement.html">Class Statement</a></li>
+<li><a href="Constructor_Statement.html">Constructor Statement</a></li>
+<li><a href="Destructor_Statement.html">Destructor Statement</a></li>
+<li><a href="Exit_Statement.html">Exit Statement</a></li>
+<li><a href="Function_Statement.html">Function Statement</a></li>
+<li><a href="Modules.html">Library Module</a></li>
+<li><a href="Property_Statement.html">Property Statement</a></li>
+<li><a href="Return_Statement.html">Return Statement</a></li>
+<li><a href="Sub_Statement.html">Sub Statement</a></li>
+<li><a href="Method_Procedures.html">Method Procedures</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

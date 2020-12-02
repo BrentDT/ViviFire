@@ -1,0 +1,29 @@
+program enums
+
+enum
+  apple
+  banana
+  cherry
+end enum
+
+@open enum fruits
+    apple = 1
+    banana = 2
+    cherry = 3
+end enum
+
+enum morefruits is fruits
+  papaya
+  peach
+  pear
+end enum
+
+@flags enum days is int8
+  monday
+  tuesday
+  wednesday
+  thursday
+  friday
+  saturday
+  sunday
+end enum

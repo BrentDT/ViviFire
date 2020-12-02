@@ -1,0 +1,29 @@
+OBJS = args.o ast.o codegen.o context.o main.o parser.o scanner.o
+CC = g++
+DEBUG = -g
+CFLAGS = -Wall -c $(DEBUG)
+LFLAGS = -Wall $(DEBUG)
+
+VF.exe : $(OBJS)
+	$(CC) $(LFLAGS) $(OBJS) -lpsapi -o VF.exe
+
+args.o : Args.cpp Args.h
+	$(CC) $(CFLAGS) Args.cpp
+
+ast.o : AST.cpp AST.h
+	$(CC) $(CFLAGS) AST.cpp
+
+codegen.o : AST.h CodeGen.cpp CodeGen.h
+	$(CC) $(CFLAGS) CodeGen.cpp
+
+context.o : Context.cpp Context.h
+	$(CC) $(CFLAGS) Context.cpp
+
+main.o : Args.h Main.cpp Parser.h Scanner.h
+	$(CC) $(CFLAGS) Main.cpp
+
+parser.o : Args.h CodeGen.h Context.h Parser.cpp Parser.h Scanner.h
+	$(CC) $(CFLAGS) Parser.cpp
+
+scanner.o : Scanner.cpp Scanner.h
+	$(CC) $(CFLAGS) Scanner.cpp

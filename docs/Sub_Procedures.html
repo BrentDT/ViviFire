@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Sub Procedures - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Sub_Procedures.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+<li><a href="Procedures.html">Procedures</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Sub Procedures</h1>
+<p>A <dfn>subroutine procedure</dfn> is a sequence of ViviFire statements between the lines <code class="kw">Sub</code> and <code class="kw">End</code>.</p>
+<p>The subroutine procedure does a task, then returns control to the code that called it (known as the &ldquo;caller&rdquo;).
+The procedure does not return a value to the caller.</p>
+<p>Each time the procedure is called, its statements execute.
+They start with the first executable statement after <code class="kw">Sub</code>.
+Execution usually continues until the line <code class="kw">End</code>.
+But it can be stopped by one of the statements <code class="kw">Exit Sub</code> or <code class="kw">Return</code>.</p>
+<p>You can make a procedure of type <code class="kw">Sub</code> in modules, classes, objects, and traits.
+It is private.
+It can be called only by other code in the same (1) class, (2) object, or (3) trait, or (if not one of the three) the module.</p>
+<p>Procedures such as <code class="kw">Sub</code> can have arguments (constants, variables, or expressions) which the caller passes to it.</p>
+<h2>Declaration syntax</h2>
+<div class="language-vivifire listing">
+<pre><code>Sub sub_name [ parameter_list ]
+    ' statements
+End Sub&#10;</code></pre>
+</div>
+<h2 id="Parameter_declaration">Parameter declaration</h2>
+<h2>Parameters as local variables</h2>
+<p>TODO</p>
+<h2>Calling syntax</h2>
+<p>TODO</p>
+<h2>Example of declaration and call</h2>
+<p>TODO</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Sub_Statement.html">Sub Statement</a></li>
+<li><a href="Function_Procedures.html">Function Procedures</a></li>
+<li><a href="Method_Procedures.html">Method Procedures</a></li>
+<li><a href="Property_Procedures.html">Property Procedures</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

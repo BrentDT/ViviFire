@@ -1,0 +1,4 @@
+program warndirective
+
+@Warn This is a warning
+end

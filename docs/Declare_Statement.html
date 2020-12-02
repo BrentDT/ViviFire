@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Declare Statement - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Declare_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_1.html">A&ndash;E Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Declare Statement</h1>
+<p>Makes a wrapper for a procedure.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<h3>One-line construct</h3>
+<pre><code>Declare [ library_name [ , flags ] ] { Function | Sub } name _
+  [ Is canonical_name ] [ parameter_list ]&#10;</code></pre>
+<h3>Block construct</h3>
+<pre><code>Declare library_name [ , flags ]
+  { Function | Sub } name [ Is canonical_name ] [ parameter_list ]
+  &hellip;
+End [ Declare ]&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">library_name</code></dt>
+<dd>Optional string literal with the name of a compiled library, such as a dynamic link library (DLL).</dd>
+<dt><code class="id">flags</code></dt>
+<dd>Optional one or more named constants, with a comma between each.
+	<ul>
+	<li><code class="num">%ANSI</code> &ndash; Strings are 8-bit ANSI. Cannot use with <code class="num">%UTF16</code>.</li>
+	<li><code class="num">%CDECL</code> &ndash; Uses the C calling convention.</li>
+	<li><code class="num">%UTF16</code> &ndash; Strings are 16-bit Unicode. Cannot use with <code class="num">%ANSI</code>.</li>
+	</ul>
+</dd>
+<dt><code class="id">name</code></dt>
+<dd>Mandatory name for the wrapper procedure.</dd>
+<dt><code class="id">canonical_name</code></dt>
+<dd>If <code class="id">library_name</code> is given, an optional string literal, when the exported name is different.</dd>
+<dd>If <code class="id">library_name</code> is not given, then <code class="id">name</code> becomes an alternative name for the procedure <code class="id">canonical_named</code>.</dd>
+<dt><code class="id">parameter_list</code></dt>
+<dd>Optional. See <a href="Parameter_List.html">Parameter List</a> for more information.</dd>
+<dd>If <code class="id">library_name</code> is not given, then a different construct is used.
+	<div class="language-vivifire syntax">
+	<h3>Parameter list</h3>
+	<pre><code>( mandatory_params [ Optional optional_param [ = default ] [ , optional_params ] ] )&#10;</code></pre>
+	</div>
+	<dl class="parts">
+	<dt><code class="id">mandatory_params</code></dt>
+	<dd>One or more integer literals, with a  comma between each.
+	Use <code>1</code> for the first parameter, <code>2</code> for the second, thru all mandatory parameters.
+	You can write the parameters out of sequence.</dd>
+	<dt><code class="id">optional_param</code></dt>
+	<dd>Mandatory after <code class="kw">Optional</code> &ndash; an integer literal.</dd>
+	<dt><code class="id">default</code></dt>
+	<dd>Optional expression.</dd>
+	<dt><code class="id">optional_params</code></dt>
+	<dd>Optional one or more subsequent parameters, with a comma between each.
+	Each can have a default value.</dd>
+	</dl>
+</dd>
+<dt><code class="kw">End</code></dt>
+<dd>Completes the block construct.
+You can also use <code class="kw">End Declare</code>.</dd>
+<dd>You can change the syntax of this part.
+See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>TODO</p>
+<ul>
+<li>Give procedures alternative names.</li>
+<li>Import procedures from compiled libraries.</li>
+<li>Change the sequence of parameters.</li>
+<li>Make mandatory parameters optional, with default values.</li>
+<li>Make optional parameters mandatory, or change their default values.</li>
+</ul>
+<h2>Examples</h2>
+<h3>Alternative names</h3>
+<div class="language-vivifire listing">
+<pre><code>Declare Function MyAlias1 Is SomeNamespace.SomeFunction
+Declare Function MyAlias2 Is SomeOtherFunction(1, 2, Optional 3=False, 4=0.0)
+Declare Function TwoArgs Is FourArgs(3, 2, Optional 1=0, 4=0)&#10;</code></pre>
+</div>
+<h3>Foreign function libraries</h3>
+<div class="language-vivifire listing">
+<pre><code>Declare "user32.dll" Function BringWindowToTop(h As Int) As Int
+Declare "user32.dll", %ANSI Function SetWindowText Is "SetWindowTextA" (
+    h As Int, s As String ) As Int&#10;</code></pre>
+</div>
+<hr>
+<div class="language-vivifire listing">
+<pre><code>Declare "user32.dll", %ANSI
+    Function BringWindowToTop(h As Int) As Int
+    Function SetWindowText Is "SetWindowTextA"(h As Int, s As String) As Int
+End Declare&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Function_Statement.html">Function Statement</a></li>
+<li><a href="Sub_Statement.html">Sub Statement</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

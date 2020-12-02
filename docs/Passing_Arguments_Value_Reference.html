@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Passing Arguments by Value and by Reference - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Passing_Arguments_Value_Reference.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+<li><a href="Procedures.html">Procedures</a></li>
+<li><a href="Procedure_Parameters_and_Arguments.html">Procedure Parameters and Arguments</a></li>
+</ul>
+</nav>
+<main id="stub">
+<h1 id="top">Passing Arguments by Value and by Reference</h1>
+<p>In ViviFire, you can pass an argument to a procedure by value or by reference.
+This is known as the <dfn>passing mechanism</dfn>.
+It controls if the procedure can change the object that is the argument passed by the caller.
+The procedure declaration controls the passing mechanism for each parameter with the keyword <a href="ByRef.html">ByRef</a>.</p>
+<h2>Qualities of arguments and parameters</h2>
+<p>When you pass an argument to a procedure, know the many related qualities.</p>
+<ul>
+<li>Can the data be changed?</li>
+<li>Can the argument be changed?</li>
+<li>Is the argument passed by value or by reference?</li>
+<li>Is the argument's data type a value type or a reference type?</li>
+</ul>
+<h2>Selection of passing mechanism</h2>
+<p>Select the passing mechanism carefully for each argument.</p>
+<dl>
+<dt>Protection</dt>
+<dd>When you select a passing mechanism, The most important decision is how much risk of change is permitted to variables that you pass as arguments.
+When you pass an argument by reference(<code class="kw">ByRef</code>), the procedure can return a value to the caller through that argument.
+But when you pass an argument by value, the procedure cannot change the value of the variable.</dd>
+<dt>Performance</dt>
+<dd>Although the passing mechanism can have an effect on the performance of your code, the difference is usually very small.
+But one category of variable usually does worse when passed by value.
+For large value types, for example, structures, ViviFire copies all of the data contents of the argument.
+Thus, for a large value type, <code class="kw">ByRef</code> can give better performance.</dd>
+<dd>For reference types, only the pointer to the data is copied (four bytes on 32-bit platforms, eight bytes on 64-bit platforms).
+Thus, you can pass arguments of type <code class="kw">String</code> or objects by value, and it does not decrease performance.</dd>
+</dl>
+<h2>Control the passing mechanism</h2>
+<p>The procedure's declaration controls the passing mechanism for each parameter.
+The caller cannot override the passing mechanism &ldquo;by value&rdquo;.</p>
+<p>If a parameter is declared with <kbd class="kw">ByRef</kbd>, then the caller can call by value if you write the argument between parentheses.</p>
+<p>The default passing mechanism in ViviFire is by value.</p>
+<h2>When to pass by value</h2>
+<p>TODO</p>
+<h2>When to pass by reference</h2>
+<p>TODO</p>
+<h2>Example</h2>
+<p>TODO</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Procedures.html">Procedures</a></li>
+<li><a href="Procedure_Parameters_and_Arguments.html">Procedure Parameters and Arguments</a></li>
+<li><a href="Passing_Arguments_Position_Name.html">Passing Arguments by Position and by Name</a></li>
+<li><a href="Value_Types_and_Reference_Types.html">Value Types and Reference Types</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+</body>
+</html>

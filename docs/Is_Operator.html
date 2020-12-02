@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Is Operator - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Is_Operator.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Operators.html">Operators</a></li>
+<li><a href="Other_Operators.html">Other Operators</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Is Operator</h1>
+<p>Compares the type of an object to an interface, or compares two object references.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>#object Is { #object_2 | interface_name | Object }&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">#object</code></dt>
+<dd>An expression equivalent to an object reference.</dd>
+<dt><code class="id">#object_2</code></dt>
+<dd>An expression equivalent to an object reference.
+<code class="kw">Is</code> returns true if the two references are the same object.</dd>
+<dt><code class="id">interface_name</code></dt>
+<dd>The name of a class or trait.
+<code class="kw">Is</code> returns true if the object has the interface of that type.</dd>
+<dt><code class="kw">Object</code></dt>
+<dd><code class="kw">Is</code> returns true if <code class="id">#object</code> is not <code class="kw">#Null</code>.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>TODO2</p>
+<h2>Examples</h2>
+<div class="language-vivifire listing">
+<pre><code>' Accept that EditMenu inherits from Menu
+EditMenu #edit, "&Edit"
+
+' Find if #edit is a Menu
+If #edit Is Menu Then
+    ' do something with #edit
+End If&#10;</code></pre>
+</div>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

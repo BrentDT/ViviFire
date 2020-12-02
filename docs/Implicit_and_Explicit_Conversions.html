@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Automatic and Non-Automatic Conversions - The ViviFire Programming Language</title><!-- Was: Implicit and Explicit Conversions -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Implicit_and_Explicit_Conversions.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+<li><a href="Data_Types.html">Data Types</a></li>
+<li><a href="Type_Conversions.html">Type Conversions</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Automatic and Non-Automatic Conversions</h1>
+<p>An <dfn>automatic conversion</dfn> lets the compiler change a data type automatically.
+No special syntax is necessary.
+In the example that follows, ViviFire automatically changes the value of <code>k</code> to a floating-point value, then assigns that to <code>q</code>.</p>
+<div class="language-vivifire listing">
+<pre><code>Dim k As Int
+Dim q As Real
+' Int widens to Real
+k = 321
+q = k&#10;</code></pre>
+</div>
+<p>A <dfn>non-automatic conversion</dfn> uses an operator to change a data type to a different one.
+ViviFire supplies two such operators, <code class="kw">As</code> and <code class="kw">In</code>, which change an expression to the necessary data type.</p>
+<p>The example below continues from the example before.
+The value of <code>q</code> is changed to <code class="kw">Int</code>, then assigned to <code>k</code>.</p>
+<div class="language-vivifire listing">
+<pre><code>' q has the value 321.
+q = Math.Sqrt(q)
+k = q As Int
+' k has the value 18 (rounded square root of 321).&#10;</code></pre>
+</div>
+<h2>As operator</h2>
+<table>
+<thead>
+<tr><th>Initial type</th>
+<th>Can change to</th></tr>
+</thead>
+<tbody>
+<tr><td>A numeric type<sup>1</sup></td>
+<td>All numeric types, <code class="kw">String</code>, object<sup>2</sup></td></tr>
+<tr><td><code class="kw">Boolean</code></td>
+<td>All numeric types, <code class="kw">String</code>, object</td></tr>
+<tr><td><code class="kw">Char</code>, array of <code class="kw">Char</code></td>
+<td><code class="kw">String</code></td></tr>
+<tr><td>An object type</td>
+<td>All data types<sup>3</sup></td></tr>
+<tr><td><code class="kw">String</code></td>
+<td>All numeric types, <code class="kw">Char</code>, <code class="kw">DateTime</code>, object</td></tr>
+</tbody>
+</table>
+<ol>
+<li><span class="kws"><code>Int8</code>, <span>UInt8</span>, <code>Int16</code>, <span>UInt16</span>, <code>Int32</code>, <span>UInt32</span>, <code>Int</code>, <span>UInt</span>, <code>Int64</code>, <span>UInt64</span>, <code>Int128</code>, <span>UInt128</span>, <code>Real32</code>, <code>Real64</code>, <code>Real</code>, <code>Real128</code></span></li><!-- TBD: Fixed too? -->
+<li>Must have a type conversion constructor.</li>
+<li>Must have a type conversion method.</li>
+</ol>
+<h2>In operator</h2>
+<p>The operator <code class="kw">In</code> can change a numeric expression to a unit of measure.
+If the expression is a unit of measure, then it can change it to a different unit from the same base unit.
+All units of measure are stored as floating-point types.</p>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

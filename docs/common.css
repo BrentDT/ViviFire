@@ -1,0 +1,285 @@
+body, caption, td, th {
+	font-family: Tahoma, sans-serif;
+	font-size: 100%;
+	background-color: #E0E0E0;
+	color: #333322;
+}
+dd, main li, p {
+	max-width: 65ch;
+}
+table {
+	border: thin solid gray;
+	border-collapse: collapse;
+}
+p#aka {
+	display: none;
+}
+table.info {
+	background-color: #eef;
+	font-size: 95%;
+}
+table.warn {
+	background-color: #ffe;
+	font-size: 105%;
+}
+tbody th {
+	text-align: left;
+	vertical-align: top;
+}
+td.char {
+	font-weight: bold;
+	text-align: center;
+}
+h1 {
+	font-family: Georgia, serif;
+	font-size: 2.5rem;
+}
+h2 {
+	font-size: 1.75rem;
+}
+h3 {
+	font-size: 1.5rem;
+}
+h4 {
+	font-size: 1.25rem;
+}
+div.cols {
+	max-width: 65ch;
+}
+div.cols ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+div.cols div, div.cols li {
+	display: block;
+	float: left;
+	height: 1.5em;
+	line-height: 1.5em;
+	overflow: hidden;
+}
+div.cols .last {
+	clear: both;
+	float: none;
+	height: 0;
+}
+div.four div, div.four li {
+	width: 24%;
+}
+div.six div, div.six li {
+	width: 16%;
+}
+.foot {
+	font-size: 85%;
+	font-style: italic;
+}
+#breadcrumbs {
+	display: none;
+}
+.breadcrumb ul, .breadcrumb ul li {
+	display: inline;
+	list-style: none;
+	font-size: 85%;
+	background-color: #EAEAEA;
+}
+.breadcrumb ul {
+	padding: 0;
+	margin: 0;
+}
+.breadcrumb ul li {
+	padding: 0;
+}
+.breadcrumb ul li:after {
+	content: " \203A ";
+}
+div.listing, div.syntax {
+	border: thin solid gray;
+	padding: 0.3em;
+	min-width: 50%;
+}
+div.listing pre, div.syntax pre {
+	border: thin solid gray;
+	width: 100%;
+	margin-bottom: 0;
+}
+code, code[class="language-vivifire"], pre, PRE[class="language-vivifire"] {
+	font-family: "Source Code Pro", Consolas, Inconsolata, Menlo, "DejaVu Sans Mono", monospace;
+	font-size: 95%;
+	white-space: pre;
+}
+pre>code {
+	background-color: #F8F8F8;
+	color: #080808;
+}
+.listing code, .syntax code {
+	max-height: 10em;
+	overflow: auto;
+}
+.syntax code {
+	word-spacing: -0.5em;
+}
+.language-literal code {
+	word-spacing: -0.75em;
+}
+ul.articles {
+	list-style: none;
+	margin-left: 0;
+	padding-left: 0;
+}
+.token.rem {
+	color: #555;
+	font-style: italic;
+}
+.token.at, dt .at, 
+dt .mod {
+	color: blue;
+	font-weight: bold;
+}
+.token.id, .literal var, dt .id, dt var {
+	color: #077;
+}
+.syntax .token.id, .literal var, dt var, code.id, var.id {
+	font-style: italic;
+}
+.token.kw, .literal kbd, dt .kw, dt kbd {
+	color: navy;
+	font-style: normal;
+}
+.token.kw, .literal kbd, code.at, code.kw, .kws code, 
+dt kbd, kbd.kw, kbd.mod, .kws kbd {
+	font-weight: bold;
+}
+.token.num, .token.char, .token.fixed, .token.date, dt .num {
+	color: #C0C;
+	font-weight: normal;
+}
+.token.op {
+	color: olive;
+}
+code.op, .ops code, 
+kbd.op, .ops kbd {
+	font-family: "Source Code Pro", Consolas, Inconsolata, Menlo, "DejaVu Sans Mono", monospace;
+	font-weight: bold;
+}
+code kbd {
+	color: black;
+	font-weight: bold;
+}
+.token.str, dt .str {
+	color: #C00;
+}
+.articles h2 a, .articles h3 a {
+	color: inherit;
+	text-decoration: inherit;
+}
+input#go {
+	text-align: center;
+	width: 3em;
+}
+code .err {
+	border-bottom:2px dotted red;
+	display: inline-block;
+	position: relative;
+}
+code .err:after {
+	content: '';
+	width: 100%;
+	border-bottom:2px dotted red;
+	position: absolute;
+	bottom:-1px;
+	left: -2px;
+}
+#poll {
+	background-color: #801b1b;
+	color: #eeeeee;
+}
+#poll a:link, #poll a:visited, #poll a:active {
+	color: yellow;
+}
+.checker td {
+	background-color: #fff;
+}
+.checker tr:nth-child(even) td:nth-child(odd), .checker tr:nth-child(odd) td:nth-child(even) {
+	background-color: #ddd;
+}
+kbd kbd { /* Made to look like keys */
+	border-radius: 0.06em;
+	padding: 0.02em 0.04em 0;
+	border: 0.02em solid black;
+}
+
+@media print {
+	* {
+		background-color: white;
+		color: #222;
+		border-color: #222;
+	}
+	nav, .screen, #poll {
+		display: none;
+	}
+}
+
+@media (any-pointer: coarse) {
+	dt + dt a, li a {
+		line-height: 1.4;
+	}
+}
+
+@media all and (min-width: 40em) {
+	dl.parts {
+		display: grid;
+		grid-template-columns: 12em auto;
+		grid-template-rows: auto;
+	}
+	.parts dt {
+		grid-column-start: 1;
+	}
+	.parts dd {
+		grid-column-start: 2;
+	}
+	.parts dt+dd {
+		border-top: thin solid #ccc;
+	}
+}
+
+@media all and (max-width: 40em) {
+	table.wide {
+		width: 100%;
+	}
+	table.wide, .wide thead, .wide tbody, .wide th, .wide td, .wide tr {
+		display: block;
+	}
+	.wide thead tr {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	.wide tr {
+		border: thin solid #ccc;
+	}
+	.wide td, .wide tbody th {
+		border: none;
+		border-bottom: thin solid #eee;
+		position: relative;
+		padding-left: 40%;
+		text-align: left !important;
+	}
+	.wide td:before {
+		position: absolute;
+		top: 6px;
+		left: 6px;
+		width: 35%;
+		padding-right: 0.5em;
+		white-space: nowrap;
+	}
+	.wide td:empty {
+		display: none;
+	}
+}
+/* Add this code before a "wide" table:
+<style media="all and (max-width: 40em)">
+	#table-id tbody th:before { content: "if 1st column th"; }
+	#table-id td:nth-of-type(1):before { content: "th text"; }
+	... (make sure nums correspond)
+</style>
+*/

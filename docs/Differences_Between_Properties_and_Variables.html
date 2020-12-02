@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Differences Between Properties and Variables - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Differences_Between_Properties_and_Variables.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul class="def">
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li>~</li>
+<li><a href="Procedures.html">Procedures</a></li>
+</ul>
+<ul class="alt">
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+<li><a href="Variables.html">Variables</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Differences Between Properties and Variables</h1>
+<h2>Variables</h2>
+<p>A <dfn>variable</dfn> always has a location in memory.
+You make a variable with one declaration statement.
+You make a <dfn>local variable</dfn> in a procedure, and it is available only in that procedure.
+You make a <dfn>member variable</dfn> (also known as a <dfn>field</dfn>) in a module, <code class="kw">Class</code>, or <code class="kw">Struct</code>.</p>
+<h2>Properties</h2>
+<p>A <dfn>property</dfn> is a data element that you make in one of the containers <code class="kw">Library</code> or <code class="kw">Class</code>.
+You make a property with a code block between the clauses <code class="kw">Property</code> and <code class="kw">End</code>.
+The code block contains procedures: <code class="kw">Get</code>, <code class="kw">Set</code>, or the two together.
+These procedures are known as <dfn>property procedures</dfn> or <dfn>property accessors</dfn>.
+They not only return and store a property's value, but can also do other operations.</p>
+<h2>Differences</h2>
+<style media="all and (max-width: 40em)">
+	#tdiff tbody th:before { content: "Quality"; }
+	#tdiff td:nth-of-type(1):before { content: "Variable"; }
+	#tdiff td:nth-of-type(2):before { content: "One-line property"; }
+	#tdiff td:nth-of-type(3):before { content: "Block property"; }
+</style>
+<table id="tdiff" class="wide">
+<thead>
+<tr><th>Quality</th>
+<th>Variable</th>
+<th>One-line property</th>
+<th>Block property</th></tr>
+</thead>
+<tbody>
+<tr>
+<th>Declaration</th>
+<td>One declaration statement</td>
+<td>One declaration statement</td>
+<td>Sequence of statements in a code block</td></tr>
+<tr><th>Implementation</th>
+<td>One location in memory</td>
+<td>One location in memory</td>
+<td>Executable code.</td></tr>
+<tr><th>Storage</th>
+<td>Directly related to its value</td>
+<td>Directly related to its value</td>
+<td>By default, has storage local to the property.</td></tr>
+<tr><th>Executable code</th>
+<td>None</td>
+<td>None</td>
+<td>One or two procedures</td></tr>
+<tr><th>Read and write access</th>
+<td>Read/write or read-only</td>
+<td>Read/write</td>
+<td>Read/write, read-only, or write-only</td></tr>
+<tr><th>Special operations (more than a result or a changed value)</th>
+<td>Not possible</td>
+<td>Not possible</td>
+<td>Possible with <code class="kw">Get</code> and <code class="kw">Set</code>.</td></tr>
+</tbody>
+</table>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Const_Statement.html">Const Statement</a></li>
+<li><a href="Dim_Statement.html">Dim Statement</a></li>
+<li><a href="Property_Statement.html">Property Statement</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+</body>
+</html>

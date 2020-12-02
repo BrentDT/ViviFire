@@ -1,0 +1,17 @@
+﻿program utf8hello
+require ViviFire.IO
+/*
+* NOTE:  Some text may not display properly in certain locales.
+*/
+PrintLine "Chinese: 你好世界"
+PrintLine "Dutch: Hello wereld"
+PrintLine "English: Hello world"
+PrintLine "French: Bonjour monde"
+PrintLine "German: Hallo Welt"
+PrintLine "Greek: γειά σου κόσμος"
+PrintLine "Italian: Ciao mondo"
+PrintLine "Japanese: こんにちは世界"
+PrintLine "Korean: 여보세요 세계"
+PrintLine "Portuguese: Olá mundo"
+PrintLine "Russian: Здравствулте мир"
+PrintLine "Spanish: Hola mundo"

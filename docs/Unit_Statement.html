@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Unit Statement - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Unit_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_3.html">Q&ndash;Z Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Unit Statement</h1>
+<p>Identifies a unit of measure.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<h3>Usual construct</h3>
+<pre><code>[ @SI ] Unit unit_names [ = expression ]&#10;</code></pre>
+<h3>Offset-scale construct</h3>
+<pre><code>[ @SI ] Unit ( parameter In unit ) unit_names = expression&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="at">@SI</code></dt>
+<dd>Optional indication of an SI unit.</dd>
+<dt><code class="id">unit_names</code></dt>
+<dd>Mandatory one or more names with a space between each.
+All names identify the same unit.
+You can give the plurals of names with a plus sign, for example, &ldquo;<code>meter+s</code>&rdquo;.</dd>
+<dt><code class="id">expression</code></dt>
+<dd>A conversion factor.</dd>
+<dd>Optional in the usual construct.</dd>
+<dd>Mandatory in the offset-scale construct.</dd>
+<dt><code class="id">parameter</code></dt>
+<dd>Mandatory in the offset-scale construct.
+You use it with <code class="id">expression</code> for a unit with an offset scale, for example, a unit of temperature.</dd>
+<dt><code class="id">unit</code></dt>
+<dd>A different unit that is related to this unit.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>TODO</p>
+<h2>Examples</h2>
+<div class="language-vivifire listing">
+<pre><code>@SI Unit meter+s metre+s m
+Unit light_year+s ly = 9.4605284 petameters
+Unit Kelvin K
+Unit (k In Kelvin) degree_C degrees_C = k + 273.15&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Base_Unit_Statement.html">Base Unit Statement</a></li>
+<li><a href="Units_of_Measure.html">Units of Measure</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

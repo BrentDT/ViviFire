@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Constructor Statement - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Constructor_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_1.html">A&ndash;E Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Constructor Statement</h1>
+<p>Initializes the data of a new instance of an object.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<h3>Usual construct</h3>
+<pre><code>Constructor [ parameter_list ]
+    [ statements ]
+End [ Constructor ]&#10;</code></pre>
+<h3>Var construct</h3>
+<pre><code>Constructor { Dim | Var }
+    statements
+End [ Constructor ]&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="kw">Dim</code></dt>
+<dd>Used with the &ldquo;Var construct&rdquo;.
+Specifies that variables declared in <code>statements</code> are (1) parameters and (2) members of the parent construct.
+The arguments that you supply automatically assign values to the members.
+Such a constructor must come before usual constructors.</dd>
+<dt><code class="kw">Var</code></dt>
+<dd>Same as <code class="kw">Dim</code>.</dd>
+<dt><code class="id">parameter_list</code></dt>
+<dd>Optional in the usual construct.
+See <a href="Parameter_List.html">Parameter List</a> for more information.</dd>
+<dd>Not permitted in the Var construct.</dd>
+<dt><code class="id">statements</code></dt>
+<dd>Optional in the usual construct &ndash; Executable statements.</dd>
+<dd>Mandatory in the Var construct &ndash; One or more variable declaration statements.</dd>
+<dt><code class="kw">End</code></dt>
+<dd>Completes the statement.
+You can also use <code class="kw">End Constructor</code>.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>ViviFire lets you have many constructors in an object.
+Each constructor must have a different parameter signature.</p>
+<p>All constructors must be in a group together.
+They come after a possible data section and before a possible destructor or other procedures.</p>
+<p>You can think of the data section as a type of constructor.
+Statements you put in this section execute before <code class="kw">Constructor</code>.</p>
+<h3>Permitted parents</h3>
+<ul class="articles">
+<li><a href="Class_Statement.html">Class</a></li>
+<li><a href="Struct_Statement.html">Struct</a></li>
+<!-- TBD li><a href="Trait_Statement.html">Trait</a></li -->
+</ul>
+<h3>Changes in syntax with <code>@Option</code></h3>
+<p>There are two areas where you can change the syntax of the statement:</p>
+<ul>
+<li><code>@Option Dim With Dim</code> and <code>@Option Dim With Var</code></li>
+<li><code>@Option End With Block</code> and <code>@Option End Without Block</code></li>
+</ul>
+<p>See <a href="Option_Directive.html">@Option Directive</a> for more information.</p>
+<h2>Examples</h2>
+<p>TODO</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Destructor_Statement.html">Destructor Statement</a></li>
+<li><a href="Method_Statement.html">Method Statement</a></li>
+<li><a href="Where_Clause_Generics.html">Where Clause (Generics)</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

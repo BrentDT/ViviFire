@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Function Procedures - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Function_Procedures.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+<li><a href="Procedures.html">Procedures</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Function Procedures</h1>
+<p>A <dfn>function procedure</dfn> is a sequence of ViviFire statements between the lines <code class="kw">Function</code> and <code class="kw">End</code>.</p>
+<p>The Function procedure does a task, then returns control to the code that called it (known as the &ldquo;caller&rdquo;).
+The procedure returns a value to the caller.</p>
+<p>Each time some code calls a procedure, its statements execute, which starts with the first executable statement after <code class="kw">Function</code>.
+Execution usually continues until the line <code class="kw">End</code>.
+But, it can be stopped by one of the statements <code class="kw">Exit Function</code> or <code class="kw">Return</code>.</p>
+<p>You can make a function procedure in modules, classes, objects, and traits.
+Function procedures are private.
+They can be called only by other code in the same container (class, object, or trait), or module if not in one of these containers.</p>
+<p>A function procedure can have arguments, such as constants, variables, or expressions, passed to it by the caller.</p>
+<h2>Declaration syntax</h2>
+<div class="language-vivifire listing">
+<pre><code>Function function_name [ parameter_list ]
+    ' statements
+End Function&#10;</code></pre>
+</div>
+<p>You declare the parameter list almost the same as you do for <a href="Sub_Procedures.html#Parameter_declaration">Sub Procedures</a>.</p>
+<h2 id="Data_type">Data type</h2>
+<p>TODO</p>
+<h2>To return a value</h2>
+<p>TODO</p>
+<h2>Calling syntax</h2>
+<p>TODO</p>
+<h2>Example of declaration and call</h2>
+<p>TODO</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Function_Statement.html">Function Statement</a></li>
+<li><a href="Method_Procedures.html">Method Procedures</a></li>
+<li><a href="Property_Procedures.html">Property Procedures</a></li>
+<li><a href="Sub_Procedures.html">Sub Procedures</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

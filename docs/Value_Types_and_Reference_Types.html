@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Value Types and Reference Types - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Value_Types_and_Reference_Types.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+<li><a href="Data_Types.html">Data Types</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Value Types and Reference Types</h1>
+<p>There are two types of data types in ViviFire: reference types and value types.
+A variable of a reference type stores a reference to its data object, while a variable of a value type directly contains its data.
+With reference types, two variables can refer to the same object.
+Thus, operations on one variable can have an effect on the object that the other variable refers to.
+With value types, each variable has a copy of the data.
+Thus, it is usually not possible for operations on one variable to have an effect on a different variable.
+It is possible only with the modifier <a href="ByRef.html">ByRef</a> on parameters.</p>
+<h2>Value types</h2>
+<ul>
+<li>All numeric data types</li>
+<li><span class="kws"><code>Boolean</code>, <code>Char</code>, and <code>DateTime</code></span></li>
+<li>All structures, although their members can be reference types</li>
+<li>Enumerations, because they are equivalent to integer types</li>
+</ul>
+<h2>Reference types</h2>
+<ul>
+<li>All arrays, although their members can be value types</li>
+<li>Class types</li>
+</ul>
+<h2>Elements that are not types</h2>
+<ul>
+<li>Modules and namespaces</li>
+<li>Properties and procedures</li>
+<li>Variables, constants, and fields</li>
+</ul>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Nullable_Value_Types.html">Nullable Value Types</a></li>
+<li><a href="Struct_Statement.html">Struct Statement</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+</body>
+</html>

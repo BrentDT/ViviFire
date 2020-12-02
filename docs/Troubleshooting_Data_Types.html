@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Data Type Troubleshooting - The ViviFire Programming Language</title><!-- Was: Troubleshooting Data Types -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Troubleshooting_Data_Types.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<main>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+<li><a href="Data_Types.html">Data Types</a></li>
+</ul>
+</nav>
+<h1 id="top">Data Type Troubleshooting</h1>
+<p>What follows is a list of problems that can occur when you use intrinsic data types.</p>
+<h2>Floating-point values do not compare as equal</h2>
+<p>When you use floating-point numbers (<a href="Real32_Data_Type.html">Real32</a>, <a href="Real64_Data_Type.html">Real64</a>, <a href="Real_Data_Type.html">Real</a>, and <a href="Real128_Data_Type.html">Real128</a>), know that they are stored as binary fractions.
+They can hold an accurate quantity only when it is a binary fraction with <code>k / (2 ^ n)</code>, where <code class="id">k</code> and <code class="id">n</code> are integers.
+For example, <code>0.5 = 1/2</code> and <code>0.1875 = 3/16</code>.
+Thus these are accurate values.
+But <code>0.3 = 3/10</code> and <code>0.15 = 3/20</code>, thus these are approximate values.</p>
+<p>Because of this, you cannot be sure of accurate values as a result of floating-point operations.
+You cannot think that two given values will be equal, although mathematics shows that they are.</p>
+<p>To compare floating-point values, follow these steps:</p>
+<ul>
+<li>Select a satisfactory maximum tolerance for the given comparison.
+All values in this range will become equal.</li>
+<li>Put <code class="kw">Tol</code> directly after the end of the comparison expression.</li>
+<li>Follow that with the selected tolerance value.
+This can be a floating-point literal or a declared constant (See <a href="Const_Statement.html"><code>Const</code></a>).</li>
+</ul>
+<p>See <a href="Tol_Clause.html">Tol Clause</a> for more information.</p>
+</main>
+<script src="common.js"></script>
+</body>
+</html>

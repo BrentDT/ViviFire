@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>In Operator - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/In_Operator.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Operators.html">Operators</a></li>
+<li><a href="Other_Operators.html">Other Operators</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">In Operator</h1>
+<p>Gives a numeric value a unit of measure.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>expression In unit&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">expression</code></dt>
+<dd>A numeric expression.</dd>
+<dt><code class="id">unit</code></dt>
+<dd>The name of a unit of measure.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>You use the operator <code class="kw">In</code> when an expression must become a unit of measure, such as an argument to a procedure with that unit.</p>
+<p>The operator is not necessary when the expression is of a compatible unit, then it changes automatically.
+It is also not necessary after a simple numeric literal, where only the unit is necessary.</p>
+<p>If you try to change a value in one unit to one that is not compatible, then the result is a compiler error.</p>
+<h2>Examples</h2>
+<p>TODO</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Base_Unit_Statement.html">Base Unit Statement</a></li>
+<li><a href="Dim_Statement.html">Dim Statement</a></li>
+<li><a href="Parameter_List.html">Parameter List</a></li>
+<li><a href="Unit_Statement.html">Unit Statement</a></li>
+<li><a href="Units_of_Measure.html">Units of Measure</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

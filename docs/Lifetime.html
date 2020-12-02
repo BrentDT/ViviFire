@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Lifetime - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Lifetime.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+<li><a href="Declared_Elements.html">Declared Elements</a></li>
+<li><a href="Declared_Element_Qualities.html">Declared Element Qualities</a></li>
+</ul>
+</nav>
+<main id="stub">
+<h1 id="top">Lifetime</h1>
+<p>The <dfn>lifetime</dfn> of a declared element is the period of time during which it is available to use.
+Variables are the only elements that have lifetime.
+But you can think of procedure parameters and function returns as special variables.</p>
+<p>The lifetime of a variable is the period of time during which it can hold a value.
+Its value can change during its lifetime, but it always holds some value.</p>
+<h2>Different lifetimes</h2>
+<p>A <dfn>member variable</dfn> (declared at module level, but not in a procedure) usually has the same lifetime as the element in which it is declared.
+A non-shared variable declared in a class or structure is an isolated copy for each instance of the class or structure.
+Each such variable has the same lifetime as its instance.
+But a variable with <code class="at">@Shared</code> has only one lifetime, which continues for the full run-time of a program.</p>
+<p>A <dfn>local variable</dfn> (declared in a procedure) has lifetime only during the run-time of the procedure.
+The same applies to that procedure's parameters and function return, if applicable.
+But if that procedure calls other procedures, then the local variables keep their values while the called procedures execute.</p>
+<h2>Start of lifetime</h2>
+<p>TODO</p>
+<h2>End of lifetime</h2>
+<p>TODO</p>
+<h2>Extension of lifetime</h2>
+<p>TODO</p>
+<h2>Shared variables with the same name</h2>
+<p>TODO</p>
+<h2>Containers for Shared variables</h2>
+<p>TODO</p>
+<h2>Examples</h2>
+<p>TODO</p>
+</main>
+<script src="common.js"></script>
+</body>
+</html>

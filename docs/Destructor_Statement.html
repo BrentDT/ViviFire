@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Destructor Statement - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Destructor_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_1.html">A&ndash;E Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Destructor Statement</h1>
+<p>Identifies the code to execute when an instance of a class is destroyed.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>Destructor
+    [ statements ]
+End [ Destructor ]&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">statements</code></dt>
+<dd>Optional executable statements.</dd>
+<dt><code class="kw">End</code></dt>
+<dd>Completes the statement.
+You can also use <code class="kw">End Destructor</code>.</dd>
+<dd>You can change the syntax of this part.
+See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>Usually a destructor is necessary to free a system resource, for example an Internet socket.</p>
+<p>Only one destructor is permitted in a class.
+You must put the destructor after all constructors and before all procedures of the types <span class="kws"><code>Function</code>, <code>Method</code>, <code>Property</code>, or <code>Sub</code></span>.</p>
+<h2>Examples</h2>
+<p>TODO</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Class_Statement.html">Class Statement</a></li>
+<li><a href="Constructor_Statement.html">Constructor Statement</a></li>
+<li><a href="Method_Statement.html">Method Statement</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

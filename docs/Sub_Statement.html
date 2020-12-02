@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Sub Statement - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Sub_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_3.html">Q&ndash;Z Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Sub Statement</h1>
+<p>Makes a private procedure or event handler.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<h3>Usual construct</h3>
+<pre><code>[ @Shared ] Sub procedure_name [ type_list ] [ parameter_list ] [ return_type ]
+    [ Where generic_constraints ]
+    [ statements ]
+End [ Sub ]&#10;</code></pre>
+<h3>Event-handler construct</h3>
+<pre><code>[ @Shared ] Sub procedure_name [ type_list ] [ parameter_list ] Handles event_name
+    [ Where generic_constraints ]
+    [ statements ]
+End [ Sub ]&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="at">@Shared</code></dt>
+<dd>Optional modifier specifies that the procedure is a member of its container, and not an instance of that container.</dd>
+<dt><code class="id">procedure_name</code></dt>
+<dd>Mandatory name for the procedure.</dd>
+<dt><code class="id">type_list</code></dt>
+<dd>Optional one or more names with a comma between each, all between brackets (<code class="op">[ ]</code>).
+See <a href="Type_List.html">Type List</a> for more information.</dd>
+<dt><code class="id">parameter_list</code></dt>
+<dd>Optional one or more declarators with a comma between each, optionally between parentheses.
+But if you supply <code class="id">return_type</code>, then the parentheses are mandatory.
+See <a href="Parameter_List.html">Parameter List</a> for more information.</dd>
+<dt><code class="id">return_type</code></dt>
+<dd>Optional in the usual construct.</dd>
+<dd>Not permitted in the event-handler construct.</dd>
+<dd>
+	<div class="language-vivifire syntax">
+	<h3>Return type</h3>
+	<pre><code>As type&#10;</code></pre>
+	<div>or</div>
+	<pre><code>In unit&#10;</code></pre>
+	</div>
+	<dl class="parts">
+	<dt><code class="id">type</code></dt>
+	<dd>A data type</dd>
+	<dt><code class="id">unit</code></dt>
+	<dd>A unit of measure</dd>
+	</dl>
+</dd>
+<dt><code class="kw">Handles</code></dt>
+<dd>Mandatory keyword used with the event-handler construct.
+See the <a href="#Handles_keyword">Handles keyword section</a> for more information.</dd>
+<dt><code class="id">generic_constraints</code></dt>
+<dd>Optional.
+See <a href="Where_Clause_Generics.html">Where Clause (Generics)</a> for more information.</dd>
+<dt><code class="id">statements</code></dt>
+<dd>Optional one or more executable statements.</dd>
+<dt><code class="kw">End</code></dt>
+<dd>Completes the statement.
+You can also use <code class="kw">End Sub</code>.</dd>
+<dd>You can change this part of the syntax.
+See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
+</dl>
+<h2>Instructions</h2>
+<p><code class="kw">End Sub</code> is not the same as <a href="Exit_Statement.html"><code>Exit Sub</code></a>.</p>
+<p><code class="kw">Sub</code> is short for &ldquo;subroutine&rdquo;.</p>
+<h2 id="Handles_keyword">Handles keyword</h2>
+<p>The keyword <code class="kw">Handles</code> does two things for the construct <code class="kw">Sub</code>.</p>
+<ol>
+<li>It changes the procedure to become an event handler.</li>
+<li>It puts the parameters supplied by a declaration of <code class="kw">Event</code> into the procedure where they become available.</li>
+</ol>
+<h2>Examples</h2>
+<p>TODO</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Call_Statement.html">Call Statement</a></li>
+<li><a href="Event_Statement.html">Event Statement</a></li>
+<li><a href="Exit_Statement.html">Exit Statement</a></li>
+<li><a href="Function_Statement.html">Function Statement</a></li>
+<li><a href="Method_Statement.html">Method Statement</a></li>
+<li><a href="Return_Statement.html">Return Statement</a></li>
+<li><a href="Sub_Operator.html">Sub Operator</a></li>
+<li><a href="Events.html">Events</a></li>
+<li><a href="Sub_Procedures.html">Sub Procedures</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

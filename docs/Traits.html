@@ -1,0 +1,156 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Traits - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Traits.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+</ul>
+</nav>
+<main><!-- STE -->
+<h1 id="top">Traits</h1>
+<p>A <dfn>trait</dfn> is a construct that lets you use code again and again.
+In a language that does not let classes inherit from more than one parent class, such as ViviFire, traits can decrease some of the limits this causes.
+Traits let you use sets of methods freely in different classes, related or not.
+The effects of the mixture of traits and classes are specified in a manner which is easy to accept.</p>
+<p>A trait shows almost the same as a class, but specifies only behavior in a controlled manner.
+You cannot make a variable from a trait.
+Together with the usual inheritance construct, traits do what is known as <dfn>horizontal composition</dfn> of behavior.
+That is, the trait applies its methods to a class without inheritance.</p>
+<h2>Declaration of traits</h2>
+<p>A trait usually starts with <code class="kw">Trait</code> and completes with <code class="kw">End Trait</code>.
+Between these two lines you can put one or more permitted statements:
+<span class="kws"><code>Method</code>, <code>Property</code>, <code>Function</code>, <code>Sub</code>, and TBD</span>.</p>
+<p>A class that uses a trait has access only to the public members of the trait&mdash;methods and properties.
+These also become part of the interface of the class .
+The class cannot directly get access to the other members of the trait.</p>
+<p>A method or property is usually made with a body of statements.
+But if you use the modifier <code class="at">@Abstract</code>, then the method or property cannot have a body.
+A class that uses the trait must declare the method or property again, and supply a body of statements.</p>
+<h3>Precedence</h3>
+<p>If a class and a trait make available different methods with the same signature, then the class comes before the trait.
+And if a trait and a parent class cause the same problem, then the trait comes before the parent class.</p>
+<p>That is, class &gt; trait &gt; parent class.</p>
+<h3>Multiple traits</h3>
+<p>TODO</p>
+<h3>Conflict resolution</h3>
+<div class="language-vivifire listing">
+<pre><code>Trait A
+    Method Calculate
+        ' ...
+    End Method
+End Trait
+
+Trait B
+    Method Calculate
+        ' ...
+    End Method
+End Trait
+
+Class Calculator Does A Does B
+    Method CalculateA Does A.Calculate
+    Method CalculateB Does B.Calculate
+End Class&#10;</code></pre>
+</div>
+<h3>To Change method visibility</h3>
+<div class="language-vivifire listing">
+<pre><code>Trait Foobar
+    Method Foo
+        ' ...
+    End Method
+    Method Bar
+        ' ...
+    End Method
+End Trait
+
+Class Barless Does Foobar
+    Function Bar Does Foobar.Bar
+End Class&#10;</code></pre>
+</div>
+<h3>Traits composed from traits</h3>
+<div class="language-vivifire listing">
+<pre><code>Trait Foo
+    Method Foo
+        ' ...
+    End Method
+End Trait
+
+Trait Bar
+    Method Bar
+        ' ...
+    End Method
+End Trait
+
+Trait Foobar Does Foo Does Bar
+    ' ...
+End Trait&#10;</code></pre>
+</div>
+<h3>Abstract traits</h3>
+<p>If all of the methods and properties of a trait must be abstract, then you can put <code class="at">@Abstract</code> before the trait.
+Then it is not necessary to put the modifier before each method and property.</p>
+<p>An abstract trait has more limits than a usual trait:</p>
+<ul>
+<li>It must have one or more public procedures (<code class="kw">Method</code> or <code class="kw">Property</code>).</li>
+<li>It must not have private procedures (<code class="kw">Function</code> and <code class="kw">Sub</code>).</li>
+</ul>
+<h3>Shared trait members</h3>
+<p>TODO</p>
+<h3>Properties</h3>
+<p>TODO</p>
+<h2>Uses for traits</h2>
+<p>TODO</p>
+<h2>Examples</h2>
+<div class="language-vivifire listing">
+<pre><code>@Abstract Class Pet
+End Class
+
+Trait Walk
+    Method StartWalking
+    End Method
+End Trait
+
+Trait Swim
+    Method StartSwimming
+    End Method
+End Trait
+
+@Abstract Trait Speak
+    Method Speak As String
+End Trait
+
+Class Dog Is Pet Does Walk Does Swim Does Speak
+    @Override Method Speak As String
+        Return "Arf"
+    End Method
+End Class
+
+Class Cat Is Pet Does Walk Does Speak
+    @Override Method Speak As String
+        Return "Meow"
+    End Method
+End Class
+
+Class Fish Is Pet Does Swim
+End Class&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Trait_Statement.html">Trait Statement</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

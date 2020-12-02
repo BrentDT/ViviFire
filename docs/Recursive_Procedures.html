@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Recursive Procedures - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Recursive_Procedures.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+<li><a href="Procedures.html">Procedures</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Recursive Procedures</h1>
+<p>A <dfn>recursive procedure</dfn> is a procedure that calls itself.
+But know that a loop construct usually can do the same work more satisfactorily.</p>
+<p>The procedure that follows uses recursion to calculate the factorial of its initial argument.</p>
+<div class="language-vivifire listing">
+<pre><code>Function factorial(n As Int) As Int
+    Return If n &lt;= 1 Then 1 Else n * factorial(n - 1)
+End Function&#10;</code></pre>
+</div>
+<h2>Instructions</h2>
+<dl>
+<dt>Limits on execution</dt>
+<dd>A recursive procedure must contain a test that can stop recursion, and with the smallest number of recursive calls possible.
+Without these, there is a risk of an infinite loop.</dd>
+<dt>Memory limits</dt>
+<dd>Your program has a space in memory for its local variables.
+Each time a procedure calls itself, it uses some of this memory to keep copies of local variables.
+If this process continues for too long, then the space will decrease until none is remaining.
+The result is a run-time error, <code>StackOverflowError</code>.</dd>
+<dt>Performance</dt>
+<dd>A loop is usually a better alternative to recursion.
+A procedure call must pass arguments, initialize storage, and return a result.
+A loop has none of this overhead.</dd>
+<dt>Mutual recursion</dt>
+<dd>Two procedures can call each other.
+This can have the same problems as usual recursion, but not as easy to find and debug.</dd>
+</dl>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Procedures.html">Procedures</a></li>
+<li><a href="Function_Procedures.html">Function Procedures</a></li>
+<li><a href="Method_Procedures.html">Method Procedures</a></li>
+<li><a href="Property_Procedures.html">Property Procedures</a></li>
+<li><a href="Sub_Procedures.html">Sub Procedures</a></li>
+<li><a href="Loop_Constructs.html">Loop Constructs</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

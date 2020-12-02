@@ -1,0 +1,21 @@
+program lineinput
+/* Equivalent to LB code:
+  FileDialog "Open", "*.*", F$
+  If f$ <> "" Then
+    Open f$ For Input As #f
+    While Not(EOF(#f))
+      Line Input #f, a$
+    Wend
+    Close #f
+  End If
+*/
+' Create a FileDialog object with defaults
+FileDialog #f
+' Display the "Open" dialog
+If #f.Open? ' The selected file is open for input
+  ' Loop until reaching the end of the file
+  While Not #F.EOF?
+    ' Get the next line
+    a$ = #f.LineInput$?
+  End While
+End If

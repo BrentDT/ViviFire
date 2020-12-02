@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Const Statement - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Const_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_1.html">A&ndash;E Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Const Statement</h1>
+<p>Gives a name to a value that does not change.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>Const declarator [ , declarator ]&hellip;&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">declarator</code></dt>
+<dd>Mandatory one or more declarations with a comma between each.
+	<div class="language-vivifire syntax">
+	<h3>Declarator</h3>
+	<pre><code>name [ As type | In unit ] = expression&#10;</code></pre>
+	</div>
+	<dl class="parts">
+	<dt><code class="id">name</code></dt>
+	<dd>Mandatory name for a value type.</dd>
+	<dt><code class="id">type</code></dt>
+	<dd>Optional elementary data type.</dd>
+	<dt><code class="id">unit</code></dt>
+	<dd>Optional unit of measure..</dd>
+	<dt><code class="id">expression</code></dt>
+	<dd>Mandatory constant expression.</dd>
+	</dl>
+</dd>
+</dl>
+<h2>Instructions</h2>
+<p><code class="kw">Const</code> is short for &ldquo;constant&rdquo;.</p>
+<p>TODO</p>
+<h2>Examples</h2>
+<div class="language-vivifire listing">
+<pre><code>Const MaxLength As UInt = 32768
+Const HTTP_GET = "GET", HTTP_POST = "POST"
+Const ScalingFactor = 5.0 / 3.0&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Dim_Statement.html">Dim Statement</a></li>
+<li><a href="Enum_Statement.html">Enum Statement</a></li>
+<li><a href="Const_Directive.html">@Const Directive</a></li>
+<li><a href="Constants_and_Enumerations.html">Constants and Enumerations</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

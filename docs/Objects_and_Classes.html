@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Objects and Classes - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Objects_and_Classes.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+</ul>
+</nav>
+<main id="stub">
+<h1 id="top">Objects and Classes</h1>
+<p>An <dfn>object</dfn> is a mixture of code and data that you control as a unit.
+An object can be a piece of a program, such as a control or a window.</p>
+<p>When you make a program in ViviFire, you constantly use objects.
+You can use objects supplied by ViviFire, such as controls and data access objects.
+You can use objects supplied by other programmers.
+Also, you can make objects for your program only.</p>
+<p>You can think of objects as building blocks for programs.
+They let you write a piece of code one time and use it again and again.</p>
+<h2>Objects and classes</h2>
+<p>TODO</p>
+<h3>To make an object from a class</h3>
+<div class="language-vivifire listing">
+<pre><code>SomeClass my_object&#10;</code></pre>
+<div>or</div>
+<pre><code>New SomeClass my_object&#10;</code></pre>
+</div>
+<h3>Multiple instances</h3>
+<p>TODO</p>
+<h2>Object members</h2>
+<p>TODO</p>
+<h3>Member access</h3>
+<p>To get access to a member of a class, you write, (1) the name of the object variable, (2) a period (<code class="op">.</code>), and (3) the name of the member.
+The example that follows sets the property <code>Text</code> of an object of type <code>StatusBar</code>.</p>
+<div class="language-vivifire listing">
+<pre><code>my_status.Text = "Ready"&#10;</code></pre>
+</div>
+<h3>Properties</h3>
+<p>You use property procedures when:</p>
+<ul>
+<li>The property must obey limits on values.</li>
+<li>The value of the property can change only for some conditions.</li>
+<li>Changes to the value cause a change that can be sensed, for example text shown by a control.</li>
+<li>Changes to the property cause other properties to change.</li>
+</ul>
+<p>See <a href="Property_Procedures.html#">Property Procedures</a> for more information.</p>
+<h3>Methods</h3>
+<p>TODO</p>
+<p>See <a href="Procedures.html">Procedures</a> for more information.</p>
+<h3>Events</h3>
+<p>TODO</p>
+<p>See <a href="Events.html">Events</a> for more information.</p>
+<h3>Instance members and shared members</h3>
+<p>TODO</p>
+<h3>Access to a nonshared member of an object</h3>
+<p>Make sure that you made the object from its class and assigned it to an object variable.</p>
+<p>TODO</p>
+<p>In the statement that gets access to the member, write the object variable name, then a period (<code class="op">.</code>), and then the member name.</p>
+<p>TODO</p>
+<h3>Access to a shared member of a class</h3>
+<p>You write the class name, then a period (<code class="op">.</code>), and then the member name.
+You cannot get access to a shared member through a variable.</p>
+<p>TODO</p>
+<h3>Differences between classes and library modules</h3>
+<p>TODO</p>
+<h2>Use classes again and again</h2>
+<p>Objects let you declare variables and procedures one time and then use them again and again.
+For example, if a control to select dates is necessary, you could make one for your program only.
+But you can be sure that this function will be necessary for other programs.
+If you make your control as a class, then you can easily use it with other programs.
+But a class made by a different person could be much easier.</p>
+<p>TODO</p>
+<h2>How objects are related</h2>
+<p>TODO</p>
+<h3>Parent&ndash;child relations</h3>
+<p>TODO</p>
+<h3>Container relations</h3>
+<p>TODO</p>
+<h4>Collections</h4>
+<p>TODO</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Class_Statement.html">Class Statement</a></li>
+<li><a href="Object_Statement.html">Object Statement</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

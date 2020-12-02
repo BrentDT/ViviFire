@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Units of Measure - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Units_of_Measure.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Units of Measure</h1>
+<p>A <dfn>unit of measure</dfn> is a specification that uses numbers to tell you about a physical quantity.
+You can compare two quantities only if they have the same unit.
+If they have different units, then you must change one to the other.
+When you change a unit, then you must change the number, usually by multiplication.</p>
+<h2>Background</h2>
+<p>For a very long time, different cultures used different units for the same dimensions.
+Frequently they could not agree how to change between units.</p>
+<p>Most cultures at this time use the metric system.
+But Myanmar, Liberia, and the USA reject it.
+Also, The UK uses it less than other parts of Europe.
+But also those using the metric system can disagree on how much resolution is necessary, for example 1.5 seconds compared to 1500 milliseconds.</p>
+<p>ViviFire lets you identify units of measure.
+With this comes compile-time checks of correctness and automatic changes of values to the necessary units.</p>
+<h2>Syntax</h2>
+<p>How a physical quantity shows is almost the same as that used in standard print.
+You write a floating-point number, then a unit.
+If the unit is one word, then you can write it without punctuation.
+But if it is more than one word, then you must write the unit between parentheses.
+Names of units do not ignore letter case.
+This is the only part of ViviFire where this occurs.</p>
+<p>You can specify multiplication in two styles.
+You can write names with spaces between them, which occurs frequently in mathematics.
+Or you can use an asterisk (<code class="op">*</code>).</p>
+<p>You can write division in only one style.
+You use a forward slash (<code class="op">/</code>). </p>
+<p>Some examples folow.</p>
+<div class="language-vivifire listing">
+<pre><code>height = (443.2 meters
+circumference = 40_075.017 km
+power1 = 3.6 megajoules
+power2 = 2.0 (kilowatt*hours)
+power3 = 3.0 (kW h)
+speed1 = 343.0 (meters/second)
+speed2 = 1_480.0 (m/s)&#10;</code></pre>
+</div>
+<h2>Base units</h2>
+<p>A <dfn>base unit</dfn> is a unit to measure a physical quantity that has no relation to other units.
+The SI base units are meter, kilogram, second, ampere, Kelvin, mole, and candela.</p>
+<div class="language-vivifire listing">
+<pre><code>Base Unit length In meters
+Base Unit mass In kilograms
+Base Unit time In seconds
+Base Unit electric_current In amperes
+Base Unit temperature In Kelvin
+Base Unit amount_of_substance In moles
+Base Unit luminous_intensity In candelas&#10;</code></pre>
+</div>
+<h2>Derived units</h2>
+<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>Base Unit velocity In (meters/second)&#10;</code></pre>
+</div>
+<h2>Alternative names and SI prefixes</h2>
+<p>Units can have many interchangable names.
+For example, &ldquo;km&rdquo; is short for &ldquo;kilometer&rdquo; or &ldquo;kilometre&rdquo;.</p>
+<p>To make alternative names, write each name with spaces between them.
+To make the plural of a name, write the plural suffix after a plus sign.</p>
+<p>To specify that a unit is an SI unit, put the modifier <code class="at">@SI</code> before the keyword <code class="kw">Unit</code>.
+This automatically makes all names with the SI prefixes of magnitude.
+For a one-letter name, it adds the short prefixes, such as &ldquo;k&rdquo;.
+For longer names, it uses the full prefixes, such as &ldquo;kilo&rdquo;.</p>
+<p>Different units can have the same name if each unit has a different base unit.
+But when this occurs, you cannot use these units to make a variable or parameter to a procedure with the keyword <code class="kw">In</code>.
+You can try to make units that do not have the same name, or use a different alternative name.</p>
+<h3>Example</h3>
+<div class="language-vivifire listing">
+<pre><code>@SI Unit meter+s metre+s m&#10;</code></pre>
+</div>
+<p>The above statement makes the units that follow:</p>
+<ul>
+<li>meter, yottameter, zettameter, exameter, petameter, terameter, gigameter, megameter, kilometer, hectometer, decameter, decimeter, centimeter, millimeter, micrometer, nanometer, picometer, femtometer, attometer, zeptometer, and yoctometer</li>
+<li>meters, yottameters, zettameters, exameters, petameters, terameters, gigameters, megameters, kilometers, hectometers, decameters, decimeters, centimeters, millimeters, micrometers, nanometers, picometers, femtometers, attometers, zeptometers, and yoctometers</li>
+<li>metre, yottametre, zettametre, exametre, petametre, terametre, gigametre, megametre, kilometre, hectometre, decametre, decimetre, centimetre, millimetre, micrometre, nanometre, picometre, femtometre, attometre, zeptometre, and yoctometre</li>
+<li>metres, yottametres, zettametres, exametres, petametres, terametres, gigametres, megametres, kilometres, hectometres, decametres, decimetres, centimetres, millimetres, micrometres, nanometres, picometres, femtometres, attometres, zeptometres, and yoctometres</li>
+<li>m, Ym, Zm, Em, Pm, Tm, Gm, Mm, km, hm, dam, dm, cm, mm, &micro;m, um, nm, pm, fm, am, zm, and ym.</li>
+</ul>
+<h2>Units with offset scales</h2>
+<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>Unit Kelvin K
+Unit (k In Kelvin) degree_C degrees_C = k + 273.15&#10;</code></pre>
+</div>
+<h2>Measure types and variables</h2>
+<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>Var height In meters&#10;</code></pre>
+</div>
+<h2>Conversions</h2>
+<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>height = 6 feet&#10;</code></pre>
+</div>
+<table class="result">
+<caption>After execution</caption>
+<thead>
+<tr><th>Variable</th><th>Value</th></tr>
+</thead>
+<tbody>
+<tr><th><kbd>height</kbd></th>
+<td><samp>1.8288 meters</samp></td></tr>
+</tbody>
+</table>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Base_Unit_Statement.html">Base Unit Statement</a></li>
+<li><a href="Unit_Statement.html">Unit Statement</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

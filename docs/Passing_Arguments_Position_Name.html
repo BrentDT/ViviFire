@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Passing Arguments by Position and by Name - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Passing_Arguments_Position_Name.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+<li><a href="Procedures.html">Procedures</a></li>
+<li><a href="Procedure_Parameters_and_Arguments.html">Procedure Parameters and Arguments</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Passing Arguments by Position and by Name</h1>
+<p>When you call a procedure, you usually pass arguments <dfn>by position</dfn> &mdash; the same sequence given in the declaration of the procedure.
+But you can also pass them <dfn>by name</dfn>, and ignore their positions.</p>
+<p>When you pass an argument by name, you give the sequence:
+(1) its name  from the declaration,
+(2) a colon and an equals sign (<code class="op">:=</code>),
+and (3) the argument value.
+Named arguments ignore all position information.</p>
+<p>For example, you can pass three arguments to the procedure that follows.</p>
+<div class="language-vivifire listing">
+<pre><code>Sub Test ( arg1 As String,
+        Optional arg2 As String = "bar",
+        arg3 As Int = 42 )
+    #Debug.Print "arg1=""" &amp; arg1 &amp; """" $N _
+        "arg2=""" &amp; arg2 &amp; """" $N _
+        "arg3=" &amp; arg3 &amp; $N
+End Sub&#10;</code></pre>
+</div>
+<h2>Arguments passed by position</h2>
+<div class="language-vivifire listing">
+<pre><code>Call Test "foo", "baz", 3&#10;</code></pre>
+</div>
+<div class="language-vivifire listing">
+<pre><code>Call Test "foo", , 3&#10;</code></pre>
+</div>
+<h2>Arguments passed by name</h2>
+<div class="language-vivifire listing">
+<pre><code>Call Test arg3 := 3, arg2 := "baz", arg1 := "foo"&#10;</code></pre>
+</div>
+<h2>Mixed arguments, by position and by name</h2>
+<div class="language-vivifire listing">
+<pre><code>Call Test "foo", arg3 := 3, arg2 := "baz"&#10;</code></pre>
+</div>
+<h2>Optional arguments supplied by name</h2>
+<p>TODO2</p>
+<h2>Limits on arguments supplied by name</h2>
+<p>TODO2</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Passing_Arguments_Value_Reference.html">Passing Arguments by Value and by Reference</a></li>
+<li><a href="Declare_Statement.html">Declare Statement</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

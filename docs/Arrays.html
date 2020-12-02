@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Arrays - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Arrays.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Arrays</h1>
+<p>An <dfn>array</dfn> is a set of values that are logically related to each other.
+You refer to these values by the same variable name and use a number called an <dfn>index</dfn> or <dfn>subscript</dfn> to select each value.
+These values are known as the <dfn>elements</dfn> of the array and fully use a range from zero thru a specified maximum.</p>
+<p>Variables other than arrays are known as <dfn>scalars</dfn>.
+A scalar can hold only one value at a time.</p>
+<h2>Creating an array</h2>
+<p>You make an array with the same statements you use to make other variables.
+The only difference is the dimensions of the array, which you put in parentheses.
+Some examples follow.</p>
+<div class="language-vivifire listing">
+<pre><code>Dim my_first_array(10)&#10;</code></pre>
+</div>
+<p>Because <code>my_first_array</code> uses one index or subscript, it is known as a <dfn>onee-dimensional array</dfn>.
+You also can make arrays with more than one subscript, usually known as <dfn>multidimensional arrays</dfn>.
+See <a href="Array_Dimensions.html">Array Dimensions</a> for more information.</p>
+<h2>Storing values in an array</h2>
+<p>You get access to each element in an array with an index of type <code class="kw">Int</code>.
+You write the name of the array, then the index between parentheses.
+Indexes for multidimensional arrays have a comma between each.
+You use one index for each array dimension.</p>
+<h2>Giving an array initial values</h2>
+<p>You can give an array some initial values with an <dfn>array initializer</dfn>.
+An array initializer is a list of values with a comma (<code class="op">,</code>) between each, all between braces (<code class="op">{ }</code>).</p>
+<div class="language-vivifire listing">
+<pre><code>Dim days() = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" }&#10;</code></pre>
+</div>
+<h3>Nested initializers</h3>
+<p>You can make arrays with many dimensions with nested array initializers.</p>
+<div class="language-vivifire listing">
+<pre><code>Dim magic() = {{4, 9, 2}, {3, 5, 7}, {8, 1, 6}}&#10;</code></pre>
+</div>
+<h2>Iterating through an array</h2>
+<p>TODO2</p>
+<div class="language-vivifire listing">
+<pre><code>Dim numbers() As Int = { 1, 2, 3 }
+
+For index = 0 To numbers.Last
+    PrintLine numbers(index)
+End For&#10;</code></pre>
+<div>Output:</div>
+<pre><samp>1
+2
+3</samp></pre>
+</div>
+<div class="language-vivifire listing">
+<pre><code>Dim numbers(*2) = {{1, 2}, {3, 4}, {5, 6}}
+
+For row = 0 To numbers.Last(0)
+    For column = 0 To numbers.Last(1)
+        Print numbers(row, column) &amp; $32
+    End For
+    PrintLine
+End For&#10;</code></pre>
+<div>Output:</div>
+<pre><samp>1 2
+3 4
+5 6</samp></pre>
+</div>
+<div class="language-vivifire listing">
+<pre><code>Dim numbers1D() As Int = { 1, 2, 3 }
+
+For Each number In numbers1D
+    PrintLine number
+End For
+
+Dim numbers2D(*2) As Int = {{4, 5}, {6, 7}, {8, 9}}
+
+For Each number In numbers2D
+   PrintLine number
+End For&#10;</code></pre>
+<div>Output:</div>
+<pre><samp>1
+2
+3
+4
+5
+6
+7
+8
+9</samp></pre>
+</div>
+<h2>Arrays as return values and parameters</h2>
+<p>TODO2</p>
+<div class="language-vivifire listing">
+<pre><code>Dim my_numbers() = GetNumbers()
+ShowNumbers my_numbers
+
+Sub GetNumbers() As Int*1
+    Dim numbers() As Int = { 97, 114, 114, 97, 121 }
+    Return numbers
+End Sub
+
+Sub ShowNumbers(numbers(*1) As Int)
+    For Each number In numbers
+        PrintLine number
+    End For
+End Sub&#10;</code></pre>
+<div>Output:</div>
+<pre><samp>97
+114
+114
+97
+121</samp></pre>
+</div>
+<h2>Array dimensions</h2>
+<p>TODO</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Dim_Statement.html">Dim Statement</a></li>
+<li><a href="ReDim_Statement.html">ReDim Statement</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

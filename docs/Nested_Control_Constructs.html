@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Nested Control Constructs - The ViviFire Programming Language</title><!-- Was: Nested Control Structures -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Nested_Control_Constructs.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+<li><a href="Control_Flow.html">Control Flow</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Nested Control Constructs</h1>
+<p>You can put control constructs in other control constructs.
+You can put a decision construct, for example, <code class="kw">If&hellip;Then&hellip;Else</code>, in a loop construct, for example, <code class="kw">While</code>.
+These control constructs are nested.</p>
+<h2>Nesting levels</h2>
+<p>You can nest control constructs without limit.
+To make code easier to read, we recommend that you indent each new level.</p>
+<p>If you indent the body of each control construct, then you help make your code easy to read and maintain.
+But, if you cannot see all your indented code on the screen, then this can be an indication that you nested it too much.</p>
+<p>The example that follows is a method to multiply two 3&times;3 matrixes.</p>
+<div class="language-vivifire listing">
+<pre><code>Method Multiply(result(), a(), b() As Real*2)
+    Var i, j, k As Int
+    For i = 0 To 2
+        For j = 0 To 2
+            result(i, j) = 0
+            For k = 0 To 2
+                result(i, j) += a(i, k) * b(k, j)
+            End For k
+        End For j
+    End For i
+End Method&#10;</code></pre>
+</div>
+<h2>Nesting different types of control constructs</h2>
+<p>TODO</p>
+<h2>Overlap of control constructs</h2>
+<p>You cannot have overlap of part of one control construct with a different one.
+Each control construct must nest fully in the other.
+If you do not,  then the result is a compile-time error.</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Decision_Constructs.html">Decision Constructs</a></li>
+<li><a href="Loop_Constructs.html">Loop Constructs</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

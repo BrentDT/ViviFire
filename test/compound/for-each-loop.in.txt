@@ -1,0 +1,9 @@
+program foreachloop
+for each x in y
+end for
+for each x in y
+end
+for each #person in #people
+end for
+for each person$ in people$()
+end for

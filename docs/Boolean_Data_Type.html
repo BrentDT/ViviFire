@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Boolean Data Type - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Boolean_Data_Type.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Data_Type_Summary.html">Data Type Summary</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Boolean Data Type</h1>
+<p>Holds values that can be only true or false.</p>
+<h2>Instructions</h2>
+<dl>
+<dt>Default value</dt>
+<dd>When you declare a variable of type <code class="kw">Boolean</code> and do not initialize it, its value is false.</dd>
+<dt>Type characters</dt>
+<dd><code class="kw">Boolean</code> has no type characters.</dd>
+</dl>
+<h3>Type changes</h3>
+<p>When you change a Boolean value to an integer value, the result can be different with different implementations.
+ViviFire supplies two integer constants, <code>%TRUE</code> and <code>%FALSE</code>, which hold an implementation's values for true and false.</p>
+<h2>Shared methods and properties</h2>
+<dl class="language-vivifire listing">
+<dt><pre><code>Boolean.Default As Boolean</code></pre></dt>
+<dd>Returns the default value, <code>Boolean.FALSE</code>.</dd>
+<dt><pre><code>Boolean.False As Boolean</code></pre></dt>
+<dd>Returns the value that is false.
+The equivalent integer constant is <code>%FALSE</code>.</dd>
+<dt><pre><code>Boolean.FalseString As String</code></pre></dt>
+<dd>Returns a string value of <code>&quot;False&quot;</code>.</dd>
+<dt><pre><code>Boolean.Parse(str As String) As Boolean</code></pre></dt>
+<dd>Tries to parse a string that shows as a Boolean.</dd>
+<dd>Permitted strings include <code>Boolean.FalseString</code> and <code>Boolean.TrueString</code> (letter case ignored) and integer values.
+It parses <code>&quot;0&quot;</code> as false, and all other integers as true.</dd>
+<dt><pre><code>Boolean.Size As Boolean</code></pre></dt>
+<dd>Returns the number of available bytes.</dd>
+<dt><pre><code>Boolean.True As Boolean</code></pre></dt>
+<dd>Returns the value that is true.
+The equivalent integer constant is <code>%TRUE</code>.</dd>
+<dt><pre><code>Boolean.TrueString As String</code></pre></dt>
+<dd>Returns a string value of <code>&quot;True&quot;</code>.</dd>
+</dl>
+<h2>Examples</h2>
+<div class="language-vivifire listing">
+<pre><code>Dim foo As Boolean&#10;</code></pre>
+</div>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Nullable Value Types - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Nullable_Value_Types.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+<li><a href="Data_Types.html">Language Features</a></li>
+</ul>
+</nav>
+<main id="stub">
+<h1 id="top">Nullable Value Types</h1>
+<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>Dim #LikesChocolate As Boolean&#10;</code></pre>
+</div>
+<p>The variable <code>#LikesChocolate</code> can have one of three values:
+<code>True</code>, <code>False</code>, or <code class="kw">#Null</code>.
+Its initial value is <code class="kw">#Null</code>.</p>
+<h2>To use a nullable type variable</h2>
+<p>TODO</p>
+<h3>Default values</h3>
+<p>TODO</p>
+<h3>To change values</h3>
+<p>TODO</p>
+<h3>To return values</h3>
+<p>TODO</p>
+<h2>To compare nullable variables</h2>
+<p>TODO</p>
+<table>
+<thead>
+<tr><th><code>#b1</code></th><th><code>#b2</code></th><th><code>#b1 And #b2</code></th><th><code>#b1 Or #b2</code></th></tr>
+</thead>
+<tbody>
+<tr><td><code>#Null</code></td><td><code>#Null</code></td><td><samp>NULL</samp></td><td><samp>NULL</samp></td></tr>
+<tr><td><code>#Null</code></td><td><code>True</code></td><td><samp>NULL</samp></td><td><samp>True</samp></td></tr>
+<tr><td><code>#Null</code></td><td><code>False</code></td><td><samp>False</samp></td><td><samp>NULL</samp></td></tr>
+<tr><td><code>True</code></td><td><code>#Null</code></td><td><samp>NULL</samp></td><td><samp>True</samp></td></tr>
+<tr><td><code>True</code></td><td><code>True</code></td><td><samp>True</samp></td><td><samp>True</samp></td></tr>
+<tr><td><code>True</code></td><td><code>False</code></td><td><samp>False</samp></td><td><samp>True</samp></td></tr>
+<tr><td><code>False</code></td><td><code>#Null</code></td><td><samp>False</samp></td><td><samp>NULL</samp></td></tr>
+<tr><td><code>False</code></td><td><code>True</code></td><td><samp>False</samp></td><td><samp>True</samp></td></tr>
+<tr><td><code>False</code></td><td><code>False</code></td><td><samp>False</samp></td><td><samp>False</samp></td></tr>
+</tbody>
+</table>
+<h2>Nullable types and data</h2>
+<p>TODO</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Is_Operator.html">Is Operator</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

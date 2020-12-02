@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Call Base Statement - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Call_Base_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_1.html">A&ndash;E Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Call Base Statement</h1>
+<p>Lets a constructor in a child class call a constructor in a parent class.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>Call Base [ argument_list ]&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">argument_list</code></dt>
+<dd>Optional one or more expressions, with a comma between each.
+You can put parentheses around the list, if that is your style.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>TODO</p>
+<h2>Examples</h2>
+<div class="language-vivifire listing">
+<pre><code>@Open Class BaseClass
+    Var a As Int
+    Var b As Real
+
+    Constructor
+        a = 0
+        b = 0.0
+    End Constructor
+
+    Constructor x As Int, y As Real
+        a = x
+        b = y
+    End Constructor
+End Class
+
+Class DerivedClass Is BaseClass
+    Constructor
+        Call Base
+    End Constructor
+
+    Constructor a As Int, b As Real
+        Call Base a, b
+    End Constructor
+End Class&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Call_Statement.html">Call Statement</a></li>
+<li><a href="Constructor_Statement.html">Constructor Statement</a></li>
+<li><a href="Self_and_Base.html">Self and Base</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

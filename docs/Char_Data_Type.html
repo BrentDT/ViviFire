@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Char Data Type - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Char_Data_Type.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Data_Type_Summary.html">Data Type Summary</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Char Data Type</h1>
+<p>Holds unsigned 32-bit (4-byte) Unicode character code points in the range 0&ndash;4,294,967,295.</p>
+<h2>Instructions</h2>
+<p><code class="kw">Char</code> is short for &ldquo;character&rdquo;.</p>
+<dl>
+<dt>Default value</dt>
+<dd>When you declare a variable of type <code class="kw">Char</code> and do not initialize it, its default value is the character with a code point of zero (0).</dd>
+<dt>Negation</dt>
+<dd><code class="kw">Char</code> is an unsigned type and thus cannot hold a negative value.</dd>
+<dt>Automatic conversions</dt>
+<dd><code class="kw">Char</code> widens to <code class="kw">String</code> without risk of overflow.</dd>
+<dt>Type characters</dt>
+<dd><code class="kw">Char</code> has no type character.</dd>
+</dl>
+<h3>Unicode characters</h3>
+<p>TODO</p>
+<h3 id="Character_literal">Character literal</h3>
+<p>You can give a code point for most Unicode characters directly in your code with a character literal.
+You write a character literal with the character between backticks (<code class="op">`</code>).
+Some examples follow.</p>
+<div class="language-vivifire listing">
+<pre><code>Dim letter As Char = `A`
+Dim backtick As Char = ```&#10;</code></pre>
+</div>
+<h2>Shared methods and properties</h2>
+<dl class="language-vivifire listing">
+<dt><pre><code>Char.Default As Char</code></pre></dt>
+<dd>Returns <code>%NUL</code>.</dd>
+<dt><pre><code>Char.Lower(c As Char, Optional #fmt As Format) As Char</code></pre></dt>
+<dd>Returns a lower-case letter if given an upper-case letter, or the given character if it is not a letter.</dd>
+<dt><pre><code>Char.Size As Int</code></pre></dt>
+<dd>Returns the number of available bytes.
+This is always 4.</dd>
+<dt><pre><code>Char.Upper(c As Char, Optional #fmt As Format) As Char</code></pre></dt>
+<dd>Returns an upper-case letter if given a lower-case letter, or the given character if it is not a letter.</dd>
+</dl>
+<p>The methods that follow have two overloads each:
+(1) a necessary character (<code class="id">chr</code>),
+or (2) a necessary string (<code class="id">str</code>) and a necessary position (<code class="id">pos</code>) in it.
+The position starts at zero.</p>
+<dl class="language-vivifire listing">
+<dt><pre><code>Char.IsControl(chr As Char) As Boolean
+Char.IsControl(str As String, pos As Int) As Boolean</code></pre></dt>
+<dd>Returns true if given a control character, and false if given a different character.</dd>
+<dt><pre><code>Char.IsDigit(chr As Char) As Boolean
+Char.IsDigit(str As String, pos As Int) As Boolean</code></pre></dt>
+<dd>Returns true if given a number between 0 and 9, and false if given a different character.</dd>
+<dt><pre><code>Char.IsLetter(chr As Char) As Boolean
+Char.IsLetter(str As String, pos As Int) As Boolean</code></pre></dt>
+<dd>Returns true if given a letter, and false if given a different character.</dd>
+<dt><pre><code>Char.IsLower(chr As Char) As Boolean
+Char.IsLower(str As String, pos As Int) As Boolean</code></pre></dt>
+<dd>Returns true if given a lower-case letter, and false if given a different character.</dd>
+<dt><pre><code>Char.IsNumber(chr As Char) As Boolean
+Char.IsNumber(str As String, pos As Int) As Boolean</code></pre></dt>
+<dd>Returns true if given a number or related character, and false if given a different character.</dd>
+<dt><pre><code>Char.IsPunctuation(chr As Char) As Boolean
+Char.IsPunctuation(str As String, pos As Int) As Boolean</code></pre></dt>
+<dd>Returns true if given a punctuation character, and false if given a different character.</dd>
+<dt><pre><code>Char.IsSeparator(chr As Char) As Boolean
+Char.IsSeparator(str As String, pos As Int) As Boolean</code></pre></dt>
+<dd>Returns true if given a separator character, and false if given a different character.</dd>
+<dt><pre><code>Char.IsSymbol(chr As Char) As Boolean
+Char.IsSymbol(str As String, pos As Int) As Boolean</code></pre></dt>
+<dd>Returns true if given a symbol character, and false if given a different character.</dd>
+<dt><pre><code>Char.IsUpper(chr As Char) As Boolean
+Char.IsUpper(str As String, pos As Int) As Boolean</code></pre></dt>
+<dd>Returns true if given an upper-case letter, and false if given a different character.</dd>
+<dt><pre><code>Char.IsWhitespace(chr As Char) As Boolean
+Char.IsWhitespace(str As String, pos As Int) As Boolean</code></pre></dt>
+<dd>Returns true if given a whitespace character, and false if given a different character.</dd>
+<dt><pre><code>Char.UnicodeBlock(chr As Char) As UnicodeBlocks
+Char.UnicodeBlock(str As String, pos As Int) As UnicodeBlocks</code></pre></dt>
+<dd>Returns an enumeration value of type <code>UnicodeBlocks</code> that is related to the Unicode block of the given character.</dd>
+</dl>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="String_Data_Type.html">String Data Type</a></li>
+<li><a href="Pre_calculated_Constants.html">Pre-Calculated Constants</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

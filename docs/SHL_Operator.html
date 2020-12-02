@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SHL Operator - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/SHL_Operator.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Operators.html">Operators</a></li>
+<li><a href="Bit_Shift_Operators.html">Bit Shift Operators</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">SHL Operator</h1>
+<p>Does a left shift operation on a bit pattern.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>pattern SHL number&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">pattern</code></dt>
+<dd>An integer expression.</dd>
+<dt><code class="id">number&#10</code></dt>
+<dd>An integer expression.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>If <code class="id">pattern</code> is a signed data type (<span class="kws"><code>Int8</code>, <code>Int16</code>, <code>Int32</code>, <code>Int</code>, <code>Int64</code>, or <code>Int128</code></span>), then the operation is an arithmetic left shift.
+An <dfn>arithmetic shift</dfn> is ... TODO</p>
+<p>If <code class="id">pattern</code> is an unsigned data type (<span class="kws"><span>UInt8</span>, <span>UInt16</span>, <span>UInt32</span>, <span>UInt</span>, <span>UInt64</span>, or <span>UInt128</span></span>), then the operation is a logical left shift.
+A <dfn>logical shift</dfn> is ... TODO</p>
+<h2>Examples</h2>
+<div class="language-vivifire listing">
+<pre><code>Var pattern As Int16 = 42
+Var shift_0 = pattern SHL 0
+Var shift_1 = pattern SHL 1
+Var shift_8 = pattern SHL 8
+Var shift_neg = pattern SHL -1&#10;</code></pre>
+</div>
+<table class="result">
+<caption>After execution</caption>
+<thead>
+<tr><th>variable</th><th>value</th></tr>
+</thead>
+<tbody>
+<tr><th><code>pattern</code></th>
+<td><samp>42</samp> (<code>&amp;B00000000_00101010</code>)</td></tr>
+<tr><th><code>shift_0</code></th>
+<td><samp>42</samp> (<code>&amp;B00000000_00101010</code>)</td></tr>
+<tr><th><code>shift_1</code></th>
+<td><samp>84</samp> (<code>&amp;B00000000_01010100</code>)</td></tr>
+<tr><th><code>shift_8</code></th>
+<td><samp>10752</samp> (<code>&amp;B00101010_00000000</code>)</td></tr>
+<tr><th><code>shift_neg</code></th>
+<td><samp>0</samp> (<code>&amp;B00000000_00000000</code>)</td></tr>
+</tbody>
+</table>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="SHL_Equals_Operator.html">SHL= Operator</a></li>
+<li><a href="SHR_Operator.html">SHR Operator</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

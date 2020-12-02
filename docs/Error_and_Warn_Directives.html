@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>@Error and @Warn Directives - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Error_and_Warn_Directives.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Directives.html">Directives</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">@Error and @Warn Directives</h1>
+<p>Cause custom compiler errors and warnings.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>@Error message&#10;</code></pre>
+<div>or</div>
+<pre><code>@Warn message&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">message</code></dt>
+<dd>A string literal with the text to show.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>The directive <code class="at">@Warn</code> causes the compiler to show a warning message.
+The message usually is a warning that there is a possible problem in the code.
+A warning usually does not stop the compiler.</p>
+<p>The directive <code class="at">@Error</code> shows an error message from the compiler.
+You cannot ignore an error message, because it always causes the compiler to stop.</p>
+<p>Usually you use the directives <code class="kw">@Warn</code> and <code class="kw">@Error</code> in conditional compilation directives (<code class="kw">@If&hellip;Then&hellip;@Else</code>).
+There could be unusual conditions when it is applicable to give a warning of some problem without condition.
+But we do not recommend it.</p>
+<h2>Examples</h2>
+<div class="language-vivifire listing">
+<pre><code>@If Win32
+  ' Windows-only code goes here.
+@ElseIf Linux Or MacOS
+  ' Unix-like code goes here.
+@Else
+@Error "Platform not supported"
+@EndIf&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="If_Then_Else_Directives.html">@If Directive</a></li>
+<li><a href="Option_Directive.html">@Option Directive</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

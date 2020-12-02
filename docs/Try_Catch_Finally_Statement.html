@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Try&hellip;Catch&hellip;Finally Statement - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Try_Catch_Finally_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_3.html">Q&ndash;Z Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Try&hellip;Catch&hellip;Finally Statement</h1>
+<p>Lets you catch many errors that can occur in a given block of code.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>Try
+    [ try_statements ]
+[ Catch [ catch_parameter ]
+    [ catch_statements ] ]
+&hellip;
+[ Finally
+    [ finally_statements ] ]
+End [ Try ]&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">try_statements</code></dt>
+<dd>Optional statements in which errors can occur.</dd>
+<dt><code class="kw">Catch</code></dt>
+<dd>Optional start of a block of statements that you can use again and again.
+It executes when an error occurs.</dd>
+<dt><code class="id">catch_parameter</code></dt>
+<dd>Optional declaration of an object variable.
+The type of the object given to <code class="kw">Raise</code> selects which block (<code class="kw">Catch</code>) executes.</dd>
+<dd>If not given, then <code class="kw">Catch</code> will execute for all errors.
+This can be done only as the last block of <code class="kw">Catch</code>.</dd>
+<dt><code class="id">catch_statements</code></dt>
+<dd>Optional statements that execute when an error occurs.</dd>
+<dt><code class="id">finally_statements</code></dt>
+<dd>Optional statements that always execute.
+If an error occurred, then the statements execute after <code class="kw">Catch</code> is done.</dd>
+<dt><code class="kw">End</code></dt>
+<dd>Completes the statement.
+You can also use <code class="kw">End Try</code>.</dd>
+<dd>You can change this part of the syntax.
+See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>TODO</p>
+<h2>Examples</h2>
+<div class="language-vivifire listing">
+<pre><code>Try
+    ' Cause a division by zero.
+    x = a / 0
+Catch #ex As Exception
+    ' Do something about the error.
+End Try&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Throw_Statement.html">Raise Statement</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

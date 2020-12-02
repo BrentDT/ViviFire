@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Access Levels - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="In the ViviFire programming language, access levels are a function of which type of element you use.">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Access_Levels.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+<li><a href="Declared_Elements.html">Declared Elements</a></li>
+<li><a href="Declared_Element_Qualities.html">Declared Element Qualities</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Access Levels</h1>
+<p>The <dfn>access level</dfn> of a declared element is the limits of access it gives to other elements.
+That is, what code is permitted to read it and write to it.
+This is not only given by which type of element you use, but also by the access level of the element's container.
+If code cannot get access to a container, then it cannot get access to elements in that container.</p>
+<table>
+<thead>
+<tr><th>Access Level</th><th>Elements</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>Code that can see the element can get access to it.</td>
+<td><ul>
+<li>Class</li>
+<li>Constructor</li>
+<li>Destructor</li>
+<li>Enum</li>
+<li>Event</li>
+<li>Method</li>
+<li>Property</li>
+<li>Struct</li>
+<li>Struct member</li>
+<li>Trait</li>
+<li>Unit</li>
+</ul></td>
+</tr>
+<tr>
+<td>Code in the same container can get access to the element.</td>
+<td><ul>
+<li>Class member variable</li>
+<li>Const</li>
+<li>Function</li>
+<li>Sub</li>
+</ul></td>
+</tr>
+</tbody>
+</table>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Dim_Statement.html">Dim Statement</a></li>
+<li><a href="Shared.html">@Shared</a></li>
+<li><a href="Declared_Element_Names.html">Declared Element Names</a></li>
+<li><a href="References_to_Declared_Elements.html">References to Declared Elements</a></li>
+<li><a href="Declared_Element_Qualities.html">Declared Element Qualities</a></li>
+<li><a href="Lifetime.html">Lifetime</a></li>
+<li><a href="Scope.html">Scope</a></li>
+<li><a href="Variables.html">Variables</a></li>
+<li><a href="Variable_Declaration.html">Variable Declaration</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+</body>
+</html>

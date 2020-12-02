@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Parameter List - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Parameter_List.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Parameter List</h1>
+<p>Gives the parameters that a caller must supply before a procedure executes.
+For more than one parameter, you must put a comma between each one.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<h3>Without parentheses</h3>
+<pre><code>mandatory_parameters [ , Optional optional_parameters ]&#10;</code></pre>
+<h3>With parentheses</h3>
+<pre><code>( [ mandatory_parameters [ , Optional optional_parameters ] ] )&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">mandatory_parameters</code></dt>
+<dd>
+	<div class="language-vivifire syntax">
+	<h3>Mandatory parameter</h3>
+	<pre><code>[ ByRef ] declarator&#10;</code></pre>
+	</div>
+</dd>
+<dt><code class="id">optional_parameters</code></dt>
+<dd>
+	<div class="language-vivifire syntax">
+	<h3>Optional parameter</h3>
+	<pre><code>[ ByRef ] declarator [ = default_value ]&#10;</code></pre>
+	</div>
+</dd>
+<dt><code class="id">declarator</code></dt>
+<dd>
+	<div class="language-vivifire syntax">
+	<h3>Declarator</h3>
+	<pre><code>name [ ( [ * rank ] ) ] [ As type | In unit ]&#10;</code></pre>
+	</div>
+</dd>
+<dt><code class="kw">ByRef</code></dt>
+<dd>Optional modifier (short for "by reference") lets the passed argument have its value changed by the procedure.
+Thus the parameter becomes an alias of the argument.
+Without this, the parameter is a copy of the argument.
+But objects and arrays are always passed by reference.</dd>
+<dt><code class="id">name</code></dt>
+<dd>Mandatory identifier that becomes a local variable to the procedure.</dd>
+<dt><code class="id">rank</code></dt>
+<dd>Optional integer literal. Specifies the number of dimensions of the passed array.</dd>
+<dt><code class="id">type</code></dt>
+<dd>Optional data type</dd>
+<dt><code class="id">unit</code></dt>
+<dd>Optional unit of measure</dd>
+<dt><code class="id">default_value</code></dt>
+<dd>Optional constant of a type compatible with <code class="id">type</code> or <code class="id">unit</code>.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>TODO</p>
+<h2>Examples</h2>
+<p>The examples that follow use procedures of the type <code class="kw">Method</code>, but this makes no difference.
+Also, the lines <code class="kw">End Method</code> are not given to help show the parameter syntax.</p>
+<h3>No parameters</h3>
+<div class="language-vivifire listing">
+<pre><code>Method DoSomething
+Method DoAnotherThing
+Method GetInt%
+Method GetInteger As Integer
+Method GetStr$()
+Method GetString() As String&#10;</code></pre>
+</div>
+<h3>One or more mandatory parameters</h3>
+<div class="language-vivifire listing">
+<pre><code>Method DoSomethingWith number
+Method ChangeStr ByRef str$
+Method GetSomethingFrom[T](#con As MyContainer[T]) As T&#10;</code></pre>
+</div>
+<h3>One or more optional parameters</h3>
+<div class="language-vivifire listing">
+<pre><code>Method 
+&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="ByRef.html">ByRef</a></li>
+<li><a href="Constructor_Statement.html">Constructor Statement</a></li>
+<li><a href="Declare_Statement.html">Declare Statement</a></li>
+<li><a href="Event_Statement.html">Event Statement</a></li>
+<li><a href="Function_Statement.html">Function Statement</a></li>
+<li><a href="Method_Statement.html">Method Statement</a></li>
+<li><a href="Optional.html">Optional</a></li>
+<li><a href="Property_Statement.html">Property Statement</a></li>
+<li><a href="Sub_Statement.html">Sub Statement</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

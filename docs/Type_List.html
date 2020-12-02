@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Type List - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Type_List.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Type List</h1>
+<p>For a generic programming construct, lets you declare the type parameters.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax generic">
+<pre><code><kbd>[</kbd> type_parameter [ , type_parameter ]&hellip; <kbd>]</kbd>&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code>type_parameter</code></dt>
+<dd>One or more parameters with a comma between each.
+	<div class="language-vivifire syntax">
+	<h3>Type parameter</h3>
+	<pre><code>[ In | Out ] name&#10;</code></pre>
+	</div>
+	<dl class="parts">
+	<dt><code class="kw">In</code></dt>
+	<dd>Optional</dd>
+	<dt><code class="kw">Out</code></dt>
+	<dd>Optional</dd>
+	<dt><code class="id">name</code></dt>
+	<dd>Mandatory name.
+	All names must be different.</dd>
+	</dl>
+</dd>
+</dl>
+<h2>Examples</h2>
+<h3>Class</h3>
+<div class="language-vivifire listing">
+<pre><code>Class Container[T]
+  Property Value As T
+End Class
+
+Container[Int] #intContainer
+#intContainer.Value = 123
+
+Container[String] #strContainer
+#strContainer.Value = "testing"&#10;</code></pre>
+</div>
+<h3>Procedure</h3>
+<div class="language-vivifire listing">
+<pre><code>Function Sum[T](a As T, b As T) As T
+  Return a + b
+End Function
+
+PrintLine Sum(40, 2)
+PrintLine Sum(19.7, 22.3)&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Where_Clause_Generics.html">Where Clause (Generics)</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

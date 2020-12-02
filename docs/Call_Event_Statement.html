@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Raise Event Statement - The ViviFire Programming Language</title><!-- Was: Call Event Statement -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Call_Event_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_1.html">A&ndash;E Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Raise Event Statement</h1>
+<p>Causes an event to occur.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>Raise Event event_name [ argument_list ]&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">event_name</code></dt>
+<dd>The name of an event variable.</dd>
+<dt><code class="id">argument_list</code></dt>
+<dd>Zero or more expressions with a comma between each, all optionally between parentheses (&ldquo;<code class="op">( )</code>&rdquo;).</dd>
+</dl>
+<h2>Instructions</h2>
+<p>TODO</p>
+<h2>Examples</h2>
+<div class="language-vivifire listing">
+<pre><code>Event MyEventType(a As Int, b As Int)
+Var MyEvent As MyEventType = Sub MyEventHandler
+Raise Event MyEvent(1, 2)
+' ...
+Sub MyEventHandler Handles MyEventType
+    ' ...
+End Sub&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Event_Statement.html">Event Statement</a></li>
+<li><a href="Sub_Operator.html">Sub Operator</a></li>
+<li><a href="Sub_Statement.html">Sub Statement</a></li>
+<li><a href="Events.html">Events</a></li>
+<li><a href="Throw_Statement.html">Raise Statement</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

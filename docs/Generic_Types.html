@@ -1,0 +1,101 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Generic Types - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Generic_Types.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+<li><a href="Data_Types.html">Data Types</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Generic Types</h1>
+<p>A <dfn>generic type</dfn> is one programming construct that adapts to do the same operations for many data types.
+When you write generic code, it is not necessary to write different implementations for each possible data type.</p>
+<h2>Example generic class</h2>
+<div class="language-vivifire listing">
+<pre><code>Class Container[T]
+    Method Add(item As T)
+        Dim temp As T
+    End Method
+End Class&#10;</code></pre>
+</div>
+<h2>Permitted generic constructs</h2>
+<p>You can make and use generic classes, structures, traits, and procedures.
+The ViviFire standard libraries supply many frequently used generic constructs that you can use in your code.
+<!-- TODO: where they can be found -->
+</p>
+<p>Although procedures are not types, you can make and use generic procedures.
+See <a href="Generic_Procedures.html">Generic Procedures</a> for more information.</p>
+<h2>How generic types help</h2>
+<p>You use generic types to declare some different programming elements, where each operates on specified data types.
+The alternatives to a generic type are:</p>
+<ul>
+<li>One type operates on the object data type.</li>
+<li>A set of different implementations of the type, each coded differently to operate on one data type, such as <code class="kw">Int</code>, <code class="kw">String</code>, or a user-made class or structure.</li>
+</ul>
+<p>Generic types are better than these alternatives because of:</p>
+<ul>
+<li>Type safety &ndash; TODO</li>
+<li>Performance &ndash; TODO</li>
+<li>Decreased code &ndash; TODO</li>
+<li>Code that you can use again &ndash; TODO</li>
+<!-- IDE support? -->
+<li>Generic algorithms &ndash; TODO</li>
+</ul>
+<h2>Constraints</h2>
+<h3>Example of a constraint</h3>
+<p>TODO</p>
+<h3>Types of constraints</h3>
+<p>There are five types of constraints.</p>
+<ul>
+<li>The type argument must be one in a given branch of inheritance.</li>
+<li>The type argument must be one of a reference type or a value type.</li>
+<li>The type argument must implement one or more traits.</li>
+<li>The type argument must implement a parameterless constructor.</li>
+<li>Two or more of the above in the shown sequence.</li>
+</ul>
+<p>If you must specify more than one requirement, then you can put a comma between each one.
+Or you can use <code class="kw">Where</code> again and again, each on a different line.</p>
+<ul>
+<li>If a sub-type is necessary, then use one of the operators <code class="op">&lt;</code> or <code class="op">&lt;=</code>.</li>
+<li>If a reference type is necessary, then use &ldquo;<code class="kw">Is Class</code>&rdquo;.</li>
+<li>If a value type is necessary, then use &ldquo;<code class="kw">Is Struct</code>&rdquo;.</li>
+<li>If a trait is necessary, then use &ldquo;<code class="kw">Does</code>&rdquo;.</li>
+<li>If a constructor is necessary, then use &ldquo;<code class="kw">Constructor()</code>&rdquo;.
+The parentheses are mandatory.</li>
+</ul>
+<p>See <a href="Where_Clause_Generics.html">Where Clause (Generics)</a> for more information.</p>
+<h3>Examples of many constraints</h3>
+<div class="language-vivifire listing">
+<pre><code>Class MyClass[T] Where T Is Class Does Compare Constructor()
+    ' ...
+End Class&#10;</code></pre>
+<pre><code>Class MyClass[T]
+    Where T Is Class, T Does Compare, T Constructor()
+    ' ...
+End Class&#10;</code></pre>
+<pre><code>Class MyClass[T]
+    Where T Is Class
+    Where T Does Compare
+    Where T Constructor()
+    ' ...
+End Class&#10;</code></pre>
+</div>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

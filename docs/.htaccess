@@ -1,0 +1,29 @@
+RewriteEngine On
+RewriteBase /ViviFire/docs/
+
+RewriteRule ^(index\.html|newest\.php)$ index.php [R=301,L]
+
+# May 2020
+RewriteRule ^How_Culture_Affects_Strings\.html$ Effects_of_Culture_on_Strings.html [R=301,L]
+RewriteRule ^Declared_Element_Characteristics\.html$ Declared_Element_Qualities.html [R=301,L]
+RewriteRule ^How_Create_Strings\.html$ How_Make_Strings.html [R=301,L]
+# Jun 2020
+RewriteRule ^(Coding_Conventions|Coding_Standard_Procedures)\.html$ Standard_Procedures_for_Code.html [R=301,L]
+RewriteRule ^Naming_Conventions\.html$ Standard_Procedures_for_Names.html [R=301,L]
+RewriteRule ^Language_Limitations\.html$ Language_Limits.html [R=301,L]
+
+# Implicit_and_Explicit_Conversions.html Automatic-and-Non-Automatic-Conversions
+# Troubleshooting_Data_Types.html Data-Type-Troubleshooting
+# Converting_Between_Strings_Other_Data_Types.html How-Change-Strings-Other-Data-Types
+# Throw_Statement.html Raise-Statement
+# Call_Event_Statement.html Raise-Event-Statement
+# If_Then_Else_Directives.html If-Directive
+# If_Then_Else_Statement.html If-Statement
+# ViviFire_from_the_Beginning.html ViviFire-from-the-Start
+# Typographic_Conventions.html Typography-Used-by-This-Manual
+# For_To_Statement.html For-Statement
+# For_Each_In_Statement.html For-Each-Statement
+
+## Change underscores to hyphens
+# RewriteRule       ^(.*?)_(.*?_.*)$ $1-$2 [N]
+# RewriteRule       ^(.*?)_([^_]*)$ $1-$2 [R=301]

@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>&amp; Operator - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="In the ViviFire programming language, the &amp; operator makes a new string by concatenation.">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Ampersand_Operator.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Operators.html">Operators</a></li>
+<li><a href="Concatenation_Operators.html">Concatenation Operators</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">&amp; Operator</h1>
+<p>makes a new string by concatenation.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>expression_1 &amp; expression_2&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">expression_1</code></dt>
+<dd>An expression with a data type that can widen to <code class="kw">String</code>.</dd>
+<dt><code class="id">expression_2</code></dt>
+<dd>An expression with a data type that can widen to <code class="kw">String</code>.</dd>
+</dl>
+<h2>Result</h2>
+<p>The result is a new value of <code class="kw">String</code>.</p>
+<h2>Instructions</h2>
+<p>If <code class="id">expression_1</code> or <code class="id">expression_2</code> is not of type <code class="kw">String</code>, but can become a string, then the expression changes automatically.
+If an expression cannot become a string, then ViviFire gives an error.
+A null reference (<code class="kw">#Null</code>) becomes the string <code>&quot;NULL&quot;</code>.</p>
+<h2>Examples</h2>
+<div class="language-vivifire listing">
+<pre><code>greeting$ = "Hello," &amp; " world!"&#10;</code></pre>
+</div>
+<table class="result">
+<caption>After execution</caption>
+<thead>
+<tr><th>Variable</th><th>Value</th></tr>
+</thead>
+<tbody>
+<tr><td><code>greeting$</code></td>
+<td><code>"Hello, world!"</code></td></tr>
+</tbody>
+</table>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Ampersand_Equals_Operator.html">&amp;= Operator</a></li>
+<li><a href="Plus_Operator.html">+ Operator</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

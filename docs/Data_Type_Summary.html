@@ -1,0 +1,146 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Data Type Summary - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Data_Type_Summary.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Data Type Summary</h1>
+<style media="all and (max-width: 40em)">
+	#t1 tbody th:before { content: "ViviFire type"; }
+	#t1 td:nth-of-type(1):before { content: "Approximate memory used"; }
+	#t1 td:nth-of-type(2):before { content: "Value range"; }
+	#t1 td:nth-of-type(3):before { content: "More information"; }
+</style>
+<table id="t1" class="wide">
+<thead>
+<tr><th>ViviFire type</th>
+<th>Approximate memory used</th>
+<th>Value range</th>
+<th>More information</th></tr>
+</thead>
+<tbody>
+<tr><th><a href="Boolean_Data_Type.html"><code>Boolean</code></a></th>
+<td>Platform-controlled</td>
+<td>True, False</td>
+<td></td></tr>
+<tr><th><a href="Char_Data_Type.html"><code>Char</code></a></th>
+<td>4 bytes</td>
+<td>0 to 4,294,967,295</td>
+<td>Unsigned; Unicode UTF-32</td></tr>
+<tr><th><a href="DateTime_Data_Type.html"><code>DateTime</code></a></th>
+<td>8 bytes</td>
+<td>1 January 0001 to 31 December 9999</td>
+<td></td></tr>
+<tr><th><a href="Fixed64_Data_Type.html"><code>Fixed64</code></a></th>
+<td>8 bytes</td>
+<td>&minus;922,337,203,685,477.5808 to 922,337,203,685,477.5807</td>
+<td>Signed; Max 15 digits left of the decimal point and 4 to the right</td></tr>
+<tr><th><a href="Fixed128_Data_Type.html"><code>Fixed128</code></a></th>
+<td>16 bytes</td>
+<td>&minus;17,0141,1834,6046,923,173,168,730,371.5884105728 to 17,0141,1834,6046,923,173,168,730,371.5884105727</td>
+<td>Signed; Max 29 digits left of the decimal point and 10 to the right</td></tr>
+<tr><th><a href="Int_Data_Type.html"><code>Int</code></a></th>
+<td>Platform-controlled</td>
+<td>Platform-controlled</td>
+<td>Signed integer type with good performance</td></tr>
+<tr><th><a href="Int8_Data_Type.html"><code>Int8</code></a></th>
+<td>1 byte</td>
+<td>&minus;128 to 127</td>
+<td>Signed; Max 3 decimal digits</td></tr>
+<tr><th><a href="Int16_Data_Type.html"><code>Int16</code></a></th>
+<td>2 bytes</td>
+<td>&minus;32,768 to 32767</td>
+<td>Signed; Max 5 decimal digits</td></tr>
+<tr><th><a href="Int32_Data_Type.html"><code>Int32</code></a></th>
+<td>4 bytes</td>
+<td>&minus;2,147,483,648 to 2,147,483,647</td>
+<td>Signed; Max 10 decimal digits</td></tr>
+<tr><th><a href="Int64_Data_Type.html"><code>Int64</code></a></th>
+<td>8 bytes</td>
+<td>&minus;9,223,372,036,854,775,808 to 9,223,372,036,854,775,807</td>
+<td>Signed; Max 19 decimal digits</td></tr>
+<tr><th><a href="Int128_Data_Type.html"><code>Int128</code></a></th>
+<td>16 bytes</td>
+<td>&minus;170,141,183,460,469,231,731,687,303,715,884,105,728 to 170,141,183,460,469,231,731,687,303,715,884,105,727</td>
+<td>Signed; Max 39 decimal digits</td></tr>
+<tr><th><a href="Real_Data_Type.html"><code>Real</code></a></th>
+<td>Platform-controlled</td>
+<td>Platform-controlled</td>
+<td>Floating-point type with good performance</td></tr>
+<tr><th><a href="Real32_Data_Type.html"><code>Real32</code></a></th>
+<td>4 bytes</td>
+<td>&minus;3.4028235E+38 to &minus;1.401298E&minus;45 (negative) and 1.401298E&minus;45 to 3.4028235E+38 (positive)</td>
+<td>Floating-point type</td></tr>
+<tr><th><a href="Real64_Data_Type.html"><code>Real64</code></a></th>
+<td>8 bytes</td>
+<td>&minus;1.79769313486231570E+308 to &minus;4.94065645841246544E&minus;324 (negative)and 4.94065645841246544E&minus;324 to 1.79769313486231570E+308 (positive) </td>
+<td>Floating-point type</td></tr>
+<tr><th><a href="Real128_Data_Type.html"><code>Real128</code></a></th>
+<td>16 bytes</td>
+<td>&minus;1.189731495357231765085759326628007E+4932 to &minus;3.362103143112093506262677817321753E&minus;4932 (negative) and 3.362103143112093506262677817321753E&minus;4932 to 1.189731495357231765085759326628007E+4932 (positive)</td>
+<td>Floating-point type</td></tr>
+<tr><th><a href="SBits_and_UBits_Data_Types.html"><code>SBits</code></a></th>
+<td>1&ndash;16 bytes</td>
+<td>User-specified</td>
+<td>Signed bit field</td></tr>
+<tr><th><a href="String_Data_Type.html"><code>String</code></a></th>
+<td>~ bytes</td>
+<td>0 to ~ characters</td>
+<td></td></tr>
+<tr><th><a href="SBits_and_UBits_Data_Types.html"><code>UBits</code></a></th>
+<td>1&ndash;16 bytes</td>
+<td>User-specified</td>
+<td>Unsigned bit field</td></tr>
+<tr><th><a href="UInt_Data_Type.html"><code>UInt</code></a></th>
+<td>Platform-controlled</td>
+<td>Platform-controlled</td>
+<td>Unsigned integer type with good performance</td></tr>
+<tr><th><a href="UInt8_Data_Type.html"><code>UInt8</code></a></th>
+<td>1 byte</td>
+<td>0 to 255</td>
+<td>Unsigned</td></tr>
+<tr><th><a href="UInt16_Data_Type.html"><code>UInt16</code></a></th>
+<td>2 bytes</td>
+<td>0 to 65,535</td>
+<td>Unsigned; Max 5 decimal digits</td></tr>
+<tr><th><a href="UInt32_Data_Type.html"><code>UInt32</code></a></th>
+<td>4 bytes</td>
+<td>0 to 4,294,967,295</td>
+<td>Unsigned; Max 10 decimal digits</td></tr>
+<tr><th><a href="UInt64_Data_Type.html"><code>UInt64</code></a></th>
+<td>8 bytes</td>
+<td>0 to 18,446,744,073,709,551,615</td>
+<td>Unsigned; Max 20 decimal digits</td></tr>
+<tr><th><a href="UInt128_Data_Type.html"><code>UInt128</code></a></th>
+<td>16 bytes</td>
+<td>0 to 340,282,366,920,938,463,463,374,607,431,768,211,455</td>
+<td>Unsigned; Max 39 decimal digits</td></tr>
+<tr><th>User-made Struct</th>
+<td>~ bytes</td>
+<td>~ to ~</td>
+<td></td></tr>
+</tbody>
+</table>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Type_Characters.html">Type Characters</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+</body>
+</html>

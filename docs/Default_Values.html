@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Default Values - The ViviFire Programming Language</title><!-- Was: Nothing -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Default_Values.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Default Values</h1>
+<p>When you declare a variable and do not initialize it, the compiler gives it a default value.
+For value types, the default value is different for each type.
+For reference types, the default value is <code class="kw">#Null</code>.
+See <a href="Value_Types_and_Reference_Types.html">Value Types and Reference Types</a> for more information.</p>
+<h2><code>Default</code> property</h2>
+<p>All value types that are part of the language have a shared property (<code>Default</code>) that returns the default value for its related type.</p>
+<table>
+<thead>
+<tr><th>Data Type</th><th>Default Value</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Boolean.Default</code></td><td><code>Boolean.False</code></td></tr>
+<tr><td><code>Char.Default</code></td><td><code>%NUL</code></td></tr>
+<tr><td><code>DateTime.Default</code></td><td><code>@0000-00-00@00:00:00</code></td></tr>
+<tr><td><code>Fixed64.Default</code> and <code>Fixed128.Default</code></td><td><code>@0.0</code></td></tr>
+<tr><td><code>Int.Default</code> and related</td><td><code>0</code></td></tr>
+<tr><td><code>Real.Default</code> and related</td><td><code>0.0</code></td></tr>
+<tr><td><code>String.Default</code></td><td><code>&quot;&quot;</code></td></tr>
+<tr><td><code>UInt.Default</code> and related</td><td><code>0</code></td></tr>
+</tbody>
+</table>
+<h2><code>#Null</code></h2>
+<p><code class="kw">#Null</code> is the value for an object that was not initialized.
+It is used to give an indication that an object is available for garbage collection, and to know if an object was initialized.</p>
+<p>The pipe character (<code>|</code>) is an alternative syntax to <code class="kw">#Null</code>.
+You can use it when <code class="kw">#Null</code> shows a separation in a list, such as a parameter list or in the statement <code class="kw">New</code>.
+You can write one or more hyphens (<code class="op">-</code>) after the pipe character to help you see it when it is the only expression in a line.
+This can occur with the block construct of <code class="kw">New</code>.</p>
+<p>In the example that follows, the two statements are equivalent.</p>
+<div class="language-vivifire listing">
+<pre><code>Menu #file, "&File", _
+   "&Open", OpenFile, |, "E&xit", ExitProgram
+
+New Menu #file, "&File"
+Begin
+   "&Open", OpenFile
+   |----
+   "E&xit", ExitProgram
+End Menu&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Dim_Statement.html">Dim Statement</a></li>
+<li><a href="Is_Operator.html">Is Operator</a></li>
+<li><a href="New_Statement.html">New Statement</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+program selectcase
+
+select case age
+case is < 0 'not born yet
+case 0 to 4 'preschooler
+case 5 to 17 'student
+case 18 to 64 'worker
+case is >= 65 'retired
+end select

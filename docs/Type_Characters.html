@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Type Characters - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Type_Characters.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Data_Type_Summary.html">Data Type Summary</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Type Characters</h1>
+<h2>Identifier type characters</h2>
+<table id="t1" class="language-vivifire">
+<thead>
+<tr><th>Type character</th><th>Data type</th><th>Example</th></tr>
+</thead>
+<tbody>
+<tr><td class="char">%</td><td class="kw">Int</td><td><pre><code>Dim a%</code></pre></td></tr>
+<tr><td class="char">!</td><td class="kw">Real</td><td><pre><code>Dim a!</code></pre></td></tr>
+<tr><td class="char">$</td><td class="kw">String</td><td><pre><code>Dim a$</code></pre></td></tr>
+</tbody>
+</table>
+<h2>Default literal types</h2>
+<p>The qualities of a literal usually give it its data type.
+The table that follows gives the defaults.</p>
+<style media="all and (max-width: 40em)">
+	#t2 td:nth-of-type(1):before { content: "Qualities of a literal"; }
+	#t2 td:nth-of-type(2):before { content: "Default data type"; }
+	#t2 td:nth-of-type(3):before { content: "Example"; }
+</style>
+<table id="t2" class="wide language-vivifire">
+<thead>
+<tr><th>Qualities of a literal</th>
+<th>Default data type</th>
+<th>Example</th></tr>
+</thead>
+<tbody>
+<tr><td>Numeric, no fractional part</td>
+<td><code class="kw">Int</code></td>
+<td><pre><code>32768 32_768</code></pre></td></tr>
+<tr><td>Numeric, fractional part</td>
+<td><code class="kw">Real</code></td>
+<td><pre><code>3.14159 4.1e-8</code></pre></td></tr>
+<tr><td>Between backticks</td>
+<td><code class="kw">Char</code></td>
+<td><pre><code>`A` `@`</code></pre></td></tr>
+<tr><td>Starts with percent</td>
+<td><code class="kw">Int</code></td>
+<td><pre><code>%CR %RETURN</code></pre></td></tr>
+<tr><td>Between double quotation marks</td>
+<td><code class="kw">String</code></td>
+<td><pre><code>"Hello, world!"</code></pre></td></tr>
+<tr><td>Starts with a dollar sign</td>
+<td><code class="kw">String</code></td>
+<td><pre><code>$CR $13 $LINE</code></pre></td></tr>
+<tr><td>Starts with an at-sign, with three groups of numbers</td>
+<td><code class="kw">DateTime</code></td>
+<td><pre><code>@2013.12.11 @2013-12-11 
+@2013/12/11 @10:09:08</code></pre></td></tr>
+<tr><td>Starts with an at-sign or currency sign, numeric, fractional part</td>
+<td><code class="kw">Fixed64</code></td>
+<td><pre><code>@12.34 @$12.34 &#164;12.34
+@&#163;1_234_567.89</code></pre></td></tr>
+</tbody>
+</table>
+<h2>Hexadecimal, octal, and binary literals</h2>
+<style media="all and (max-width: 40em)">
+	#t3 td:nth-of-type(1):before { content: "Number base"; }
+	#t3 td:nth-of-type(2):before { content: "Prefix"; }
+	#t3 td:nth-of-type(3):before { content: "Applicable digits"; }
+	#t3 td:nth-of-type(4):before { content: "Examples"; }
+</style>
+<table id="t3" class="wide language-vivifire">
+<thead>
+<tr><th>Number base</th><th>Prefix</th><th>Applicable digits</th><th>Examples</th></tr>
+</thead>
+<tbody>
+<tr><td>Hexadecimal (base 16)</td><td class="char">&amp;H</td><td>0&ndash;9 A&ndash;F</td><td><pre><code>&amp;HFFF &amp;HFF_00_2A</code></pre></td></tr>
+<tr><td>Octal (base 8)</td><td class="char">&amp;O</td><td>0&ndash;7</td><td><pre><code>&amp;O777 &amp;O377_777</code></pre></td></tr>
+<tr><td>Binary (base 2)</td><td class="char">&amp;B</td><td>0 1</td><td><pre><code>&amp;B101010 &amp;B11111111_11111111</code></pre></td></tr>
+</tbody>
+</table>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Data_Type_Summary.html">Data Type Summary</a></li>
+<li><a href="Special_Characters_in_Code.html">Special Characters in Code</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

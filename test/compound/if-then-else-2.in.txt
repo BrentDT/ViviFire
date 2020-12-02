@@ -1,0 +1,19 @@
+program ifthenelse2
+
+if 1 then
+    call s
+end if
+if 1
+    call s
+end if
+if 1
+    call s1
+else
+    call s2
+end if
+if 1 then
+    call s1
+elseif 2 then
+    call s2
+end if
+end

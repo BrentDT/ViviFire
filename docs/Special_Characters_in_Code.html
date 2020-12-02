@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Special Characters in Code - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Special_Characters_in_Code.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Program_Structure_and_Code_Conventions.html">Program Structure and Code Conventions</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Special Characters in Code</h1>
+<h2>Parentheses</h2>
+<div class="language-vivifire listing">
+<pre><code>Function GetListCount(h_list As UInt32) As Int&#10;</code></pre>
+</div>
+<div class="language-vivifire listing">
+<pre><code>a = (1 + 2) * 3
+b = 1 + 2 * 3&#10;</code></pre>
+</div>
+<table class="result">
+<caption>After execution</caption>
+<tr><th>Variable</th><th>Value</th></tr>
+<tr><td>a</td><td>9</td></tr>
+<tr><td>b</td><td>7</td></tr>
+</table>
+<h2>Concatenation</h2>
+<p>TODO</p>
+<h2>Member access</h2>
+<h3>Dot operator</h3>
+<p>Use the <kbd class="op">.</kbd> operator on a class or structure as a member access operator.
+The member can be a field of a structure, or a property or method of a class.</p>
+<h3>Exclamation point operator</h3>
+<div class="language-vivifire listing">
+<pre><code>For Each #employee As Row In #db!employees
+    #Debug.PrintLine "name=" &amp; #employee!name
+    #debug.PrintLine "address=" &amp; #employee!address
+End&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Type_Characters.html">Type Characters</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

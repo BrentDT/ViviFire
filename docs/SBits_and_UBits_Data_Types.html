@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SBits and UBits Data Types - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/SBits_and_UBits_Data_Types.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Data_Type_Summary.html">Data Type Summary</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">SBits and UBits Data Types</h1>
+<p>Holds integer values of a specified width in bits.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>field_name As { SBits | UBits } ( width )&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">field_name</code></dt>
+<dd>A name for a field in a structure.</dd>
+<dt><code class="id">width</code></dt>
+<dd>An integer literal for the number of bits.</dd>
+</dl>
+<h2>Instructions</h2>
+<p><code class="kw">SBits</code> is short for &ldquo;signed bits&rdquo; and <code class="kw">UBits</code> is short for &ldquo;unsigned bits&rdquo;.</p>
+<dl>
+<dt>Contexts</dt>
+<dd>You can declare elements of <code class="kw">SBits</code> and <code class="kw">UBits</code> only in a structure (<code class="kw">Struct</code>).</dd>
+<dt>Default value</dt>
+<dd>If you declare an element with <code class="kw">SBits</code> or <code class="kw">UBits</code> and do not initialize it, then its default value is zero (0).</dd>
+<dt>Negation</dt>
+<dd><p>If you use the negation operator (<code class="op">-</code>) on an unsigned type, then ViviFire gives a warning that this operation is usually an error.</p>
+<p>If you subtract a larger number from a smaller number, then you find the result as follows:</p>
+<pre class="language-vivifire"><code>number Mod UBits(width).Max + 1</code></pre></dd>
+<dt>Automatic conversions</dt>
+<dd><code class="kw">SBits</code> and <code class="kw">UBits</code> widen to <span class="kws"><code>UInt64</code>, <code>UInt128</code>, <code>Real32</code>, <code>Real64</code>, <code>Real</code>, or <code>Real128</code></span> without risk of overflow.</dd>
+<dt>Type characters</dt>
+<dd><code class="kw">SBits</code> and <code class="kw">UBits</code> have no type characters.</dd>
+</dl>
+<h2>Shared methods and properties</h2>
+<dl class="language-vivifire listing">
+<!-- TENTATIVE: return type --><dt><pre><code>SBits(width).Max As Int</code></pre></dt>
+<!-- TENTATIVE: return type --><dt><pre><code>UBits(width).Max As UInt</code></pre></dt>
+<dd>Returns the maximum value.</dd>
+<!-- TENTATIVE: return type --><dt><pre><code>SBits(width).Min As Int</code></pre></dt>
+<!-- TENTATIVE: return type --><dt><pre><code>UBits(width).Min As UInt</code></pre></dt>
+<dd>Returns the minimum value.
+For <code class="kw">UBits</code>, this is always zero (0).</dd>
+<!-- TENTATIVE --><dt><pre><code>SBits(width).Size As Int</code></pre></dt>
+<!-- TENTATIVE --><dt><pre><code>UBits(width).Size As Int</code></pre></dt>
+<dd>Returns the number of available bytes.</dd>
+</dl>
+<h2>Examples</h2>
+<div class="language-vivifire listing">
+<pre><code>Struct foobar Is UInt8
+    foo As SBits(4)
+    bar As UBits(4)
+End Struct&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Struct_Statement.html">Struct Statement</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

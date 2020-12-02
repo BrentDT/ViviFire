@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>#Log Object - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Debug_Object.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Objects.html">Objects</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">#Log Object</h1>
+<p>Does operations on the log file.</p>
+<h2>Methods and properties</h2>
+<dl class="language-vivifire listing">
+<dt><pre><code>Method Debug ( message As String )</code></pre></dt>
+<dd>Writes information to the log file that can help a user with a problem.</dd>
+<dt><pre><code>Method Info ( message As String )</code></pre></dt>
+<dd>Writes information to the log file.</dd>
+<dt><pre><code>Method Special ( message As String, Optional level As UInt )</code></pre></dt>
+<dd>Writes information special to the program to the log file.</dd>
+<dt><pre><code>Method Warning ( message As String )</code></pre></dt>
+<dd>Writes information about a warning to the log file.</dd>
+<dt><pre><code>Method Error ( message As String )</code></pre></dt>
+<dd>Writes information about a non-fatel error to the log file.</dd>
+<dt><pre><code>Method Fatal ( message As String )</code></pre></dt>
+<dd>Writes information about a fatel error to the log file.</dd>
+<dt><pre><code>Property Level As LogLevels</code></pre></dt>
+<dd>Gets or sets the minimum level of information to write to the log file.
+Values include: <code>LogNone</code>, <code>LogErrors</code>, <code>LogWarnings</code>, <code>LogInfo</code> (default), <code>LogSpecial</code>, and <code>LogAll</code>.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>The object <code>#Log</code> is always available to use in your programs.
+This is different from the log file methods supplied by <code>#Debug</code>.
+<code>#Debug</code> is ignored by the compiler unless you make a debug build.</p>
+<h3>Special levels</h3>
+<p>You can make a maximum of five levels to log special conditions.
+<code>LogLevels</code> gives you <code>LogSpecial</code>, <code>LogSpecial2</code>, <code>LogSpecial3</code>, <code>LogSpecial4</code>, and <code>LogSpecial5</code>.</p>
+<h2>Examples</h2>
+<p>TODO2</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Debug_Object.html">#Debug Object</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Base Unit Statement - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Base_Unit_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_1.html">A&ndash;E Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Base Unit Statement</h1>
+<p>Supplies a physical quantity with a standard measure.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>Base Unit name In standard_unit [ = expression ]&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">name</code></dt>
+<dd>Mandatory name for a physical quantity, such as length or time.</dd>
+<dt><code class="id">standard_unit</code></dt>
+<dd>Mandatory unit expression is the standard unit to measure the given physical quantity.</dd>
+<dt><code class="id">expression</code></dt>
+<dd>Optional unit expression makes a relation between a physical quantity and its parents.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>The names used in <code class="id">standard_unit</code> must come from declarations of <code class="kw">Unit</code>.
+The names used must not be the same as some different units.
+For derived units, you can use <code class="id">expression</code> to prevent this problem.</p>
+<p>You can use <code class="id">name</code> to declare elements, such as variables.
+Then it uses the standard unit.
+But you cannot use <code class="id">name</code> in unit expressions, such as those after a number.</p>
+<h2>Examples</h2>
+<h3>Simple units</h3>
+<div class="language-vivifire listing">
+<pre><code>Base Unit length In meters
+Base Unit mass In kilograms
+Base Unit time In seconds&#10;</code></pre>
+</div>
+<h3>Derived units</h3>
+<div class="language-vivifire listing">
+<pre><code>Base Unit velocity In (meters/second) = (length/time)&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Unit_Statement.html">Unit Statement</a></li>
+<li><a href="Units_of_Measure.html">Units of Measure</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Enum Statement - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Enum_Statement.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a href="Statements_1.html">A&ndash;E Statements</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Enum Statement</h1>
+																<p>Declares an enumeration and identifies its members.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<h3>Usual construct</h3>
+<pre><code>[ @Open ] Enum [ enumeration_name ] [ Is type ]
+    member_name [ = value ]
+    &hellip;
+End [ Enum ]&#10;</code></pre>
+<h3>Bit flag construct</h3>
+<pre><code>[ @Open ] @Flags Enum enumeration_name Is type
+    member_name [ = value ]
+    &hellip;
+End [ Enum ]&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="at">@Open</code></dt>
+<dd>Optional &ndash; Specifies that the Enum can be extended.</dd>
+<dt><code class="at">@Flags</code></dt>
+<dd>Changes the enumeration into a set of bit flags.</dd>
+<dt><code>enumeration_name</code></dt>
+<dd>A name for the enumeration</dd>
+<dd>Optional in the usual construct</dd>
+<dd>Mandatory with <code class="at">@Open</code> and the bit-flag construct</dd>
+<dt><code class="id">type</code></dt>
+<dd>An integer data type or a different enumeration.
+It sets the range of possible values and the minimum value.</dd>
+<dd>Optional in the usual construct</dd>
+<dd>Mandatory in the bit-flag construct</dd>
+<dt><code class="id">member_name</code></dt>
+<dd>Mandatory name</dd>
+<dt><code class="id">value</code></dt>
+<dd>Optional constant integer expression</dd>
+<dt><code class="kw">End</code></dt>
+<dd>Completes the statement.
+You can also use <code class="kw">End Enum</code>.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>An <dfn>enumeration</dfn> is a set of related integer constants.
+They can make code easier to read and change.
+They are an alternative to literals found in random locations in code.</p>
+<p>Usually it is not necessary to directly set a constant's value.
+The compiler can make sure that each one is different.</p>
+<h3>Usual construct</h3>
+<p>If an enumeration is not an extension to a different one and the first member is not given a value with the operator &ldquo;<code class="op">=</code>&rdquo;, then its default value is zero.
+Members of an enumeration can be positive or negative.
+Members can have the same value, but the names in an enumeration must be different.</p>
+<p>If <code class="id">type</code> is a different enumeration, then the new one is an extension of <code class="id">type</code>.
+Thus the default value of the first member is the largest member of <code class="id">type</code> plus one.</p>
+<h3>Bit-flag construct</h3>
+<p>The bit-flag construct looks almost the same as the usual construct, but has important differences.
+Usual enumerations can only be assigned and compared.
+But flags can be used with the logical operators: <span class="kws"><code>And</code>, <code>Or</code>, <code>Xor</code>, and <code>Not</code></span>.</p>
+<p>Each uninitialized member is given the value that agrees with the &ldquo;least significant bit&rdquo; not used at that point.
+The first member thus has a default value of one, the second is 2, the third is 4, the fourth is 8, etc.</p>
+<p><code class="id">type_name</code> is usually one of the primitive integer types:
+<span class="kws"><code>Int8</code>, <code>UInt8</code>, <code>Int16</code>, <code>UInt16</code>, <code>Int32</code>, <code>UInt32</code>, <code>Int</code>, <code>UInt</code>, <code>Int64</code>, <code>UInt64</code>, <code>Int128</code>, or <code>UInt128</code></span>.</p>
+<p>A member can be given one value in the range of <code class="id">type</code>.
+If you try to initialize a member with a value out of range, then it causes a compiler error.
+Members can have the same values, but the names in a set of flags must be different.</p>
+<p>If <code class="id">type</code> is the name of a bit field, then the new statement is an extension to the flags.
+The range of an extension is the same as its parent.</p>
+<h3>Changes in syntax with <code>@Option</code></h3>
+<p>There are four areas where you can change the syntax of the statement:</p>
+<ul>
+<li><code>@Option Enum With Name</code></li>
+<li><code>@Option Enum With Type</code></li>
+<li><code>@Option Enum With Equals</code></li>
+<li><code>@Option End With Block</code> and <code>@Option End Without Block</code></li>
+</ul>
+<p>See <a href="Option_Directive.html">@Option Directive</a> for more information.</p>
+<h2>Examples</h2>
+<h3>Listing 1</h3>
+<div class="language-vivifire listing">
+<pre><code>@Open Enum fruit
+    apple
+    banana
+    cherry
+End Enum&#10;</code></pre>
+</div>
+<h3>Listing 2: Extending an enumeration</h3>
+<div class="language-vivifire listing">
+<pre><code>Enum more_fruit Is fruit
+    peach
+    pear
+    pineapple
+End Enum&#10;</code></pre>
+</div>
+<h3>Listing 3: A set of bit flags</h3>
+<div class="language-vivifire listing">
+<pre><code>@Flags Enum days Is Int8
+    Monday
+    Tuesday
+    Wednesday
+    Thursday
+    Friday
+    Saturday
+    Sunday
+End Enum
+
+Var weekend As days = Saturday Or Sunday&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Const_Statement.html">Const Statement</a></li>
+<li><a href="Constants_and_Enumerations.html">Constants and Enumerations</a></li>
+<li><a href="Option_Directive.html">@Option Directive</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>
