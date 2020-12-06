@@ -207,6 +207,13 @@ kbd kbd { /* Made to look like keys */
 	padding: 0.02em 0.04em 0;
 	border: 0.02em solid black;
 }
+.screen-reader {
+	position: absolute;
+	left: -9999px;
+	top: -9999px;
+	width: 1px;
+	height: 1px;
+}
 
 @media print {
 	* {
