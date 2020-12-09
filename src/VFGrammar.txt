@@ -361,7 +361,7 @@ void CCEval() {
 
 bool IsCall() {
 	// Disambiguate "("[args]")" from "("["Is"]("<"|"<="|">"|">="|"<>"|"=")")".
-	if (la->kind == _left_parenthesis) {
+	if (la->kind == _left_paren) {
 		int first = scanner->Peek()->kind;
 		if (first == _Is || (first >= _less_than && first <= _equals_operator)) return false;
 		return true;
@@ -370,7 +370,7 @@ bool IsCall() {
 }
 
 bool IsDeclareParameterList() {
-	if (la->kind == _left_parenthesis) {
+	if (la->kind == _left_paren) {
 		int k = scanner->Peek()->kind;
 		if (k == _line_break) k = scanner->Peek()->kind;
 		if (k == _Optional) k = scanner->Peek()->kind;
@@ -379,8 +379,12 @@ bool IsDeclareParameterList() {
 	return false;
 }
 
+bool IsDict() {
+	return (IsIdentifier(la->kind) && scanner->Peek()->kind == _exclamation);
+}
+
 bool IsFixedPointArgument() {
-	return (la->kind == _left_parenthesis && scanner->Peek()->kind == _integer_literal);
+	return (la->kind == _left_paren && scanner->Peek()->kind == _integer_literal);
 }
 
 bool IsIdentifier(int kind) {
@@ -402,7 +406,7 @@ bool IsNewStatement() {
 
 bool IsUnit() {
 	if (la->kind == _identifier) return true;
-	if (la->kind == _left_parenthesis && scanner->Peek()->kind == _identifier) return true;
+	if (la->kind == _left_paren && scanner->Peek()->kind == _identifier) return true;
 	return false;
 }
 
@@ -463,11 +467,12 @@ char = ANY - ctrl - eol.
 
 TOKENS
 
-comma = ",".
-dot = ".".
-line_break = eol{eol}.
+comma       = ",".
+dot         = ".".
+exclamation = "!".
+line_break  = eol{eol}.
 
-plus = "+".
+plus  = "+".
 minus = "-".
 
 less_than          = "<".
@@ -478,12 +483,12 @@ inequality         = "<>".
 equals_operator    = "=".
 spaceship_operator = "<=>".
 
-left_parenthesis  = "(".
-right_parenthesis = ")".
-left_bracket      = "[".
-right_bracket     = "]".
-left_brace        = "{".
-right_brace       = "}".
+left_paren    = "(".
+right_paren   = ")".
+left_bracket  = "[".
+right_bracket = "]".
+left_brace    = "{".
+right_brace   = "}".
 
 concatenation_operator =
 	( ";" | "&"
@@ -719,9 +724,9 @@ atEnd  = "@End"{notEOL}.   (. CCEval(); .)
 // Comments
 
 InlineComment = ("'"|"//"){notEOL}.
-MidLineComment = "/'"{notEOL}"'/".
 
 COMMENTS FROM "/*" TO "*/" NESTED  // C-style
+COMMENTS FROM "/'" TO "'/" NESTED
 
 IGNORE t + '\u00a0' // non-breaking space
 
@@ -760,7 +765,7 @@ Argument
 ArgumentList
 =
 	// Disambiguate "("args")" from "("expr")".
-	( IF (la->kind == _left_parenthesis) EnclosedArgumentList
+	( IF (la->kind == _left_paren) EnclosedArgumentList
 	| UnenclosedArgumentList
 	)
 .
@@ -1148,7 +1153,7 @@ ExitStatement
 Expression
 =
 	ConditionalExpression
-	(. if (la->kind == _right_parenthesis) { Get(); Err(L"Mismatched parentheses"); } .)
+	(. if (la->kind == _right_paren) { Get(); Err(L"Mismatched parentheses"); } .)
 	[ "Tol" real_literal ]
 .
 /*F*/
@@ -1236,7 +1241,9 @@ GotoStatement
 /*I*/
 IdentifierExpression
 =
-	PropertyOrCall { WEAK dot PropertyOrCall }
+	( IF (IsDict()) Name "!" identifier
+	| PropertyOrCall { WEAK dot PropertyOrCall }
+	)
 .
 IdentifierStatement
 =
