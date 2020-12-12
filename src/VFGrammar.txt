@@ -1239,16 +1239,20 @@ GotoStatement
 .
 /*H*/
 /*I*/
+/*
 IdentifierExpression
 =
 	( IF (IsDict()) Name "!" identifier
 	| PropertyOrCall { WEAK dot PropertyOrCall }
 	)
 .
+*/
+/*
 IdentifierStatement
 =
 	IdentifierExpression [ AssignmentStatement ]
 .
+*/
 IfStatement
 =
 	"If" Expression
@@ -1301,7 +1305,7 @@ IsConstraint
 .
 IsExpression
 =
-	"Is" ( IF (IsUserType()) UserType | IdentifierExpression | "Object" )
+	"Is" ( IF (IsUserType()) UserType | SimpleExpression | "Object" )
 .
 /*J*/
 /*K*/
@@ -1496,10 +1500,15 @@ PrimaryExpression
 	| fixed_literal
 	| DateTimeExpression
 	| StringExpression
-	| IdentifierExpression [ IsExpression ]
-	| PrimitiveType<true> dot IdentifierExpression
+	| Name [ IsExpression | TypeArgumentList ]
+	| PrimitiveType<true> dot SimpleExpression
 	| "Sub" Name
 	| "(" EnclosedExpression ")"
+	|
+		( "Base"
+		| "Self"
+		)
+		dot Name
 	)
 .
 PrimitiveType<bool bBits>
@@ -1512,11 +1521,13 @@ PrimitiveType<bool bBits>
 	| BitFieldType<tkn>  (. if (!bBits) Err(L"Bit field not permitted here"); .)
 	)
 .
+/*
 PropertyOrCall
 =
 	Name
 	[ IF (IsCall()) EnclosedArgumentList ]
 .
+*/
 PropertyStatement<Modifier &mods>
 =
 	(. bool bAbstract = mods.allow(Modifier::Abstract); .)
@@ -1608,14 +1619,22 @@ SelfConstraint
 	"Self"
 	( "<" | "<=" | "Is" ) UserType
 .
+SimpleExpression
+=
+	PrimaryExpression
+	{ dot Name [ TypeArgumentList ]
+	| "!" identifier
+	| EnclosedArgumentList
+	}
+.
 SimpleStatement
 =
 	( CallStatement
 	| GotoStatement
 	| ExitStatement
-	| IdentifierStatement
 	| RaiseStatement
 	| ReturnStatement
+	| SimpleExpression [ AssignmentStatement ]
 	)
 .
 Statement
@@ -1752,7 +1771,7 @@ TypeParameterList
 /*U*/
 UnaryExpression
 =
-	{ UnaryOperator } PrimaryExpression [ TypeConversion ]
+	{ UnaryOperator } SimpleExpression [ TypeConversion ]
 .
 UnaryOperator
 =
