@@ -1,6 +1,6 @@
 var chm = (location.protocol == "mk:");
 var web = (location.protocol.indexOf("http") == 0);
-if (web) setFavIcon('favicon.ico');
+if (web) setFavIcon('/ViviFire/favicon.ico');
 var stub = (document.getElementById('stub') !== null);
 
 var warning = document.createElement('p');
