@@ -39,15 +39,18 @@
 <dt>Comparison</dt>
 <dd><span class="ops"><code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>=</code>, <code>&lt;&gt;</code>, <code>Is</code></span></dd>
 <dt>Logical/Bitwise</dt>
-<dd><code class="op">And</code>, <code class="op">And Then</code></dd>
-<dd><code class="op">Or</code>, <code class="op">Or Else</code></dd>
-<dd><code class="op">Xor</code></dd>
+<dd><span class="ops"><code>And</code>, <code>And Then</code>, <code>Or</code>, <code>Or Else</code>, <code>Xor</code></span></dd>
 <dt>Conditional</dt>
 <dd><code class="kw">If&hellip;Then&hellip;Else</code></dd>
 </dl>
 <h2>Associativity</h2>
 <p>TODO</p>
 <h2>Override precedence and associativity</h2>
+<p>You can use parentheses to cause some parts of an expression to evaluate before other parts.
+They can override precedence and associativity.
+ViviFire always evaluates expressions in parentheses before outer expressions.
+But expressions in parentheses have the usual precedence and associativity, unless you use parentheses in the parentheses.
+An example follows.</p>
 <p>TODO</p>
 </main>
 <script src="common.js"></script>
