@@ -41,9 +41,12 @@
 <p>If <code class="id">expression_1</code> or <code class="id">expression_2</code> is not of type <code class="kw">String</code>, but can become a string, then the expression changes automatically.
 If an expression cannot become a string, then ViviFire gives an error.
 A null reference (<code class="kw">#Null</code>) becomes the string <code>&quot;NULL&quot;</code>.</p>
+<p>We recommend that you put spaces before and after &ldquo;<code class="op">&amp;</code>&rdquo;.
+It is possible that ViviFire could incorrectly read &ldquo;<code class="op">&amp;</code>&rdquo; as part of an integer literal.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
-<pre><code>greeting$ = "Hello," &amp; " world!"&#10;</code></pre>
+<pre><code>greeting$ = &quot;Hello,&quot; &amp; &quot; world!&quot;
+number$ = 4 &amp; 2&#10;</code></pre>
 </div>
 <table class="result">
 <caption>After execution</caption>
@@ -51,14 +54,17 @@ A null reference (<code class="kw">#Null</code>) becomes the string <code>&quot;
 <tr><th>Variable</th><th>Value</th></tr>
 </thead>
 <tbody>
-<tr><td><code>greeting$</code></td>
-<td><code>"Hello, world!"</code></td></tr>
+<tr><th><code>greeting$</code></th>
+<td><code>&quot;Hello, world!&quot;</code></td></tr>
+<tr><th><code>number$</code></th>
+<td><code>&quot;42&quot;</code></td></tr>
 </tbody>
 </table>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Ampersand_Equals_Operator.html">&amp;= Operator</a></li>
 <li><a href="Plus_Operator.html">+ Operator</a></li>
+<li><a href="Type_Characters.html">Type Characters</a></li>
 </ul>
 </main>
 <script src="common.js"></script>
