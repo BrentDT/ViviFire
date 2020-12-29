@@ -43,31 +43,15 @@ h3 {
 h4 {
 	font-size: 1.25rem;
 }
-div.cols {
+.six-cols {
+	display: grid;
+	grid-template-columns: repeat(6, 1fr);
 	max-width: 65ch;
 }
-div.cols ul {
+ul.six-cols {
 	list-style: none;
 	margin: 0;
 	padding: 0;
-}
-div.cols div, div.cols li {
-	display: block;
-	float: left;
-	height: 1.5em;
-	line-height: 1.5em;
-	overflow: hidden;
-}
-div.cols .last {
-	clear: both;
-	float: none;
-	height: 0;
-}
-div.four div, div.four li {
-	width: 24%;
-}
-div.six div, div.six li {
-	width: 16%;
 }
 .foot {
 	font-size: 85%;
@@ -121,7 +105,7 @@ pre>code {
 .language-literal code {
 	word-spacing: -0.75em;
 }
-ul.articles {
+nav ul, ul.articles {
 	list-style: none;
 	margin-left: 0;
 	padding-left: 0;
@@ -221,18 +205,20 @@ kbd kbd { /* Made to look like keys */
 		color: #222;
 		border-color: #222;
 	}
-	nav, .screen, #poll {
+	nav, .screen-reader, #poll {
 		display: none;
 	}
 }
 
 @media (any-pointer: coarse) {
+	/* Touch-enabled devices */
 	dt + dt a, li a {
-		line-height: 1.4;
+		line-height: 1.5;
 	}
 }
 
 @media all and (min-width: 40em) {
+	/* Wide-screen devices */
 	dl.parts {
 		display: grid;
 		grid-template-columns: 12em auto;
@@ -250,6 +236,7 @@ kbd kbd { /* Made to look like keys */
 }
 
 @media all and (max-width: 40em) {
+	/* Small-screen devices */
 	table.wide {
 		width: 100%;
 	}
