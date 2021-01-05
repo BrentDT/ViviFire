@@ -59,7 +59,8 @@ The procedure returns the value of the variable with the same name as the proced
 Execution returns to the line that called the procedure, if there are more procedures to call.
 The procedure returns the value of the variable with the same name as the procedure.</p>
 <p><code class="kw">Exit Sub</code> immediately stops a procedure of type <code class="kw">Sub</code>.
-Execution continues with the line after the line that called the procedure.</p>
+Execution returns to the line that called the procedure, if there are more procedures to call.
+The procedure returns the value of the variable with the same name as the procedure.</p>
 <p><code class="kw">Exit While</code> immediately stops a loop of type <code class="kw">While</code>.
 Execution continues with the line after <code class="kw">End While</code>.</p><h3>With Begin&hellip;When</h3>
 <p>You must be careful when you use <code class="kw">Exit</code> in <code class="kw">Begin&hellip;When</code>.
