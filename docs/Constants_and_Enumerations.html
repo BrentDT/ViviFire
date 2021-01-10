@@ -31,15 +31,15 @@ Safety becomes more important when many persons write code for the same program.
 <!-- ViviFire supplies many constants that you can use to make code portable between platforms. -->
 <p>You can make constants with the statement <code class="kw">Const</code>.
 Such constants have the same scope as variables declared in the same code block.
-For example, if a constant is declared in a procedure, then it is visible only in that one procedure.
-If you put <code class="kw">Const</code> at module scope, then it makes the constant visible to the full module, but not to other modules.</p>
+For example, if a constant is declared in a procedure, then it has visibility only in that one procedure.
+If you put <code class="kw">Const</code> at module scope, then it makes the constant have visibility in the full module, but not in other modules.</p>
 <h2>Enumerations</h2>
 <p>Enumerations make it easy to use sets of related constants.
 A frequently used example is the days of the week.
 You assign a different number to each day, then use the constants as alternatives to the numbers in your code.</p>
 <p>You can make enumerations with the statement <code class="kw">Enum</code>.
 You can put them in module scope or in blocks such as <code class="kw">Class</code> or <code class="kw">Object</code>.</p>
-<p>Enumerations are globally visible through all of an application.
+<p>Enumerations have global visibility through all of an application.
 But different enumerations can have constants with the same name.
 When this occurs, the constant must have its name qualified.</p>
 <p>The statement <code class="kw">Enum</code> can give an enumeration a type name, or it can be without a name.
