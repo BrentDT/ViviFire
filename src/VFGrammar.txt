@@ -734,17 +734,7 @@ PRODUCTIONS
 
 ViviFire
 =
-	(. bool bProcEntry = false; .)
-	[ Newline ]
-	( "Program"
-		[ "=" (. bProcEntry = true; .) ]
-	| "Library"
-	)
-	identifier
-	SYNC Newline
-	{ WhereStatement }
-	{ RequireStatement }
-	{ ModuleMember | ModuleStatement<bProcEntry> }
+	Module
 	EOF
 	(. printf("\n-- %d %s\n", errors->count, (errors->count == 1) ? "error" : "errors"); .)
 .
@@ -801,8 +791,11 @@ BaseUnitStatement<Modifier &mods>
 =
 	(. mods.allow(Modifier::Deprecated); .)
 	(. mods.check_disallowed(); .)
-	"Base" "Unit" identifier InUnitClause
-	[ "=" MultiplicativeExpression ]
+	"Base"
+	( "Unit" identifier InUnitClause
+		[ "=" MultiplicativeExpression ]
+	| (. Err(L"BASE is available only in a child class"); .)
+	)
 	SYNC Newline
 .
 BitFieldType<int &tkn>
@@ -1095,7 +1088,7 @@ EnclosedArgumentList
 .
 EnclosedExpression
 =
-	LogicalXorExpression
+	LogicalExpression
 .
 EnclosedParameterList<int parent>
 =
@@ -1247,12 +1240,18 @@ IdentifierExpression
 	)
 .
 */
-/*
 IdentifierStatement
 =
-	IdentifierExpression [ AssignmentStatement ]
+	// Related: SimpleExpression
+	( Name
+	| "Base"
+	| "Self"
+	)
+	{ ( dot | "?" ) Name [ TypeArgumentList ]
+	| EnclosedArgumentList
+	}
+	[ AssignmentStatement ]
 .
-*/
 IfStatement
 =
 	"If" Expression
@@ -1305,22 +1304,21 @@ IsConstraint
 .
 IsExpression
 =
-	"Is" ( IF (IsUserType()) UserType | SimpleExpression | "Object" )
+	"Is" ( SimpleExpression | "Object" )
 .
 /*J*/
 /*K*/
 /*L*/
-LogicalAndExpression
+LogicalExpression
 =
-	ComparisonExpression { "And" [ "Then" ] ComparisonExpression }
+	ComparisonExpression { LogicalOperator ComparisonExpression }
 .
-LogicalOrExpression
+LogicalOperator
 =
-	LogicalAndExpression { "Or" [ "Else" ] LogicalAndExpression }
-.
-LogicalXorExpression
-=
-	LogicalOrExpression { "Xor" LogicalOrExpression }
+	( "And" [ "Then" ]
+	| "Or" [ "Else" ]
+	| "Xor"
+	)
 .
 LoopControlVariable
 =
@@ -1381,6 +1379,23 @@ ModifiersClause<Modifier &mods>
 	(. int m; .)
 	Modifier<m>  (. mods.add(m); .)
 	{ Modifier<m>  (. mods.add(m); .) 
+	}
+.
+Module
+=
+	(. bool bProcEntry = false; .)
+	[ Newline ]
+	( "Program"
+		[ "=" (. bProcEntry = true; .) ]
+	| "Library"
+	)
+	identifier
+	SYNC Newline
+	{ WhereStatement }
+	{ RequireStatement }
+	{ IF (la->kind == _Base) ModuleMember  // Assume "Base Unit" because Base object is invalid here.
+	| ModuleMember
+	| ModuleStatement<bProcEntry>
 	}
 .
 ModuleMember
@@ -1501,14 +1516,11 @@ PrimaryExpression
 	| DateTimeExpression
 	| StringExpression
 	| Name [ IsExpression | TypeArgumentList ]
-	| PrimitiveType<true> dot SimpleExpression
+	| PrimitiveType<true>
 	| "Sub" Name
 	| "(" EnclosedExpression ")"
-	|
-		( "Base"
-		| "Self"
-		)
-		dot Name
+	| "Base"
+	| "Self"
 	)
 .
 PrimitiveType<bool bBits>
@@ -1621,9 +1633,10 @@ SelfConstraint
 .
 SimpleExpression
 =
+	// Related: IdentifierStatement
 	PrimaryExpression
-	{ dot Name [ TypeArgumentList ]
-	| "!" identifier
+	{ ( dot | "?" ) Name [ TypeArgumentList ]
+	| "!" Name
 	| EnclosedArgumentList
 	}
 .
@@ -1632,9 +1645,9 @@ SimpleStatement
 	( CallStatement
 	| GotoStatement
 	| ExitStatement
+	| IdentifierStatement
 	| RaiseStatement
 	| ReturnStatement
-	| SimpleExpression [ AssignmentStatement ]
 	)
 .
 Statement
