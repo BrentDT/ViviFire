@@ -40,7 +40,7 @@ The ViviFire standard libraries supply many frequently used generic constructs t
 <p>Although procedures are not types, you can make and use generic procedures.
 See <a href="Generic_Procedures.html">Generic Procedures</a> for more information.</p>
 <h2>How generic types help</h2>
-<p>You use generic types to declare some different programming elements, where each operates on specified data types.
+<p>You use generic types to declare some different programming elements, where each one operates on the specified data types.
 The alternatives to a generic type are:</p>
 <ul>
 <li>One type operates on the object data type.</li>
@@ -48,9 +48,17 @@ The alternatives to a generic type are:</p>
 </ul>
 <p>Generic types are better than these alternatives because of:</p>
 <ul>
-<li>Type safety &ndash; TODO</li>
-<li>Performance &ndash; TODO</li>
-<li>Decreased code &ndash; TODO</li>
+<li>Type safety &ndash;
+Generic types let the compiler do type checking.
+The compiler can find type errors.</li>
+<li>Performance &ndash;
+Generic types do not have to box and unbox data.
+Each one is specially made for one data type.</li>
+<li>Decreased code &ndash;
+You write the code in a generic type only one time.
+If you make implementations of a type for each data type, then you must write the same code again and again.
+Their only differences are the data types they use.
+But generic types automatically make implementations for each data type.</li>
 <li>Code that you can use again &ndash; TODO</li>
 <!-- IDE support? -->
 <li>Generic algorithms &ndash; TODO</li>
