@@ -26,8 +26,8 @@
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <pre><code>[ @Shared ] [ New ] class_name [ type_list ] object_name [ , argument_list ]
-[ Begin [ default_type | Call method_name ]
-    statements
+[ Begin [ default_type  |  Call method_name [ initializer ] ]
+    [ statements ]
 End [ New | class_name ] ]&#10;</code></pre>
 </div>
 <h2>Parts</h2>
@@ -50,10 +50,13 @@ End [ New | class_name ] ]&#10;</code></pre>
 <dd>Optional data type that the compiler will use for the subsequent statements, if the data type is not specified.
 The data type must be related to the type specified in a constructor of <code class="id">class_name</code>.</dd>
 <dt><code class="id">method_name</code></dt>
-<dd>Optional name of the method to call for each <code class="id">statement</code>.
+<dd>Optional name of the method to call for each <code class="id">initializer</code> or <code class="id">statement</code>.
 It must come after the keyword <code class="kw">Call</code>.</dd>
+<dt><code class="id">initializer</code></dt>
+<dd>Optional on the same line after <code class="id">method_name</code>.
+It must be a list of values with a comma between each, all between braces (<code class="op">{ }</code>).</dd>
 <dt><code class="id">statements</code></dt>
-<dd>Mandatory in the block construct, one or more object-creation statements.
+<dd>Mandatory in the block construct and if there is no initializer, one or more object-creation statements.
 See the section &ldquo;<a href="#Permitted_members">Permitted members</a>&rdquo; for more information.</dd>
 <dt><code class="kw">End</code></dt>
 <dd>Completes the block construct.
@@ -101,6 +104,14 @@ Begin
     |----
     "E&amp;xit", DoExit
 End Menu&#10;</code></pre>
+</div>
+<h3>Call construct</h3>
+<div class="language-vivifire listing">
+<pre><code>List[String] fruits
+Begin Call Add {
+    "apple", "banana", "cherry"
+}
+End&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">

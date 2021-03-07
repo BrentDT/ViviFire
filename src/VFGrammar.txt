@@ -1457,13 +1457,21 @@ NewMember
 NewStatement
 =
 	(. bool bNew = false; .)
+	(. bool bInitExpr = false; .)
 	(. wchar_t *typename = NULL; .)
 	( "New" (. bNew = true; if (option.New_x_New == option_without) Err(L"NEW is not permitted because of @OPTION"); .)
 	| (. if (option.New_x_New == option_with) Err(L"NEW is mandatory  because of @OPTION"); .)
 	)
 	CallOrNew<0> // FIXME: not 0
-	[	"Begin" [ [ "Call" ] UserType ] SYNC Newline
-		{ NewMember }
+	[ "Begin"
+		( "Call" QualifiedName
+			[ InitializationExpression (. bInitExpr = true; .) ]
+		| UserType
+		)
+		SYNC Newline
+		[	NewMember (. if (bInitExpr) Err(L"Expected End after initialization expression"); .)
+			{ NewMember }
+		]
 		"End"
 	[ "New" | identifier ] // TODO: test typename
 		SYNC Newline
