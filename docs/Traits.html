@@ -30,7 +30,7 @@ You cannot make a variable from a trait.
 Together with the usual inheritance construct, traits do what is known as <dfn>horizontal composition</dfn> of behavior.
 That is, the trait applies its methods to a class without inheritance.</p>
 <h2>Declaration of traits</h2>
-<p>A trait usually starts with <code class="kw">Trait</code> and completes with <code class="kw">End Trait</code>.
+<p>A trait usually starts with <code class="kw">Trait</code> and is completed with <code class="kw">End Trait</code>.
 Between these two lines you can put one or more permitted statements:
 <span class="kws"><code>Method</code>, <code>Property</code>, <code>Function</code>, <code>Sub</code>, and TBD</span>.</p>
 <p>A class that uses a trait has access only to the public members of the trait&mdash;methods and properties.
@@ -39,13 +39,12 @@ The class cannot directly get access to the other members of the trait.</p>
 <p>A method or property is usually made with a body of statements.
 But if you use the modifier <code class="at">@Abstract</code>, then the method or property cannot have a body.
 A class that uses the trait must declare the method or property again, and supply a body of statements.</p>
-<h3>Precedence</h3>
-<p>If a class and a trait make available different methods with the same signature, then the class comes before the trait.
-And if a trait and a parent class cause the same problem, then the trait comes before the parent class.</p>
-<p>That is, class &gt; trait &gt; parent class.</p>
 <h3>Multiple traits</h3>
 <p>TODO</p>
-<h3>Conflict resolution</h3>
+<h3>When different methods have the same signature</h3>
+<p>You have an example class that applies one or more traits.
+If that class has several methods with the same signature, then the result is a compiler error.
+You can change the names of the methods to correct this error.</p>
 <div class="language-vivifire listing">
 <pre><code>Trait A
     Method Calculate
@@ -98,7 +97,7 @@ Trait Foobar Does Foo Does Bar
 End Trait&#10;</code></pre>
 </div>
 <h3>Abstract traits</h3>
-<p>If all of the methods and properties of a trait must be abstract, then you can put <code class="at">@Abstract</code> before the trait.
+<p>If all of the methods and properties of a trait must be abstract, then you can put the modifier <code class="at">@Abstract</code> before the trait.
 Then it is not necessary to put the modifier before each method and property.</p>
 <p>An abstract trait has more limits than a usual trait:</p>
 <ul>
