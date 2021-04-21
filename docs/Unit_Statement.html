@@ -27,7 +27,7 @@
 <div class="language-vivifire syntax">
 <h3>Usual construct</h3>
 <pre><code>[ @SI ] Unit unit_names [ = expression ]&#10;</code></pre>
-<h3>Offset-scale construct</h3>
+<h3>Interval-scale construct</h3>
 <pre><code>[ @SI ] Unit ( parameter In unit ) unit_names = expression&#10;</code></pre>
 </div>
 <h2>Parts</h2>
@@ -41,10 +41,10 @@ You can give the plurals of names with a plus sign, for example, &ldquo;<code>me
 <dt><code class="id">expression</code></dt>
 <dd>A conversion factor.</dd>
 <dd>Optional in the usual construct.</dd>
-<dd>Mandatory in the offset-scale construct.</dd>
+<dd>Mandatory in the interval-scale construct.</dd>
 <dt><code class="id">parameter</code></dt>
-<dd>Mandatory in the offset-scale construct.
-You use it with <code class="id">expression</code> for a unit with an offset scale, for example, a unit of temperature.</dd>
+<dd>Mandatory in the interval-scale construct.
+You use it with <code class="id">expression</code> for a unit with an interval scale, for example, a unit of temperature.</dd>
 <dt><code class="id">unit</code></dt>
 <dd>A different unit that is related to this unit.</dd>
 </dl>
