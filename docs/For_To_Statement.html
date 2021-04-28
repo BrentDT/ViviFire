@@ -66,7 +66,15 @@ Control is connected with the variable <code class="id">counter</code> specified
 Other loop structures are possibly more flexible.
 See the <a href="#See_also">See also</a> section below for more information.</p>
 <h3>Usual execution</h3>
-<p>TODO</p>
+<p>When a loop of type <code class="kw">For</code> starts, ViviFire evaluates <code class="id">start_value</code>, <code class="id">end_value</code>, and <code class="id"	>step_value</code>.
+ViviFire evaluates these values only one time and gives <code class="id">counter</code> the value of <code class="id">start_value</code>.
+Before the statement block executes, ViviFire compares <code class="id">counter</code> to <code class="id">end_value</code>.
+If <code class="id">counter</code> is larger than <code class="id">end_value</code> (or smaller if <code class="id">step_value</code> is negative), then the loop does not execute and execution moves to the statement after <code class="kw">End</code>.
+But the opposite result is more typical, thus the loop executes.</p>
+<p>Each time ViviFire executes <code class="kw">End</code>, it adds <code class="id">step_value</code> to <code class="id">counter</code> and goes back to <code class="kw">For</code>.
+Again it compares counter to end_value, and again it executes the block or stops the loop as a result.
+This process continues until <code class="id">counter</code> becomes larger than <code class="id">end_value</code> or the statement <code class="kw">Exit</code> executes.</p>
+<!-- TODO more -->
 <h3>Exit For</h3>
 <p>The statement <code class="kw">Exit For</code> can stop such loops.
 <code class="kw">Exit For</code> immediately moves control to the statement after <code class="kw">End For</code>.</p>
