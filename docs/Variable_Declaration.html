@@ -35,10 +35,27 @@ It can be a member of a class or structure, but not in a procedure internal to t
 <h3>Shared and instance variables</h3>
 <p>TODO</p>
 <h2>Declaring data type</h2>
-<h3>As type</h3>
-<p>TODO</p>
-<h3>In unit</h3>
-<p>TODO</p>
+<p>The clause <code class="kw">As</code> in the declaration statement lets you give the data type or object type of the declared variable.
+The permitted types follow:</p>
+<ul>
+<li>An elementary data type (<span class="kws"><code>Int</code>, <code>Real</code>, and <code>String</code></span> are examples)</li>
+<li>A composite data type (arrays and structures are examples)</li>
+<li>An object type or class</li>
+<li>A trait</li>
+</ul>
+<p>You use the clause <code class="kw">In</code> in the declaration statement to declare floating-point variables with a related unit of measure.
+The expression after <code class="kw">In</code> is usually a unit declared with the statement <code class="kw">Unit</code>.
+But it can also be a basic unit declared with <code class="kw">Base Unit</code>.</p>
+<p>You can declare several variables in one statement with the same data type.
+But it is not necessary to write the data type more than one time.
+Some examples follow:</p>
+<div class="language-vivifire listing">
+<pre><code>' Declare three integer variables.
+Dim i, j, k As Int
+
+' Declare one mass-unit variable and two floating-point variables.
+Dim w In kilograms, x, y As Real&#10;</code></pre>
+</div>
 <h2>Qualities of declared variables</h2>
 <p>TODO</p>
 </main>
