@@ -93,7 +93,18 @@ End For&#10;</code></pre>
 End For&#10;</code></pre>
 </div>
 <h3>Exit Program</h3>
-<p>TODO</p>
+<p><code class="kw">Exit Program</code> causes the program to stop.
+Control returns to the operating system or another parent program that started it.</p>
+<p>Your program can return an integer value to show failure with <code class="id">exit_code</code>.
+Two constants are also available:</p>
+<ul>
+<li><code>%EXIT_SUCCESS</code> lets the parent know that your program completed without errors.
+This is the default if you do not supply <code class="id">exit_code</code>.
+For most operating systems, this value is zero (0).</li>
+<li><code>%EXIT_FAILURE</code> lets the parent know that your program did not complete or completed with errors.
+For most operating systems, this value is one (1).</li>
+</ul>
+<p>We recommend that you use these constants for code portability.</p>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Begin_When_Statements.html">Begin&hellip;When Statements</a></li>
