@@ -44,7 +44,17 @@ An example follows.</p>
 <h3>Data types and conversions</h3>
 <p>TODO</p>
 <h3>Compound assignment</h3>
-<p>TODO</p>
+<p>A <dfn>compound assignment</dfn> statement first does an operation on an expression, then assigns the result to a variable.
+The example below uses the operator <code class="op">+=</code>.
+It adds the value of the expression on the right to the value of the variable on the left.</p>
+<div class="language-vivifire listing">
+<pre><code>x += 1&#10;</code></pre>
+</div>
+<p>This is the same as the statement that follows.</p>
+<div class="language-vivifire listing">
+<pre><code>x = x + 1&#10;</code></pre>
+</div>
+<p>For a list of such operators, see <a href="Assignment_Operators.html">Assignment Operators</a>.</p>
 <h3>Chained assignment</h3>
 <p>You can give many variables the same value with one statement.
 <dfn>Chained assignment</dfn> uses a special operator (<code class="op">:=</code>).
@@ -55,7 +65,7 @@ An example follows.</p>
 <pre><code>' Reset the coordinates.
 x := y := z := 0.0&#10;</code></pre>
 </div>
-<p>Note: You also can use the operator <code class="op">:=</code> in arguments passed to procedures.
+<p class="note">Note: You also can use the operator <code class="op">:=</code> in arguments passed to procedures.
 See <a href="Parameter_List.html">Parameter List</a> for more information.</p>
 <h2>Statements divided into many lines</h2>
 <p>Most statements are short, but can become too long to read easily.
