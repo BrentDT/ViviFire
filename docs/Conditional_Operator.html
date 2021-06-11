@@ -57,7 +57,7 @@ But the operator evaluates expressions, not statements.</p>
 <p>When <code class="id">condition</code> evaluates as true, <code class="id">then_result</code> is evaluated and its value is the result of the operation&mdash;<code class="id">else_result</code> is not evaluated.
 When <code class="id">condition</code> evaluates as false, <code class="id">else_result</code> is evaluated and its value is the result of the operation&mdash;<code class="id">then_result</code> is not evaluated.</p>
 <p>Usually, <code class="id">then_result</code> and <code class="id">else_result</code> must be compatible data types.
-But they can be different types if, for example, the outer expression can accept more than one data type, such as a polymorphic method.</p>
+But they can be different types if, for example, the outer expression can accept more than one data type, a polymorphic method.</p>
 <h3>Comparison construct</h3>
 <p>The comparison construct lets you compare two values, and returns a different value given how they compare.
 This construct can look almost the same as the statement <code class="kw">Select&hellip;Case</code>.</p>
@@ -66,7 +66,7 @@ You can use all three, or you can put them together as <span class="ops"><code>&
 <p>With all three comparisons, the expression must have three <code class="kw">Is</code> clauses with three result values.
 With only two comparisons, the expression then must have only two <code class="kw">Is</code> clauses with two result values.</p>
 <p>Usually the data types of the result expressions must be compatible.
-But they can be different types if, for example, the outer expression can accept more than one data type, such as a polymorphic method.</p>
+But they can be different types if, for example, the outer expression can accept more than one data type, a polymorphic method.</p>
 <h2 id="Examples">Examples</h2>	
 <h3>Boolean construct</h3>
 <div class="language-vivifire listing">
