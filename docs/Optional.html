@@ -23,13 +23,20 @@
 <h1 id="top">Optional</h1>
 <p>Specifies that you can ignore some parameters when you call a procedure.</p>
 <h2>Instructions</h2>
-<p>TODO</p>
+<p>For each optional parameter, you can give a constant expression as the default value of that parameter.
+If you give it the value <code class="kw">#Null</code> or do not supply a default value, then ViviFire uses the default value for the data type of the parameter.
+If you use the directive <code class="at">@Option Optional With Equals</code>, then you must supply a default value.</p>
+<p>If the parameter list contains an optional parameter, then all parameters after it are also optional.
+If you use <code class="kw">Optional</code> more than one time, then the compiler usually shows a warning.</p>
 <h2>Applies to</h2>
 <ul class="articles">
+<li><a href="Declare_Statement.html">Declare Statement</a></li>
 <li><a href="Function_Statement.html">Function Statement</a></li>
 <li><a href="Method_Statement.html">Method Statement</a></li>
 <li><a href="Sub_Statement.html">Sub Statement</a></li>
 </ul>
+<h2>Example</h2>
+<p>TODO</p>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Parameter_List.html">Parameter List</a></li>
