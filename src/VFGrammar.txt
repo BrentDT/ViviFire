@@ -794,9 +794,9 @@ BaseUnitStatement<Modifier &mods>
 	"Base"
 	( "Unit" identifier InUnitClause
 		[ "=" MultiplicativeExpression ]
-	| ANY (. Err(L"BASE is available only in a child class"); .)
+		SYNC Newline
+	| ANY (. Err(L"Object BASE is available only in a child class"); .)
 	)
-	SYNC Newline
 .
 BitFieldType<int &tkn>
 =
