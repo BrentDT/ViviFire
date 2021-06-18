@@ -794,7 +794,7 @@ BaseUnitStatement<Modifier &mods>
 	"Base"
 	( "Unit" identifier InUnitClause
 		[ "=" MultiplicativeExpression ]
-	| (. Err(L"BASE is available only in a child class"); .)
+	| ANY (. Err(L"BASE is available only in a child class"); .)
 	)
 	SYNC Newline
 .
@@ -903,8 +903,7 @@ CompoundIfStatement<option_type nThen>
 	}
 	"End"
 	(. Optional(_If); .)
-.
-CompoundStatement
+.CompoundStatement
 =
 	( DoStatement
 	| ForStatement
@@ -1529,6 +1528,7 @@ PrimaryExpression
 	| "(" EnclosedExpression ")"
 	| "Base"
 	| "Self"
+	| "#Null"
 	)
 .
 PrimitiveType<bool bBits>
