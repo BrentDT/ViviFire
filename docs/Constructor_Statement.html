@@ -63,6 +63,13 @@ Each constructor must have a different parameter signature.</p>
 They come after a possible data section and before a possible destructor or other procedures.</p>
 <p>You can think of the data section as a type of constructor.
 Statements you put in this section execute before <code class="kw">Constructor</code>.</p>
+<h3>Var construct</h3>
+<p>Constructors with the <dfn>Var construct</dfn> start with the line <code class="kw">Constructor Var</code> or <code class="kw">Constructor Dim</code>.
+Such constructors can contain only variable declaration statements.
+Each variable declaration also becomes a parameter to the constructor.
+You must put all such constructors before all of the usual constructors.</p>
+<p>If you make a class with one or more constructors with the Var construct, then you must call all of them from all other constructors.
+You use the statement <code class="kw">Call Constructor</code>.</p>
 <h3>Permitted parents</h3>
 <ul class="articles">
 <li><a href="Class_Statement.html">Class</a></li>
@@ -80,6 +87,7 @@ Statements you put in this section execute before <code class="kw">Constructor</
 <p>TODO</p>
 <h2>See also</h2>
 <ul class="articles">
+<li><a href="Call_Constructor_Statement.html">Call Constructor Statement</a></li>
 <li><a href="Destructor_Statement.html">Destructor Statement</a></li>
 <li><a href="Method_Statement.html">Method Statement</a></li>
 <li><a href="Where_Clause_Generics.html">Where Clause (Generics)</a></li>
