@@ -1,8 +1,17 @@
+/* Center body */
+html {
+	display: table;
+	margin: auto;
+}
+body {
+	display: table-cell;
+}
+/* End center body */
 body, caption, td, th {
 	font-family: Tahoma, sans-serif;
 	font-size: 100%;
 	background-color: #E0E0E0;
-	color: #333322;
+	color: #333333;
 }
 dd, main li, p {
 	max-width: 65ch;
@@ -13,6 +22,14 @@ table {
 }
 p#aka {
 	display: none;
+}
+p.note {
+	font-size: 95%;
+	background-color: #E7B8B8;
+	color: #222222;
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+	padding: 0.5em;
 }
 table.info {
 	background-color: #eef;
