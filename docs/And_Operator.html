@@ -36,6 +36,8 @@ For integer expressions, it does a bitwise AND operation.</p>
 <dd>A Boolean or integer expression.</dd>
 </dl>
 <h2>Instructions</h2>
+<p>For Boolean expressions, the result is true only if <code class="id">expression_1</code> is true and <code class="id">expression_2</code> is true at the same time.
+The table that follows shows how to find this result.</p>
 <table>
 <caption>Truth table for <code>expression_1 And expression_2</code></caption>
 <thead>
@@ -50,7 +52,14 @@ For integer expressions, it does a bitwise AND operation.</p>
 <tr><td>False</td><td>False</td><td>False</td></tr>
 </tbody>
 </table>
+<p class="note">Note:
+The operator <code class="kw">And</code> always evaluates the two expressions.
+This includes procedure calls, which can have side effects.
+A different operator, <code class="kw">And Then</code>, does not evaluate the second expression if the first is true.</p>
+<p>For bitwise operations, the operator <code class="kw">And</code> compares each bit at the same position in the two numeric expressions.
+The table that follows shows how to calculate the bit in the result.</p>
 <table>
+<caption>Bitwise operation of <code>expression_1 And expression_2</code></caption>
 <thead>
 <tr><th>If the bit in <code class="id">expression_1</code> is</th>
 <th>And the bit in <code class="id">expression_2</code> is</th>
@@ -63,8 +72,11 @@ For integer expressions, it does a bitwise AND operation.</p>
 <tr><td>0</td><td>0</td><td>0</td></tr>
 </tbody>
 </table>
+<p class="note">Note:
+The logical and bitwise operators have lower precedence than the arithmetic and relational operators.
+Thus, we recommend that you put parentheses around bitwise operations to make sure they give correct results.</p>
 <h2>Examples</h2>
-<p>TODO2</p>
+<p>TODO</p>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="And_Equals_Operator.html">And= Operator</a></li>

@@ -34,7 +34,9 @@ For an integer expression, does a bitwise NOT operation.</p>
 <dd>A Boolean or integer expression.</dd>
 </dl>
 <h2>Instructions</h2>
+<p>For Boolean expressions, the table that follows shows how to calculate the result.</p>
 <table>
+<caption>Truth table for <code>Not expression</code></caption>
 <thead>
 <tr><th>If <code class="id">expression</code> is</th>
 <th>Then the result is</th></tr>
@@ -44,7 +46,10 @@ For an integer expression, does a bitwise NOT operation.</p>
 <tr><td>False</td><td>True</td></tr>
 </tbody>
 </table>
+<p>For numeric expressions, the result of the operator <code class="kw">NOT</code> is the opposite value of each bit.
+See the table that follows.</p>
 <table>
+<caption>Bitwise operation for <code>NOT expression</code></caption>
 <thead>
 <tr><th>If the bit in <code class="id">expression</code> is</th>
 <th>Then the bit in the result is</th></tr>
@@ -54,6 +59,9 @@ For an integer expression, does a bitwise NOT operation.</p>
 <tr><td>0</td><td>1</td></tr>
 </tbody>
 </table>
+<p class="note">Note:
+The logical and bitwise operators have lower precedence than the arithmetic and relational operators.
+Thus, we recommend that you put parentheses around bitwise operations to make sure they give correct results.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
 <pre><code>Var pattern As UInt8 = &amp;B11110000

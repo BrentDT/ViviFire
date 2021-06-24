@@ -36,11 +36,14 @@ For integer expressions, does a bitwise XOR operation.</p>
 <dd>A Boolean or integer expression.</dd>
 </dl>
 <h2>Instructions</h2>
+<p>For Boolean expressions, the result is true only if <code class="id">expression_1</code> and <code class="id">expression_2</code> hold different values at the same time.
+The table that follows shows how to find this result.</p>
 <table>
+<caption>Truth table for <code>expression_1 Xor expression_2</code></caption>
 <thead>
 <tr><th>If <code class="id">expression_1</code> is</th>
 <th>And <code class="id">expression_2</code> is</th>
-<th>The result is</th></tr>
+<th>Then the result is</th></tr>
 </thead>
 <tbody>
 <tr><td>True</td><td>True</td><td>False</td></tr>
@@ -49,11 +52,14 @@ For integer expressions, does a bitwise XOR operation.</p>
 <tr><td>False</td><td>False</td><td>False</td></tr>
 </tbody>
 </table>
+<p>For bitwise operations, the operator <code class="kw">Xor</code> compares each bit at the same position in the two numeric expressions.
+The table that follows shows how to calculate the bit in the result.</p>
 <table>
+<caption>Bitwise operation for <code>expression_1 Xor expression_2</code></caption>
 <thead>
 <tr><th>If the bit in <code class="id">expression_1</code> is</th>
 <th>And the bit in <code class="id">expression_2</code> is</th>
-<th>The bit in the result is</th></tr>
+<th>Then the bit in the result is</th></tr>
 </thead>
 <tbody>
 <tr><td>1</td><td>1</td><td>0</td></tr>
@@ -62,8 +68,11 @@ For integer expressions, does a bitwise XOR operation.</p>
 <tr><td>0</td><td>0</td><td>0</td></tr>
 </tbody>
 </table>
+<p class="note">Note:
+The logical and bitwise operators have lower precedence than the arithmetic and relational operators.
+Thus, we recommend that you put parentheses around bitwise operations to make sure they give correct results.</p>
 <h2>Examples</h2>
-<p>TODO2</p>
+<p>TODO</p>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="And_Operator.html">And Operator</a></li>
