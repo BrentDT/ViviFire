@@ -22,7 +22,7 @@
 </nav>
 <main>
 <h1 id="top">Require Statement</h1>
-<p>Gives a module access to a library module, and lets you use its exported names directly.</p>
+<p>Gives a module access to a library module, and lets you use its public names directly.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <h3>Usual construct</h3>
@@ -54,13 +54,15 @@ You can use one or more limits to find the correct library if different librarie
 </dl>
 <h2>Instructions</h2>
 <p>TODO</p>
-<h2>Version literal</h2>
+<h2 id="Version_literal">Version literal</h2>
 <div class="language-literal">
-<pre><code><var>number</var> <kbd>.</kbd> <var>number</var> <kbd>.</kbd> <var>number</var></code></pre>
+<pre><code><var>number</var> <kbd>.</kbd> <var>number</var> <kbd>.</kbd> <var>number</var> [ <kbd>.</kbd> <var>number</var> ]</code></pre>
 </div>
 <dl class="parts">
 <dt><code class="id">number</code></dt>
-<dd>One of three groups of decimal integers.</dd>
+<dd>One of three or four groups of decimal integers.
+The compiler ignores zeroes before other numbers at the start of a group. </dd>
+<dd>For example, &ldquo;<code>1.02.03</code>&rdquo; is the same as &ldquo;<code>1.2.3</code>&rdquo;.</dd>
 </dl>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
