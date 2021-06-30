@@ -38,7 +38,7 @@ With this comes compile-time checks of correctness and automatic changes of valu
 <p>How a physical quantity shows is almost the same as that used in standard print.
 You write a floating-point number, then a unit.
 If the unit is one word, then you can write it without punctuation.
-But if it is more than one word, then you must write the unit between parentheses.
+But if it is more than one word, also knows as a <dfn>compound unit</dfn>, then you must write the unit between parentheses.
 Names of units do not ignore letter case.
 This is the only part of ViviFire where this occurs.</p>
 <p>You can specify multiplication in two styles.
@@ -55,6 +55,13 @@ power2 = 2.0 (kilowatt*hours)
 power3 = 3.0 (kW h)
 speed1 = 343.0 (meters/second)
 speed2 = 1_480.0 (m/s)&#10;</code></pre>
+</div>
+<h3>Mixed units</h3>
+<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>duration1 = 3 hrs 5 mins
+duration2 = 1 week 3 days 5 hrs 7 mins 9.11 secs
+length = 8 m 1 mm&#10;</code></pre>
 </div>
 <h2>Base units</h2>
 <p>A <dfn>base unit</dfn> is a unit to measure a physical quantity that has no relation to other units.
