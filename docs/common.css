@@ -108,8 +108,8 @@ code, code[class="language-vivifire"], pre, PRE[class="language-vivifire"] {
 	font-size: 95%;
 	white-space: pre;
 }
-pre>code {
-	background-color: #F8F8F8;
+pre {
+	background-color: #FAFAFA;
 	color: #080808;
 }
 .listing code, .syntax code {
