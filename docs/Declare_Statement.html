@@ -39,11 +39,11 @@ End [ Declare ]&#10;</code></pre>
 <dt><code class="id">library_name</code></dt>
 <dd>Optional string literal with the name of a compiled library, for example, a dynamic link library (DLL).</dd>
 <dt><code class="id">flags</code></dt>
-<dd>Optional one or more named constants, with a comma between each.
+<dd>Optional one or more identifiers, with a comma between each.
 	<ul>
-	<li><code class="num">%ANSI</code> &ndash; Strings are 8-bit ANSI. Cannot use with <code class="num">%UTF16</code>.</li>
-	<li><code class="num">%CDECL</code> &ndash; Uses the C calling convention.</li>
-	<li><code class="num">%UTF16</code> &ndash; Strings are 16-bit Unicode. Cannot use with <code class="num">%ANSI</code>.</li>
+	<li><code class="nkw">ANSI</code> &ndash; Strings are 8-bit ANSI. Cannot use with <code class="nkw">UTF16</code>.</li>
+	<li><code class="nkw">CDECL</code> &ndash; Uses the C calling convention.</li>
+	<li><code class="nkw">UTF16</code> &ndash; Strings are 16-bit Unicode. Cannot use with <code class="nkw">ANSI</code>.</li>
 	</ul>
 </dd>
 <dt><code class="id">name</code></dt>
@@ -97,12 +97,12 @@ Declare Function TwoArgs Is FourArgs(3, 2, Optional 1=0, 4=0)&#10;</code></pre>
 <h3>Foreign function libraries</h3>
 <div class="language-vivifire listing">
 <pre><code>Declare "user32.dll" Function BringWindowToTop(h As Int) As Int
-Declare "user32.dll", %ANSI Function SetWindowText Is "SetWindowTextA" (
+Declare "user32.dll", ANSI Function SetWindowText Is "SetWindowTextA" (
     h As Int, s As String ) As Int&#10;</code></pre>
 </div>
 <hr>
 <div class="language-vivifire listing">
-<pre><code>Declare "user32.dll", %ANSI
+<pre><code>Declare "user32.dll", ANSI
     Function BringWindowToTop(h As Int) As Int
     Function SetWindowText Is "SetWindowTextA"(h As Int, s As String) As Int
 End Declare&#10;</code></pre>

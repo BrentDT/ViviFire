@@ -1,4 +1,5 @@
 var reKeywords = /\b(?:And|As|Base|Begin|Boolean|ByRef|Call|Case|Catch|Char|Class|Const|Constructor|DateTime|Declare|Destructor|Dim|Do|Does|Each|Else|End|Enum|Event|Exit|Finally|Fixed64|Fixed128|For|Function|Get|GoTo|Handles|If|In|Int|Int8|Int16|Int32|Int64|Int128|Is|Let|Library|Loop|Method|Mod|Namespace|New|Not|Object|Optional|Or|Out|Program|Property|Raise|Real|Real32|Real64|Real128|ReDim|Rem|Require|Return|SBits|Select|Set|SHL|SHR|Step|String|Struct|Sub|Then|To|Tol|Trait|Try|UBits|UInt|UInt8|UInt16|UInt32|UInt64|UInt128|Unit|Until|Var|Wait|When|Where|While|Xor)\b(?!`)/g;
+var reNonkeywords = /\b(ANSI|CDECL|DONE|NONE|UTF16)\b/g;
 
 /* PrismJS 1.15.0
 https://prismjs.com/download.html#themes=prism&plugins=keep-markup */
@@ -25,5 +26,6 @@ Prism.languages.vivifire = {
 	'nil': /\|-*/g,
 	'op': /[-+*\/^&~:<=>]{1,3}/g,
 	'kw': reKeywords,
+	'nkw': reNonkeywords,
 	'id': /(`?)(?:#\w|\b[A-Za-z])\w*[!$%]?\1/g
 };

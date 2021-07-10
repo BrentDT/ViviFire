@@ -142,7 +142,7 @@ dt .mod {
 .syntax .token.id, .literal var, dt var, code.id, var.id {
 	font-style: italic;
 }
-.token.kw, .literal kbd, dt .kw, dt kbd {
+.token.kw, .token.nkw, .literal kbd, dt .kw, dt .nkw, dt kbd {
 	color: navy;
 	font-style: normal;
 }

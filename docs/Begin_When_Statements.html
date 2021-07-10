@@ -29,7 +29,7 @@
 <pre><code>start_clause
   Begin [ identifier_list ]
     [ loop_statements ]
-  When { identifier | %NONE | %DONE | Else }
+  When { identifier | NONE | DONE | Else }
     [ after_statements ]
   &hellip;
 end_clause&#10;</code></pre>
@@ -50,13 +50,13 @@ end_clause&#10;</code></pre>
 <dt><code class="id">identifier</code></dt>
 <dd>Mandatory for each identifier in <code class="id">identifier_list</code>.
 Specifies the start of statements that execute after &ldquo;<code>Exit identifier</code>&rdquo;.</dd>
-<dt><code class="num">%NONE</code></dt>
+<dt><code class="nkw">NONE</code></dt>
 <dd>Specifies the start of statements that execute when <code class="id">loop_statements</code> did not execute.</dd>
-<dt><code class="num">%DONE</code></dt>
+<dt><code class="nkw">DONE</code></dt>
 <dd>Specifies the start of statements that execute when <code class="id">loop_statements</code> completed.</dd>
 <dt><code class="kw">Else</code></dt>
-<dd>Specifies the start of statements that execute when one of the conditions, <code class="num">%NONE</code> or <code class="num">%DONE</code>, are true.
-If you use <code class="kw">Else</code>, then you cannot use <code>%NONE</code> or <code>%DONE</code>.</dd>
+<dd>Specifies the start of statements that execute when one of the conditions, <code class="nkw">NONE</code> or <code class="nkw">DONE</code>, are true.
+If you use <code class="kw">Else</code>, then you cannot use <code class="nkw">NONE</code> or <code class="nkw">DONE</code>.</dd>
 <dt><code class="id">after_statements</code></dt>
 <dd>Optional executable statements.</dd>
 <dt><code class="id">end_clause</code></dt>
@@ -65,13 +65,13 @@ If you use <code class="kw">Else</code>, then you cannot use <code>%NONE</code> 
 <h2>Instructions</h2>
 <h3>When identifier</h3>
 <p>If you use <code>When identifier</code> in a loop construct, then the statements in this block of code execute because of <code>Exit identifier</code>.</p>
-<h3>When %DONE</h3>
-<p>If you use <code>When %DONE</code> in a loop construct, then the statements in this block of code execute only when the loop stops as usual.
+<h3>When DONE</h3>
+<p>If you use <code>When DONE</code> in a loop construct, then the statements in this block of code execute only when the loop stops as usual.
 The statements execute at most one time for each loop, almost the same as code not in the loop.</p>
-<p>If a loop stops because of <code class="kw">Exit</code> or <code class="kw">Return</code>, then <code>When %DONE</code> does not execute.
+<p>If a loop stops because of <code class="kw">Exit</code> or <code class="kw">Return</code>, then <code>When DONE</code> does not execute.
 Thus execution continues as usual for the given statement.</p>
-<h3>When %NONE</h3>
-<p>If you use <code>When %NONE</code>, then the statements in this block of code execute only when the body of the loop did not execute.
+<h3>When NONE</h3>
+<p>If you use <code>When NONE</code>, then the statements in this block of code execute only when the body of the loop did not execute.
 A table that summarizes the conditions in which this can occur follows.</p>
 <style media="all and (max-width: 40em)">
 #twn td:nth-of-type(1):before { content: "Loop construct"; }
@@ -95,9 +95,9 @@ Or <var>A</var>&nbsp;&lt;&nbsp;<var>B</var> for a negative <var>D</var></td></tr
 <td>When group <var>G</var> is <code class="kw">#Null</code> or is empty</td></tr>
 </tbody>
 </table>
-<p class="note">Note: You cannot use <code>When %NONE</code> in <code class="kw">Do&hellip;Loop While</code> and <code class="kw">Do&hellip;Loop Until</code> because they execute their statements a minimum of one time.</p>
+<p class="note">Note: You cannot use <code>When NONE</code> in <code class="kw">Do&hellip;Loop While</code> and <code class="kw">Do&hellip;Loop Until</code> because they execute their statements a minimum of one time.</p>
 <h3>When Else</h3>
-<p>If you use <code class="kw">When Else</code> in a loop, then it is the same as <code>When %DONE</code> and <code>When %NONE</code> put together.</p>
+<p>If you use <code class="kw">When Else</code> in a loop, then it is the same as <code>When DONE</code> and <code>When NONE</code> put together.</p>
 <h3>Scope</h3>
 <p>The scope of variables in these blocks is the same as variables in the usual loop construct.
 Thus you cannot use variables declared in them after the end of the loop.</p>
@@ -109,7 +109,7 @@ Thus you cannot use variables declared in them after the end of the loop.</p>
     If name$ = match$ Then Exit found
   When found
     PrintLine "Match found."
-  When %DONE
+  When DONE
     PrintLine "No matches found."
 End For&#10;</code></pre>
 </div>
@@ -118,7 +118,7 @@ End For&#10;</code></pre>
 <pre><code>While #inp.Read(data$)
   Begin
     Call ProcessData data$
-  When %DONE
+  When DONE
     
 End While&#10;</code></pre>
 </div>

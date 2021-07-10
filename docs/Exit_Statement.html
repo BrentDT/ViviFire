@@ -65,7 +65,7 @@ The procedure returns the value of the variable with the same name as the proced
 Execution continues with the line after <code class="kw">End While</code>.</p><h3>With Begin&hellip;When</h3>
 <p>You must be careful when you use <code class="kw">Exit</code> in <code class="kw">Begin&hellip;When</code>.
 This construct lets you catch when a loop completes correctly.
-When you use <code class="kw">Exit</code> with <code>keyword_list</code> to stop a loop, then <code class="kw">When %Done</code> and <code class="kw">When Else</code> are ignored.</p>
+When you use <code class="kw">Exit</code> with <code>keyword_list</code> to stop a loop, then <code>When Done</code> and <code>When Else</code> are ignored.</p>
 <p>You use <code>Exit identifier</code> to stop a loop and move execution to the line <code class="kw">When</code> with the given <code>identifier</code>.</p>
 <h3>With nested structures</h3>
 <p>When <code class="kw">Exit</code> is used in nested structures of the same type (for example, two <code class="kw">For</code> loops), <code class="kw">Exit</code> moves out of the most inner structure and gives control to the next higher level.
@@ -79,7 +79,7 @@ See the example below.</p>
     If name$ = match$ Then Exit found
   When found
     PrintLine "Match found."
-  When %DONE
+  When DONE
     PrintLine "No matches found."
 End For&#10;</code></pre>
 </div>
@@ -98,10 +98,10 @@ Control returns to the operating system or another parent program that started i
 <p>Your program can return an integer value to show failure with <code class="id">exit_code</code>.
 Two constants are also available:</p>
 <ul>
-<li><code>%EXIT_SUCCESS</code> lets the parent know that your program completed without errors.
+<li><code class="num">%EXIT_SUCCESS</code> lets the parent know that your program completed without errors.
 This is the default if you do not supply <code class="id">exit_code</code>.
 For most operating systems, this value is zero (0).</li>
-<li><code>%EXIT_FAILURE</code> lets the parent know that your program did not complete or completed with errors.
+<li><code class="num">%EXIT_FAILURE</code> lets the parent know that your program did not complete or completed with errors.
 For most operating systems, this value is one (1).</li>
 </ul>
 <p>We recommend that you use these constants for code portability.</p>
