@@ -1019,7 +1019,9 @@ DeclareStatement<Modifier &mods>
 	(. mods.check_disallowed(); .)
 	(. bool isAlias = true; .)
 	"Declare"
-	[ string_literal { WEAK comma integer_constant }
+	[ string_literal
+		{ WEAK comma identifier  // TODO: "ANSI" or "CDECL" or "UTF16".
+		}
 		(. isAlias = false; .)
 	]
 	( DeclareSignature<isAlias>
@@ -1856,11 +1858,10 @@ WhenStatement<bool isPreconditional, when_type &whens>
 =
 	"When"
 	( identifier
-	| integer_constant
-		// TODO: Check for "%Done" or "%None"
-		(. if (whens == when_else) Err(L"WHEN %DONE and WHEN %NONE cannot be in the same loop with WHEN ELSE"); .)
+		// TODO: Check for "Done" or "None"
+		(. if (whens == when_else) Err(L"WHEN DONE and WHEN NONE cannot be in the same loop with WHEN ELSE"); .)
 	| "Else"
-		(. if (whens == when_done || whens == when_none) Err(L"WHEN ELSE cannot be in the same loop with WHEN %DONE or WHEN %NONE"); .)
+		(. if (whens == when_done || whens == when_none) Err(L"WHEN ELSE cannot be in the same loop with WHEN DONE or WHEN NONE"); .)
 		(. whens = when_else; .)
 	) Newline
 	{ Statement }
