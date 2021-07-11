@@ -24,6 +24,10 @@
 table.wide details[open] summary {
 	display: none;
 }
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+	/* IE 10-11 only */
+	summary { display: none; }
+}
 </style>
 <style media="all and (max-width: 40em)">
 	#t1 tbody th:before { content: "ViviFire type"; }
@@ -45,7 +49,9 @@ table.wide details[open] summary {
 <td></td></tr>
 <tr><th><a href="Char_Data_Type.html"><code>Char</code></a></th>
 <td>4 bytes</td>
-<td>0 to 4,294,967,295</td>
+<td><details>
+<summary>0 to 4.29 billion</summary>
+0 to 4,294,967,295</details></td>
 <td>Unsigned; Unicode UTF-32</td></tr>
 <tr><th><a href="DateTime_Data_Type.html"><code>DateTime</code></a></th>
 <td>8 bytes</td>
