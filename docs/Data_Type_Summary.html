@@ -21,12 +21,9 @@
 <main>
 <h1 id="top">Data Type Summary</h1>
 <style>
+/* Hide <summary> when expanded */
 table.wide details[open] summary {
 	display: none;
-}
-@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-	/* IE 10-11 only */
-	summary { display: none; }
 }
 </style>
 <style media="all and (max-width: 40em)">
@@ -175,5 +172,14 @@ table.wide details[open] summary {
 </ul>
 </main>
 <script src="common.js"></script>
+<script>
+// If <summary> is not supported, hide them all.
+var sa = document.getElementsByTagName('summary');
+if (sa[0] instanceof HTMLUnknownElement) {
+	for (var i = 0; i < sa.length; i++) {
+		sa[i].style.display = 'none';
+	}
+}
+</script>
 </body>
 </html>
