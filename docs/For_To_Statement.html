@@ -74,14 +74,16 @@ But the opposite result is more typical, thus the loop executes.</p>
 <p>Each time ViviFire executes <code class="kw">End</code>, it adds <code class="id">step_value</code> to <code class="id">counter</code> and goes back to <code class="kw">For</code>.
 Again it compares counter to end_value, and again it executes the block or stops the loop as a result.
 This process continues until <code class="id">counter</code> becomes larger than <code class="id">end_value</code> or the statement <code class="kw">Exit</code> executes.</p>
-<!-- TODO more -->
+<p>If the value of <code class="id">step_value</code> is zero, then an error occurs.
+A constant or literal of zero causes a compiler error.
+A variable with a value of zero will cause a run-time error.<!-- TBD exception name --></p>
 <h3>Exit For</h3>
 <p>The statement <code class="kw">Exit For</code> can stop such loops.
 <code class="kw">Exit For</code> immediately moves control to the statement after <code class="kw">End For</code>.</p>
 <h3 id="When_statements">When statements</h3>
-<p>To find if a loop of type <code class="kw">For</code> completed because <code class="id">counter</code> became more than <code class="id">end</code>, use <code>When %Done</code>.
+<p>To find if a loop of type <code class="kw">For</code> completed because <code class="id">counter</code> became more than <code class="id">end</code>, use <code>When Done</code>.
 </p>
-<p>To find if a loop of type <code class="kw">For</code> did not execute because <code class="id">counter</code> was initially out-of-range, use <code>When %None</code>.
+<p>To find if a loop of type <code class="kw">For</code> did not execute because <code class="id">counter</code> was initially out-of-range, use <code>When None</code>.
 </p>
 <p>See <a href="Begin_When_Statements.html">Begin&hellip;When Statements</a> for more information.</p>
 <h2>Examples</h2>
