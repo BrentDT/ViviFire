@@ -29,7 +29,7 @@ If %day:~0,1% EQU 0 Set day=%day:~1,1%
 	Echo /*
 	Echo * ViviFire Programming Language
 	Echo *
-	Echo * Copyright 2012-%year% Brent D. Thorn
+	Echo * Copyright %year% Brent D. Thorn
 	Echo *
 	Echo *You can get the latest version at http://vivifire.com/.
 	Echo *
