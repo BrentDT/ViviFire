@@ -30,7 +30,7 @@
     [ Where generic_constraints ]
     [ statements ]
 End [ Function ]&#10;</code></pre>
-<h3>Name-replacement construct</h3>
+<h3>Name-change construct</h3>
 <pre><code>[ @Shared ] Function function_name Does trait_name . supplied_name&#10;</code></pre>
 </div>
 <h2>Parts</h2>
@@ -42,17 +42,17 @@ End [ Function ]&#10;</code></pre>
 <dt><code class="id">type_list</code></dt>
 <dd>Optional in the usual construct.
 See <a href="Type_List.html">Type List</a> for more information.</dd>
-<dd>Not permitted in the name-replacement construct.</dd>
+<dd>Not permitted in the name-change construct.</dd>
 <dt><code class="id">parameter_list</code></dt>
 <dd>Optional in the usual construct.
 One or more local variables, with a comma between each.
 The caller gives them their values.
 The modifier <code class="kw">ByRef</code> is not permitted.
 See <a href="Parameter_List.html">Parameter List</a> for more information.</dd>
-<dd>Not permitted in the name-replacement construct.</dd>
+<dd>Not permitted in the name-change construct.</dd>
 <dt><code class="id">return_type</code></dt>
 <dd>Optional in the usual construct.</dd>
-<dd>Not permitted in the name-replacement construct.</dd>
+<dd>Not permitted in the name-change construct.</dd>
 <dd>
 	<div class="language-vivifire syntax">
 	<h3>Return type</h3>
@@ -71,17 +71,17 @@ See <a href="Parameter_List.html">Parameter List</a> for more information.</dd>
 <dd>Optional. See <a href="Where_Clause_Generics.html">Where Clause (Generics)</a> for more information.</dd>
 <dt><code class="id">statements</code></dt>
 <dd>In the usual construct, optional one or more declarative or executable statements.</dd>
-<dd>Not permitted in the name-replacement construct.</dd>
+<dd>Not permitted in the name-change construct.</dd>
 <dt><code class="kw">End</code></dt>
 <dd>Completes the statement.
 You can also use <code class="kw">End Function</code>.</dd>
 <dd>You can change this part of the syntax.
 See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
-<dd>Not permitted in the name-replacement construct.</dd>
+<dd>Not permitted in the name-change construct.</dd>
 <dt><code class="id">trait_name</code></dt>
-<dd>In the name-replacement construct, mandatory name of a trait that the class or object applies.</dd>
+<dd>In the name-change construct, mandatory name of a trait that the class or object applies.</dd>
 <dt><code class="id">supplied_name</code></dt>
-<dd>In the name-replacement construct, mandatory name of a procedure supplied by a trait.</dd>
+<dd>In the name-change construct, mandatory name of a procedure supplied by a trait.</dd>
 </dl>
 <h2>Instructions</h2>
 <p><code class="kw">End Function</code> is not the same as <a href="Exit_Statement.html"><code>Exit Function</code></a>.</p>

@@ -58,10 +58,10 @@ See <a href="Type_List.html">Type List</a> for more information.</dd>
 One or more local variables with a comma between each.
 The caller gives them their values.
 See <a href="Parameter_List.html">Parameter List</a> for more information.</dd>
-<dd>Not permitted in the name-replacement construct.</dd>
+<dd>Not permitted in the name-change construct.</dd>
 <dt><code class="id">return_type</code></dt>
 <dd>Optional in the usual construct.</dd>
-<dd>Not permitted in the name-replacement construct.</dd>
+<dd>Not permitted in the name-change construct.</dd>
 <dd>
 	<div class="language-vivifire syntax">
 	<h3>Return type</h3>
@@ -86,9 +86,9 @@ You can also use <code class="kw">End Method</code>.</dd>
 See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
 <dd>Not permitted in the abstract and aliasing constructs.</dd>
 <dt><code class="id">trait_name</code></dt>
-<dd>Mandatory in the name-replacement construct, the name of one trait that the class applies.</dd>
+<dd>Mandatory in the name-change construct, the name of one trait that the class applies.</dd>
 <dt><code class="id">supplied_name</code></dt>
-<dd>Mandatory in the name-replacement construct, the name of the procedure supplied by a trait.</dd>
+<dd>Mandatory in the name-change construct, the name of the procedure supplied by a trait.</dd>
 </dl>
 <h2>Instructions</h2>
 <p><code class="kw">End Method</code> is not the same as <a href="Exit_Statement.html"><code>Exit Method</code></a>.</p>
@@ -102,7 +102,7 @@ Procedures of the types <code class="kw">Function</code> and <code class="kw">Su
 It is used in an abstract class or trait.
 It makes sure that a concrete child class or the user of a trait will supply its own implementation of the method.
 Thus, it cannot contain statements.</p>
-<h3>Name replacement construct</h3>
+<h3>Name-change construct</h3>
 <p>You use the name-change construct when you must change the name of a method supplied by a trait which has the same name as a procedure in your class.</p>
 <p>If you must keep a method out of your class, then <a href="Function_Statement.html"><code>Function</code></a> has an equivalent construct that can change a public method into a private function.</p>
 <h2>Examples</h2>
