@@ -46,7 +46,7 @@ You can use one or more limits to find the correct library if different librarie
 	<dd>Mandatory name.</dd>
 	<dt><code class="id">comparison_op</code></dt>
 	<dd>One of the comparison operators:
-	<span class="ops"><code>=</code>, <code>&lt;&gt;</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, or <code>&gt;=</code></span>.</dd>
+	<span class="ops"><code>=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>, or <code>&lt;&gt;</code></span>.</dd>
 	<dt><code class="id">attrib_value</code></dt>
 	<dd>Mandatory string literal or version literal.</dd><!-- TODO: Version Literal section or article -->
 	</dl>
@@ -54,6 +54,48 @@ You can use one or more limits to find the correct library if different librarie
 </dl>
 <h2>Instructions</h2>
 <p>TODO</p>
+<h3>Usual construct</h3>
+<p>TODO</p>
+<h3>Limits construct</h3>
+<p>You use the limits construct when more than one library with the same name is available.
+You can compare the names and values supplied by the statements <code class="kw">Where</code> in each library.
+These values can have one of two data types: strings and version numbers.</p>
+<h4>Comparing strings</h4>
+<p>You can compare a string identifier to a string literal.
+The only comparison operators permitted are equality (<code class="op">=</code>) and inequality (<code class="op">&lt;&gt;</code>).
+An example follows.</p>
+<div class="language-vivifire listing">
+<pre><code>Require MyLibrary Where author = "John Doe"&#10;</code></pre>
+</div>
+<h4>Comparing versions</h4>
+<p>You can compare a version identifier to a version literal.
+All comparison operators are available:
+<span class="ops"><code>=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>, and <code>&lt;&gt;</code></span>.
+An example follows.</p>
+<div class="language-vivifire listing">
+<pre><code>Require MyLibrary Where version = 1.5.0&#10;</code></pre>
+</div>
+<p>You can also compare a version identifier to a range of versions.
+You must write this in the sequence (1) lower version, (2) comparison, (3) identifier, (4) comparison, (5) higher version.
+The comparisons must be one of the operators <code class="op">&lt;</code> or <code class="op">&lt;=</code>.
+An example follows.</p>
+<div class="language-vivifire listing">
+<pre><code>Require MyLibrary Where 1.1.0 &lt;= version &lt; 2.0.0&#10;</code></pre>
+</div>
+<h4><code>And</code> and <code>Or</code></h4>
+<p>You can put two or more comparisons together with one of the operators <code class="kw">And</code> and <code class="kw">Or</code>.
+These operators operate the same as the logical operators with the same name.</p>
+<p>If you put the operator <code class="kw">And</code> between comparisons, then the two must be true.
+But if you put the operator <code class="kw">Or</code> between comparisons, then only one must be true.</p>
+<p>The logical operators usually evaluate in sequence from left to right.
+But you can change this with parentheses (&ldquo;<code class="op">( )</code>&rdquo;).
+Comparisons between parentheses evaluate before outer comparisons.
+An example follows.</p>
+<div class="language-vivifire listing">
+<pre><code>Require MyLibrary _
+    Where (author = "John Doe" And version &lt; 2.1.0) _
+    Or (author = "Jane Doe" And version &gt;= 2.1.0)&#10;</code></pre>
+</div>
 <h2 id="Version_literal">Version literal</h2>
 <div class="language-literal">
 <pre><code><var>number</var> <kbd>.</kbd> <var>number</var> <kbd>.</kbd> <var>number</var> [ <kbd>.</kbd> <var>number</var> ]</code></pre>
@@ -71,6 +113,8 @@ Require MyProject.TestHarness Where version = 2.1.0&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
+<li><a href="And_Operator.html">And Operator</a></li>
+<li><a href="Or_Operator.html">Or Operator</a></li>
 <li><a href="Modules.html">Modules</a></li>
 </ul>
 </main>
