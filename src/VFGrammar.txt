@@ -1600,15 +1600,25 @@ Rank
 .
 RequireComparison
 =
-	// TODO: strings can only be = or <>.
-	[ version_literal ( "<" | "<=" ) ]  // Eg 1.0.0 <= version < 2.0.0
-	identifier ComparisonOperator ( string_literal | version_literal )
+	// TODO: strings can only be "=" or "<>".
+	( [ version_literal ( "<" | "<=" ) ]  // Eg 1.0.0 <= version < 2.0.0
+		identifier
+		ComparisonOperator ( string_literal | version_literal )
+	| "(" RequireLogic ")"
+	)
+.
+RequireLogic
+=
+	RequireComparison
+	{ ( "And" | "Or" ) RequireComparison }
 .
 RequireStatement
 =
 	"Require" QualifiedName
-	[ "Where" RequireComparison
-	{ ( "And" | "Or" ) RequireComparison } ]
+	[ comma QualifiedName
+		{ comma QualifiedName }
+	| "Where" RequireLogic
+	]
 	SYNC Newline
 .
 ReturnStatement
