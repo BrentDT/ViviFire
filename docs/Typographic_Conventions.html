@@ -22,13 +22,19 @@
 <h1 id="top">Typography Used by This Manual</h1>
 <p>The style of text, known as <dfn>typography</dfn>, helps you identify special words used in this manual.
 These words frequently show in specifications of syntax and examples of source code.</p>
-<table class="language-vivifire syntax">
+<style media="all and (max-width: 40em)">
+	#t1 td:nth-of-type(1):before { content: "Examples"; }
+	#t1 td:nth-of-type(2):before { content: "Information"; }
+</style>
+<table id="t1" class="language-vivifire syntax wide">
 <thead>
 <tr><th>Examples</th><th>Information</th></tr>
 </thead>
 <tbody>
 <tr><td><pre><code>ByRef, In, Rem, UInt32&#10;</code></pre></td>
 <td>Language keywords are shown with an initial upper-case letter, with the format shown in the example.</td></tr>
+<tr><td><pre><code>ANSI, CDECL, DONE&#10;</code></pre></td>
+<td>Non-reserved keywords are shown with all upper-case letters, with the format shown in the example.</td></tr>
 <tr><td><pre><code>condition, #object, argument_list&#10;</code></pre></td>
 <td>Information that you supply is shown with an initial lower-case letter, with the format shown in the example.</td></tr>
 <tr><td><pre><code>name [ = value ]&#10;</code></pre></td>
