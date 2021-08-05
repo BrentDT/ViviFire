@@ -77,21 +77,34 @@ Also, the lines <code class="kw">End Method</code> are not given to help show th
 <h3>No parameters</h3>
 <div class="language-vivifire listing">
 <pre><code>Method DoSomething
-Method DoAnotherThing
-Method GetInt%
-Method GetInteger As Integer
-Method GetStr$()
-Method GetString() As String&#10;</code></pre>
+    ' Does not return a value.
+Method GetNumber%
+    ' Returns an integer.
+Method GetNumber() As Int
+    ' This is almost the same as above, with more verbosity.&#10;</code></pre>
 </div>
 <h3>One or more mandatory parameters</h3>
 <div class="language-vivifire listing">
-<pre><code>Method DoSomethingWith number
-Method ChangeStr ByRef str$
-Method GetSomethingFrom[T](#con As MyContainer[T]) As T&#10;</code></pre>
+<pre><code>Method Increment amount As Int
+    ' Has one mandatory parameter passed by value.
+    ' Does not return a value.
+Method GetPoint(ByRef x As Int, ByRef y As Int)
+    ' Has  two parameters passed by reference.
+    ' Does not return a value.
+    ' The parentheses are optional.
+Method AddStudent(name As String) As Int
+    ' Has one parameter passed by value.
+    ' Returns an integer value.
+    ' String is a reference type.
+    ' The parentheses are mandatory.&#10;</code></pre>
 </div>
 <h3>One or more optional parameters</h3>
 <div class="language-vivifire listing">
-<pre><code>Method 
+<pre><code>Method  AddStudent name As String, Optional dob As DateTime
+    ' Has one mandatory and one optional parameter.
+    ' Does not return, thus parentheses are optional.
+    ' If dob is not supplied by the caller,
+    ' then it has its default value.
 &#10;</code></pre>
 </div>
 <h2>See also</h2>
