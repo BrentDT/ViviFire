@@ -215,6 +215,10 @@ kbd kbd { /* Made to look like keys */
 	width: 1px;
 	height: 1px;
 }
+code.IPA {
+	font-family: "DejaVu Sans", "Lucida Sans Unicode", Gentium;
+	font-size: inherit;
+}
 
 @media print {
 	* {
