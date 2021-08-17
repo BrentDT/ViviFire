@@ -40,15 +40,16 @@ The operator <code class="op">=</code> assigns the value on its right to the var
 <p class="note">Note:
 This operator is different from the comparison operator <code class="op">=</code>.
 See <a href="Comparison_Operators.html">Comparison Operators</a> for more information.</p>
-<p>Because ViviFire uses this operator for two different operations, you usually cannot use it for chained assignments.
+<p>Because ViviFire uses this operator for two different operations, you cannot use it for chained assignments.
 For example, the statement <code>a = b = c</code> contains one assignment and one equality test.
 But the statement <code>a := b := c</code> contains two assignments.</p>
 <h2>Examples</h2>
 <h3>Variable</h3>
-<p>The following example demonstrates the use of <code class="op">=</code> as an assignment operator and comparison operator in the same statement:</p>
+<p>The example that follows uses <code class="op">=</code> as an assignment operator and comparison operator in the same statement:</p>
 <div class="language-vivifire listing">
-<pre><code>Dim x, y 'x and y are initially zero
-x = y = 0 ' y is being tested for equality to zero&#10;</code></pre>
+<pre><code>Var x, y As Int 'x and y are initially zero.
+
+x = y = 0 ' A test if y is zero.&#10;</code></pre>
 </div>
 <table class="result">
 <caption>After execution</caption>
