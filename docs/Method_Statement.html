@@ -41,10 +41,17 @@ End [ Method ]&#10;</code></pre>
 <dt><code class="id">modifiers</code></dt>
 <dd>Optional, usually one, but possibly two of these:
 	<ul>
-	<li><code class="at">@Abstract</code> &ndash; The method must be overridden by a concrete child class. Only applicable in an abstract class or trait.</li>
-	<li><code class="at">@Open</code> &ndash; The method can be overridden by a child class. Only applicable in an open class.</li>
-	<li><code class="at">@Override</code> &ndash; The method overrides one inherited from a parent class or trait.</li>
-	<li><code class="at">@Shared</code> &ndash; The method is a child of its parent construct, not an instance of some object.</li>
+	<li><code class="at">@Abstract</code> &ndash; The method has no implementation.
+	You must implement it in a child class.
+	See <a href="Abstract.html">@Abstract</a>.</li>
+	<li><code class="at">@Iterator</code> &ndash; The method implements the iterator pattern.
+	<!-- See <a href="Iterator.html">@Iterator</a>. --></li>
+	<li><code class="at">@Open</code> &ndash; The method can have a different implementation in a child class.
+	See <a href="Open.html">@open</a>.</li>
+	<li><code class="at">@Override</code> &ndash; The method is a different implementation of a method inherited from a parent class or trait.
+	See <a href="Override.html">@Override</a></li>
+	<li><code class="at">@Shared</code> &ndash; The method is a member of a container, for example, a class, and not an instance of that container.
+	See <a href="Shared.html">@Shared</a>.</li>
 	</ul>
 </dd>
 <dt><code class="id">method_name</code></dt>
