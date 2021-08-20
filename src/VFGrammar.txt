@@ -254,7 +254,12 @@ void Optional(int kind, option_type nOption = option_default) {
 
 class Modifier {
 public:
-	enum { Abstract, Backed, Deprecated, Flags, Open, Override, ReadOnly, Shared, SI, WriteOnly, LAST };
+	enum {
+		Abstract, Backed, Deprecated, Flags,
+		Iterator, Open, Override, ReadOnly,
+		Shared, SI, WriteOnly,
+		LAST
+	};
 private:
 ///	const wchar_t *text[] = { L"abstract", L"backed", L"deprecated", L"final", L"flags", L"override", L"readonly", L"shared", L"si", L"writeonly" };
 	Parser *parser;
@@ -1343,9 +1348,10 @@ MethodStatement<Modifier &mods>
 =
 	(. bool bAbstract = mods.allow(Modifier::Abstract); .)
 	(. mods.allow(Modifier::Deprecated); .)
-	(. bool bOpen = mods.allow(Modifier::Open); .)
+	(. bool bIterator = mods.allow(Modifier::Iterator); .)
+	(. bool bOpen     = mods.allow(Modifier::Open); .)
 	(. bool bOverride = mods.allow(Modifier::Override); .)
-	(. bool bShared = mods.allow(Modifier::Shared); .)
+	(. bool bShared   = mods.allow(Modifier::Shared); .)
 	(. mods.check_disallowed(); .)
 	MethodSignature<mods>
 	{ Statement }
@@ -1367,6 +1373,7 @@ Modifier<int &m>
 	| "@Backed"      (. m = Modifier::Backed; .)
 	| "@Deprecated"  (. m = Modifier::Deprecated; .)
 	| "@Flags"       (. m = Modifier::Flags; .)
+	| "@Iterator"    (. m = Modifier::Iterator; .)
 	| "@Open"        (. m = Modifier::Open; .)
 	| "@Override"    (. m = Modifier::Override; .)
 	| "@ReadOnly"    (. m = Modifier::ReadOnly; .)
@@ -1552,13 +1559,14 @@ PropertyOrCall
 */
 PropertyStatement<Modifier &mods>
 =
-	(. bool bAbstract = mods.allow(Modifier::Abstract); .)
-	(. bool bBacked = mods.allow(Modifier::Backed); .)
+	(. bool bAbstract  = mods.allow(Modifier::Abstract); .)
+	(. bool bBacked    = mods.allow(Modifier::Backed); .)
 	(. mods.allow(Modifier::Deprecated); .)
-	(. bool bOpen = mods.allow(Modifier::Open); .)
-	(. bool bOverride = mods.allow(Modifier::Override); .)
-	(. bool bReadOnly = mods.allow(Modifier::ReadOnly); .)
-	(. bool bShared = mods.allow(Modifier::Shared); .)
+	(. bool bIterator  = mods.allow(Modifier::Iterator); .)
+	(. bool bOpen      = mods.allow(Modifier::Open); .)
+	(. bool bOverride  = mods.allow(Modifier::Override); .)
+	(. bool bReadOnly  = mods.allow(Modifier::ReadOnly); .)
+	(. bool bShared    = mods.allow(Modifier::Shared); .)
 	(. bool bWriteOnly = mods.allow(Modifier::WriteOnly); .)
 	(. mods.check_disallowed(); .)
 	PropertySignature<mods>
@@ -1575,7 +1583,7 @@ PropertyStatement<Modifier &mods>
 		Newline
 	]
 .
-PropertySignature<Modifiers &mods>
+PropertySignature<Modifier &mods>
 =
 	"Property" DeclaratorList<false>
 	[ "Does" identifier dot identifier ]
@@ -1682,7 +1690,7 @@ StringExpression
 	( string_literal | string_constant )
 	{ string_literal | string_constant }
 .
-StructStatement<Modifiers &mods>
+StructStatement<Modifier &mods>
 =
 	(. mods.allow(Modifier::Deprecated); .)
 	(. mods.check_disallowed(); .)
@@ -1714,7 +1722,8 @@ StructState
 SubStatement<Modifier &mods>
 =
 	(. mods.allow(Modifier::Deprecated); .)
-	(. bool bShared = mods.allow(Modifier::Shared); .)
+	(. bool bIterator = mods.allow(Modifier::Iterator); .)
+	(. bool bShared   = mods.allow(Modifier::Shared); .)
 	(. mods.check_disallowed(); .)
 	SubSignature
 	{ WhereClause<false> SYNC Newline }
