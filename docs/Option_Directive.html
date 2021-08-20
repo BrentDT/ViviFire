@@ -24,7 +24,7 @@
 <p>Makes sure that your code agrees with a given style.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<pre><code>@Option options&#10;</code></pre>
+<pre><code>@Option options [ , options ]&hellip;&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
@@ -32,42 +32,25 @@
 <dd>Mandatory one or more identifiers</dd>
 </dl>
 <h2>Instructions</h2>
-<h3 id="Charset"><code>Charset Latin</code></h3>
+<h3 id="Charset" class="notranslate">Charset</h3>
+<h4><code>@Option charset Latin</code></h4>
 <p>All names must use the Latin character set.
 That is letters (&lsquo;A&rsquo; thru &lsquo;Z&rsquo;), digits (&lsquo;0&rsquo; thru &lsquo;9&rsquo;), and underscores (&lsquo;_&rsquo;).</p>
-<h3 id="Dim"><code>Dim</code></h3>
-<h4><code>Dim With Dim</code></h4>
+<h3 id="Dim" class="notranslate">Dim</h3>
+<h4><code>@Option Dim</code></h4>
 <p>You must start a variable declaration with <code class="kw">Dim</code>, and not <code class="kw">Var</code>.
 For example:</p>
 <div class="language-vivifire listing">
 <pre><code>Dim x As Int&#10;</code></pre>
 </div>
-<h4><code>Dim With Var</code></h4>
+<h4><code>@Option Var</code></h4>
 <p>You must start a variable declaration with <code class="kw">Var</code>, and not <code class="kw">Dim</code>.
 For example:</p>
 <div class="language-vivifire listing">
 <pre><code>Var x As Int&#10;</code></pre>
 </div>
-<h3 id="End"><code>End</code></h3>
-<h4><code>End For With Name</code></h4>
-<p>You can use this only with &ldquo;<code>@Option End With Block</code>&rdquo;.
-You must complete all statements of the type <code class="kw">For</code>with <code class="kw">End For</code>, plus the loop counter.
-For example:</p>
-<div class="language-vivifire listing">
-<pre><code>For index = 1 To 10
-  ' ...
-End For index&#10;</code></pre>
-</div>
-<h4><code>End For Without Name</code></h4>
-<p>You can use this only with &ldquo;<code>@Option End With Block</code>&rdquo;.
-You must complete all statements of the type <code class="kw">For</code> with <code class="kw">End For</code>, without the loop counter.
-For example:</p>
-<div class="language-vivifire listing">
-<pre><code>For index = 1 To 10
-  ' ...
-End For&#10;</code></pre>
-</div>
-<h4><code>End With Block</code></h4>
+<h3 id="End" class="notranslate">End</h3>
+<h4><code>@Option End Block</code></h4>
 <p>You must write <code class="kw">End</code> plus the block type.
 For example:</p>
 <div class="language-vivifire listing">
@@ -75,7 +58,7 @@ For example:</p>
   ' ...
 End While&#10;</code></pre>
 </div>
-<h4><code>End Without Block</code></h4>
+<h4><code>@Option End [ No Block ]</code></h4>
 <p>You must write <code class="kw">End</code> without the block type.
 For example:</p>
 <div class="language-vivifire listing">
@@ -83,8 +66,26 @@ For example:</p>
   ' ...
 End&#10;</code></pre>
 </div>
-<h3 id="Enum"><code>Enum</code></h3>
-<h4><code>Enum With Name</code></h4>
+<h4><code>@Option End For ID</code></h4>
+<p>You can use this only with &ldquo;<code>@Option End Block</code>&rdquo;.
+You must complete all statements of the type <code class="kw">For</code>with <code class="kw">End For</code>, plus the loop counter.
+For example:</p>
+<div class="language-vivifire listing">
+<pre><code>For index = 1 To 10
+  ' ...
+End For index&#10;</code></pre>
+</div>
+<h4><code>@Option End For [ No ID ]</code></h4>
+<p>You can use this only with &ldquo;<code>@Option End Block</code>&rdquo;.
+You must complete all statements of the type <code class="kw">For</code> with <code class="kw">End For</code>, without the loop counter.
+For example:</p>
+<div class="language-vivifire listing">
+<pre><code>For index = 1 To 10
+  ' ...
+End For&#10;</code></pre>
+</div>
+<h3 id="Enum" class="notranslate">Enum</h3>
+<h4><code>@Option Enum ID</code></h4>
 <p>You must give a name to all statements of the type <code class="kw">Enum</code>.
 For example:</p>
 <div class="language-vivifire listing">
@@ -92,7 +93,7 @@ For example:</p>
   ' ...
 End&#10;</code></pre>
 </div>
-<h4><code>Enum With Type</code></h4>
+<h4><code>@Option Enum Is</code></h4>
 <p>You must give statements of the type <code class="kw">Enum</code> a data type, with the clause <code class="kw">Is</code>.
 For example:</p>
 <div class="language-vivifire listing">
@@ -100,7 +101,7 @@ For example:</p>
   ' ...
 End&#10;</code></pre>
 </div>
-<h4><code>Enum With Equals</code></h4>
+<h4><code>@Option Enum Equals</code></h4>
 <p>You must give members of the statement <code class="kw">Enum</code> values, assigned with the operator &ldquo;<code class="op">=</code>&rdquo;.
 For example:</p>
 <div class="language-vivifire listing">
@@ -109,12 +110,8 @@ For example:</p>
   second = 2
 End&#10;</code></pre>
 </div>
-<h3 id="If"><code>If</code></h3>
-<h4><code>If With End</code></h4>
-<p>You must complete statements of the type <code class="kw">If&hellip;Else</code> with <code class="kw">End</code> or <code class="kw">End If</code>.
-If you use &ldquo;<code>@Option End With Block</code>&rdquo;, then you must write <code class="kw">End If</code>.
-Thus, use of the one-line construct becomes an error.</p>
-<h4><code>If With Then</code></h4>
+<h3 id="If" class="notranslate">If</h3>
+<h4><code>@Option If Then</code></h4>
 <p>You must write <code class="kw">Then</code> with all statements of the type <code class="kw">If&hellip;Else</code>.
 For example:</p>
 <div class="language-vivifire listing">
@@ -124,7 +121,7 @@ Else If condition2 Then
   ' ...
 End&#10;</code></pre>
 </div>
-<h4><code>If Without Then</code></h4>
+<h4><code>@Option If [ No Then ]</code></h4>
 <p>You must not write <code class="kw">Then</code> with the block construct of the statement <code class="kw">If&hellip;Else</code>.
 For example:</p>
 <div class="language-vivifire listing">
@@ -134,12 +131,17 @@ Else If condition2
   ' ...
 End&#10;</code></pre>
 </div>
-<h3 id="Last"><code>Last</code></h3>
-<p>No more directives of the type <code class="mod">@Option</code> are permitted after this one.</p>
-<h3 id="New"><code>New</code></h3>
-<h4><code>New With New</code></h4>
+<h4><code>@Option If End</code></h4>
+<p>You must complete statements of the type <code class="kw">If&hellip;Else</code> with <code class="kw">End</code> or <code class="kw">End If</code>.
+If you use &ldquo;<code>@Option End Block</code>&rdquo;, then you must write <code class="kw">End If</code>.
+Thus, use of the one-line construct becomes an error.</p>
+<h3 id="Last" class="notranslate">Last</h3>
+<h4><code>@Option Last</code></h4>
+<p>No more directives of the type <code class="at">@Option</code> are permitted after this one.</p>
+<h3 id="New" class="notranslate">New</h3>
+<h4><code>@Option New</code></h4>
 <p>You must start <code class="kw">New</code> Statements with <code class="kw">New</code>.
-If you use &ldquo;<code>@Option End With Block</code>&rdquo;, then you must complete the block construct with <code class="kw">End New</code>.
+If you use &ldquo;<code>@Option End Block</code>&rdquo;, then you must complete the block construct with <code class="kw">End New</code>.
 For example:</p>
 <div class="language-vivifire listing">
 <pre><code>New Files #logs, "*.log"
@@ -149,28 +151,17 @@ Begin
   ' ...
 End New&#10;</code></pre>
 </div>
-<h4><code>New Without New</code></h4>
-<p>You must start <code class="kw">New</code> Statements with the data type, not <code class="kw">New</code>.
-If you use &ldquo;<code>@Option End With Block</code>&rdquo;, then you must complete the block construct with <code class="kw">End</code> plus the data type.
-For example:</p>
-<div class="language-vivifire listing">
-<pre><code>Files #logs, "*.log"
-
-Menu #file, "File"
-Begin
-  ' ...
-End Menu&#10;</code></pre>
-</div>
-<h3 id="Optional"><code>Optional With Equals</code></h3>
-<p>You must give a value to an optional parameter with the &ldquo;<code class="op">=</code>&rdquo; operator.
+<h3 id="Optional" class="notranslate">Optional</h3>
+<h4><code>@Option Optional Equals</code></h4>
+<p>You must give a value to an optional parameter with the operator &ldquo;<code class="op">=</code>&rdquo;.
 For example:</p>
 <div class="language-vivifire listing">
 <pre><code>Method ReadData(Optional path As String = ".")
   ' ...
 End&#10;</code></pre>
 </div>
-<h3 id="Select"><code>Select</code></h3>
-<h4><code>Select With Case</code></h4>
+<h3 id="Select" class="notranslate">Select</h3>
+<h4><code>@Option Select Case</code></h4>
 <p>You must write <code class="kw">Select Case</code> in all statements of the type <code class="kw">Select&hellip;Case</code>.
 For example:</p>
 <div class="language-vivifire listing">
@@ -178,8 +169,10 @@ For example:</p>
   ' ...
 End&#10;</code></pre>
 </div>
-<h4><code>Select With Else</code></h4>
-<p>You must write the clause <code class="kw">Case Else</code> for all statements of the type <code class="kw">Select&hellip;Case</code>.
+<h4><code>@Option Select [ No Case ]</code></h4>
+<p>You must not write the keyword <code class="kw">Case</code> after <code class="kw">Select</code> in all statements of the type <code class="kw">Select&hellip;Case</code>.</p>
+<h4><code>@Option Select Else</code></h4>
+<p>You must write the clause &ldquo;<code class="kw">Case Else</code>&rdquo; for all statements of the type <code class="kw">Select&hellip;Case</code>.
 This is to make sure that you do something for all possible values.
 For example:</p>
 <div class="language-vivifire listing">
@@ -192,13 +185,12 @@ Case Else
   Raise RangeError(minutes)
 End&#10;</code></pre>
 </div>
-<h4><code>Select Without Case</code></h4>
-<p>You must not write the keyword <code class="kw">Case</code> after <code class="kw">Select</code> in all statements of the type <code class="kw">Select&hellip;Case</code>.</p>
-<h3 id="Unit"><code>Unit With Name</code></h3>
+<h3 id="Unit" class="notranslate">Unit</h3>
+<h4><code>@Option Unit Full</code></h4>
 <p>You must write the full names of units of measure.
 Thus &ldquo;kilometer&rdquo; is correct syntax, but &ldquo;km&rdquo; is incorrect.</p>
-<h3 id="Warning"><code>Warning</code></h3>
-
+<h3 id="Warning" class="notranslate">Warning</h3>
+<h4><code>@Option Warning[1-5]</code></h4>
 <table>
 <thead>
 <tr><th>Option</th>
@@ -217,13 +209,12 @@ Thus &ldquo;kilometer&rdquo; is correct syntax, but &ldquo;km&rdquo; is incorrec
 <td><strong>All warnings</strong>, if they cause problems or not.
 </tbody>
 </table>
-<h4><code>Warning[1-5] As Error</code></h4>
-<p>When you add <code>As Error</code>, all warnings at that level and below become errors.
+<h4><code>@Option Warning[1-5] Error</code></h4>
+<p>When you add <code>Error</code>, all warnings at that level and below become errors.
 You can use the two syntaxes together if the level for errors is less than the level for warnings.
 An example follows.</p>
 <div class="language-vivifire listing">
-<pre><code>@Option Warning1 As Error
-@Option Warning5&#10;</code></pre>
+<pre><code>@Option Warning1 Error, Warning5&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
