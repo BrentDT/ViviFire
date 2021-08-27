@@ -697,11 +697,11 @@ UInt128     = "UInt128".
 Unit        = "Unit".
 Until       = "Until".
 Var         = "Var".
-Wait        = "Wait".
 When        = "When".
 Where       = "Where".
 While       = "While".
 Xor         = "Xor".
+Yield       = "Yield".
 
 PRAGMAS
 
@@ -1676,6 +1676,7 @@ SimpleStatement
 	| IdentifierStatement
 	| RaiseStatement
 	| ReturnStatement
+	| YieldStatement
 	)
 .
 Statement
@@ -1912,6 +1913,10 @@ WhileStatement
 .
 /*X*/
 /*Y*/
+YieldStatement
+=
+	"Yield" Expression
+.
 /*Z*/
 
 END ViviFire.
