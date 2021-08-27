@@ -17,109 +17,118 @@ COMPILER ViviFire
 
 enum case_type { case_zero, case_expr, case_else };
 enum option_type { option_default, then_found, then_not_found };
-enum ternary_option { option_0, option_1, option_2, with_option = option_1, without_option = option_2 };
+enum ternary { TERNARY0, TERNARY1, TERNARY2, YES = TERNARY1, NO = TERNARY2 };
 enum when_type { when_zero = 0, when_done = 1, when_none = 2, when_else = 3 };
 
 struct {
-	//TODO: charset
-	ternary_option Dim_or_Var           = option_0;
-	ternary_option End_For_x_name       = option_0;
-	ternary_option End_x_block          = option_0;
-	bool           Enum_with_name       = false;
-	bool           Enum_with_type       = false;
-	bool           Enum_with_equals     = false;
-	bool           If_with_End          = false;
-	ternary_option If_x_Then            = option_0;
-	bool           last                 = false;
-	ternary_option New_x_New            = option_0;
-	bool           Optional_with_equals = false;
-	ternary_option Select_x_Case        = option_0;
-	bool           Select_with_Else     = false;
-	bool           unit_with_name       = false;
-	bool           warning_as_error     = false;
+	bool    charset_latin  = false;
+	ternary Dim_or_Var     = TERNARY0;
+	ternary End_block      = TERNARY0;
+	ternary End_For_id     = TERNARY0;
+	bool    Enum_id        = false;
+	bool    Enum_Is        = false;
+	bool    Enum_equals    = false;
+	ternary If_Then        = TERNARY0;
+	bool    If_End         = false;
+	bool    last           = false;
+	bool    New            = false;
+	bool    Optional_equals= false;
+	ternary Select_Case    = TERNARY0;
+	bool    Select_Else    = false;
+	bool    unit_full      = false;
+	short   warning        = 4;
+	short   warning_error  = 0;
 
 	void Parse() {
-		static const wchar_t *block = L"block", *equals = L"equals", *name = L"name";
+		static const wchar_t *s_block = L"block", *s_equals = L"equals", *s_id = L"id", *s_no = L"no", *s_warning = L"warning";
 		switch (la->kind) {
 		case _Dim:
 			Get();
-			if (with_or_without() == with_option) {
-				if (la->kind == _Dim) Dim_or_Var = option_1;      // Dim with Dim
-				else if (la->kind == _Var) Dim_or_Var = option_2; // Dim with Var
-				else goto bad_option;
-				Get();
-			} else goto bad_option;
+			Dim_or_Var = TERNARY1;      // @Option Dim
+			break;
+		case _Var:
+			Get();
+			Dim_or_Var = TERNARY2; // @Option Var
 			break;
 		case _End:
 			Get();
 			if (la->kind == _For) { // End For
 				Get();
-				ternary_option x = with_or_without();
-				if (x == option_0 || !id(name)) goto bad_option;
-				End_For_x_name = x;
-			} else if (la->kind == _identifier) {
-				ternary_option x = with_or_without();
-				if (x == option_0 || !id(block)) goto bad_option;
-				End_x_block = x; // End with(out) block
-			} else goto bad_option;
+				if (match(s_no) && !match(s_id)) goto bad_option;
+				End_For_id = NO; // @Option End For [ no id ]
+			} else if (match(s_block)) {
+				End_block = YES; // @Option End Block
+			} else {
+				if (match(s_no) && !match(s_block)) goto bad_option;
+				End_block = NO; // @Option End [ No Block ]
+			}
 			break;
 		case _Enum:
 			Get();
-			if (with_or_without() != with_option || la->kind != _identifier) goto bad_option;
-			Get();
-			if (wcscmp(name, t-val) == 0) Enum_with_name = true;           // Enum with name
-			else if (wcscmp(L"type", t->val) == 0) Enum_with_type = true;  // Enum with type
-			else if (wcscmp(equals, t->val) == 0) Enum_with_equals = true; // Enum with equals
-			else goto bad_option;
+			if (match(s_id)) {
+				Enum_id = true;           // @Option Enum ID
+			} else if (la->kind == _Is) {
+				Get();
+				Enum_Is = true;  // @Option Enum Is
+			} else if (match(s_equals)) {
+				Enum_equals = true; // @Option Enum Equals
+			} else goto bad_option;
 			break;
-		case _If: {
+		case _If:
 			Get();
-			ternary_option x = with_or_without();
-			if (x == option_0 || la->kind != _End || la->kind != _Then) goto bad_option;
-			Get();
-			if (t->kind == _End && x == with_option) If_with_End = true; // If with End
-			else if (t->kind == _Then) If_x_Then = x;                    // If with(out) Then
-			else goto bad_option;
+			if (la->kind == _End) {
+				Get();
+				If_End = true; // @Option If End
+			} else if (la->kind == _Then) {
+				Get();
+				If_Then = YES;                    // @Option If Then
+			} else {
+				if (match(s_no) && la->kind != _Then) goto bad_option;
+				If_Then = NO; // @Option If [ No Then ]
+			}
 			break;
-		}
-		case _New: {
+		case _New:
 			Get();
-			ternary_option x = with_or_without();
-			if (x == option_0 || la->kind != _New) goto bad_option;
-			Get();
-			New_x_New = x; // New with(out) New
+			New = true; // @Option New
 			break;
-		}
 		case _Optional:
 			Get();
-			if (with_or_without() != with_option || !id(equals)) goto bad_option;
-			Optional_with_equals = true; // Optional with equals
+			if (!match(s_equals)) goto bad_option;
+			Optional_equals = true; // @Option Optional Equals
 			break;
-		case _Select: {
+		case _Select:
 			Get();
-			ternary_option x = with_or_without();
-			if (x == option_0 || la->kind != _Case || la->kind != _Else) goto bad_option;
-			Get();
-			if (t->kind == _Else && x == with_option) Select_with_Else = true; // SELECT with ELSE
-			else if (t->kind == _Case) Select_x_Case = x;                      // SELECT with(out) CASE
-			else goto bad_option;
+			if (la->kind == _Else) {
+				Get();
+				Select_Else = true; // @Option SELECT ELSE
+			} else if (la->kind == _Case) {
+				Get();
+				Select_Case = YES;                      // @Option SELECT CASE
+			} else {
+				if (match(s_no) && la->kind != _Case) goto bad_option;
+				Select_Case = NO; // @Option Select [ No Case ]
+			}
 			break;
 		}
 		case _Unit:
 			Get();
-			if (with_or_without() != with_option || !id(name)) goto bad_option;
-			unit_with_name = true; // Unit with name
+			if (!match(L"full")) goto bad_option;
+			unit_full = true; // @Option Unit Full
 			break;
 		case _identifier:
-			Get();
 			// For each addition, remember to "break" when correct.
-			if (wcscmp(L"last", t->val) == 0) {
-				last = true; // Last
+			if (match(L"last")) {
+				last = true; // @Option Last
 				break;
-			} else if (wcscmp(L"warning", t->val) == 0 && la->kind == _As) {
-				Get();
-				if (id(L"error")) {
-					warning_as_error = true; // Warning as error
+			} else if (left_match(s_warning)) {
+				short level = t->val[coco_string_length(warning)]; // Valid: '\0', '1', '2', '3', '4', & '5'.
+				if (wcschr(L"12345", level) == NULL) goto bad_option;
+				 if (level) level -= L'0'; else level = 4; // Default is 4.
+				if (match(L"error")) {
+					warning_error = level; // @Option Warning[1-5] Error
+					break;
+				} else {
+					warning = level; // @Option Warning[1-5]
 					break;
 				}
 			}
@@ -131,20 +140,17 @@ struct {
 		}
 	}
 private:
-	bool id(const wchar_t *s) const {
-		if (la->kind == _identifier) {
-			Get();
-			return (wcscmp(s, t->val) == 0);
-		}
-		return false;
+	bool match(const wchar_t *s) const {
+		// Returns true if next token is the same as s, then consumes it.
+		if (la->kind != _identifier || wcscmp(s, la->val) == NULL) return false;
+		Get();
+		return true;
 	}
-	ternary_option with_or_without() const {
-		if (la->kind == _identifier) {
-			Get();
-			if (wcscmp(L"with", t->val) == 0) return with_option;
-			if (wcscmp(L"without", t->val) == 0) return without_option;
-		}
-		return option_0;
+	bool left_match(const wchar_t *s) const {
+		// Returns true if next token starts with s, then consumes it.
+		if (la->kind != _identifier || wcsstr(la->val, s) != la->val) return false;
+		Get();
+		return true;
 	}
 } option;
 
@@ -186,7 +192,8 @@ void Err(int line, int col, const wchar_t *msg) {
 }
 
 void Warn(const wchar_t *msg) {
-	if (option.warning_as_error) Err(msg);
+	// TODO: warning levels.
+	if (option.warning_error) Err(msg);
 	else errors->Warning(msg);
 }
 
@@ -195,9 +202,9 @@ void Optional(int kind, option_type nOption = option_default) {
 	case _Case:  // Select [ Case ]
 		if (la->kind == _Case) {
 			Get();
-			if (option.Select_x_Case == without_option) Err(L"Select cannot have CASE because of @Option");
+			if (option.Select_Case == NO) Err(L"Select cannot have CASE because of @Option");
 		}
-		else if (option.Select_x_Case == with_option) Err(L"SELECT must have CASE because of @Option");
+		else if (option.Select_Case == YES) Err(L"SELECT must have CASE because of @Option");
 		break;
 	case _Class:        // End [ Class ]
 	case _Constructor:  // End [ Constructor ]
@@ -218,19 +225,19 @@ void Optional(int kind, option_type nOption = option_default) {
 	case _While:  // End [ While ]
 		if (la->kind == kind) {
 			Get();
-			if (option.End_x_block == without_option) Err(L"END cannot have block type because of @Option");
+			if (option.End_block == NO) Err(L"END cannot have block type because of @Option");
 		}
-		else if (option.End_x_block == with_option) Err(L"END must have block type because of @Option");
+		else if (option.End_block == YES) Err(L"END must have block type because of @Option");
 		break;
 	case _For:  // End [ For [ name ] ]
 		if (la->kind == _For) {
 			Get();
-			if (option.End_x_block == without_option) Err(L"END cannot have block type because of @Option");
+			if (option.End_block == NO) Err(L"END cannot have block type because of @Option");
 			if (IsIdentifier()) {
 				Name();
-				if (option.End_For_x_name == without_option) Err(L"END FOR cannot have name because of @Option");
+				if (option.End_For_id == NO) Err(L"END FOR cannot have name because of @Option");
 			}
-			else if (option.End_For_x_name == with_option) Err(L"END FOR must have name because of @Option");
+			else if (option.End_For_id == YES) Err(L"END FOR must have name because of @Option");
 		}
 		//TODO: else if (end_with_block)
 		break;
@@ -239,9 +246,9 @@ void Optional(int kind, option_type nOption = option_default) {
 			nOption = then_found;
 			Get();
 		}
-		if (nOption == then_found && option.If_x_Then == without_option)
+		if (nOption == then_found && option.If_Then == NO)
 			Err(L"IF cannot have THEN because of @Option");
-		else if (nOption == then_not_found && option.If_x_Then == with_option)
+		else if (nOption == then_not_found && option.If_Then == YES)
 			Err(L"IF must have THEN because of @Option");
 		break;
 	default:
@@ -1048,8 +1055,8 @@ DestructorStatement<Modifier &mods>
 .
 DimOrVar
 =
-	( "Dim"  (. if (option.Dim_or_Var == option_2) Err(L"Must use VAR because of @OPTION"); .)
-	| "Var"  (. if (option.Dim_or_Var == option_1) Err(L"Must use DIM because of @OPTION"); .)
+	( "Dim"  (. if (option.Dim_or_Var == TERNARY2) Err(L"Must use VAR because of @OPTION"); .)
+	| "Var"  (. if (option.Dim_or_Var == TERNARY1) Err(L"Must use DIM because of @OPTION"); .)
 	)
 .
 DimStatement<Modifier &mods>
@@ -1108,7 +1115,7 @@ EnumMember
 =
 	identifier
 	( "=" Expression
-	| (. if (option.Enum_with_equals) Err(L"Enumeration constant must have initializer because of @OPTION"); .)
+	| (. if (option.Enum_equals) Err(L"Enumeration constant must have initializer because of @OPTION"); .)
 	)
 	SYNC Newline
 .
@@ -1120,7 +1127,7 @@ EnumStatement<Modifier &mods>
 	(. mods.check_disallowed(); .)
 	"Enum"
 	( identifier
-	| (. if (bFlags || bOpen || option.Enum_with_name) {
+	| (. if (bFlags || bOpen || option.Enum_id) {
 		const wchar_t *reason = (bFlags) ? L"@FLAGS" : (bOpen) ? L"@OPEN" : L"@OPTION";
 		wchar_t *msg = coco_string_create_append(L"Enumeration type must have a name because of ", reason);
 		Err(msg);
@@ -1128,7 +1135,7 @@ EnumStatement<Modifier &mods>
 	} .)
 	)
 	( IntegerTypeOrExtension
-	| (. if (bFlags || option.Enum_with_type) {
+	| (. if (bFlags || option.Enum_Is) {
 		const wchar_t *reason = (bFlags) ? L"@FLAGS" : L"@OPTION";
 		wchar_t *msg = coco_string_create_append(L"Enumeration must specify a width because of ", reason);
 		Err(msg);
@@ -1176,7 +1183,7 @@ FormalParameter<param_type param>
 	[ '(' [ Rank ] ')' ]
 	[ TypeClause<false> ]
 	( "=" Expression
-	| (. if (param.optional() && option.Optional_with_equals) Err(L"Optional parameter must have initializer because of @OPTION"); .)
+	| (. if (param.optional() && option.Optional_equals) Err(L"Optional parameter must have initializer because of @OPTION"); .)
 	)
 .
 FormalParameterList<int parent>
@@ -1264,7 +1271,7 @@ IfStatement
 	"If" Expression
 	(	"Then"
 		( CompoundIfStatement<then_found>
-		| (. if (option.If_with_End) Err(L"IF statement must use block construct because of @OPTION"); .)
+		| (. if (option.If_End) Err(L"IF statement must use block construct because of @OPTION"); .)
 			SimpleStatement
 			[ "Else" SimpleStatement ]
 		)
@@ -1468,8 +1475,8 @@ NewStatement
 	(. bool bNew = false; .)
 	(. bool bInitExpr = false; .)
 	(. wchar_t *typename = NULL; .)
-	( "New" (. bNew = true; if (option.New_x_New == option_without) Err(L"NEW is not permitted because of @OPTION"); .)
-	| (. if (option.New_x_New == option_with) Err(L"NEW is mandatory  because of @OPTION"); .)
+	( "New" (. bNew = true; .)
+	| (. if (option.New) Err(L"NEW is mandatory  because of @OPTION"); .)
 	)
 	CallOrNew<0> // FIXME: not 0
 	[ "Begin"
@@ -1650,7 +1657,7 @@ SelectStatement
 	{ CaseClause<clause> }
 	"End"
 		(. if (clause == case_zero) Err(L"SELECT must have a minimum of one CASE"); .)
-		(. if (option.select_with_else && clause != case_else) Err(L"SELECT must have CASE ELSE because of @OPTION"); .)
+		(. if (option.Select_Else && clause != case_else) Err(L"SELECT must have CASE ELSE because of @OPTION"); .)
 	(. Optional(_Select); .)
 	Newline
 .
