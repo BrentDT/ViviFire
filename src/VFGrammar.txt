@@ -239,7 +239,7 @@ void Optional(int kind, option_type nOption = option_default) {
 			}
 			else if (option.End_For_id == YES) Err(L"END FOR must have name because of @Option");
 		}
-		//TODO: else if (end_with_block)
+		//TODO: else if (end_block)
 		break;
 	case _Then:
 		if (nOption == option_default && la->kind == _Then) {
