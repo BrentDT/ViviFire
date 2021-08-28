@@ -1,3 +1,9 @@
+DefaultLanguage en-US
+# Cache CSS & JS files for 24 hrs.
+<FilesMatch "\.(css|js)$">
+Header Set Cache-Control "max-age=86400, public"
+</FilesMatch>
+
 RewriteEngine On
 RewriteBase /ViviFire/docs/
 
