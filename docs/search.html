@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Search Results - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta name="robots" content="noindex">
+<script>
+let searchIndex = [
+{
+	title:"@Abstract",
+	date:"2021-06-07",
+	url:"Abstract.html",
+	content:["","makenoteopensame","childclassmixedtrait","cannotmethodsharedsupply","appliesdeclareelementmethods","abstractcontextsdeclareddirectlyelementsexamplesinheritsinstancemodifiermymethodoverridepropertytogether","extensioninheritedmodifiersspecifiesstatement","propertiessufficient","declarationmybaseclass","instructions","functionalityinstantiation","implementationmyderivedclass","implementations"],
+	summary:"Specifies that a declared element does not have sufficient functionality to use it directly."
+}
+];
+</script>
+</head>
+<body>
+<h1>Search Results</h1>
+<script>
+var query = document.location.search;
+if (query == '') {
+	throw new Error("No query");
+}
+var params = new URLSearchParams(query);
+var q = params.get("q").toLowerCase();
+var qWords = q.split(" ");
+var numResults = 0;
+document.write("<p>Your search for &ldquo;"+q+"&rdquo; returned "+numResults+" results.</p>");
+</script>
+</body>
+</html>
