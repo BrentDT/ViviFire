@@ -13,7 +13,10 @@ document.body.insertBefore(warning, document.body.firstChild);
 
 if (!chm) {
 	var contents = document.createElement('P');
-	contents.innerHTML = '<a href="contents.html">Contents</a> | <a href="https://www.b6sw.com/forum/posting.php?mode=annotate&f=37&anchor='+/\/(\w+)\.html/.exec(location.href)[1]+'" target="_blank">Send feedback</a>';
+	contents.innerHTML = 
+		'<a href="contents.html">Contents</a>'+
+		' | <a href="#" onclick="showSearch(this)">Search</a>'+
+		' | <a href="https://www.b6sw.com/forum/posting.php?mode=annotate&f=37&anchor='+/\/(\w+)\.html/.exec(location.href)[1]+'" target="_blank">Send feedback</a>';
 	document.body.insertBefore(contents, document.body.firstChild);
 }
 
@@ -61,4 +64,13 @@ function setFavIcon(url) {
 	link.rel = 'icon';
 	link.href = url;
 	head.appendChild(link);
+}
+
+function showSearch(elem) {
+	elem.outerHTML =
+		'<form role="search" action="search.html" method="get" style="display: inline-block">'+
+		'<input type="search" id="q" name="q" required value="" placeholder="Search the manual">'+
+		'<button>Search</button>'+
+		'</form>';
+	document.getElementById('q').focus();
 }
