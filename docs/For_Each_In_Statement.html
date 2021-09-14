@@ -36,7 +36,7 @@ End [ For ]&#10;</code></pre>
 <dt><code class="id">type</code></dt>
 <dd>Optional data type of <code class="id">variable</code>.</dd>
 <dt><code class="id">object_expression</code></dt>
-<dd>Mandatory object reference, string expression, or array literal.</dd>
+<dd>Mandatory collection object, string expression, or array.</dd>
 <dt><code class="id">statements</code></dt>
 <dd>Optional One or more statements between the lines that start with <code class="kw">For Each</code> and <code class="kw">End</code>.
 These execute one time for each item in a collection.</dd>
@@ -70,13 +70,16 @@ End For&#10;</code></pre>
 </div>
 <h3>Characters in a string</h3>
 <div class="language-vivifire listing">
-<pre><code>Dim s = "ViviFire"
+<pre><code>Var s = "ViviFire"
 For Each c As Char In s
     ' do something
 End For&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
+<li><a href="Yield_Statement.html">Yield Statement</a></li>
+<!-- li><a href="Iterator.html">@Iterator</a></li -->
+<!-- li><a href="Iterators.html">Iterators</a></li -->
 <li><a href="Do_Loop_Statement.html">Doo...Loop Statement</a> &ndash; Executes given a pre-condition or a post-condition.</li>
 <li><a href="For_To_Statement.html">For Statement</a> &ndash; Execution through a range of values.</li>
 <li><a href="While_Statement.html">While Statement</a> &ndash; Executes given a pre-condition.</li>
