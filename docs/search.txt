@@ -1,0 +1,533 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Search Results - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta name="robots" content="noindex">
+<meta name="Cache-Control" content="public, max-age=57600">
+<script>
+// Porter stemmer in Javascript. Few comments, but it's easy to follow against the rules in the original
+// paper, in
+//
+//  Porter, 1980, An algorithm for suffix stripping, Program, Vol. 14,
+//  no. 3, pp 130-137,
+//
+// see also http://www.tartarus.org/~martin/PorterStemmer
+
+// Release 1 be 'andargor', Jul 2004
+// Release 2 (substantially revised) by Christopher McKenzie, Aug 2009
+
+var stemmer = (function(){
+	var step2list = {
+			"ational" : "ate",
+			"tional" : "tion",
+			"enci" : "ence",
+			"anci" : "ance",
+			"izer" : "ize",
+			"bli" : "ble",
+			"alli" : "al",
+			"entli" : "ent",
+			"eli" : "e",
+			"ousli" : "ous",
+			"ization" : "ize",
+			"ation" : "ate",
+			"ator" : "ate",
+			"alism" : "al",
+			"iveness" : "ive",
+			"fulness" : "ful",
+			"ousness" : "ous",
+			"aliti" : "al",
+			"iviti" : "ive",
+			"biliti" : "ble",
+			"logi" : "log"
+		},
+
+		step3list = {
+			"icate" : "ic",
+			"ative" : "",
+			"alize" : "al",
+			"iciti" : "ic",
+			"ical" : "ic",
+			"ful" : "",
+			"ness" : ""
+		},
+
+		c = "[^aeiou]",          // consonant
+		v = "[aeiouy]",          // vowel
+		C = c + "[^aeiouy]*",    // consonant sequence
+		V = v + "[aeiou]*",      // vowel sequence
+
+		mgr0 = "^(" + C + ")?" + V + C,               // [C]VC... is m>0
+		meq1 = "^(" + C + ")?" + V + C + "(" + V + ")?$",  // [C]VC[V] is m=1
+		mgr1 = "^(" + C + ")?" + V + C + V + C,       // [C]VCVC... is m>1
+		s_v = "^(" + C + ")?" + v;                   // vowel in stem
+
+	return function (w) {
+		var 	stem,
+			suffix,
+			firstch,
+			re,
+			re2,
+			re3,
+			re4,
+			origword = w;
+
+		if (w.length < 3) { return w; }
+
+		firstch = w.substr(0,1);
+		if (firstch == "y") {
+			w = firstch.toUpperCase() + w.substr(1);
+		}
+
+		// Step 1a
+		re = /^(.+?)(ss|i)es$/;
+		re2 = /^(.+?)([^s])s$/;
+
+		if (re.test(w)) { w = w.replace(re,"$1$2"); }
+		else if (re2.test(w)) {	w = w.replace(re2,"$1$2"); }
+
+		// Step 1b
+		re = /^(.+?)eed$/;
+		re2 = /^(.+?)(ed|ing)$/;
+		if (re.test(w)) {
+			var fp = re.exec(w);
+			re = new RegExp(mgr0);
+			if (re.test(fp[1])) {
+				re = /.$/;
+				w = w.replace(re,"");
+			}
+		} else if (re2.test(w)) {
+			var fp = re2.exec(w);
+			stem = fp[1];
+			re2 = new RegExp(s_v);
+			if (re2.test(stem)) {
+				w = stem;
+				re2 = /(at|bl|iz)$/;
+				re3 = new RegExp("([^aeiouylsz])\\1$");
+				re4 = new RegExp("^" + C + v + "[^aeiouwxy]$");
+				if (re2.test(w)) {	w = w + "e"; }
+				else if (re3.test(w)) { re = /.$/; w = w.replace(re,""); }
+				else if (re4.test(w)) { w = w + "e"; }
+			}
+		}
+
+		// Step 1c
+		re = /^(.+?)y$/;
+		if (re.test(w)) {
+			var fp = re.exec(w);
+			stem = fp[1];
+			re = new RegExp(s_v);
+			if (re.test(stem)) { w = stem + "i"; }
+		}
+
+		// Step 2
+		re = /^(.+?)(ational|tional|enci|anci|izer|bli|alli|entli|eli|ousli|ization|ation|ator|alism|iveness|fulness|ousness|aliti|iviti|biliti|logi)$/;
+		if (re.test(w)) {
+			var fp = re.exec(w);
+			stem = fp[1];
+			suffix = fp[2];
+			re = new RegExp(mgr0);
+			if (re.test(stem)) {
+				w = stem + step2list[suffix];
+			}
+		}
+
+		// Step 3
+		re = /^(.+?)(icate|ative|alize|iciti|ical|ful|ness)$/;
+		if (re.test(w)) {
+			var fp = re.exec(w);
+			stem = fp[1];
+			suffix = fp[2];
+			re = new RegExp(mgr0);
+			if (re.test(stem)) {
+				w = stem + step3list[suffix];
+			}
+		}
+
+		// Step 4
+		re = /^(.+?)(al|ance|ence|er|ic|able|ible|ant|ement|ment|ent|ou|ism|ate|iti|ous|ive|ize)$/;
+		re2 = /^(.+?)(s|t)(ion)$/;
+		if (re.test(w)) {
+			var fp = re.exec(w);
+			stem = fp[1];
+			re = new RegExp(mgr1);
+			if (re.test(stem)) {
+				w = stem;
+			}
+		} else if (re2.test(w)) {
+			var fp = re2.exec(w);
+			stem = fp[1] + fp[2];
+			re2 = new RegExp(mgr1);
+			if (re2.test(stem)) {
+				w = stem;
+			}
+		}
+
+		// Step 5
+		re = /^(.+?)e$/;
+		if (re.test(w)) {
+			var fp = re.exec(w);
+			stem = fp[1];
+			re = new RegExp(mgr1);
+			re2 = new RegExp(meq1);
+			re3 = new RegExp("^" + C + v + "[^aeiouwxy]$");
+			if (re.test(stem) || (re2.test(stem) && !(re3.test(stem)))) {
+				w = stem;
+			}
+		}
+
+		re = /ll$/;
+		re2 = new RegExp(mgr1);
+		if (re.test(w) && re2.test(w)) {
+			re = /.$/;
+			w = w.replace(re,"");
+		}
+
+		// and turn initial Y back to y
+
+		if (firstch == "y") {
+			w = firstch.toLowerCase() + w.substr(1);
+		}
+
+		return w;
+	}
+})();
+</script>
+<script>
+let articleIndex = [
+!!!GenArticleIndex.bat
+];
+const l = 1, p = 2, c = 4, h = 8, t = 16;
+let searchIndex = {
+	// Syntax 1: 'keyword': [[articleIndex,location], ...]
+	// Syntax 2: 'keyword': 'equivalent_keyword'
+	// Where location: t=title, h=heading, c=code, p=paragraph, l=low-valued
+	'#debug':'debug',
+	'#log':'log',
+	'&':[[2,t],[3,t]],
+	'&=':'&',
+	'*':[[13,t],[14,t]],
+	'*=':'*',
+	'+':[[147,t],[148,t]],
+	'+=':'+',
+	'-':[[112,t],[113,t]],
+	'-=':'-',
+	':=':[[31,t],[148,c]],
+	'=':[[2,t],[4,t],[13,t],[67,t],[112,t],[116,t],[137,t],[147,t],[166,t],[176,t],[178,t],[180,t],[233,t]],
+	'/':[[180,t],[181,t]],
+	'/=':'/',
+	'@abstract':'abstract',
+	'@const':'const',
+	'@deprec':'deprec',
+	'@els':'els',
+	'@error':'error',
+	'@if':'if',
+	'@open':'open',
+	'@option':'option',
+	'@overrid':'overrid',
+	'@share':'share',
+	'@warn':'warn',
+	'^':[[25,t]],
+	'abstract':[[0,t]],
+	'access':[[1,t],[51,t]],
+	'affect':'effect',
+	'and':[[4,t],[5,t],[6,t]],
+	'and=':'and',
+	'appendic':'appendix',
+	'appendix':[[7,t]],
+	'argument':[[144,t],[145,t],[152,t]],
+	'arithmet':'math',
+	'arrai':[[9,t],[10,t],[11,t]],
+	'as':[[12,t]],
+	'assign':[[13,t]],
+	'automat':[[88,t]],
+	'base':[[16,t],[21,t],[174,t]],
+	'basic':[[105,t],[192,t],[226,t]],
+	'begin':[[17,t]],
+	'between':[[43,t],[44,t],[59,t]],
+	'bit':[[18,t],[107,t],[171,t]],
+	'bitwis':'bit',
+	'boolean':[[19,t]],
+	'build':[[190,t]],
+	'byref':[[20,t]],
+	'calcul':[[149,t]],
+	'call':[[21,t],[22,t],[24,t]],
+	'case':[[82,t],[173,t]],
+	'catch':[[210,t]],
+	'caught':'catch',
+	'chang':'convert',
+	'char':'charact',
+	'charact':[[26,t],[27,t],[182,t],[211,t]],
+	'characterist':'qualiti',
+	'children':'child',
+	'class':[[28,t],[126,t],[190,t],[196,t]],
+	'claus':[[29,t],[62,t],[206,t],[230,t]],
+	'code':[[32,t],[155,t],[182,t],[183,t]],
+	'collect':[[30,t]],
+	'comment':[[32,t]],
+	'compar':[[33,t],[105,t],[226,t]],
+	'comparison':'compar',
+	'compil':[[36,t]],
+	'composit':[[34,t]],
+	'comput':'calcul',
+	'concaten':[[35,t]],
+	'condit':[[36,t],[37,t]],
+	'const':'constant',
+	'constant':[[38,t],[40,t],[41,t],[149,t]],
+	'construct':[[50,t],[109,t],[120,t],[197,t]],
+	'constructor':[[22,t],[39,t]],
+	'context':[[51,t]],
+	'control':[[42,t],[83,t],[120,t]],
+	'convent':'standard',
+	'convers':'convert',
+	'convert':[[10,t],[43,t],[44,t],[88,t],[212,t],[232,t]],
+	'creat':'make',
+	'creation':'make',
+	'cultur':[[64,t]],
+	'data':'type',
+	'date':'datetim',
+	'datetim':[[48,t]],
+	'debug':[[49,t]],
+	'decis':[[50,t]],
+	'declar':[[51,t],[52,t],[53,t],[54,t],[55,t],[84,t],[129,t],[165,t],[225,t]],
+	'default':[[51,t],[56,t]],
+	'deprec':[[57,t]],
+	'destructor':[[58,t]],
+	'differ':[[59,t]],
+	'dim':[[60,t]],
+	'dimens':[[10,t]],
+	'direct':[[40,t],[61,t],[68,t],[86,t],[135,t]],
+	'do':[[63,t]],
+	'doe':[[62,t]],
+	'each':[[75,t]],
+	'effect':[[64,t]],
+	'element':[[52,t],[53,t],[54,t],[101,t],[165,t]],
+	'elementari':[[65,t]],
+	'entri':[[154,t]],
+	'enum':'enumer',
+	'enumer':[[38,t],[66,t]],
+	'error':[[68,t],[69,t]],
+	'els':[[86,t],[87,t],[136,t]],
+	'event':[[23,t],[70,t],[71,t]],
+	'exit':[[72,t]],
+	'explicit':'automat',
+	'express':[[132,t]],
+	'famili':[[105,t],[226,t]],
+	'featur':[[102,t]],
+	'final':[[210,t]],
+	'fix':[[73,t],[74,t]],
+	'fixed128':'fix',
+	'fixed64':'fix',
+	'float':'real',
+	'flow':[[42,t]],
+	'for':[[75,t],[76,t]],
+	'foreach':'for',
+	'function':[[77,t],[78,t]],
+	'gener':[[79,t],[80,t],[230,t]],
+	'get':[[81,t]],
+	'goto':[[82,t]],
+	'guid':[[153,t]],
+	'how':[[44,t],[83,t],[84,t],[85,t]],
+	'if':[[86,t],[87,t]],
+	'implicit':'automat',
+	'in':[[89,t],[98,t]],
+	'initi':[[30,t]],
+	'instal':[[90,t]],
+	'int':[[91,t],[92,t],[93,t],[94,t],[95,t],[97,t]],
+	'int128':'int',
+	'int16':'int',
+	'int32':'int',
+	'int64':'int',
+	'int8':'int',
+	'integ':'int',
+	'introduct':[[96,t]],
+	'is':[[99,t]],
+	'keyword':[[100,t],[101,t]],
+	'languag':[[102,t],[103,t],[104,t]],
+	'level':[[1,t],[51,t]],
+	'liberti':'basic',
+	'librari':[[115,t],[229,t]],
+	'lifetim':[[106,t]],
+	'limit':[[103,t]],
+	'list':[[143,t],[213,t]],
+	'log':[[108,t]],
+	'logic':[[107,t]],
+	'loop':[[63,t],[109,t]],
+	'make':[[85,t]],
+	'manipul':[[194,t]],
+	'manual':[[214,t],[228,t]],
+	'math':[[8,t]],
+	'measur':[[221,t]],
+	'member':[[229,t]],
+	'messag':[[69,t]],
+	'method':[[110,t],[111,t]],
+	'mod':[[116,t],[117,t]],
+	'mod=':'mod',
+	'modifi':[[114,t]],
+	'modul':[[115,t]],
+	'name':[[53,t],[101,t],[144,t],[184,t]],
+	'namespac':[[118,t],[119,t]],
+	'narrow':[[232,t]],
+	'nest':[[120,t]],
+	'new':[[121,t]],
+	'not':[[122,t]],
+	'null':[[123,t]],
+	'nullabl':'null',
+	'numer':[[124,t]],
+	'object':[[49,t],[108,t],[125,t],[126,t],[127,t],[128,t],[129,t]],
+	'open':[[130,t]],
+	'oper':[[2,t],[3,t],[4,t],[5,t],[6,t],[8,t],[12,t],[13,t],[14,t],[15,t],[18,t],[25,t],[31,t],[33,t],[35,t],[37,t],[46,t],[67,t],[98,t],[99,t],[107,t],[122,t],[131,t],[132,t],[133,t],[136,t],[137,t],[138,t],[140,t],[147,t],[148,t],[166,t],[167,t],[176,t],[177,t],[178,t],[179,t],[180,t],[181,t],[201,t],[233,t],[234,t]],
+	'option':[[134,t],[135,t]],
+	'or':[[136,t],[137,t],[138,t]],
+	'or=':'or',
+	'other':[[43,t],[44,t],[139,t],[140,t],[197,t]],
+	'out':[[141,t]],
+	'overload':[[151,t]],
+	'overrid':[[142,t]],
+	'overridden':'overrid',
+	'paramet':[[143,t],[152,t]],
+	'pass':[[144,t],[145,t]],
+	'people':'person',
+	'perform':[[146,t]],
+	'point':[[154,t]],
+	'posit':[[144,t]],
+	'precalcul':'calcul',
+	'preced':[[133,t]],
+	'procedur':[[77,t],[79,t],[110,t],[150,t],[151,t],[152,t],[156,t],[162,t],[183,t],[184,t],[202,t]],
+	'program':[[115,t],[153,t],[154,t],[155,t],[197,t]],
+	'properti':[[59,t],[156,t],[157,t]],
+	'qualiti':[[54,t]],
+	'rais':[[23,t],[205,t]],
+	'real':[[158,t],[159,t],[160,t],[161,t]],
+	'real128':'real',
+	'real32':'real',
+	'real64':'real',
+	'recurs':[[162,t]],
+	'redim':[[163,t]],
+	'ref':'byref',
+	'refer':[[104,t],[145,t],[164,t],[165,t],[189,t],[223,t]],
+	'rem':[[166,t],[167,t]],
+	'rem=':'rem',
+	'requir':[[164,t],[168,t],[204,t]],
+	'result':[[46,t]],
+	'return':[[169,t]],
+	'run':[[170,t]],
+	'runtim':[[229,t]],
+	'sbit':'bit',
+	'scope':[[83,t],[172,t]],
+	'select':[[173,t]],
+	'self':[[174,t]],
+	'share':[[175,t]],
+	'shift':[[18,t]],
+	'shl':[[176,t],[177,t]],
+	'shl=':'shl',
+	'shr':[[178,t],[179,t]],
+	'shr=':'shr',
+	'special':[[182,t]],
+	'standard':[[155,t],[183,t],[184,t]],
+	'start':[[81,t],[227,t]],
+	'statement':[[16,t],[17,t],[21,t],[22,t],[23,t],[24,t],[28,t],[39,t],[41,t],[55,t],[58,t],[60,t],[63,t],[66,t],[71,t],[72,t],[75,t],[76,t],[78,t],[82,t],[87,t],[111,t],[119,t],[121,t],[127,t],[157,t],[163,t],[164,t],[168,t],[169,t],[173,t],[185,t],[186,t],[187,t],[188,t],[189,t],[200,t],[203,t],[205,t],[208,t],[210,t],[222,t],[231,t]],
+	'string':[[43,t],[44,t],[64,t],[85,t],[96,t],[190,t],[191,t],[192,t],[193,t],[194,t]],
+	'stringbuild':[[190,t]],
+	'struct':'structur',
+	'structur':[[84,t],[155,t],[195,t],[196,t],[197,t],[198,t],[199,t],[200,t]],
+	'sub':[[201,t],[202,t],[203,t]],
+	'summar':[[47,t]],
+	'summari':'summar',
+	'system':[[204,t]],
+	'then':[[6,t]],
+	'time':'datetim',
+	'tol':[[206,t]],
+	'trait':[[62,t],[207,t],[208,t]],
+	'troubleshoot':[[209,t]],
+	'try':[[210,t]],
+	'type':[[19,t],[26,t],[27,t],[34,t],[43,t],[44,t],[45,t],[46,t],[47,t],[48,t],[65,t],[73,t],[74,t],[80,t],[91,t],[92,t],[93,t],[94,t],[95,t],[97,t],[123,t],[124,t],[139,t],[146,t],[158,t],[159,t],[160,t],[161,t],[171,t],[193,t],[209,t],[211,t],[212,t],[213,t],[223,t]],
+	'typograph':'typographi',
+	'typographi':[[214,t]],
+	'ubit':'bit',
+	'uint':[[215,t],[216,t],[217,t],[218,t],[219,t],[220,t]],
+	'uint128':'uint',
+	'uint16':'uint',
+	'uint32':'uint',
+	'uint64':'uint',
+	'uint8':'uint',
+	'unit':[[16,t],[221,t],[222,t]],
+	'us':[[214,t]],
+	'valu':[[56,t],[123,t],[145,t],[223,t]],
+	'var':'dim',
+	'variabl':[[59,t],[83,t],[128,t],[129,t],[199,t],[224,t],[225,t]],
+	'vivifir':[[81,t],[105,t],[170,t],[198,t],[226,t],[227,t],[228,t],[229,t]],
+	'visual':'basic',
+	'warn':[[68,t]],
+	'when':[[17,t]],
+	'where':[[230,t]],
+	'while':[[231,t]],
+	'widen':[[232,t]],
+	'xor':[[233,t],[234,t]],
+	'xor=':'xor'
+};
+</script>
+</head>
+<body>
+<h1>Search Results</h1>
+<script>
+document.write(
+	'<form role="search" method="get">'+
+	'<input type="search" id="q" name="q" required size="30" value="" placeholder="Search the manual">'+
+	'<button>Search</button>'+
+	'</form>'
+);
+var query = document.location.search;
+if (query == '') {
+	throw new Error("'?q=' is missing!");
+}
+var params = new URLSearchParams(query);
+var q = params.get("q").toLowerCase().replace(/[^-#$%&'*+\/0-9:<=>@^_`a-z{|}~ ]+/g, " ").trim();
+// Set search input.
+document.getElementById('q').value = q;
+
+var qWords = q.split(" ");
+var relevance = {};
+
+next_word:
+for (var w = 0; w < qWords.length; w++) {
+	var word = stemmer(qWords[w]);
+	///alert('word = '+word);
+	var refs = searchIndex[word];
+	///alert(word+' = '+refs);
+	if (refs === undefined) break next_word;
+	if (typeof refs === 'string') refs = searchIndex[refs];
+	for(var [article, weight] of refs) {
+		weight += Math.max(0, 2 - w);
+		if (!relevance[article]) {
+			relevance[article] = weight;
+		} else {
+			relevance[article] += weight;
+		}
+	}
+}
+relevance = Object.entries(relevance);
+relevance.sort((a, b) => b[1] - a[1]);
+///document.write('<pre>'+relevance+'</pre>');
+const found = Math.min(20, relevance.length);
+document.write('<p>Found '+found);
+if (found == 20) document.write(' or more');
+if (found == 1) {
+	document.write(' result.');
+} else {
+	document.write(' results.');
+}
+for (var a = 0; a < found; a++) {
+	var result = articleIndex[relevance[a][0]];
+	document.write(
+		'<h3><a href="'+result.url+'">'+result.title+'</a></h3>'+
+		'<p>'+result.date+' &ndash; '+result.summary+'</p>'
+	);
+}
+</script>
+<hr>
+</body>
+</html>
