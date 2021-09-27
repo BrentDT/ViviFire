@@ -24,7 +24,7 @@ if (!chm) {
 
 document.write('<hr><p>'+
 '<div id="poll" role="status" aria-live="polite" aria-relevant="text">' +
-'<form>' +
+'<form aria-label="poll">' +
 'This article is' +
 ' <input id="0" type="radio" onclick="vote(0)"><label for="0">good</label>' +
 ' <input id="1" type="radio" onclick="vote(1)"><label for="1">bad</label>' +
@@ -34,7 +34,14 @@ document.write('<hr><p>'+
 '</form>' +
 '</div></p>');
 
-if (!chm && document.lastModified) document.write('<footer><p>Last modified '+document.lastModified+'.</p></footer>');
+document.write('<footer aria-label="footer">'+
+'<p>'+
+'<a rel="license" href="http://creativecommons.org/publicdomain/mark/1.0/">'+
+'<img src="cc0-80x15.png" style="border-style:none" alt="Public Domain Mark" />'+
+'</a> This work is free of known copyright restrictions.'+
+'</p>');
+if (!chm && document.lastModified) document.write('<p>Last modified '+document.lastModified+'.</p>');
+document.write('</footer>');
 
 function getFileName(uri) {
 	return /[\/\\](\w+)\.html/.exec(uri)[1];
