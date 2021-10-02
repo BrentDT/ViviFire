@@ -5,7 +5,7 @@
 <title>Search Results - The ViviFire Programming Language</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="common.css" type="text/css">
-<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="icon" href="/ViviFire/favicon.ico" type="image/x-icon">
 <meta name="robots" content="noindex">
 <meta name="Cache-Control" content="public, max-age=57600">
 <script>
