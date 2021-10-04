@@ -20,7 +20,10 @@
 </nav>
 <main>
 <h1 id="top">Pre-Calculated Constants</h1>
+<p>ViviFire supplies many constants that can give your code better portability and make it easier to read.
+These constants can have one of two data types: integer or string.</p>
 <h2>Integer constants</h2>
+<p>Integer constants start with a percent character (<code class="op">%</code>).</p>
 <table>
 <thead>
 <tr><th>Name</th><th>Information</th></tr>
@@ -75,7 +78,8 @@
 </tbody>
 </table>
 <h2>String constants</h2>
-<p class="note">For the syntax of string constants, see <a href="String_Basics.html">String Basics</a>.</p>
+<p>String constants start with a dollar sign (<code class="op">$</code>).
+For the syntax of string constants, see <a href="String_Basics.html">String Basics</a>.</p>
 <h3>Named string constants</h3>
 <table>
 <thead>
@@ -115,6 +119,7 @@
 </tbody>
 </table>
 <h3>Magic constants</h3>
+<p>Some constants have different values because of their location or when something occurred.</p>
 <table>
 <thead>
 <tr><th>Name</th><th>Information</th></tr>
@@ -132,10 +137,12 @@
 	<td>The name of the source file</td></tr>
 <tr><th><code>$LINE</code></th>
 	<td>The line number in the source file</td></tr>
-<tr><th><code>$CONT</code></th>
+<tr><th><code>$CONTAINER</code></th>
 	<td>The name of the class, object, trait, or module</td></tr>
 <tr><th><code>$PROC</code></th>
-	<td>The name of the procedure (or the same as <code>$CONT</code>, if not in a procedure)</td></tr>
+	<td>The name of the procedure (or if not in a procedure, then the same as <code>$CONTAINER</code>)</td></tr>
+<tr><th><code>$SCOPE</code></th>
+<td>The fully qualified name of the procedure or container</td></tr>
 <tr><th><code>$TIME</code></th>
 	<td>The time during compilation in UTC</td></tr>
 <tr><th><code>$TIME_12</code></th>
