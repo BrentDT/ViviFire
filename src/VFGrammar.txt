@@ -1032,7 +1032,7 @@ DeclareStatement<Modifier &mods>
 	(. bool isAlias = true; .)
 	"Declare"
 	[ string_literal
-		{ WEAK comma identifier  // TODO: "ANSI" or "CDECL" or "UTF16".
+		{ [ comma ] identifier  // TODO: "ANSI" or "CDECL" or "UTF16".
 		}
 		(. isAlias = false; .)
 	]
