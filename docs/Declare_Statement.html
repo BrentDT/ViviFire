@@ -17,19 +17,19 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Statements_Reference.html">Statements</a></li>
-<li><a href="Statements_1.html">A&ndash;E Statements</a></li>
+<li><a rel="parent" href="Statements_1.html">A&ndash;E Statements</a></li>
 </ul>
 </nav>
 <main>
-<h1 id="top">Declare Statement</h1>
+<h1 id="top"><code>Declare</code> Statement</h1>
 <p>Makes a wrapper for a procedure.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <h3>One-line construct</h3>
-<pre><code>Declare [ library_name [ , flags ] ] { Function | Sub } name _
+<pre><code>Declare [ library_name [ flags ] ] { Function | Sub } name _
   [ Is canonical_name ] [ parameter_list ]&#10;</code></pre>
 <h3>Block construct</h3>
-<pre><code>Declare library_name [ , flags ]
+<pre><code>Declare library_name [ flags ]
   { Function | Sub } name [ Is canonical_name ] [ parameter_list ]
   &hellip;
 End [ Declare ]&#10;</code></pre>
@@ -39,7 +39,8 @@ End [ Declare ]&#10;</code></pre>
 <dt><code class="id">library_name</code></dt>
 <dd>Optional string literal with the name of a compiled library, for example, a dynamic link library (DLL).</dd>
 <dt><code class="id">flags</code></dt>
-<dd>Optional one or more identifiers, with a comma between each.
+<dd>Optional one or more non-reserved keywords.
+A comma between each is optional.
 	<ul>
 	<li><code class="nkw">ANSI</code> &ndash; Strings are 8-bit ANSI. Cannot use with <code class="nkw">UTF16</code>.</li>
 	<li><code class="nkw">CDECL</code> &ndash; Uses the C calling convention.</li>
@@ -96,15 +97,18 @@ Declare Function TwoArgs Is FourArgs(3, 2, Optional 1=0, 4=0)&#10;</code></pre>
 </div>
 <h3>Foreign function libraries</h3>
 <div class="language-vivifire listing">
-<pre><code>Declare "user32.dll" Function BringWindowToTop(h As Int) As Int
-Declare "user32.dll", ANSI Function SetWindowText Is "SetWindowTextA" (
+<pre><code>Declare "user32.dll" Function BringWindowToTop (
+    h As Int) As Int
+Declare "user32.dll" UTF16 Function SetWindowText Is "SetWindowTextW" (
     h As Int, s As String ) As Int&#10;</code></pre>
 </div>
 <hr>
 <div class="language-vivifire listing">
-<pre><code>Declare "user32.dll", ANSI
-    Function BringWindowToTop(h As Int) As Int
-    Function SetWindowText Is "SetWindowTextA"(h As Int, s As String) As Int
+<pre><code>Declare "user32.dll" UTF16
+    Function BringWindowToTop (
+        h As Int) As Int
+    Function SetWindowText Is "SetWindowTextW" (
+        h As Int, s As String) As Int
 End Declare&#10;</code></pre>
 </div>
 <h2>See also</h2>
