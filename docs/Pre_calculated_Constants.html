@@ -21,108 +21,107 @@
 <main>
 <h1 id="top">Pre-Calculated Constants</h1>
 <p>ViviFire supplies many constants that can give your code better portability and make it easier to read.
-These constants can have one of two data types: integer or string.</p>
+These constants can have one of two data types&mdash;integer or string.</p>
 <h2>Integer constants</h2>
-<p>Integer constants start with a percent sign (<code class="op">%</code>).</p>
+<p>Integer constants start with a percent symbol (<code class="op">%</code>).</p>
 <table>
 <thead>
-<tr><th>Name</th><th>Information</th></tr>
+<tr><th>Constant</th><th>Information</th></tr>
 </thead>
 <tbody>
 <tr><th><code>%EXIT_FAILURE</code></th>
-<td>Use with <a href="Exit_Statement.html">Exit Program</a>.</td></tr>
+<td>Use with &laquo;<a href="Exit_Statement.html"><code>Exit Program</code></a>&raquo; to stop a program because of an error.</td></tr>
 <tr><th><code>%EXIT_SUCCESS</code></th>
-<td>Use with <a href="Exit_Statement.html">Exit Program</a>.</td></tr>
+<td>Use with &laquo;<a href="Exit_Statement.html"><code>Exit Program</code></a>&raquo; to stop a program without errors.</td></tr>
 <tr><th><code>%FALSE</code></th>
-	<td><code>Boolean.False As Int</code></td></tr>
+	<td>Has the same value as &laquo;<code>Boolean.False As Int</code>&raquo;.</td></tr>
 <tr><th><code>%TRUE</code></th>
-	<td><code>Boolean.True As Int</code></td></tr>
+	<td>Has the same value as &laquo;<code>Boolean.True As Int</code>&raquo;.</td></tr>
 </tbody>
 </table>
 <h3>Characters</h3>
 <table>
 <thead>
-<tr><th>Code point</th><th>Name</th><th>Information</th></tr>
+<tr><th>Constant</th><th>Code point</th><th>Information</th></tr>
 </thead>
 <tbody>
-<tr><td>0 (&amp;H0000)</td>
-	<td><code>%NUL, %NULL</code></td>
+<tr><th><code>%NUL, %NULL</code></th>
+	<td>0 (&amp;H0000)</td>
 	<td>Null</td></tr>
-<tr><td>7 (&amp;H0007)</td>
-	<td><code>%BEL, %BELL</code></td>
+<tr><th><code>%A, %BEL, %BELL</code></th>
+	<td>7 (&amp;H0007)</td>
 	<td>Audible bell</td></tr>
-<tr><td>8 (&amp;H0008)</td
-	><td><code>%BS, %BACKSPC</code></td>
+<tr><th><code>%B, %BS, %BACKSPC</code></th>
+	<td>8 (&amp;H0008)</td>
 	<td>Backspace</td></tr>
-<tr><td>9 (&amp;H0009)</td>
-	<td><code>%T, %TAB</code></td>
+<tr><th><code>%T, %TAB</code></th>
+	<td>9 (&amp;H0009)</td>
 	<td>Horizontal tab</td></tr>
-<tr><td>10 (&amp;H000A)</td>
-	<td><code>%LF, %LINEFEED</code></td>
+<tr><th><code>%LF, %LINEFEED</code></th>
+	<td>10 (&amp;H000A)</td>
 	<td>Line feed</td></tr>
-<tr><td>11 (&amp;H000B)</td>
-	<td><code>%VT, %VTAB</code></td>
+<tr><th><code>%V, %VT, %VTAB</code></th>
+	<td>11 (&amp;H000B)</td>
 	<td>Vertical tab</td></tr>
-<tr><td>12 (&amp;H000C)</td>
-	<td><code>%FF, %FORMFEED</code></td>
+<tr><th><code>%FF, %FORMFEED</code></th>
+	<td>12 (&amp;H000C)</td>
 	<td>Form feed</td></tr>
-<tr><td>13 (&amp;H000D)</td>
-	<td><code>%CR, %RETURN</code></td>
+<tr><th><code>%R, %CR, %RETURN</code></th>
+	<td>13 (&amp;H000D)</td>
 	<td>Carriage return</td></tr>
-<tr><td>27 (&amp;H001B)</td>
-	<td><code>%E, %ESCAPE</code></td>
+<tr><th><code>%E, %ESC, %ESCAPE</code></th>
+	<td>27 (&amp;H001B)</td>
 	<td>Escape</td></tr>
-<tr><td>32 (&amp;H0020)</td>
-	<td><code>%SPC, %SPACE</code></td>
+<tr><th><code>%S, %SPC, %SPACE</code></th>
+	<td>32 (&amp;H0020)</td>
 	<td>Space</td></tr>
 </tbody>
 </table>
 <h2>String constants</h2>
-<p>String constants start with a dollar sign (<code class="op">$</code>).
+<p>String constants start with a dollar symbol (<code class="op">$</code>).
 For the syntax of string constants, see <a href="String_Basics.html">String Basics</a>.</p>
 <h3>Named string constants</h3>
 <table>
 <thead>
-<tr><th>Name</th><th>Information</th><th>Equivalents</th></tr>
+<tr><th>Constant</th><th>Information</th><th>Equivalents</th></tr>
 </thead>
 <tbody>
-<tr><td><code>$CR, $RETURN</code></td>
-	<td>Carriage return</td>
-	<td><code>$13, $HD, $O15, $B1101</code></td></tr>
-<tr><td><code>$E, $ESCAPE</code></td>
-	<td>Escape</td>
-	<td><code>$27, $H1B, $O33, $B11011</code></td></tr>
-<tr><td><code>$FF, $FORMFEED</code></td>
-	<td>Form feed</td>
-	<td><code>$12, $HC, $O14, $B1100</code></td></tr>
-<tr><td><code>$LF, $LINEFEED</code></td>
-	<td>Line feed</td>
-	<td><code>$10, $HA, $O12, $B1010</code></td></tr>
-<tr><td><code>$N, $NEWLINE</code></td>
-	<td>Newline</td>
-	<td>(Platform-controlled)</td></tr>
-<tr><td><code>$PD, $PARENTDIR</code></td>
-	<td>Parent directory</td>
-	<td>(Platform-controlled)</td></tr>
-<tr><td><code>$PS, $PATHSEP</code></td>
-	<td>File path separator</td>
-	<td><code>&quot;&quot;/&quot;&quot;, &quot;&quot;\&quot;&quot;</code></td></tr>
-<tr><td><code>$RD, $ROOTDIR</code></td>
-	<td>Root directory</td>
-	<td>(Platform-controlled)</td></tr>
-<tr><td><code>$S, $SPACE</code></td>
-	<td>Space</td>
-	<td><code>$32, $H20, $O40, $B100000</code></td></tr>
-<tr><td><code>$T, $TAB</code></td>
+<tr><th><code>$T, $TAB</code></th>
 	<td>Horizontal tab</td>
 	<td><code>$9, $H9, $O11, $B1001</code></td></tr>
+<tr><th><code>$LF, $LINEFEED</code></th>
+	<td>Line feed</td>
+	<td><code>$10, $HA, $O12, $B1010</code></td></tr>
+<tr><th><code>$FF, $FORMFEED</code></th>
+	<td>Form feed</td>	<td><code>$12, $HC, $O14, $B1100</code></td></tr>
+<tr><th><code>$R, $CR, $RETURN</code></th>
+	<td>Carriage return</td>
+	<td><code>$13, $HD, $O15, $B1101</code></td></tr>
+<tr><th><code>$E, $ESC, $ESCAPE</code></td>
+	<td>Escape</td>
+	<td><code>$27, $H1B, $O33, $B11011</code></td></tr>
+<tr><th><code>$S, $SPC, $SPACE</code></th>
+	<td>Space</td>
+	<td><code>$32, $H20, $O40, $B100000</code></td></tr>
+<tr><th><code>$N, $NL, $NEWLINE</code></th>
+	<td>Newline</td>
+	<td>(Platform-controlled)</td></tr>
+<tr><th><code>$PD, $PARENTDIR</code></th>
+	<td>Parent directory</td>
+	<td>(Platform-controlled)</td></tr>
+<tr><th><code>$PS, $PATHSEP</code></th>
+	<td>File path separator</td>
+	<td><code>&quot;&quot;/&quot;&quot;, &quot;&quot;\&quot;&quot;</code></td></tr>
+<tr><th><code>$RD, $ROOTDIR</code></th>
+	<td>Root directory</td>
+	<td>(Platform-controlled)</td></tr>
 </tbody>
 </table>
 <h3>Magic constants</h3>
 <p>Some constants have different values because of their location or when something occurred.</p>
 <table>
 <thead>
-<tr><th>Name</th><th>Information</th></tr>
+<tr><th>Constant</th><th>Information</th></tr>
 </thead>
 <tbody>
 <tr><th><code>$DATE</code></th>
