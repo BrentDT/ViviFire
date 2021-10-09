@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Null-Conditional Operators - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Null_Conditional_Operators.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a rel="parent" href="Operators.html">Operators</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top">Null-Conditional Operators</h1>
+<p>Does a test on the left operand for <code class="kw">#Null</code> before it does a member access operation.
+If the left operand is <code class="kw">#Null</code>, then the result is also <code class="kw">#Null</code>.</p>
+<p>These operators help you write less code to do the necessary tests for null.
+These become very important when you use nested data structures.</p>
+<h2><code>.?</code> operator</h2>
+<p>The operator <code class="op">.?</code> is almost the same as the operator &laquo;<code class="op">.</code>&raquo;.
+</p>
+<div class="language-vivifire listing">
+<pre><code>Var #name = #article.?#author.?name&#10;</code></pre>
+</div>
+<p>What follows is the equivalent to the example above without the null-comparison operators.</p>
+<div class="language-vivifire listing">
+<pre><code>Var #name As String = #Null
+If #article Is Object Then
+    Var #author = #article.author
+    If #author Is Object Then
+        #name = #author.name
+    End If
+End If&#10;</code></pre>
+</div>
+<h2><code>??</code> operator</h2>
+<p>The operator <code class="op">??</code> is almost the same as the operator &laquo;<code class="op">?</code>&raquo;.
+</p>
+<div class="language-vivifire listing">
+<pre><code>Var title = #GetForegroundWindow??#GetFirstChild??GetTitle?&#10;</code></pre>
+</div>
+<p>What follows is the equivalent to the example above without the null-comparison operators.</p>
+<div class="language-vivifire listing">
+<pre><code>Var #title As String = #Null
+Var #window = #GetForegroundWindow?
+If #window Is Object Then
+    Var #child = #window.#GetFirstChild?
+    If #child Is Object Then
+        #title = #child.GetTitle?
+    End If
+End If&#10;</code></pre>
+</div>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>
