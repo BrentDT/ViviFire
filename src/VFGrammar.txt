@@ -479,10 +479,12 @@ char = ANY - ctrl - eol.
 
 TOKENS
 
+line_break  = eol{eol}.
+
 comma       = ",".
 dot         = ".".
 exclamation = "!".
-line_break  = eol{eol}.
+question    =  "?".
 
 plus  = "+".
 minus = "-".
@@ -1261,7 +1263,13 @@ IdentifierStatement
 	| "Base"
 	| "Self"
 	)
-	{ ( dot | "?" ) Name [ TypeArgumentList ]
+	{
+		( dot
+		| ".?"
+		| "?"
+		| "??"
+		)
+		Name [ TypeArgumentList ]
 	| EnclosedArgumentList
 	}
 	[ AssignmentStatement ]
@@ -1538,9 +1546,19 @@ PrimaryExpression
 	| fixed_literal
 	| DateTimeExpression
 	| StringExpression
-	| [ "Class" | "Trait" ] Name [ TypeArgumentList ]
+	| [ "Class" | "Trait" | "Sub" ]
+		Name [ TypeArgumentList ]
+		{
+			// Syntactic sugar for argumentless proc call.
+			// Lets one do "proc?" or "proc1?proc2?proc3?" instead of
+			// "proc()" or "proc1().proc2().proc3()", respectively.
+
+			question
+			[ IF (ISIdentifier(la->kind))
+				Name [ TypeArgumentList ]
+			]
+		}
 	| PrimitiveType<true>
-	| "Sub" Name
 	| "(" EnclosedExpression ")"
 	| "Base"
 	| "Self"
@@ -1670,8 +1688,13 @@ SimpleExpression
 =
 	// Related: IdentifierStatement
 	PrimaryExpression
-	{ ( dot | "?" ) Name [ TypeArgumentList ]
-	| "!" Name  // Dictionary lookup
+	{
+		( dot   // Member access
+		| ".?"  // Null-conditional member access (eg "#obj.?proc?")
+		| "??"  // Method call with null-conditional member access (eg "#proc1??proc2?")
+		)
+		Name [ TypeArgumentList ]
+	| "!" Name  // Dictionary access
 	| EnclosedArgumentList
 	}
 .
