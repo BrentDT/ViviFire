@@ -18,11 +18,26 @@
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
 <li><a href="Language_Features.html">Language Features</a></li>
 <li><a href="Data_Types.html">Data Types</a></li>
-<li><a href="Type_Conversions.html">Type Conversions</a></li>
+<li><a rel="parent" href="Type_Conversions.html">Type Conversions</a></li>
 </ul>
 </nav>
 <main id="stub">
 <h1 id="top">Array Conversions</h1>
+<p>You can convert an array type to a different array type only if they agree with these conditions:</p>
+<dl>
+<dt>Equal rank</dt>
+<dd>The two arrays must have the same number of dimensions.
+But it is not necessary that the lengths of the related dimensions are the same.</dd>
+<dt>Reference types</dt>
+<dd>The data types of the elements of the two arrays must be reference types.
+You cannot convert value-type arrays (for example <code class="kw">Int</code> or <code class="kw">Real</code>) to a different type.
+See <a href="Value_Types_and_Reference_Types.html">Value Types and Reference Types</a> for more information.</dd>
+<dt>Related types</dt>
+<dd>A conversion between the types of the two array elements must be possible.
+One type can widen or narrow to become a related type.
+See <a href="Widening_and_Narrowing_Conversions.html">Widening and Narrowing Conversions</a> for more information.</dd>
+</dl>
+<h2>Examples</h2>
 <p>TODO</p>
 </main>
 <script src="common.js"></script>
