@@ -1610,7 +1610,7 @@ PropertyStatement<Modifier &mods>
 .
 PropertySignature<Modifier &mods>
 =
-	"Property" DeclaratorList<false>
+	"Property" ( DeclaratorList<false> | "Self" )
 	[ "Does" identifier dot identifier ]
 	SYNC Newline
 .
