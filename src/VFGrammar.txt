@@ -11,7 +11,9 @@
 
 #include <stdio.h>
 #include "Args.h"
-extern Args args;
+
+#define ID(n) static const wchar_t *s_name = L#n;
+extern Args args;
 
 COMPILER ViviFire
 
@@ -391,10 +393,6 @@ bool IsDeclareParameterList() {
 	return false;
 }
 
-bool IsDict() {
-	return (IsIdentifier(la->kind) && scanner->Peek()->kind == _exclamation);
-}
-
 bool IsFixedPointArgument() {
 	return (la->kind == _left_paren && scanner->Peek()->kind == _integer_literal);
 }
@@ -414,6 +412,22 @@ bool IsNewStatement() {
 		return (next == _nullable_identifier || next == _less_than);
 	}
 	return false;
+}
+
+bool IsPropertySelf() {
+	// "Self", "Self%", "Self!", or "Self$"
+	if (la->kind == _Self) return true;
+	if (la->kind == _typed_identifier && _wcsnicmp(L"self", la->val, 4) == 0
+	&& (la->val[4] == L'%' || la->val[4] == L'!' || la->val[4] == L'$')) {
+		return true;
+	}
+	return false;
+}
+
+bool IsPropertyWithParam() {
+	return (IsIdentifier(la->kind) && scanner->Peek()->kind == _left_paren && IsIdentifier(scanner->Peek()->kind));
+	// FIXME: Possible param modifier?
+	}
 }
 
 bool IsUnit() {
@@ -754,12 +768,12 @@ ViviFire
 .
 
 /*A*/
-AdditiveExpression
+AdditiveExpression (. ID(AdditiveExpression) .)
 =
 	MultiplicativeExpression { ( '+' | '-' ) MultiplicativeExpression }
 ///	[ InUnitClause ]
 .
-Argument
+Argument (. ID(Argument) .)
 =
 	( null_literal
 	| [ IF (IsNamedArgument()) Name ":=" ]
@@ -1506,6 +1520,10 @@ Newline
 =
 	line_break { line_break }
 .
+SYNCNewline
+=
+	SYNC line_break { line_break }
+.
 /*O*/
 ObjectName
 =
@@ -1582,6 +1600,21 @@ PropertyOrCall
 	[ IF (IsCall()) EnclosedArgumentList ]
 .
 */
+PropertySignature<Modifier &mods>
+=
+	(. bool explicit_array = false; .)
+	"Property"
+	[ DimOrVar (. explicit_array = true; .) ]
+	( IF (IsPropertySelf())
+		( typed_identifier | "Self" ) (. if (explicit_array) Err(L"Cannot use DIM or VAR with SELF"); .)
+		EnclosedParameterList<_Property>
+	| IF (!explicit_array && IsPropertyWithParam())
+		Name EnclosedParameterList<_Property>
+	| DeclaratorList<false>
+	)
+	[ "Does" identifier dot identifier ]
+	SYNCNewline
+.
 PropertyStatement<Modifier &mods>
 =
 	(. bool bAbstract  = mods.allow(Modifier::Abstract); .)
@@ -1595,8 +1628,7 @@ PropertyStatement<Modifier &mods>
 	(. bool bWriteOnly = mods.allow(Modifier::WriteOnly); .)
 	(. mods.validate(); .)
 	PropertySignature<mods>
-	[ IF (la->kind == _Begin || la->kind == _Get || la->kind == _Set)
-		[	"Begin" EnclosedParameterList<_Property> SYNC Newline ]
+	[ IF (la->kind == _Get || la->kind == _Set)
 		[	"Get" Newline
 			{ Statement }
 		]
@@ -1607,12 +1639,6 @@ PropertyStatement<Modifier &mods>
 	(. Optional(_Property); .)
 		Newline
 	]
-.
-PropertySignature<Modifier &mods>
-=
-	"Property" ( DeclaratorList<false> | "Self" )
-	[ "Does" identifier dot identifier ]
-	SYNC Newline
 .
 /*Q*/
 QualifiedName
