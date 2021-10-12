@@ -26,10 +26,12 @@
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <h3>One-line construct</h3>
-<pre><code>[ modifier ] Property declarator [ , declarator ]&hellip; [ Does trait_name . supplied_name ]&#10;</code></pre>
+<pre><code>[ modifier ] _
+Property [ Dim | Var ] declarator [ , declarator ]&hellip; _
+[ Does trait_name . supplied_name ]&#10;</code></pre>
 <h3>Block construct</h3>
-<pre><code>[ modifier ] Property declarator
-[ Begin parameter_list ]
+<pre><code>[ modifier ] _
+Property [ Dim | Var ] declarator [ parameter_list ]
 [ Get
     [ statements ] ]
 [ Set parameter
@@ -45,7 +47,7 @@ End [ Property ]&#10;</code></pre>
 	You must implement it in a child class.
 	See <a href="Abstract.html">@Abstract</a>.</li>
 	<li><code class="at">@Backed</code> &ndash; The property automatically reserves memory.
-	The one-line construct is always backed.</li>
+	The one-line construct and all constructs with <code class="kw">Dim</code> or <code class="kw">Var</code> are always backed.</li>
 	<li><code class="at">@Deprecated</code> &ndash; You can remove the property in a subsequent release of a library.
 	See <a href="Deprecated.html">@Deprecated</a>.</li>
 	<li><code class="at">@Iterator</code> &ndash; The property implements the iterator pattern.
@@ -67,6 +69,10 @@ End [ Property ]&#10;</code></pre>
 </dd>
 <dd>You can put <code class="at">@Abstract</code> together with <code class="at">@ReadOnly</code> or <code class="at">@WriteOnly</code>.
 You can put <code class="at">@Backed</code> and <code class="at">@Deprecated</code> together with all other modifiers.<!-- TBD: except @Abstract? --></dd>
+<dt><code class="kw">Dim</code> or <code class="kw">Var</code></dt>
+<dd>Usually optional keyword.</dd>
+<dd>Mandatory if you specify the size of an array property with a name declared with <code class="kw">Const</code>.
+The compiler cannot be sure without one of these keywords.</dd>
 <dt><code class="id">declarator</code></dt>
 <dd>Mandatory one or more declarations that have almost the same syntax as the statement <code class="kw">Dim</code>.
 The one-line construct lets you write many declarators with a comma between each.
@@ -77,6 +83,9 @@ The one-line construct lets you write many declarators with a comma between each
 	<dl class="parts">
 	<dt><code class="id">name</code></dt>
 	<dd>Mandatory name.</dd>
+	<dd>You can also make a property that you can call without its name.
+	You give it a name that starts with <code>Self</code>.
+	See <a href="#default_properties">default properties</a> below.</dd>
 	<dt><code class="id">dimensions</code></dt>
 	<dd>Optional one or more integer expressions with a comma between each.
 	Not permitted with unbacked properties.</dd>
@@ -88,15 +97,15 @@ The one-line construct lets you write many declarators with a comma between each
 	<dd>Optional expression with a data type compatible with <code class="id">type</code> or <code class="id">unit</code>.</dd>
 	</dl>
 </dd>
-<dt><code class="kw">Begin</code></dt>
-<dd>Optional in the block construct.
-Lets you specify that the property is an array.</dd>
 <dt><code class="id">parameter_list</code></dt>
-<dd>Mandatory after <code class="kw">Begin</code>, a list of integer parameters, with a comma between each, which hold the array indices supplied by the caller.</dd>
+<dd>TODO</dd>
+<dd>Not permitted in the one-line construct, or with an array property.</dd>
 <dt><code class="kw">Get</code></dt>
 <dd>Identifies the start of a block of code that returns the value of the property.</dd>
+<dd>Mandatory if given the modifier <code class="at">@ReadOnly</code>.</dd>
 <dt><code class="kw">Set</code></dt>
 <dd>Identifies the start of a block of code that changes the value of the property.</dd>
+<dd>Mandatory if given the modifier <code class="at">@WriteOnly</code>.</dd>
 <dt><code class="id">parameter</code></dt>
 <dd>Mandatory after <code class="kw">Set</code>.
 It must be the same data type as the property.
@@ -121,6 +130,41 @@ Thus it automatically allocates memory with each instance of its owner.</p>
 <p>The block construct is usually not backed.
 Thus it does not automatically allocate memory with each instance of its owner.
 If necessary, then use the modifier <code class="at">@Backed</code>.</p>
+<h3 id="default_properties">default properties</h3>
+<p>A <dfn>default property</dfn> is a property procedure that you can call without a name.
+You can call such properties with only the name of an object and some arguments.
+This can decrease the code that you must write.
+But we do not recommend this because it can cause problems for other programmers who read your code.</p>
+<p>Alternatively, you can use a default property to implement a dictionary access.
+This uses the operator &laquo;<code class="op">!</code>&raquo; between the name of an object and a string.
+You must write the string as a correct name, without quotation marks (<code class="op">&quot; &quot;</code>).
+You give one or more properties a name that starts with <code>Self</code> and has one parameter of type <code class="kw">String</code>.</p>
+<p>There are four different names that you can use:</p>
+<dl>
+<dt><code>Self</code></dt>
+<dd>This is the most usual default property.
+It usually has no limits on types or number of parameters.</dd>
+<dt><code>Self%</code></dt>
+<dd>You use this property to return an integer type from a dictionary access.
+An example is &laquo;<code>MyObject!Items%</code>&raquo;.
+The property declaration must have only one parameter of the type <code class="kw">String</code>.
+The argument passed is the name after &laquo;<code class="op">!</code>&raquo; and without &laquo;<code class="op">%</code>&raquo;
+(<code>&quot;Items&quot;</code> in this example).</dd>
+<dt><code>Self!</code></dt>
+<dd>You use this property to return a floating-point type from a dictionary access.
+An example is &laquo;<code>MyObject!Capacity!</code>&raquo;.
+The property declaration must have only one parameter of the type <code class="kw">String</code>.
+The argument passed is the name between the two &laquo;<code class="op">!</code>&raquo;
+(<code>&quot;Capacity&quot;</code> in this example).</dd>
+<dt><code>Self$</code></dt>
+<dd>You use this property to return a string from a dictionary access.
+An example is &laquo;<code>MyObject!Name$</code>&raquo;.
+The property declaration must have only one parameter of the type <code class="kw">String</code>.
+The argument passed is the name after &laquo;<code class="op">!</code>&raquo; and without &laquo;<code class="op">$</code>&raquo;
+(<code>&quot;Name&quot;</code> in this example).</dd>
+</dl>
+<p>All properties that implement dictionary access must only return a value with <code class="kw">Get</code>.
+You can make sure with the modifier <code class="at">@ReadOnly</code>.</p>
 <h2>Examples</h2>
 <h3>One-line property</h3>
 <div class="language-vivifire listing">
@@ -142,7 +186,7 @@ PrintLine JD.Name&#10;</code></pre>
 <div class="language-vivifire listing">
 <pre><code>Class Person
     Const MaxAddresses = 2
-    Property Address(MaxAddresses) As String
+    Property Dim Address(MaxAddresses) As String
 End Class&#10;</code></pre>
 </div>
 <h3>Block property, backed</h3>
@@ -170,6 +214,27 @@ End Class
 End Class
 
 ' do something&#10;</code></pre>
+</div>
+<h3>default properties</h3>
+<div class="language-vivifire listing">
+<pre><code>class MyClass
+    method RunQuery
+        ' Do something
+    End method
+    @ReadOnly Property Self%(key As String)
+    Get
+        ' Do something
+    End Property
+    @ReadOnly Property Self$(key As String)
+    Get
+        ' Do something
+    End Property
+End class
+
+New MyClass MyObject
+MyObject.RunQuery
+PrintLine MyObject!Items%
+PrintLine MyObject!Name$&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
