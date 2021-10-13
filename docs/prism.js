@@ -18,7 +18,7 @@ Prism.languages.vivifire = {
 	'date': /@\d+(?:[-/.:@]\d+){2,6}/g,
 	'fixed': /(@\W?|\u00a4)[\d_]+\.\d+/g,
 	'str': /(?:\$(\w+|\u200b)|_?".*?"([\/\\]?".*?")*)/g,
-	'char': /`.`|%\w+/g,
+	'char': /`.`(?!\w)|%\w+/g,
 	'num': {
 		pattern: /(^|[^#%])((\b\d[_\d]*(\.\d+)*(!|[Ee][-+]?\d+)?)|(&[BHObho]\w+))/g,
 		lookbehind: true
