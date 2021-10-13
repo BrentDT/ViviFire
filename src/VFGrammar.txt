@@ -760,7 +760,7 @@ IGNORE t + '\u00a0' // non-breaking space
 
 PRODUCTIONS
 
-ViviFire
+ViviFire (. ID(ViviFire) .)
 =
 	Module
 	EOF
@@ -780,14 +780,14 @@ Argument (. ID(Argument) .)
 	  EnclosedExpression
 	)
 .
-ArgumentList
+ArgumentList (. ID(ArgumentList) .)
 =
 	// Disambiguate "("args")" from "("expr")".
 	( IF (la->kind == _left_paren) EnclosedArgumentList
 	| UnenclosedArgumentList
 	)
 .
-ArrayDimensionList
+ArrayDimensionList (. ID(ArrayDimensionList) .)
 =
 	'('
 	[ Rank                             // Eg 'Dim matrix(*2)'
@@ -795,18 +795,18 @@ ArrayDimensionList
 	]
 	')'
 .
-AssignmentOperator
+AssignmentOperator (. ID(AssignmentOperator) .)
 =
 	[ "&" | "+" | "-" | "*" | "/" | "Mod" | "Rem" | "SHL" | "SHR" | "And" | "Or" | "Xor" ]
 	"="
 .
-AssignmentStatement
+AssignmentStatement (. ID(AssignmentStatement) .)
 =
 	( AssignmentOperator Expression
 	| ":=" Expression { ":=" Expression }
 	)
 .
-AsTypeClause<bool bBits>
+AsTypeClause<bool bBits> (. ID(AsTypeClause) .)
 =
 	"As"
 	( UserType [ EnclosedArgumentList ]
@@ -815,39 +815,39 @@ AsTypeClause<bool bBits>
 	[ Rank ]
 .
 /*B*/
-BaseUnitStatement<Modifier &mods>
+BaseUnitStatement<Modifier &mods> (. ID(BaseUnitStatement) .)
 =
 	(. mods.allow(Modifier::Deprecated); .)
 	(. mods.validate(); .)
 	"Base"
 	( "Unit" identifier InUnitClause
 		[ "=" MultiplicativeExpression ]
-		SYNC Newline
+		SyncNewline<s_name>
 	| ANY (. Err(L"Object BASE is available only in a child class"); .)
 	)
 .
-BitFieldType<int &tkn>
+BitFieldType<int &tkn> (. ID(BitFieldType) .)
 =
 	(. tkn = la->kind; .)
 	( "SBits" | "UBits" ) "(" integer_literal ")"
 .
-BitShiftExpression
+BitShiftExpression (. ID(BitShiftExpression) .)
 =
 	ConcatenationExpression { ( "SHL" | "SHR" ) ConcatenationExpression }
 .
-Block<int &tkn>
+Block<int &tkn> (. ID(Block) .)
 =
 	(. tkn = la->kind; .)
 	( "Do" | "For" | "Function" | "Method" | "Property" | "Sub" | "While" )
 .
 /*C*/
-CallOrNew<int which>
+CallOrNew<int which> (. ID(CallOrNew) .)
 =
 	UserType ObjectName
 	[ comma[line_break] UnenclosedArgumentList ]
-	SYNC Newline
+	SyncNewline<s_name>
 .
-CallStatement
+CallStatement (. ID(CallStatement) .)
 =
 	"Call"
 	( Name
@@ -856,7 +856,7 @@ CallStatement
 	)
 	[ ArgumentList ]
 .
-CaseClause<case_type &clause>
+CaseClause<case_type &clause> (. ID(CaseClause) .)
 =
 	"Case"
 		(. if (clause == case_else) Err(L"CASE cannot follow CASE ELSE in SELECT"); .)
@@ -866,16 +866,16 @@ CaseClause<case_type &clause>
 	| CaseExpression { WEAK comma[line_break] CaseExpression }
 		(. clause = case_expr; .)
 	)
-	SYNC Newline
+	SyncNewline<s_name>
 	{ Statement }
 .
-CaseExpression
+CaseExpression (. ID(CaseExpression) .)
 =
 	( "Is" ComparisonOperator Expression
 	| Expression [ "To" Expression ]
 	)
 .
-ClassMember
+ClassMember (. ID(ClassMember) .)
 =
 	(. Modifier mods(this); .)
 	[ ModifiersClause<mods> ]
@@ -889,7 +889,7 @@ ClassMember
 	| SubStatement<mods>
 	)
 .
-ClassStatement<Modifier &mods>
+ClassStatement<Modifier &mods> (. ID(ClassStatement) .)
 =
 	(. bool bAbstract = mods.allow(Modifier::Abstract); .)
 	(. mods.allow(Modifier::Deprecated); .)
@@ -900,39 +900,39 @@ ClassStatement<Modifier &mods>
 	[ "Is" UserType ]
 	{ DoesClause }
 	[ WhereClause<false> ]
-	SYNC Newline
-	{ WhereClause<false> SYNC Newline }
+	SyncNewline<s_name>
+	{ WhereClause<false> SyncNewline<s_name> }
 //	{ Statement } // Conflict: assignment vs var decl
 	{ ClassMember }
 	"End"
 	(. Optional(_Class); .)
 	Newline
 .
-ComparisonExpression
+ComparisonExpression (. ID(ComparisonExpression) .)
 =
 	BitShiftExpression { ComparisonOperator BitShiftExpression }
 .
-ComparisonOperator
+ComparisonOperator (. ID(ComparisonOperator) .)
 =
 	[ "~" ]
 	( "=" | "<>" | "<" | "<=" | ">" | ">=" )
 .
-CompoundIfStatement<option_type nThen>
+CompoundIfStatement<option_type nThen> (. ID(CompoundIfStatement) .)
 =
 	(. bool bElseSeen = false; .)
 	(. Optional(_Then, nThen); .)
-	SYNC Newline
+	SyncNewline<s_name>
 	{ Statement }
 	{	"Else" (. if (bElseSeen) Err(L"ELSE or ELSE IF cannot follow ELSE"); .)
 		( "If" Expression (. Optional(_Then); .)
 		| (. bElseSeen = true; .)
 		)
-		SYNC Newline
+		SyncNewline<s_name>
 		{ Statement }
 	}
 	"End"
 	(. Optional(_If); .)
-.CompoundStatement
+.CompoundStatement (. ID(CompoundStatement) .)
 =
 	( DoStatement
 	| ForStatement
@@ -942,15 +942,15 @@ CompoundIfStatement<option_type nThen>
 	| WhileStatement
 	)
 .
-ConcatenationExpression
+ConcatenationExpression (. ID(ConcatenationExpression) .)
 =
 	AdditiveExpression { concatenation_operator AdditiveExpression }
 .
-ConditionalComparison
+ConditionalComparison (. ID(ConditionalComparison) .)
 =
 	"(" [ "Is" ] ComparisonOperator ")" EnclosedExpression
 .
-ConditionalExpression
+ConditionalExpression (. ID(ConditionalExpression) .)
 =
 	( EnclosedExpression
 	| "If" EnclosedExpression
@@ -959,17 +959,17 @@ ConditionalExpression
 		)
 	)
 .
-ConstantDeclarator
+ConstantDeclarator (. ID(ConstantDeclarator) .)
 =
 	identifier [ TypeClause<false> ] "=" Expression
 .
-ConstStatement<Modifier &mods>
+ConstStatement<Modifier &mods> (. ID(ConstStatement) .)
 =
 	(. mods.allow(Modifier::Deprecated); .)
 	(. mods.validate(); .)
 	"Const" ConstantDeclarator { comma ConstantDeclarator }
 .
-Constraint<bool bTrait>
+Constraint<bool bTrait> (. ID(Constraint) .)
 =
 	( identifier
 		( ( "<" | "<=" ) identifier [ ( "<" | "<=" ) identifier ] [ IsConstraint ] { DoesConstraint } [ ConstructorConstraint ]
@@ -980,51 +980,51 @@ Constraint<bool bTrait>
 	| SelfConstraint  // TODO: only traits
 	)
 .
-ConstructorConstraint
+ConstructorConstraint (. ID(ConstructorConstraint) .)
 =
 	"Constructor" "(" ")"
 .
-ConstructorStatement<Modifier &mods>
+ConstructorStatement<Modifier &mods> (. ID(ConstructorStatement) .)
 =
 	(. mods.allow(Modifier::Deprecated); .)
 	(. mods.validate(); .)
 	"Constructor"
 	[ FormalParameterList<_Constructor> | DimOrVar ]
-	SYNC Newline
+	SyncNewline<s_name>
 	{ Statement }
 	"End"
 	(. Optional(_Constructor); .)
 	Newline
 .
-ConvertibleType
+ConvertibleType (. ID(ConvertibleType) .)
 =
 	( PrimitiveType<false> | UserType )
 .
 /*D*/
-DateTimeExpression
+DateTimeExpression (. ID(DateTimeExpression) .)
 =
 	( date_literal [ time_literal ]
 	| time_literal
 	)
 .
-Declarator<bool bBits>
+Declarator<bool bBits> (. ID(Declarator) .)
 =
 	Name
 	[ ArrayDimensionList ]
 	[ TypeClause<bBits> ]
 	[ '=' InitializationExpression ]
 .
-DeclaratorList<bool bBits>
+DeclaratorList<bool bBits> (. ID(DeclaratorList) .)
 =
 	Declarator<bBits> { comma Declarator<bBits> }
 .
-DeclareParameter<bool &isOptional>
+DeclareParameter<bool &isOptional> (. ID(DeclareParameter) .)
 =
 	[ "Optional" (. isOptional = true; .) ]
 	integer_literal
 	[ '=' Expression ]
 .
-DeclareParameterList
+DeclareParameterList (. ID(DeclareParameterList) .)
 =
 	(. bool isOptional; .)
 	( IF (IsDeclareParameterList())
@@ -1034,14 +1034,14 @@ DeclareParameterList
 	| EnclosedParameterList<_Declare> [ TypeClause<false> ]
 	)
 .
-DeclareSignature<bool isAlias>
+DeclareSignature<bool isAlias> (. ID(DeclareSignature) .)
 =
 	( "Function" | "Sub" )
 	Name
 	[ "Is" ( string_literal | QualifiedName ) ]
 	[ DeclareParameterList ]
 .
-DeclareStatement<Modifier &mods>
+DeclareStatement<Modifier &mods> (. ID(DeclareStatement) .)
 =
 	(. mods.allow(Modifier::Deprecated); .)
 	(. mods.validate(); .)
@@ -1053,14 +1053,14 @@ DeclareStatement<Modifier &mods>
 		(. isAlias = false; .)
 	]
 	( DeclareSignature<isAlias>
-	| SYNC Newline
+	| SyncNewline<s_name>
 		{ DeclareSignature<isAlias> Newline }
 		"End"
 		(. Optional(_Declare); .)
 	)
-	SYNC Newline
+	SyncNewline<s_name>
 .
-DestructorStatement<Modifier &mods>
+DestructorStatement<Modifier &mods> (. ID(DestructorStatement) .)
 =
 	(. mods.validate(); .)
 	"Destructor" Newline
@@ -1069,13 +1069,13 @@ DestructorStatement<Modifier &mods>
 	(. Optional(_Destructor); .)
 	Newline
 .
-DimOrVar
+DimOrVar (. ID(DimOrVar) .)
 =
 	( "Dim"  (. if (option.Dim_or_Var == TERNARY2) Err(L"Must use VAR because of @OPTION"); .)
 	| "Var"  (. if (option.Dim_or_Var == TERNARY1) Err(L"Must use DIM because of @OPTION"); .)
 	)
 .
-DimStatement<Modifier &mods>
+DimStatement<Modifier &mods> (. ID(DimStatement) .)
 =
 	// Allow @Deprecated?
 	(. bool bShared = mods.allow(Modifier::Shared); .)
@@ -1083,31 +1083,31 @@ DimStatement<Modifier &mods>
 	DimOrVar
 	DeclaratorList<false>
 .
-DoesClause
+DoesClause (. ID(DoesClause) .)
 =
 	"Does" UserType
 .
-DoesConstraint
+DoesConstraint (. ID(DoesConstraint) .)
 =
 	"Does" UserType
 .
-DoStatement
+DoStatement (. ID(DoStatement) .)
 =
 	"Do"
 	(	// Do...Loop While/Until
 		Newline
 		[ LoopBody<false> ]
 		"Loop" WhileOrUntil Expression
-		SYNC Newline
+		SyncNewline<s_name>
 	|	// Do While/Until...Loop
 		WhileOrUntil Expression
-		SYNC Newline
+		SyncNewline<s_name>
 		[ LoopBody<true> ]
 		"Loop" Newline
 	)
 .
 /*E*/
-EnclosedArgumentList
+EnclosedArgumentList (. ID(EnclosedArgumentList) .)
 =
 	"("[line_break]
 	[ Argument ]
@@ -1116,26 +1116,26 @@ EnclosedArgumentList
 	}
 	")"
 .
-EnclosedExpression
+EnclosedExpression (. ID(EnclosedExpression) .)
 =
 	LogicalExpression
 .
-EnclosedParameterList<int parent>
+EnclosedParameterList<int parent> (. ID(EnclosedParameterList) .)
 =
 	(. param_type param(parent); .)
 	"("[line_break]
 	[ FormalParameter<param> { WEAK comma[line_break] FormalParameter<param> } ]
 	")"
 .
-EnumMember
+EnumMember (. ID(EnumMember) .)
 =
 	identifier
 	( "=" Expression
 	| (. if (option.Enum_equals) Err(L"Enumeration constant must have initializer because of @OPTION"); .)
 	)
-	SYNC Newline
+	SyncNewline<s_name>
 .
-EnumStatement<Modifier &mods>
+EnumStatement<Modifier &mods> (. ID(EnumStatement) .)
 =
 	(. mods.allow(Modifier::Deprecated); .)
 	(. bool bFlags = mods.allow(Modifier::Flags); .)
@@ -1158,13 +1158,13 @@ EnumStatement<Modifier &mods>
 		coco_string_delete(msg);
 	} .)
 	)
-	SYNC Newline
+	SyncNewline<s_name>
 	{ EnumMember }
 	"End"
 	(. Optional(_Enum); .)
 	Newline
 .
-ExitStatement
+ExitStatement (. ID(ExitStatement) .)
 =
 	(. int tkn = 0; .)
 	"Exit"
@@ -1173,24 +1173,24 @@ ExitStatement
 	| "Program" [ Expression ]
 	)
 .
-Expression
+Expression (. ID(Expression) .)
 =
 	ConditionalExpression
 	(. if (la->kind == _right_paren) { Get(); Err(L"Mismatched parentheses"); } .)
 	[ "Tol" real_literal ]
 .
 /*F*/
-FixedPointType<int &tkn>
+FixedPointType<int &tkn> (. ID(FixedPointType) .)
 =
 	(. tkn = la->kind; .)
 	( "Fixed64" | "Fixed128" ) [ IF (IsFixedPointArgument()) "(" integer_literal ")" ]
 .
-FloatingPointType<int &tkn>
+FloatingPointType<int &tkn> (. ID(FloatingPointType) .)
 =
 	(. tkn = la.kind; .)
 	( "Real32" | "Real64" | "Real" | "Real128" )
 .
-FormalParameter<param_type param>
+FormalParameter<param_type param> (. ID(FormalParameter) .)
 =
 	( FormalParameterModifier<param>
 	| (. param.modifier(); .)
@@ -1202,17 +1202,17 @@ FormalParameter<param_type param>
 	| (. if (param.optional() && option.Optional_equals) Err(L"Optional parameter must have initializer because of @OPTION"); .)
 	)
 .
-FormalParameterList<int parent>
+FormalParameterList<int parent> (. ID(FormalParameterList) .)
 =
 	( EnclosedParameterList<parent> | UnenclosedParameterList<parent> )
 .
-FormalParameterModifier<param_type param>
+FormalParameterModifier<param_type param> (. ID(FormalParameterModifier) .)
 =
 	( "ByRef"     (. param.modifier(_ByRef); .)
 	| "Optional"  (. param.modifier(_Optional); .)
 	)
 .
-ForStatement
+ForStatement (. ID(ForStatement) .)
 =
 	"For"
 	( "Each" LoopControlVariable
@@ -1222,13 +1222,13 @@ ForStatement
 		"To" Expression
 		[ "Step" Expression ]
 	)
-	SYNC Newline
+	SyncNewline<s_name>
 	[ LoopBody<true> ]
 	"End"
 	(. Optional(_For); .)
 	Newline
 .
-FunctionStatement<Modifier &mods>
+FunctionStatement<Modifier &mods> (. ID(FunctionStatement) .)
 =
 	(. mods.allow(Modifier::Deprecated); .)
 	(. bool bShared = mods.allow(Modifier::Shared); .)
@@ -1236,14 +1236,14 @@ FunctionStatement<Modifier &mods>
 	(. bool bodied = true; .)
 	FunctionSignature<mods, bodied>
 	[ IF (bodied)
-		{ WhereClause<false> SYNC Newline }
+		{ WhereClause<false> SyncNewline<s_name> }
 		{ Statement }
 	"End"
 	(. Optional(_Function); .)
 		Newline
 	]
 .
-FunctionSignature<Modifier &mods, bool &bodied>
+FunctionSignature<Modifier &mods, bool &bodied> (. ID(FunctionSignature) .)
 =
 	"Function" Name
 	( [ TypeParameterList ]
@@ -1253,24 +1253,24 @@ FunctionSignature<Modifier &mods, bool &bodied>
 	| "Does" identifier dot identifier
 		(. bodied = false; .)
 	)
-	SYNC Newline
+	SyncNewline<s_name>
 .
 /*G*/
-GotoStatement
+GotoStatement (. ID(GotoStatement) .)
 =
 	"Goto" "Case" ( "Else" | Expression )
 .
 /*H*/
 /*I*/
 /*
-IdentifierExpression
+IdentifierExpression (. ID(IdentifierExpression) .)
 =
 	( IF (IsDict()) Name "!" identifier
 	| PropertyOrCall { WEAK dot PropertyOrCall }
 	)
 .
 */
-IdentifierStatement
+IdentifierStatement (. ID(IdentifierStatement) .)
 =
 	// Related: SimpleExpression
 	( Name
@@ -1288,7 +1288,7 @@ IdentifierStatement
 	}
 	[ AssignmentStatement ]
 .
-IfStatement
+IfStatement (. ID(IfStatement) .)
 =
 	"If" Expression
 	(	"Then"
@@ -1299,14 +1299,14 @@ IfStatement
 		)
 	|	CompoundIfStatement<then_not_found>
 	)
-	SYNC Newline
+	SyncNewline<s_name>
 .
-InitializationElement
+InitializationElement (. ID(InitializationElement) .)
 =
 	[ IF (IsUnorderedInit()) IntegerConstant ":=" ]
 	InitializationExpression
 .
-InitializationExpression
+InitializationExpression (. ID(InitializationExpression) .)
 =
 	( Expression
 	| "{"[line_break] InitializationElement { WEAK comma[line_break] InitializationElement } "}"
@@ -1314,66 +1314,66 @@ InitializationExpression
 	  [ IF (la->kind == _line_break && scanner->Peek()->kind == _right_brace) line_break ]
 	)
 .
-IntegerConstant
+IntegerConstant (. ID(IntegerConstant) .)
 =
 	( char_literal | integer_constant | integer_literal )
 .
-IntegerType<int &tkn>
+IntegerType<int &tkn> (. ID(IntegerType) .)
 =
 	(. tkn = la->kind; .)
 	( "Int8"  | "Int16"  | "Int32"  | "Int"  | "Int64"  | "Int128"
 	| "UInt8" | "UInt16" | "UInt32" | "UInt" | "UInt64" | "UInt128"
 	)
 .
-IntegerTypeOrExtension
+IntegerTypeOrExtension (. ID(IntegerTypeOrExtension) .)
 =
 	(. int tkn = 0; .)
 	"Is" ( identifier | IntegerType<tkn> )
 .
-InUnitClause
+InUnitClause (. ID(InUnitClause) .)
 =
 	"In" UnitOfMeasure
 .
-IsConstraint
+IsConstraint (. ID(IsConstraint) .)
 =
 	"Is" ( "Class" | "Struct" )
 .
-IsExpression
+IsExpression (. ID(IsExpression) .)
 =
 	"Is" ( SimpleExpression | "Object" )
 .
 /*J*/
 /*K*/
 /*L*/
-LogicalExpression
+LogicalExpression (. ID(LogicalExpression) .)
 =
 	ComparisonExpression { LogicalOperator ComparisonExpression }
 .
-LogicalOperator
+LogicalOperator (. ID(LogicalOperator) .)
 =
 	( "And" [ "Then" ]
 	| "Or" [ "Else" ]
 	| "Xor"
 	)
 .
-LoopControlVariable
+LoopControlVariable (. ID(LoopControlVariable) .)
 =
 	( ObjectName [ AsTypeClause<false> ]
 	| typed_identifier
 	)
 .
-LoopBody<bool isPreconditional>
+LoopBody<bool isPreconditional> (. ID(LoopBody) .)
 =
 	( Statement { Statement }
 	| (. when_type whens = when_zero; .)
-		"Begin" [ identifier { WEAK comma identifier } ] SYNC Newline
+		"Begin" [ identifier { WEAK comma identifier } ] SyncNewline<s_name>
 		{ Statement }
 		WhenStatement<isPreconditional, whens>
 		{ WhenStatement<isPreconditional, whens> }
 	)
 .
 /*M*/
-MethodStatement<Modifier &mods>
+MethodStatement<Modifier &mods> (. ID(MethodStatement) .)
 =
 	(. bool bAbstract = mods.allow(Modifier::Abstract); .)
 	(. mods.allow(Modifier::Deprecated); .)
@@ -1388,15 +1388,15 @@ MethodStatement<Modifier &mods>
 	(. Optional(_Method); .)
 	Newline
 .
-MethodSignature<Modifier &mods>
+MethodSignature<Modifier &mods> (. ID(MethodSignature) .)
 =
 	"Method" Name
 	[ EnclosedParameterList<_Method> [ ReturnTypeClause ]
 	| UnenclosedParameterList<_Method>
 	]
-	SYNC Newline
+	SyncNewline<s_name>
 .
-Modifier<int &m>
+Modifier<int &m> (. ID(Modifier) .)
 =
 	( "@Abstract"    (. m = Modifier::Abstract; .)
 	| "@Backed"      (. m = Modifier::Backed; .)
@@ -1412,14 +1412,14 @@ Modifier<int &m>
 	)
 	[ line_break ]
 .
-ModifiersClause<Modifier &mods>
+ModifiersClause<Modifier &mods> (. ID(ModifiersClause) .)
 =
 	(. int m; .)
 	Modifier<m>  (. mods.add(m); .)
 	{ Modifier<m>  (. mods.add(m); .) 
 	}
 .
-Module
+Module (. ID(Module) .)
 =
 	(. bool bProcEntry = false; .)
 	[ Newline ]
@@ -1428,7 +1428,7 @@ Module
 	| "Library"
 	)
 	identifier
-	SYNC Newline
+	SyncNewline<s_name>
 	{ WhereStatement }
 	{ RequireStatement }
 	{ IF (la->kind == _Base) ModuleMember  // Assume "Base Unit" because Base object is invalid here.
@@ -1436,7 +1436,7 @@ Module
 	| ModuleStatement<bProcEntry>
 	}
 .
-ModuleMember
+ModuleMember (. ID(ModuleMember) .)
 =
 	(. Modifier mods(this); .)
 	[ ModifiersClause<mods> ]
@@ -1455,44 +1455,44 @@ ModuleMember
 	| UnitStatement<mods>
 	)
 .
-ModuleStatement<bool bProcEntry>
+ModuleStatement<bool bProcEntry> (. ID(ModuleStatement) .)
 =
 	(. if (bProcEntry) Warn(L"Executable statements at module level ignored when entry point is a procedure"); .)
 	Statement
 .
-MultiplicativeExpression
+MultiplicativeExpression (. ID(MultiplicativeExpression) .)
 =
 	PowerExpression { MultiplicativeOperator PowerExpression }
 .
-MultiplicativeOperator
+MultiplicativeOperator (. ID(MultiplicativeOperator) .)
 =
 	( '*' | '/' | "Mod" | "Rem" )
 .
 /*N*/
-Name
+Name (. ID(Name) .)
 =
 	( identifier
 	| nullable_identifier
 	| typed_identifier
 	)
 .
-NamespaceStatement<Modifier &mods>
+NamespaceStatement<Modifier &mods> (. ID(NamespaceStatement) .)
 =
 	(. mods.allow(Modifier::Deprecated); .)
 	(. mods.validate(); .)
-	"Namespace" QualifiedName SYNC Newline
+	"Namespace" QualifiedName SyncNewline<s_name>
 	{ ModuleMember }
 	"End"
 	(. Optional(_Namespace); .)
 	Newline
 .
-NewMember
+NewMember (. ID(NewMember) .)
 =
 	( "New" CallOrNew<2>
-	| ArgumentList SYNC Newline
+	| ArgumentList SyncNewline<s_name>
 	)
 .
-NewStatement
+NewStatement (. ID(NewStatement) .)
 =
 	(. bool bNew = false; .)
 	(. bool bInitExpr = false; .)
@@ -1506,32 +1506,28 @@ NewStatement
 			[ InitializationExpression (. bInitExpr = true; .) ]
 		| UserType
 		)
-		SYNC Newline
+		SyncNewline<s_name>
 		[	NewMember (. if (bInitExpr) Err(L"Expected End after initialization expression"); .)
 			{ NewMember }
 		]
 		"End"
 	[ "New" | identifier ] // TODO: test typename
-		SYNC Newline
+		SyncNewline<s_name>
 	]
 	(. if (typename) coco_string_delete(typename); .)
 .
-Newline
+Newline (. ID(Newline) .)
 =
 	line_break { line_break }
 .
-SYNCNewline
-=
-	SYNC line_break { line_break }
-.
 /*O*/
-ObjectName
+ObjectName (. ID(ObjectName) .)
 =
 	( identifier
 	| nullable_identifier
 	)
 .
-ObjectStatement<Modifier &mods>
+ObjectStatement<Modifier &mods> (. ID(ObjectStatement) .)
 =
 	(. mods.allow(Modifier::Deprecated); .)
 	(. bool bShared = mods.allow(Modifier::Shared); .)
@@ -1539,24 +1535,24 @@ ObjectStatement<Modifier &mods>
 	"Object" ObjectName
 	[ "Is" UserType ]
 	{ DoesClause }
-	SYNC Newline
+	SyncNewline<s_name>
 //	{ ObjectMember }
 	"End"
 	(. Optional(_Object); .)
 	Newline
 .
 /*P*/
-PassableType
+PassableType (. ID(PassableType) .)
 =
 	( PrimitiveType<false> | UserType )
 	[ Rank ]
 .
-PowerExpression
+PowerExpression (. ID(PowerExpression) .)
 =
 //-	UnaryExpression { '^' UnaryExpression }
 	UnaryExpression [ '^' PowerExpression ]
 .
-PrimaryExpression
+PrimaryExpression (. ID(PrimaryExpression) .)
 =
 	( char_literal
 	| integer_constant
@@ -1583,7 +1579,7 @@ PrimaryExpression
 	| "#Null"
 	)
 .
-PrimitiveType<bool bBits>
+PrimitiveType<bool bBits> (. ID(PrimitiveType) .)
 =
 	(. int tkn = 0; .)
 	( "Boolean" | "Char" | "DateTime" | "String"
@@ -1594,13 +1590,13 @@ PrimitiveType<bool bBits>
 	)
 .
 /*
-PropertyOrCall
+PropertyOrCall (. ID(PropertyOrCall) .)
 =
 	Name
 	[ IF (IsCall()) EnclosedArgumentList ]
 .
 */
-PropertySignature<Modifier &mods>
+PropertySignature<Modifier &mods> (. ID(PropertySignature) .)
 =
 	(. bool explicit_array = false; .)
 	"Property"
@@ -1613,9 +1609,9 @@ PropertySignature<Modifier &mods>
 	| DeclaratorList<false>
 	)
 	[ "Does" identifier dot identifier ]
-	SYNCNewline
+	SyncNewline<s_name>
 .
-PropertyStatement<Modifier &mods>
+PropertyStatement<Modifier &mods> (. ID(PropertyStatement) .)
 =
 	(. bool bAbstract  = mods.allow(Modifier::Abstract); .)
 	(. bool bBacked    = mods.allow(Modifier::Backed); .)
@@ -1632,7 +1628,7 @@ PropertyStatement<Modifier &mods>
 		[	"Get" Newline
 			{ Statement }
 		]
-		[	"Set" [ FormalParameterList<_Set> ] SYNC Newline  //TODO: only one param
+		[	"Set" [ FormalParameterList<_Set> ] SyncNewline<s_name>  //TODO: only one param
 			{ Statement }
 		]
 		"End"
@@ -1641,23 +1637,23 @@ PropertyStatement<Modifier &mods>
 	]
 .
 /*Q*/
-QualifiedName
+QualifiedName (. ID(QualifiedName) .)
 =
 	identifier { dot identifier }
 .
 /*R*/
-RaiseStatement
+RaiseStatement (. ID(RaiseStatement) .)
 =
 	"Raise"
 	( "Event" Name [ ArgumentList ]
 	| Expression
 	)
 .
-Rank
+Rank (. ID(Rank) .)
 =
 	"*" integer_literal
 .
-RequireComparison
+RequireComparison (. ID(RequireComparison) .)
 =
 	// TODO: strings can only be "=" or "<>".
 	( [ version_literal ( "<" | "<=" ) ]  // Eg 1.0.0 <= version < 2.0.0
@@ -1666,38 +1662,38 @@ RequireComparison
 	| "(" RequireLogic ")"
 	)
 .
-RequireLogic
+RequireLogic (. ID(RequireLogic) .)
 =
 	RequireComparison
 	{ ( "And" | "Or" ) RequireComparison }
 .
-RequireStatement
+RequireStatement (. ID(RequireStatement) .)
 =
 	"Require" QualifiedName
 	[ comma QualifiedName
 		{ comma QualifiedName }
 	| "Where" RequireLogic
 	]
-	SYNC Newline
+	SyncNewline<s_name>
 .
-ReturnStatement
+ReturnStatement (. ID(ReturnStatement) .)
 =
 	"Return" [ Expression ]
 .
-ReturnTypeClause
+ReturnTypeClause (. ID(ReturnTypeClause) .)
 =
 	( AsTypeClause<false>
 	| InUnitClause
 	)
 .
 /*S*/
-SelectStatement
+SelectStatement (. ID(SelectStatement) .)
 =
 	(. case_type clause = case_zero; .)
 	"Select"
 	(. Optional(_Case); .)
 	Expression
-	SYNC Newline
+	SyncNewline<s_name>
 	{ CaseClause<clause> }
 	"End"
 		(. if (clause == case_zero) Err(L"SELECT must have a minimum of one CASE"); .)
@@ -1705,12 +1701,12 @@ SelectStatement
 	(. Optional(_Select); .)
 	Newline
 .
-SelfConstraint
+SelfConstraint (. ID(SelfConstraint) .)
 =
 	"Self"
 	( "<" | "<=" | "Is" ) UserType
 .
-SimpleExpression
+SimpleExpression (. ID(SimpleExpression) .)
 =
 	// Related: IdentifierStatement
 	PrimaryExpression
@@ -1724,7 +1720,7 @@ SimpleExpression
 	| EnclosedArgumentList
 	}
 .
-SimpleStatement
+SimpleStatement (. ID(SimpleStatement) .)
 =
 	( CallStatement
 	| GotoStatement
@@ -1735,38 +1731,38 @@ SimpleStatement
 	| YieldStatement
 	)
 .
-Statement
+Statement (. ID(Statement) .)
 =
 	( IF (IsNewStatement()) NewStatement
-	| SimpleStatement SYNC Newline
+	| SimpleStatement SyncNewline<s_name>
 	| CompoundStatement
 	)
 .
-StringExpression
+StringExpression (. ID(StringExpression) .)
 =
 	( string_literal | string_constant )
 	{ string_literal | string_constant }
 .
-StructStatement<Modifier &mods>
+StructStatement<Modifier &mods> (. ID(StructStatement) .)
 =
 	(. mods.allow(Modifier::Deprecated); .)
 	(. mods.validate(); .)
 	"Struct" identifier
 	[ TypeParameterList ]
 	[ "Is" ValueType ]
-	SYNC Newline
+	SyncNewline<s_name>
 	{ StructState }
 	{ StructProcedure }
 	"End"
 	(. Optional(_Struct); .)
 	Newline
 .
-StructProcedure
+StructProcedure (. ID(StructProcedure) .)
 =
 	(. Modifier mods(this); .)
 	ConstructorStatement<mods>
 .
-StructState
+StructState (. ID(StructState) .)
 =
 	(. Modifier mods(this); .)
 	[ ModifiersClause<mods> ]
@@ -1776,20 +1772,20 @@ StructState
 
 	[ DimOrVar ] Declarator<true>
 .
-SubStatement<Modifier &mods>
+SubStatement<Modifier &mods> (. ID(SubStatement) .)
 =
 	(. mods.allow(Modifier::Deprecated); .)
 	(. bool bIterator = mods.allow(Modifier::Iterator); .)
 	(. bool bShared   = mods.allow(Modifier::Shared); .)
 	(. mods.validate(); .)
 	SubSignature
-	{ WhereClause<false> SYNC Newline }
+	{ WhereClause<false> SyncNewline<s_name> }
 	{ Statement }
 	"End"
 	(. Optional(_Sub); .)
 	Newline
 .
-SubSignature
+SubSignature (. ID(SubSignature) .)
 =
 	"Sub" Name
 	[ TypeParameterList ]
@@ -1798,10 +1794,23 @@ SubSignature
 	]
 	[ "Handles" QualifiedName ]
 	[ WhereClause<false> ]
-	SYNC Newline
+	SyncNewline<s_name>
+.
+SyncNewline<wchar_t *name> (. ID(SyncNewline) .)
+=
+	(.
+	wchar_t *msg = NULL;
+	while (!(la->kind == _EOF || la->kind == _line_break)) {
+		if (!msg) msg = coco_string_create_append(L"This symbol not expected in ", name);
+		Err(msg);
+		Get();
+	}
+	coco_string_delete(msg);
+	.)
+	line_break { line_break }
 .
 /*T*/
-TraitMember
+TraitMember (. ID(TraitMember) .)
 =
 	(. Modifier mods(this); .)
 	[ ModifiersClause<mods> ]
@@ -1813,7 +1822,7 @@ TraitMember
 	| SubStatement<mods>
 	)
 .
-TraitStatement<Modifier &mods>
+TraitStatement<Modifier &mods> (. ID(TraitStatement) .)
 =
 	(. bool bAbstract = mods.allow(Modifier::Abstract); .)
 	(. mods.allow(Modifier::Deprecated); .)
@@ -1822,14 +1831,14 @@ TraitStatement<Modifier &mods>
 	[ TypeParameterList ]
 	{ DoesClause }
 	[ WhereClause<true> ]
-	SYNC Newline
-	{ WhereClause<true> SYNC Newline }
+	SyncNewline<s_name>
+	{ WhereClause<true> SyncNewline<s_name> }
 	{ TraitMember }
 	"End"
 	(. Optional(_Trait); .)
 	Newline
 .
-TryStatement
+TryStatement (. ID(TryStatement) .)
 =
 	"Try" Newline
 	{ Statement }
@@ -1843,70 +1852,70 @@ TryStatement
 	(. Optional(_Try); .)
 	Newline
 .
-TypeArgumentList
+TypeArgumentList (. ID(TypeArgumentList) .)
 =
 	'[' PassableType { WEAK comma PassableType } ']'
 .
-TypeClause<bool bBits>
+TypeClause<bool bBits> (. ID(TypeClause) .)
 =
 	( AsTypeClause<bBits>
 	| InUnitClause
 	)
 .
-TypeConversion
+TypeConversion (. ID(TypeConversion) .)
 =
 	( "As" ConvertibleType
 	| InUnitClause
 	)
 .
-TypeParameter
+TypeParameter (. ID(TypeParameter) .)
 =
 	[ "In" | "Out" ] identifier
 .
-TypeParameterList
+TypeParameterList (. ID(TypeParameterList) .)
 =
 	'[' TypeParameter { WEAK comma TypeParameter } ']'
 .
 /*U*/
-UnaryExpression
+UnaryExpression (. ID(UnaryExpression) .)
 =
 	{ UnaryOperator } SimpleExpression [ IsExpression | TypeConversion ]
 .
-UnaryOperator
+UnaryOperator (. ID(UnaryOperator) .)
 =
 	( '+' | '-' | "Not" )
 .
-UnenclosedArgument
+UnenclosedArgument (. ID(UnenclosedArgument) .)
 =
 	( line_break Argument
 	| Argument
 	)
 .
-UnenclosedArgumentList
+UnenclosedArgumentList (. ID(UnenclosedArgumentList) .)
 =
 	( Argument | comma UnenclosedArgument )
 	{ WEAK comma UnenclosedArgument }
 .
-UnenclosedParameterList<int parent>
+UnenclosedParameterList<int parent> (. ID(UnenclosedParameterList) .)
 =
 	(. param_type param(parent); .)
 	FormalParameter<param> { WEAK comma[line_break] FormalParameter<param> }
 .
-UnitExpression
+UnitExpression (. ID(UnitExpression) .)
 =
 	UnitOfMeasure  { ( integer_literal | real_literal ) UnitOfMeasure  }
 .
-UnitOfMeasure
+UnitOfMeasure (. ID(UnitOfMeasure) .)
 =
 	( identifier
 	| "(" identifier { [ "*" | "/" ] identifier } ")"
 	)
 .
-UnitAlias
+UnitAlias (. ID(UnitAlias) .)
 =
 	identifier [ ( "-" | "+" ) identifier ] // Plurals by "prefix-unit" or "unit+suffix"
 .
-UnitStatement<Modifier &mods>
+UnitStatement<Modifier &mods> (. ID(UnitStatement) .)
 =
 	(. mods.allow(Modifier::Deprecated); .)
 	(. bool bSI = mods.allow(Modifier::SI); .)
@@ -1914,23 +1923,23 @@ UnitStatement<Modifier &mods>
 	"Unit" [ UnitParameter ]
 	UnitAlias { UnitAlias }
 	[ '=' AdditiveExpression ]
-	SYNC Newline
+	SyncNewline<s_name>
 .
-UnitParameter
+UnitParameter (. ID(UnitParameter) .)
 =
 	'(' identifier InUnitClause ')'
 .
-UserType
+UserType (. ID(UserType) .)
 =
 	QualifiedName [ TypeArgumentList ]
 .
 /*V*/
-ValueType
+ValueType (. ID(ValueType) .)
 =
 	( PrimitiveType<false> | UserType )
 .
 /*W*/
-WhenStatement<bool isPreconditional, when_type &whens>
+WhenStatement<bool isPreconditional, when_type &whens> (. ID(WhenStatement) .)
 =
 	"When"
 	( identifier
@@ -1942,26 +1951,26 @@ WhenStatement<bool isPreconditional, when_type &whens>
 	) Newline
 	{ Statement }
 .
-WhereClause<bool bTrait>
+WhereClause<bool bTrait> (. ID(WhereClause) .)
 =
 	"Where" Constraint<bTrait> { WEAK comma[line_break] Constraint<bTrait> }
 .
-WhereStatement
+WhereStatement (. ID(WhereStatement) .)
 =
 	"Where"
 	identifier '='
 	( string_literal | version_literal )
-	SYNC Newline
+	SyncNewline<s_name>
 .
-WhileOrUntil
+WhileOrUntil (. ID(WhileOrUntil) .)
 =
 	( "While"
 	| "Until"
 	)
 .
-WhileStatement
+WhileStatement (. ID(WhileStatement) .)
 =
-	"While" Expression SYNC Newline
+	"While" Expression SyncNewline<s_name>
 	[ LoopBody<true> ]
 	"End"
 	(. Optional(_While); .)
@@ -1969,7 +1978,7 @@ WhileStatement
 .
 /*X*/
 /*Y*/
-YieldStatement
+YieldStatement (. ID(YieldStatement) .)
 =
 	"Yield" Expression
 .
