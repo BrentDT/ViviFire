@@ -16,7 +16,7 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
-<li><a href="Data_Type_Summary.html">Data Type Summary</a></li>
+<li><a rel="parent" href="Data_Type_Summary.html">Data Type Summary</a></li>
 </ul>
 </nav>
 <main>
@@ -78,10 +78,10 @@ This is always 8.</dd>
 <dt><pre><code>DateTime.Year As Int</code></pre></dt>
 <dd>Returns the current year.</dd>
 </dl>
-<h2>Type changes</h2>
+<h2>Type conversions</h2>
 <p>ViviFire can change between the type <code class="kw">DateTime</code> and other types.
-Some changes can be in one direction only.</p>
-<h3>Changed to DateTime</h3>
+Some conversions can be in one direction only.</p>
+<h3>Conversion to DateTime</h3>
 <table>
 <thead>
 <tr><th>From type</th>
@@ -93,7 +93,7 @@ Some changes can be in one direction only.</p>
 Other values are a multiple of this.</td></tr>
 </tbody>
 </table>
-<h3>Changed from DateTime</h3>
+<h3>Conversion from DateTime</h3>
 <table>
 <thead>
 <tr><th>To type</th>
@@ -105,7 +105,7 @@ Other values are a multiple of this.</td></tr>
 If you try to change the default value to String, then the result is TBD.</td></tr>
 </tbody>
 </table>
-<h3>Symmetrical changes</h3>
+<h3>Symmetrical conversions</h3>
 <table>
 <thead>
 <tr><th>Type</th>
