@@ -17,31 +17,25 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Operators.html">Operators</a></li>
-<li><a href="Logical_and_Bitwise_Operators.html">Logical and Bitwise Operators</a></li>
+<li><a rel="parent" href="Logical_and_Bitwise_Operators.html">Logical and Bitwise Operators</a></li>
 </ul>
 </nav>
 <main>
-<h1 id="top">Or Else Operator</h1>
+<h1 id="top"><code>Or Else</code> Operator</h1>
 <p>Returns &ldquo;true&rdquo; if one or more Boolean expressions are true, but stops after the first true expression.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <pre><code>expression_1 Or Else expression_2&#10;</code></pre>
-<div>or</div>
-<pre><code>#expression Or Else expression_2&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="id">expression_1</code></dt>
-<dd>A Boolean expression.</dd>
-<dt><code class="id">#expression</code></dt>
-<dd>A variable or procedure call that can return <code>#Null</code>.</dd>
+<dd>An expression with the type <code class="kw">Boolean</code> or that can change to <code class="kw">Boolean</code>.</dd>
 <dt><code class="id">expression_2</code></dt>
-<dd>An expression of a type compatible with <code class="id">expression_1</code> or <code class="id">#expression</code>.</dd>
+<dd>An expression of a type compatible with <code class="id">expression_1</code>.</dd>
 </dl>
 <h2>Instructions</h2>
-<p>The result has the type of the left expression.</p>
-<h3>Used with Boolean</h3>
-<p>When used with <code class="kw">Boolean</code>, <code class="kw">Or Else</code> is almost the same as the operator <code class="kw">Or</code>.
+<p><code class="kw">Or Else</code> is almost the same as the operator <code class="kw">Or</code>.
 They are different when <code class="id">expression_1</code> is true.
 When this occurs, <code class="id">expression_2</code> is not evaluated.
 This is correct because if one expression is true, then the result is always true.
@@ -59,23 +53,13 @@ This is known as <dfn>short-circuit evaluation</dfn>.</p>
 <tr><td>False</td><td>False</td><td>False</td></tr>
 </tbody>
 </table>
-<h3>Used with an object that can be <code>#Null</code></h3>
-<p>When used with an object that can be <code class="kw">#Null</code>, the left side evaluates first.
-If it is not <code class="kw">#Null</code>, then the right side does not evaluate, and the left side becomes the result.
-But, if the left side is <code class="kw">#Null</code>, then the right side evaluates and becomes the result.</p>
 <h2>Examples</h2>
-<p>The example that follows tries to download data from a server.
-The procedure <code>#Download</code> returns <code>#Null</code> if an error occurs.
-But if an error occurs, then the given default value becomes the result.</p>
-<div class="language-vivifire listing">
-<pre><code>Method GetData(Default$) As String
-    Return #Download? Or Else Default$
-End Method&#10;</code></pre>
-</div>
+<p>TODO</p>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="And_Then_Operator.html">And Then Operator</a></li>
 <li><a href="Or_Operator.html">Or Operator</a></li>
+<li><a href="Null_Conditional_Operators.html">Null-Conditional Operators</a></li>
 </ul>
 </main>
 <script src="common.js"></script>
