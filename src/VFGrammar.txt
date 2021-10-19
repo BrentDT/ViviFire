@@ -771,7 +771,6 @@ ViviFire (. ID(ViviFire) .)
 AdditiveExpression (. ID(AdditiveExpression) .)
 =
 	MultiplicativeExpression { ( '+' | '-' ) MultiplicativeExpression }
-///	[ InUnitClause ]
 .
 Argument (. ID(Argument) .)
 =
@@ -833,7 +832,7 @@ BitFieldType<int &tkn> (. ID(BitFieldType) .)
 .
 BitShiftExpression (. ID(BitShiftExpression) .)
 =
-	ConcatenationExpression { ( "SHL" | "SHR" ) ConcatenationExpression }
+	UnaryExpression { ( "SHL" | "SHR" ) UnaryExpression }
 .
 Block<int &tkn> (. ID(Block) .)
 =
@@ -910,7 +909,7 @@ ClassStatement<Modifier &mods> (. ID(ClassStatement) .)
 .
 ComparisonExpression (. ID(ComparisonExpression) .)
 =
-	BitShiftExpression { ComparisonOperator BitShiftExpression }
+	NullCoalescingExpression { ComparisonOperator NullCoalescingExpression }
 .
 ComparisonOperator (. ID(ComparisonOperator) .)
 =
@@ -1520,6 +1519,10 @@ Newline (. ID(Newline) .)
 =
 	line_break { line_break }
 .
+NullCoalescingExpression (. ID(NullCoalescingExpression) .)
+=
+	TypeExpression [ "|?" NullCoalescingExpression ]
+.
 /*O*/
 ObjectName (. ID(ObjectName) .)
 =
@@ -1549,8 +1552,7 @@ PassableType (. ID(PassableType) .)
 .
 PowerExpression (. ID(PowerExpression) .)
 =
-//-	UnaryExpression { '^' UnaryExpression }
-	UnaryExpression [ '^' PowerExpression ]
+	BitShiftExpression [ "^" PowerExpression ]
 .
 PrimaryExpression (. ID(PrimaryExpression) .)
 =
@@ -1868,6 +1870,10 @@ TypeConversion (. ID(TypeConversion) .)
 	| InUnitClause
 	)
 .
+TypeExpression (. ID(TypeExpression) .)
+=
+	ConcatenationExpression [ IsExpression | TypeConversion ]
+.
 TypeParameter (. ID(TypeParameter) .)
 =
 	[ "In" | "Out" ] identifier
@@ -1879,7 +1885,7 @@ TypeParameterList (. ID(TypeParameterList) .)
 /*U*/
 UnaryExpression (. ID(UnaryExpression) .)
 =
-	{ UnaryOperator } SimpleExpression [ IsExpression | TypeConversion ]
+	{ UnaryOperator } SimpleExpression
 .
 UnaryOperator (. ID(UnaryOperator) .)
 =
