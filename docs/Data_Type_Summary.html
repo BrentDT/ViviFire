@@ -8,6 +8,12 @@
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Data_Type_Summary.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
 <meta name="author" content="Brent Thorn">
+<style>
+/* Hide <summary> when expanded */
+table.wide details[open] summary {
+	display: none;
+}
+</style>
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -15,17 +21,12 @@
 <ul>
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
-<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a rel="parent section" href="Language_Reference.html">Language Reference</a></li>
 </ul>
 </nav>
 <main>
 <h1 id="top">Data Type Summary</h1>
-<style>
-/* Hide <summary> when expanded */
-table.wide details[open] summary {
-	display: none;
-}
-</style>
+<p>The table that follows shows the ViviFire data types, how much memory they use, and their value ranges.</p>
 <style media="all and (max-width: 40em)">
 	#t1 tbody th:before { content: "ViviFire type"; }
 	#t1 td:nth-of-type(1):before { content: "Approximate memory used"; }
