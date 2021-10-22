@@ -15,13 +15,16 @@
 <ul>
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
-<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a rel="parent section" href="Language_Reference.html">Language Reference</a></li>
 </ul>
 </nav>
 <main>
 <h1 id="top">Error Messages</h1>
+<p>WHEN you compile a ViviFire program, errors can occur.
+What follows is a list of error messages and how you can correct your code.</p>
 <dl>
 <dt><samp class="err">BASE cannot change</samp></dt>
+<dt><samp class="err">BASE permitted only in child class</samp></dt>
 <dt><samp class="err">BYREF is not permitted here</samp></dt>
 <dt><samp class="err">Block NEW must have one or more members</samp></dt>
 <dt><samp class="err">CASE cannot follow CASE ELSE in SELECT</samp></dt>
@@ -32,12 +35,14 @@
 <dt><samp class="err">Class cannot have more than one destructor</samp></dt>
 <dt><samp class="err">Conditional expression must have tests for &lt;, =, and &gt;</samp></dt>
 <dt><samp class="err">Constructors and destructor must come before other procedures</samp></dt>
+<dt><samp class="err">CONSTRUCTOR DIM or CONSTRUCTOR VAR must come before other procedures</samp></dt>
 <dt><samp class="err">Continued string without start</samp></dt>
 <dt><samp class="err">Declarator cannot be generic</samp></dt>
 <dt><samp class="err">ELSE without IF</samp></dt>
 <dt><samp class="err">END &lt;element&gt; without &lt;element&gt;</samp></dt>
 <dt><samp class="err">ENUM must have one or more members</samp></dt>
 <dt><samp class="err">FINALLY without TRY</samp></dt>
+<dt><samp class="err">Left side of null-conditional must be nullable</samp></dt>
 <dt><samp class="err">LOOP without DO</samp></dt>
 <dt><samp class="err">Malformed character literal</samp></dt>
 <dt><samp class="err">Malformed string literal</samp></dt>
@@ -54,9 +59,8 @@
 <dt><samp class="err">SELECT without CASE because of @OPTION</samp></dt>
 <dt><samp class="err">SELF cannot change</samp></dt>
 <dt><samp class="err">STRUCT must have data members</samp></dt>
-<dt><samp class="err">This type of constructor must be the furst and only one</samp></dt><!-- Constructor Var -->
 <dt><samp class="err">THEN without IF</samp></dt>
-<dt><samp class="err">WHEN %None not permitted in DO...LOOP WHILE or UNTIL</samp></dt>
+<dt><samp class="err">WHEN NONE not permitted in DO...LOOP WHILE or UNTIL</samp></dt>
 <dt><samp class="err">WHERE permitted only in generic construct</samp></dt>
 </dl>
 </main>
