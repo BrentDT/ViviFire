@@ -16,7 +16,7 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
-<li><a href="Program_Structure_and_Code_Conventions.html">Program Structure and Code Conventions</a></li>
+<li><a rel="parent" href="Program_Structure_and_Code_Conventions.html">Program Structure and Code Conventions</a></li>
 </ul>
 </nav>
 <main id="stub">
@@ -26,66 +26,82 @@ This module is where your program starts execution.</p>
 <p>The name of the program can be the same as one procedure.
 When you write <code class="op">=</code> before the name, then that procedure becomes where the program starts execution.
 But, if <code class="op">=</code> is not given, then execution starts at the top of the module.</p>
+<p>A procedure lets you easily get arguments from the command line, and/or return an error code to the operating system.
+But if these are not necessary in your program, you can select not to use a procedure.
+There are alternatives you can use.
+For example, <code class="kw">Exit Program</code> can return an error code.</p>
 <h2>Declaration of the procedure</h2>
 <p>There are four different mixtures of parameters and return types.
-It can have one parameter or none.
-And it can return a value or not.</p>
-<h3>TODO</h3>
-<p>TODO</p>
+It can have one parameter or none, and it can return a value or not.</p>
+<ul>
+<li>The easiest procedure is one that does not have parameters and does not return a value.
 <div class="language-vivifire listing">
-<pre><code>Program = Zero
+<pre><code>Program = NotMuch
 
-Sub Zero
+Sub NotMuch
     MessageBox "Start of program"
     MessageBox "End of program"
 End Sub&#10;</code></pre>
 </div>
-<h3>TODO</h3>
-<p>TODO</p>
+</li>
+<li>The procedure can return a value of the type <code class="kw">Int</code>.
+The operating system uses this value as the error code for your program.
+Other programs can read this value.
 <div class="language-vivifire listing">
-<pre><code>Program = One
+<pre><code>Program = ErrorOnly
 
-Sub One As Int
+Sub ErrorOnly As Int
     MessageBox "Start of program"
-    MessageBox "End of program"
+    ErrorOnly = %EXIT_SUCCESS
+    MessageBox "End of program with error code " &amp;
+        ErrorOnly &amp; "."
 End Sub&#10;</code></pre>
 </div>
-<h3>TODO</h3>
-<p>TODO</p>
+</li>
+<li>The procedure can also have one parameter that is an array of <code class="kw">String</code>.
+Each item in the array is one of the command-line arguments given to run your program.
+You can select what to do with different arguments.
 <div class="language-vivifire listing">
-<pre><code>Program = Two
+<pre><code>Program = ArgsAndError
 
-Sub Two(args() As String) As Int
+Sub ArgsAndError(args() As String) As Int
     MessageBox "Start of program"
-    For Each arg As String In args
+    For Each arg In args
     Begin
-        MessageBox arg, "arg"
+        MessageBox arg &amp; " arg"
+    When DONE
+        ArgsAndError = %EXIT_SUCCESS
     When NONE
-        MessageBox "No args"
+        ArgsAndError = %EXIT_FAILURE
+        MessageBox "No args!"
+    End For
+    MessageBox "End of program with error code " &amp;
+        ArgsAndError &amp; "."
+End Sub&#10;</code></pre>
+</div>
+</li>
+<li>The procedure can also examine the given arguments but not return an error code, as follows.
+<div class="language-vivifire listing">
+<pre><code>Program = ArgsOnly
+
+Sub ArgsOnly(args() As String)
+    MessageBox "Start of program"
+    For Each arg In args
+    Begin
+        MessageBox arg &amp; " arg"
+    When NONE
+        MessageBox "No args!"
     End For
     MessageBox "End of program"
 End Sub&#10;</code></pre>
 </div>
-<h3>TODO</h3>
-<p>TODO</p>
-<div class="language-vivifire listing">
-<pre><code>Program = Three
-
-Sub Three(args() As String)
-    MessageBox "Start of program"
-    For Each arg As String In args
-    Begin
-        MessageBox arg, "arg"
-    When NONE
-        MessageBox "No args"
-    End For
-    MessageBox "End of program"
-End Sub&#10;</code></pre>
-</div>
+</li>
+</ul>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Structure_of_a_ViviFire_Program.html">Structure of a ViviFire Program</a></li>
 <li><a href="Modules.html">Modules</a></li>
+<li><a href="Exit_Statement.html">Exit Statement</a></li>
 <li><a href="Sub_Statement.html">Sub Statement</a></li>
 <li><a href="Int_Data_Type.html">Int Data Type</a></li>
 <li><a href="String_Data_Type.html">String Data Type</a></li>
