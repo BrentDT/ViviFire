@@ -24,14 +24,14 @@ if (!chm) {
 
 document.write('<hr><p>'+
 '<div id="poll" role="status" aria-live="polite" aria-relevant="text">' +
-'<form aria-label="poll">' +
-'This article is' +
-' <input id="0" type="radio" onclick="vote(0)"><label for="0">good</label>' +
-' <input id="1" type="radio" onclick="vote(1)"><label for="1">bad</label>' +
-' <input id="2" type="radio" onclick="vote(2)"><label for="2">messy</label>' +
-' <input id="3" type="radio" onclick="vote(3)"><label for="3">confusing</label>' +
-' <input id="4" type="radio" onclick="vote(4)"><label for="4">inaccurate</label>' +
-'</form>' +
+'<div role="form" aria-label="poll">' +
+'This article is ' +
+'<button onclick="vote(0)" title="good">good</button>' +
+'<button onclick="vote(1)" title="bad">bad</button>' +
+'<button onclick="vote(2)" title="messy">not clean</button>' +
+'<button onclick="vote(3)" title="confusing">not easy</button>' +
+'<button onclick="vote(4)" title="inaccurate">incorrect</button>' +
+'</div>' +
 '</div></p>');
 
 document.write('<footer aria-label="footer">'+
