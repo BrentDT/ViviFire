@@ -519,7 +519,7 @@ left_brace    = "{".
 right_brace   = "}".
 
 concatenation_operator =
-	( ";" | "&"
+	( "&"
 	// Prevent misparsing as binary, hexadecimal, or octal integer.
 	| "&" CONTEXT ( ("B"{bin}nonbin) | ("H"{hex}nonhex) | ("O"{oct}nonoct) )
 	).
