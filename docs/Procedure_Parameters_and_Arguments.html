@@ -17,17 +17,57 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
 <li><a href="Language_Features.html">Language Features</a></li>
-<li><a href="Procedures.html">Procedures</a></li>
+<li><a rel="parent" href="Procedures.html">Procedures</a></li>
 </ul>
 </nav>
 <main id="stub">
 <h1 id="top">Procedure Parameters and Arguments</h1>
+<p>Frequently a procedure must get some information about the conditions that caused its execution.
+A procedure that does a task again and again uses different information each time.
+This information includes variables, constants, and expressions that you pass to the procedure when you call it.</p>
+<p>A <dfn>parameter</dfn> is a value that the procedure must have, usually supplied when you call it.
+The declaration of a procedure includes its parameters.</p>
+<p>You can declare a procedure with no parameters, one parameter, or more than one.
+The part of the procedure declaration that gives the parameters is known as the <dfn>parameter list</dfn>.</p>
+<p>An <dfn>argument</dfn> is the value that you supply to a procedure parameter when you call the procedure.
+The caller supplies the arguments when it calls the procedure.
+The part of the procedure call that gives the arguments is known as the <dfn>argument list</dfn>.</p>
+<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>' Declare some variables.
+Var x, y, z As Real
+
+' Call 1: argument is a literal.
+x = SquareRoot(1296.0)
+
+' Call 2: argument is a variable.
+y = SquareRoot(x)
+
+' Call 3: argument is an expression.
+z = SquareRoot(x + y)
+
+Function SquareRoot(number As Real) As Real
+    ' SquareRoot is the name of the procedure.
+    ' number is the only parameter.
+    ' SquareRoot also holds the return value.
+    SquareRoot = number ^ 0.5
+End Function&#10;</code></pre>
+</div>
+<h2>Parameter data type</h2>
+<p>TODO</p>
+<h3>Type parameters</h3>
+<p>TODO</p>
 <h2>See also</h2>
 <ul class="articles">
+<li><a href="Function_Procedures.html">Function Procedures</a></li>
+<li><a href="Method_Procedures.html">Method Procedures</a></li>
+<li><a href="Property_Procedures.html">Property Procedures</a></li>
+<li><a href="Sub_Procedures.html">Sub Procedures</a></li>
 <li><a href="Passing_Arguments_Value_Reference.html">Passing Arguments by Value and by Reference</a></li>
 <li><a href="Passing_Arguments_Position_Name.html">Passing Arguments by Position and by Name</a></li>
 </ul>
 </main>
 <script src="common.js"></script>
+<script src="prism.js"></script>
 </body>
 </html>
