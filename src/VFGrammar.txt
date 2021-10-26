@@ -269,53 +269,80 @@ public:
 		Shared, SI, WriteOnly,
 		LAST
 	};
+
 private:
-///	const wchar_t *text[] = { L"abstract", L"backed", L"deprecated", L"final", L"flags", L"override", L"readonly", L"shared", L"si", L"writeonly" };
-	Parser *parser;
+	const wchar_t *m_name[] = {
+		L"@Abstract", L"@Backed", L"@Deprecated", L"@Flags",
+		L"@Iterator", L"@Open", L"@Override", L"@ReadOnly",
+		L"@Shared", L"@SI", L"@WriteOnly"
+	};
+
 	struct {
-		int64_t hash;
 		bool present, allowed;
 		int line, col;
 		int order;
-	} mods[LAST];
-	int count;
+	} m_mods[LAST];
+
+	int m_count;
+	Parser *m_parser;
+
 public:
-	Modifier(Parser *p): parser(p), mods(), count(0) {
-///		for (int i = 0; i < LAST; i++) {
-///			mods[i].hash = hash(text[i]);
-///		}
-	}
-	int count() const { return count; }
+	Modifier(Parser *p): m_parser(p), m_mods(), m_count(0) {}
+
+	int count() const { return m_count; }
+
 	void add(int m) {
-///		int hash = hash(t->val);
-		if (m_mods[m].present) parser->errors->Error(mods[m].line, mods[m].col, L"Duplicate modifier");
-		mods[m].present = true;
-		mods[m].allowed = false;
-		mods[m].line = t->line;
-		mods[m].col = t->col;
-		mods[m].order = m_count++;
-	}
-	bool allow(int m) {
-		bool present = mods[m].present;
-		if (present) {
-			mods[m].allowed = true;
+		ASSERT(m < LAST);
+		if (m_mods[m].present) {
+			m_parser->errors->Error(t->line, t->col, L"Same modifier again");
+		} else {
+			m_mods[m].present = true;
+			m_mods[m].allowed = false;
+			m_mods[m].line = t->line;
+			m_mods[m].col = t->col;
+			m_mods[m].order = m_count++;
 		}
-		return present;
 	}
+
+	bool allow(int m) {
+		ASSERT(m < LAST);
+		if (m_mods[m].present) {
+			m_mods[m].allowed = true;
+		}
+		return m_mods[m].present;
+	}
+
 	void validate() const {
-		if (m_count == 0) return;
-		for (int i = 0; i < LAST; i++) {
-			if (mods[i].present && !mods[i].allowed) {
-				wchar_t *msg = coco_string_create_append(name(i), L" not allowed here");
-				parser->errors->Error(m_mods[i].line, m_mods[i].col, msg);
+		if (m_count == 0) return; // No modifiers.
+
+		for (int m = 0; m < LAST; m++) {
+			if (mods[m].present && !mods[m].allowed) {
+				wchar_t *msg = coco_string_create_append(m_name[m], L" is not permitted here");
+				m_parser->errors->Error(m_mods[m].line, m_mods[m].col, msg);
 				coco_string_delete(msg);
 			}
 		}
-// Abstract, Backed, Deprecated, Flags, Open, Override, ReadOnly, Shared, SI, WriteOnly
+
 		// Abstract v any except Deprecated, ReadOnly, or WriteOnly
-		if ( mods[Abstract].present && count > 1 && !mods[Deprecated].present && !mods[ReadOnly].present && !mods[WriteOnly].present ) Err
+		if (m_mods[Abstract].present && m_count > 1) {
+			for (int m = 0; m < LAST; m++) {
+				switch (m) {
+				case Abstract: case Deprecated: case ReadOnly: case WriteOnly:
+					break; // Skip permitted modifiers.
+				default:
+					if (m_mods[m].present) {
+						wchar_t *msg = coco_string_create_append(L"Cannot use @Abstract with ", m_name[m]);
+						m_parser->errors->Error(m_mods[m].line, m_mods[m].col, msg);
+						coco_string_delete(msg);
+					}
+				}
+			}
+		}
+
 		// ReadOnly v WriteOnly
-		if (mods[ReadOnly].present && mods[WriteOnly].present) Err
+		if (m_mods[ReadOnly].present && m_mods[WriteOnly].present) {
+			m_parser->Err(m_mods[WriteOnly].line, m_mods[WriteOnly].col, L"Cannot use @ReadOnly and @WriteOnly together");
+		}
 	}
 
 };
