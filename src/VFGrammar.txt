@@ -874,6 +874,11 @@ CaseExpression (. ID(CaseExpression) .)
 	| Expression [ "To" Expression ]
 	)
 .
+CatchClause (. ID(CatchClause) .)
+=
+	"Catch" [ Name [ AsTypeClause<false> ] ] SyncNewline<s_name>
+	{ Statement }
+.
 ClassMember (. ID(ClassMember) .)
 =
 	(. Modifier mods(this); .)
@@ -1844,9 +1849,7 @@ TryStatement (. ID(TryStatement) .)
 =
 	"Try" Newline
 	{ Statement }
-	{	"Catch" Newline
-		{ Statement }
-	}
+	{ CatchClause }
 	[	"Finally" Newline
 		{ Statement }
 	]
