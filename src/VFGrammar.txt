@@ -535,10 +535,10 @@ malformed_char_literal =
 	'`'[char].
 
 date_literal =
-	'@'dec{dec}
-	( '/'dec{dec}'/'dec{dec}  // yyyy/mm/dd
-	| '.'dec{dec}'.'dec{dec}  // yyyy.mm.dd
-	| '-'dec{dec}'-'dec{dec}  // yyyy-mm-dd
+	dec{dec}
+	( "/"dec{dec}"/"dec{dec}  // yyyy/mm/dd
+	| "."dec{dec}"."dec{dec}  // yyyy.mm.dd
+	| "-"dec{dec}"-"dec{dec}  // yyyy-mm-dd
 	).
 
 //TODO: malformed_date_literal
@@ -600,12 +600,12 @@ malformed_string_literal =
 	['_']'"'{str}{'"'['/'|'\\']'"'{str}}['"'('/'|'\\')].
 
 time_literal =
-	'@'dec{dec}':'dec{dec}[':'dec{dec}['.'dec{dec}]].
+	dec{dec}":"dec{dec}[":"dec{dec}["."dec{dec}]].
 
 //TODO: malformed_time_literal
 
 version_literal =
-	dec{dec}'.'dec{dec}'.'dec{dec}['.'dec{dec}].
+	dec{dec}"."{dec}"."{dec}"."{dec}.
 
 //TODO: malformed_version_literal
 
@@ -1965,7 +1965,7 @@ WhereStatement (. ID(WhereStatement) .)
 =
 	"Where"
 	identifier '='
-	( string_literal | version_literal )
+	( DateTimeExpression | string_literal | version_literal )
 	SyncNewline<s_name>
 .
 WhileOrUntil (. ID(WhileOrUntil) .)
