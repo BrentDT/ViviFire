@@ -15,16 +15,16 @@ Prism.languages.vivifire = {
 		pattern: /([ \[]*)@[A-Za-z]+/g,
 		lookbehind: true
 	},
-	'date': /@\d+(?:[-/.:@]\d+){2,6}/g,
+	'date': /\d+(?:[-/.:]\d+){2,3}/g,
 	'fixed': /(@\W?|\u00a4)[\d_]+\.\d+/g,
 	'str': /(?:\$(\w+|\u200b)|_?".*?"([\/\\]?".*?")*)/g,
 	'char': /`.`(?!\w)|%\w+/g,
 	'num': {
-		pattern: /(^|[^#%])((\b\d[_\d]*(\.\d+)*(!|[Ee][-+]?\d+)?)|(&[BHObho]\w+))/g,
+		pattern: /(^|[^#%])((\b\d[_\d]*[\.\d]*(!|[Ee][-+]?\d+)?)|(&[BHObho]\w+))/g,
 		lookbehind: true
 	},
-	'nil': /\|-*/g,
-	'op': /[-+*\/^&~:<=>]{1,3}/g,
+	'nil': /\|-*(?!\?)/g,
+	'op': /(?:[-+*\/^&~:<=>]{1,3})|\|\?/g,
 	'kw': reKeywords,
 	'nkw': reNonkeywords,
 	'id': /(`?)(?:#\w|\b[A-Za-z])\w*(?:[!$%](?![A-Za-z]))?\1/g
