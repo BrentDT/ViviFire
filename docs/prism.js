@@ -15,12 +15,12 @@ Prism.languages.vivifire = {
 		pattern: /([ \[]*)@[A-Za-z]+/g,
 		lookbehind: true
 	},
-	'date': /\d+(?:[-/.:]\d+){2,3}/g,
+	'date': /\d+(?:[-/:]\d+){2}(?:\.\d+)?/g,
 	'fixed': /(@\W?|\u00a4)[\d_]+\.\d+/g,
 	'str': /(?:\$(\w+|\u200b)|_?".*?"([\/\\]?".*?")*)/g,
 	'char': /`.`(?!\w)|%\w+/g,
 	'num': {
-		pattern: /(^|[^#%])((\b\d[_\d]*[\.\d]*(!|[Ee][-+]?\d+)?)|(&[BHObho]\w+))/g,
+		pattern: /(^|[^#%])((\b\d[_\d]*(\.\d+)*(!|[Ee][-+]?\d+)?)|(&[BHObho]\w+))/g,
 		lookbehind: true
 	},
 	'nil': /\|-*(?!\?)/g,
