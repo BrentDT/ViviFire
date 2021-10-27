@@ -17,7 +17,7 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Statements_Reference.html">Statements</a></li>
-<li><a href="Statements_3.html">Q&ndash;Z Statements</a></li>
+<li><a rel="parent" href="Statements_3.html">Q&ndash;Z Statements</a></li>
 </ul>
 </nav>
 <main>
@@ -48,7 +48,7 @@ You can use one or more limits to find the correct library if different librarie
 	<dd>One of the comparison operators:
 	<span class="ops"><code>=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>, or <code>&lt;&gt;</code></span>.</dd>
 	<dt><code class="id">attrib_value</code></dt>
-	<dd>Mandatory string literal or version literal.</dd><!-- TODO: Version Literal section or article -->
+	<dd>Mandatory literal of <code class="kw">DateTime</code>, string, or version number.</dd>
 	</dl>
 </dd>
 </dl>
@@ -59,10 +59,11 @@ You can use one or more limits to find the correct library if different librarie
 <h3>Limits construct</h3>
 <p>You use the limits construct when more than one library with the same name is available.
 You can compare the names and values supplied by the statements <code class="kw">Where</code> in each library.
-These values can have one of two data types: strings and version numbers.</p>
+These values can have one of three data types: <code class="kw">DateTime</code>, <code class="kw">String</code>, or version number.</p>
 <h4>Comparing strings</h4>
 <p>You can compare a string identifier to a string literal.
 The only comparison operators permitted are equality (<code class="op">=</code>) and inequality (<code class="op">&lt;&gt;</code>).
+To be equal, the letter case used by <code class="kw">Require</code> must be the same used by the library.
 An example follows.</p>
 <div class="language-vivifire listing">
 <pre><code>Require MyLibrary Where author = "John Doe"&#10;</code></pre>
@@ -104,7 +105,7 @@ An example follows.</p>
 <dt><code class="id">number</code></dt>
 <dd>One of three or four groups of decimal integers.
 The compiler ignores zeroes before other numbers at the start of a group. </dd>
-<dd>For example, &ldquo;<code>1.02.03</code>&rdquo; is the same as &ldquo;<code>1.2.3</code>&rdquo;.</dd>
+<dd>For example, &laquo;<code>1.02.03</code>&raquo; is the same as &laquo;<code>1.2.3</code>&raquo;.</dd>
 </dl>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
@@ -115,6 +116,8 @@ Require MyProject.TestHarness Where version = 2.1.0&#10;</code></pre>
 <ul class="articles">
 <li><a href="And_Operator.html">And Operator</a></li>
 <li><a href="Or_Operator.html">Or Operator</a></li>
+<li><a href="DateTime_Data_Type.html">DateTime Data Type</a></li>
+<li><a href="String_Data_Type.html">String Data Type</a></li>
 <li><a href="Modules.html">Modules</a></li>
 </ul>
 </main>

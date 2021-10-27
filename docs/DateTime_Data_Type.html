@@ -25,27 +25,28 @@
 <h2>Instructions</h2>
 <dl>
 <dt>Default value</dt>
-<dd>When you declare a variable of type <code class="kw">DateTime</code> and do not give it an initial value,, the value is <code>@0000-00-00@00:00:00</code>, which is not a correct date, but not an error.</dd>
+<dd>When you declare a variable of type <code class="kw">DateTime</code> and do not give it an initial value, the value is <code>0000/00/00 00:00:00</code>, which is not a correct date, but not an error.</dd>
 <dt>Type characters</dt>
 <dd><code class="kw">DateTime</code> has no type character.</dd>
 </dl>
-<h2>DateTime literal</h2>
+<h2 id="DateTime_literal">DateTime literal</h2>
 <div class="language-literal">
 <h3>Date literal</h3>
-<pre><code><kbd>@</kbd> <var>year</var> <kbd>/</kbd> <var>month</var> <kbd>/</kbd> <var>day</var></code></pre>
+<pre><code><var>year</var> <kbd>/</kbd> <var>month</var> <kbd>/</kbd> <var>day</var></code></pre>
 <h3>Time literal</h3>
-<pre><code><kbd>@</kbd> <var>hours</var> <kbd>:</kbd> <var>minutes</var> <kbd>:</kbd> <var>seconds</var></code></pre>
+<pre><code><var>hours</var> <kbd>:</kbd> <var>minutes</var> [ <kbd>:</kbd> <var>seconds</var> ]</code></pre>
 <h3>Date/time construct</h3>
-<pre><code><kbd>@</kbd> <var>year</var> <kbd>/</kbd> <var>month</var> <kbd>/</kbd> <var>day</var> <kbd>@</kbd> <var>hours</var> <kbd>:</kbd> <var>minutes</var> <kbd>:</kbd> <var>seconds</var></code></pre>
+<pre><code><var>year</var> <kbd>/</kbd> <var>month</var> <kbd>/</kbd> <var>day</var> <var>hours</var> <kbd>:</kbd> <var>minutes</var> [ <kbd>:</kbd> <var>seconds</var> ]</code></pre>
 </div>
 <p>The above named parts of a date or time must be decimal digits. Some more rules follow.</p>
 <dl class="parts">
 <dt><code class="op">/</code></dt>
 <dd>Divides the parts of a date.
-Alternatives are hyphens (<code class="op">-</code>) and periods (<code class="op">.</code>).</dd>
+The alternative is hyphens (<code class="op">-</code>).</dd>
 <dt><code class="id">seconds</code></dt>
-<dd>You 	can specify a fraction of a second by placing a decimal point (<code class="op">.</code>) between two sets of digits.
-The fractional part is limited to seven digits.
+<dd>Optional number of seconds.
+You can specify a fraction of a second if you put a decimal point (<code class="op">.</code>) between two sets of digits.
+The fractional part can have a maximum of seven digits.
 Digits after that are ignored.</dd>
 </dl>
 <h2>Shared methods and properties</h2>
@@ -53,7 +54,7 @@ Digits after that are ignored.</dd>
 <dt><pre><code>DateTime.Day As Int</code></pre></dt>
 <dd>Returns the current day of the month.</dd>
 <dt><pre><code>DateTime.Default As DateTime</code></pre></dt>
-<dd>Returns the default value, <code>@0000-00-00@00:00:00</code>.</dd>
+<dd>Returns the default value, <code>0000/00/00 00:00:00</code>.</dd>
 <dt><pre><code>DateTime.Hour As Int</code></pre></dt>
 <dd>Returns the current hour.</dd>
 <dt><pre><code>DateTime.Local As DateTime</code></pre></dt>
@@ -89,7 +90,7 @@ Some conversions can be in one direction only.</p>
 </thead>
 <tbody>
 <tr><td>Integer types</td>
-<td>If you add the integer <code>1</code> to a DateTime, then the value increases 100 nanoseconds (<code>@0:0:0.0000001</code>).
+<td>If you add the integer <code>1</code> to a DateTime, then the value increases 100 nanoseconds (<code>0:0:0.0000001</code>).
 Other values are a multiple of this.</td></tr>
 </tbody>
 </table>
@@ -113,16 +114,17 @@ If you try to change the default value to String, then the result is TBD.</td></
 </thead>
 <tbody>
 <tr><td>floating-point types</td>
-<td>A value of <code>0.0</code> changes to <code>@1899/12/30</code>.
+<td>A value of <code>0.0</code> changes to <code>1899/12/30</code>.
 Other whole numbers are the number of days from this.
 A value with a fractional part is that fraction of a day.
-For example, <code>.5</code> is <code>@12:00:00</code>.</td></tr>
+For example, <code>.5</code> is <code>12:00:00</code>.</td></tr>
 </tbody>
 </table>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
-<pre><code>Dim foo As DateTime
-foo = @2013/12/11@10:09:08&#10;</code></pre>
+<pre><code>Dim date As DateTime = 2013/12/11
+Dim time As DateTime = 10:09:08
+Dim combo = 2013-12-11 10:09:08.07&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
