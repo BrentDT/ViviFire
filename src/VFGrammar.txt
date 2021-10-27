@@ -564,7 +564,6 @@ malformed_char_literal =
 date_literal =
 	dec{dec}
 	( "/"dec{dec}"/"dec{dec}  // yyyy/mm/dd
-	| "."dec{dec}"."dec{dec}  // yyyy.mm.dd
 	| "-"dec{dec}"-"dec{dec}  // yyyy-mm-dd
 	).
 
@@ -632,7 +631,7 @@ time_literal =
 //TODO: malformed_time_literal
 
 version_literal =
-	dec{dec}"."{dec}"."{dec}"."{dec}.
+	dec{dec}"."dec{dec}"."dec{dec}["."dec{dec}].
 
 //TODO: malformed_version_literal
 
