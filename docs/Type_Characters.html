@@ -16,7 +16,7 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
-<li><a href="Data_Type_Summary.html">Data Type Summary</a></li>
+<li><a rel="parent" href="Data_Type_Summary.html">Data Type Summary</a></li>
 </ul>
 </nav>
 <main>
@@ -38,41 +38,45 @@ The table that follows gives the defaults.</p>
 <style media="all and (max-width: 40em)">
 	#t2 td:nth-of-type(1):before { content: "Qualities of a literal"; }
 	#t2 td:nth-of-type(2):before { content: "Default data type"; }
-	#t2 td:nth-of-type(3):before { content: "Example"; }
+	#t2 td:nth-of-type(3):before { content: "Examples"; }
 </style>
 <table id="t2" class="wide language-vivifire">
 <thead>
 <tr><th>Qualities of a literal</th>
 <th>Default data type</th>
-<th>Example</th></tr>
+<th>Examples</th></tr>
 </thead>
 <tbody>
-<tr><td>Numeric, no fractional part</td>
-<td><code class="kw">Int</code></td>
+<tr><td>Number, no fraction part</td>
+<td><a href="Int_Data_Type.html"><code>Int</code></a></td>
 <td><pre><code>32768 32_768</code></pre></td></tr>
-<tr><td>Numeric, fractional part</td>
-<td><code class="kw">Real</code></td>
+<tr><td>Number with a fraction part</td>
+<td><a href="Real_Data_Type.html#Real_literal"><code>Real</code></a></td>
 <td><pre><code>3.14159 4.1e-8</code></pre></td></tr>
-<tr><td>Between backticks</td>
-<td><code class="kw">Char</code></td>
+<tr><td>Between two backtick symbols</td>
+<td><a href="Char_Data_Type.html#Char_literal"><code>Char</code></a></td>
 <td><pre><code>`A` `@`</code></pre></td></tr>
-<tr><td>Starts with percent</td>
+<tr><td>Starts with a percent symbol</td>
 <td><code class="kw">Int</code></td>
 <td><pre><code>%CR %RETURN</code></pre></td></tr>
-<tr><td>Between double quotation marks</td>
-<td><code class="kw">String</code></td>
+<tr><td>Between two quotation symbols</td>
+<td><a href="String_Basics.html#String_literal"><code>String</code></a></td>
 <td><pre><code>"Hello, world!"</code></pre></td></tr>
-<tr><td>Starts with a dollar sign</td>
+<tr><td>Starts with a dollar symbol</td>
 <td><code class="kw">String</code></td>
 <td><pre><code>$CR $13 $LINE</code></pre></td></tr>
-<tr><td>Starts with an at-sign, with three groups of numbers</td>
-<td><code class="kw">DateTime</code></td>
-<td><pre><code>@2013.12.11 @2013-12-11 
-@2013/12/11 @10:09:08</code></pre></td></tr>
-<tr><td>Starts with an at-sign or currency sign, numeric, fractional part</td>
-<td><code class="kw">Fixed64</code></td>
+<tr><td>Three groups of numbers connected with slashes, hyphens, or colons</td>
+<td><a href="DateTime_Data_Type.html#DateTime_literal"><code>DateTime</code></a></td>
+<td><pre><code>2013/12/11
+2013-12-11 10:09:08</code></pre></td></tr>
+<tr><td>Starts with an at-symbol or currency symbol, number</td>
+<td><a href="Fixed64_Data_Type.html#Fixed64_literal"><code>Fixed64</code></a></td>
 <td><pre><code>@12.34 @$12.34 &#164;12.34
 @&#163;1_234_567.89</code></pre></td></tr>
+<tr><td>Three or four groups of numbers connected with dots</td>
+<td><a href="Require_Statement.html#Version_literal">version number</a></td>
+<td><pre><code>1.2.3.4
+1.22.333</code></pre></td></tr>
 </tbody>
 </table>
 <h2>Hexadecimal, octal, and binary literals</h2>
