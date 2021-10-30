@@ -21,6 +21,8 @@ enum case_type { case_zero, case_expr, case_else };
 enum option_type { option_default, then_found, then_not_found };
 enum ternary { TERNARY0, TERNARY1, TERNARY2, YES = TERNARY1, NO = TERNARY2 };
 enum when_type { when_zero = 0, when_done = 1, when_none = 2, when_else = 3 };
+enum { NO_BITS, YES_BITS };
+enum { POSTCONDITIONAL, PRECONDITIONAL };
 
 struct {
 	bool    charset_latin  = false;
@@ -902,7 +904,7 @@ CaseExpression (. ID(CaseExpression) .)
 .
 CatchClause (. ID(CatchClause) .)
 =
-	"Catch" [ Name [ AsTypeClause<false> ] ] SyncNewline<s_name>
+	"Catch" [ Name [ AsTypeClause<NO_BITS> ] ] SyncNewline<s_name>
 	{ Statement }
 .
 ClassMember (. ID(ClassMember) .)
@@ -929,9 +931,9 @@ ClassStatement<Modifier &mods> (. ID(ClassStatement) .)
 	[ TypeParameterList ]
 	[ "Is" UserType ]
 	{ DoesClause }
-	[ WhereClause<false> ]
+	[ WhereClause<_Class> ]
 	SyncNewline<s_name>
-	{ WhereClause<false> SyncNewline<s_name> }
+	{ WhereClause<_Class> SyncNewline<s_name> }
 //	{ Statement } // Conflict: assignment vs var decl
 	{ ClassMember }
 	"End"
@@ -991,7 +993,7 @@ ConditionalExpression (. ID(ConditionalExpression) .)
 .
 ConstantDeclarator (. ID(ConstantDeclarator) .)
 =
-	identifier [ TypeClause<false> ] "=" Expression
+	identifier [ TypeClause<NO_BITS> ] "=" Expression
 .
 ConstStatement<Modifier &mods> (. ID(ConstStatement) .)
 =
@@ -999,7 +1001,7 @@ ConstStatement<Modifier &mods> (. ID(ConstStatement) .)
 	(. mods.validate(); .)
 	"Const" ConstantDeclarator { comma ConstantDeclarator }
 .
-Constraint<bool bTrait> (. ID(Constraint) .)
+Constraint<int block> (. ID(Constraint) .)
 =
 	( identifier
 		( ( "<" | "<=" ) identifier [ ( "<" | "<=" ) identifier ] [ IsConstraint ] { DoesConstraint } [ ConstructorConstraint ]
@@ -1028,7 +1030,7 @@ ConstructorStatement<Modifier &mods> (. ID(ConstructorStatement) .)
 .
 ConvertibleType (. ID(ConvertibleType) .)
 =
-	( PrimitiveType<false> | UserType )
+	( PrimitiveType<NO_BITS> | UserType )
 .
 /*D*/
 DateTimeExpression (. ID(DateTimeExpression) .)
@@ -1061,7 +1063,7 @@ DeclareParameterList (. ID(DeclareParameterList) .)
 		"("[line_break]
 		[ DeclareParameter<isOptional> { WEAK comma[line_break] DeclareParameter<isOptional> } ]
 		")"
-	| EnclosedParameterList<_Declare> [ TypeClause<false> ]
+	| EnclosedParameterList<_Declare> [ TypeClause<NO_BITS> ]
 	)
 .
 DeclareSignature<bool isAlias> (. ID(DeclareSignature) .)
@@ -1111,7 +1113,7 @@ DimStatement<Modifier &mods> (. ID(DimStatement) .)
 	(. bool bShared = mods.allow(Modifier::Shared); .)
 	(. mods.validate(); .)
 	DimOrVar
-	DeclaratorList<false>
+	DeclaratorList<NO_BITS>
 .
 DoesClause (. ID(DoesClause) .)
 =
@@ -1126,13 +1128,13 @@ DoStatement (. ID(DoStatement) .)
 	"Do"
 	(	// Do...Loop While/Until
 		Newline
-		[ LoopBody<false> ]
+		[ LoopBody<POSTCONDITIONAL> ]
 		"Loop" WhileOrUntil Expression
 		SyncNewline<s_name>
 	|	// Do While/Until...Loop
 		WhileOrUntil Expression
 		SyncNewline<s_name>
-		[ LoopBody<true> ]
+		[ LoopBody<PRECONDITIONAL> ]
 		"Loop" Newline
 	)
 .
@@ -1227,7 +1229,7 @@ FormalParameter<param_type param> (. ID(FormalParameter) .)
 	)
 	Name
 	[ '(' [ Rank ] ')' ]
-	[ TypeClause<false> ]
+	[ TypeClause<NO_BITS> ]
 	( "=" Expression
 	| (. if (param.optional() && option.Optional_equals) Err(L"Optional parameter must have initializer because of @OPTION"); .)
 	)
@@ -1253,7 +1255,7 @@ ForStatement (. ID(ForStatement) .)
 		[ "Step" Expression ]
 	)
 	SyncNewline<s_name>
-	[ LoopBody<true> ]
+	[ LoopBody<PRECONDITIONAL> ]
 	"End"
 	(. Optional(_For); .)
 	Newline
@@ -1266,7 +1268,7 @@ FunctionStatement<Modifier &mods> (. ID(FunctionStatement) .)
 	(. bool bodied = true; .)
 	FunctionSignature<mods, bodied>
 	[ IF (bodied)
-		{ WhereClause<false> SyncNewline<s_name> }
+		{ WhereClause<_Function> SyncNewline<s_name> }
 		{ Statement }
 	"End"
 	(. Optional(_Function); .)
@@ -1279,7 +1281,7 @@ FunctionSignature<Modifier &mods, bool &bodied> (. ID(FunctionSignature) .)
 	( [ TypeParameterList ]
 		[ EnclosedParameterList<_Function> ]
 		[ ReturnTypeClause ] //TODO: mandatory if name is not typed_identifier
-		[ WhereClause<false> ]
+		[ WhereClause<_Function> ]
 	| "Does" identifier dot identifier
 		(. bodied = false; .)
 	)
@@ -1388,7 +1390,7 @@ LogicalOperator (. ID(LogicalOperator) .)
 .
 LoopControlVariable (. ID(LoopControlVariable) .)
 =
-	( ObjectName [ AsTypeClause<false> ]
+	( ObjectName [ AsTypeClause<NO_BITS> ]
 	| typed_identifier
 	)
 .
@@ -1578,7 +1580,7 @@ ObjectStatement<Modifier &mods> (. ID(ObjectStatement) .)
 /*P*/
 PassableType (. ID(PassableType) .)
 =
-	( PrimitiveType<false> | UserType )
+	( PrimitiveType<NO_BITS> | UserType )
 	[ Rank ]
 .
 PowerExpression (. ID(PowerExpression) .)
@@ -1605,7 +1607,7 @@ PrimaryExpression (. ID(PrimaryExpression) .)
 				Name [ TypeArgumentList ]
 			]
 		}
-	| PrimitiveType<true>
+	| PrimitiveType<YES_BITS>
 	| "(" EnclosedExpression ")"
 	| "Base"
 	| "Self"
@@ -1639,7 +1641,7 @@ PropertySignature<Modifier &mods> (. ID(PropertySignature) .)
 		EnclosedParameterList<_Property>
 	| IF (!explicit_array && IsPropertyWithParam())
 		Name EnclosedParameterList<_Property>
-	| DeclaratorList<false>
+	| DeclaratorList<NO_BITS>
 	)
 	[ "Does" identifier dot identifier ]
 	SyncNewline<s_name>
@@ -1715,7 +1717,7 @@ ReturnStatement (. ID(ReturnStatement) .)
 .
 ReturnTypeClause (. ID(ReturnTypeClause) .)
 =
-	( AsTypeClause<false>
+	( AsTypeClause<NO_BITS>
 	| InUnitClause
 	)
 .
@@ -1803,7 +1805,7 @@ StructState (. ID(StructState) .)
 	(. mods.allow(Modifier::Shared); .)
 	(. mods.validate(); .)
 
-	[ DimOrVar ] Declarator<true>
+	[ DimOrVar ] Declarator<YES_BITS>
 .
 SubStatement<Modifier &mods> (. ID(SubStatement) .)
 =
@@ -1812,7 +1814,7 @@ SubStatement<Modifier &mods> (. ID(SubStatement) .)
 	(. bool bShared   = mods.allow(Modifier::Shared); .)
 	(. mods.validate(); .)
 	SubSignature
-	{ WhereClause<false> SyncNewline<s_name> }
+	{ WhereClause<_Sub> SyncNewline<s_name> }
 	{ Statement }
 	"End"
 	(. Optional(_Sub); .)
@@ -1826,7 +1828,7 @@ SubSignature (. ID(SubSignature) .)
 	| UnenclosedParameterList<_Sub>
 	]
 	[ "Handles" QualifiedName ]
-	[ WhereClause<false> ]
+	[ WhereClause<_Sub> ]
 	SyncNewline<s_name>
 .
 SyncNewline<wchar_t *name> (. ID(SyncNewline) .)
@@ -1863,9 +1865,9 @@ TraitStatement<Modifier &mods> (. ID(TraitStatement) .)
 	"Trait" Name
 	[ TypeParameterList ]
 	{ DoesClause }
-	[ WhereClause<true> ]
+	[ WhereClause<_Trait> ]
 	SyncNewline<s_name>
-	{ WhereClause<true> SyncNewline<s_name> }
+	{ WhereClause<_Trait> SyncNewline<s_name> }
 	{ TraitMember }
 	"End"
 	(. Optional(_Trait); .)
@@ -1971,7 +1973,7 @@ UserType (. ID(UserType) .)
 /*V*/
 ValueType (. ID(ValueType) .)
 =
-	( PrimitiveType<false> | UserType )
+	( PrimitiveType<NO_BITS> | UserType )
 .
 /*W*/
 WhenStatement<bool isPreconditional, when_type &whens> (. ID(WhenStatement) .)
@@ -1986,9 +1988,9 @@ WhenStatement<bool isPreconditional, when_type &whens> (. ID(WhenStatement) .)
 	) Newline
 	{ Statement }
 .
-WhereClause<bool bTrait> (. ID(WhereClause) .)
+WhereClause<int block> (. ID(WhereClause) .)
 =
-	"Where" Constraint<bTrait> { WEAK comma[line_break] Constraint<bTrait> }
+	"Where" Constraint<block> { WEAK comma[line_break] Constraint<block> }
 .
 WhereStatement (. ID(WhereStatement) .)
 =
@@ -2006,7 +2008,7 @@ WhileOrUntil (. ID(WhileOrUntil) .)
 WhileStatement (. ID(WhileStatement) .)
 =
 	"While" Expression SyncNewline<s_name>
-	[ LoopBody<true> ]
+	[ LoopBody<PRECONDITIONAL> ]
 	"End"
 	(. Optional(_While); .)
 	Newline
