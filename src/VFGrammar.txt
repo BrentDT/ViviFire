@@ -1,14 +1,15 @@
 /*
-* ViviFire Programming Language
-*
-* Copyright 2021 Brent D. Thorn
-*
-* You can get the latest version at http://vivifire.com/.
-*
-* Use of this source code is governed by an MIT-style license that can be
-* found in the LICENSE file.
+ * ViviFire Programming Language
+ *
+ * Copyright 2021 Brent D. Thorn
+ *
+ * You can get the latest version at http://vivifire.com/.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file.
 */
 
+#include <assert.h>
 #include <stdio.h>
 #include "Args.h"
 
@@ -24,7 +25,8 @@ enum when_type { when_zero = 0, when_done = 1, when_none = 2, when_else = 3 };
 enum { NO_BITS, YES_BITS };
 enum { POSTCONDITIONAL, PRECONDITIONAL };
 
-struct {
+struct tag_option {
+	Parser *parser;
 	bool    charset_latin  = false;
 	ternary Dim_or_Var     = TERNARY0;
 	ternary End_block      = TERNARY0;
@@ -43,21 +45,34 @@ struct {
 	short   warning        = 4;
 	short   warning_error  = 0;
 
+	bool match(const wchar_t *s) const {
+		// Returns true if next token is the same as s, then consumes it.
+		if (parser->la->kind != _identifier || wcscmp(s, parser->la->val) == NULL) return false;
+		parser->Get();
+		return true;
+	}
+	bool left_match(const wchar_t *s) const {
+		// Returns true if next token starts with s, then consumes it.
+		if (parser->la->kind != _identifier || wcsstr(parser->la->val, s) != parser->la->val) return false;
+		parser->Get();
+		return true;
+	}
+
 	void Parse() {
 		static const wchar_t *s_block = L"block", *s_equals = L"equals", *s_id = L"id", *s_no = L"no", *s_warning = L"warning";
-		switch (la->kind) {
+		switch (parser->la->kind) {
 		case _Dim:
-			Get();
+			parser->Get();
 			Dim_or_Var = TERNARY1;      // @Option Dim
 			break;
 		case _Var:
-			Get();
+			parser->Get();
 			Dim_or_Var = TERNARY2; // @Option Var
 			break;
 		case _End:
-			Get();
-			if (la->kind == _For) { // End For
-				Get();
+			parser->Get();
+			if (parser->la->kind == _For) { // End For
+				parser->Get();
 				if (match(s_no) && !match(s_id)) goto bad_option;
 				End_For_id = NO; // @Option End For [ no id ]
 			} else if (match(s_block)) {
@@ -68,54 +83,53 @@ struct {
 			}
 			break;
 		case _Enum:
-			Get();
+			parser->Get();
 			if (match(s_id)) {
 				Enum_id = true;           // @Option Enum ID
-			} else if (la->kind == _Is) {
-				Get();
+			} else if (parser->la->kind == _Is) {
+				parser->Get();
 				Enum_Is = true;  // @Option Enum Is
 			} else if (match(s_equals)) {
 				Enum_equals = true; // @Option Enum Equals
 			} else goto bad_option;
 			break;
 		case _If:
-			Get();
-			if (la->kind == _End) {
-				Get();
+			parser->Get();
+			if (parser->la->kind == _End) {
+				parser->Get();
 				If_End = true; // @Option If End
-			} else if (la->kind == _Then) {
-				Get();
+			} else if (parser->la->kind == _Then) {
+				parser->Get();
 				If_Then = YES;                    // @Option If Then
 			} else {
-				if (match(s_no) && la->kind != _Then) goto bad_option;
+				if (match(s_no) && parser->la->kind != _Then) goto bad_option;
 				If_Then = NO; // @Option If [ No Then ]
 			}
 			break;
 		case _New:
-			Get();
+			parser->Get();
 			New = true; // @Option New
 			break;
 		case _Optional:
-			Get();
+			parser->Get();
 			if (!match(s_equals)) goto bad_option;
 			Optional_equals = true; // @Option Optional Equals
 			break;
 		case _Select:
-			Get();
-			if (la->kind == _Else) {
-				Get();
+			parser->Get();
+			if (parser->la->kind == _Else) {
+				parser->Get();
 				Select_Else = true; // @Option SELECT ELSE
-			} else if (la->kind == _Case) {
-				Get();
+			} else if (parser->la->kind == _Case) {
+				parser->Get();
 				Select_Case = YES;                      // @Option SELECT CASE
 			} else {
-				if (match(s_no) && la->kind != _Case) goto bad_option;
+				if (match(s_no) && parser->la->kind != _Case) goto bad_option;
 				Select_Case = NO; // @Option Select [ No Case ]
 			}
 			break;
-		}
 		case _Unit:
-			Get();
+			parser->Get();
 			if (!match(L"full")) goto bad_option;
 			unit_full = true; // @Option Unit Full
 			break;
@@ -125,7 +139,7 @@ struct {
 				last = true; // @Option Last
 				break;
 			} else if (left_match(s_warning)) {
-				short level = t->val[coco_string_length(warning)]; // Valid: '\0', '1', '2', '3', '4', & '5'.
+				short level = (short)parser->t->val[coco_string_length(s_warning)]; // Valid: '\0', '1', '2', '3', '4', & '5'.
 				if (wcschr(L"12345", level) == NULL) goto bad_option;
 				 if (level) level -= L'0'; else level = 4; // Default is 4.
 				if (match(L"error")) {
@@ -139,52 +153,41 @@ struct {
 			// Fall through for error
 		default:
 		bad_option:
-			Err(L"Unknown or missing option");
+			parser->Err(L"Unknown or missing option");
 			break;
 		}
 	}
-private:
-	bool match(const wchar_t *s) const {
-		// Returns true if next token is the same as s, then consumes it.
-		if (la->kind != _identifier || wcscmp(s, la->val) == NULL) return false;
-		Get();
-		return true;
-	}
-	bool left_match(const wchar_t *s) const {
-		// Returns true if next token starts with s, then consumes it.
-		if (la->kind != _identifier || wcsstr(la->val, s) != la->val) return false;
-		Get();
-		return true;
-	}
-} option;
+
+} option = { .parser = this };
 
 class param_type {
+	Parser *m_parser;
 	int m_parent;
 	bool m_byref = false;
-	bool m_optional = false;
+	int m_optionals = 0;
 public:
-	param_type(int parent): m_parent(parent) {}
+	param_type(Parser *parser, int parent): m_parser(parser), m_parent(parent) {}
 	void modifier(int kind = -1) {
 		switch (kind) {
 		case -1:
 			m_byref = false;  // by value
 			break;
 		case _ByRef:
-			if (m_optional) Err(L"Optional parameter cannot be BYREF");
+			if (m_optionals) m_parser->Err(L"Optional parameter cannot be BYREF");
 			else m_byref = true;
 			break;
 		case _Optional:
-			if (m_optional) Warn(L"OPTIONAL is not necessary again");
-			else m_optional = true;
+			if (m_optionals == 1) m_parser->Warn(L"OPTIONAL is not necessary again");
+			else m_optionals++;
 			break;
 		default:
 			#if defined(DEBUG)
-			errors->Exception(L"Bad kind in param_type::modifier");
+			m_parser->errors->Exception(L"Bad kind in param_type::modifier");
 			#endif
 			break;
 		}
 	}
-	bool optional() const { return bOptional; }
+	bool optional() const { return (m_optionals != 0); }
 };
 
 void Err(const wchar_t *msg) {
@@ -294,7 +297,7 @@ public:
 	int count() const { return m_count; }
 
 	void add(int m) {
-		ASSERT(m < LAST);
+		assert(m < LAST);
 		if (m_mods[m].present) {
 			m_parser->errors->Error(t->line, t->col, L"Same modifier again");
 		} else {
@@ -307,7 +310,7 @@ public:
 	}
 
 	bool allow(int m) {
-		ASSERT(m < LAST);
+		assert(m < LAST);
 		if (m_mods[m].present) {
 			m_mods[m].allowed = true;
 		}
@@ -475,7 +478,7 @@ void ExpectEndNew(const wchar_t *tn) {
 	if (la->kind == _End) {
 		Get();
 		if (tn == NULL && la->kind != _New) {
-			Err(L"End New expected);
+			Err(L"End New expected");
 			return;
 		}
 		else if (tn != NULL && wcscmp(tn, la->val) != 0) {
@@ -529,9 +532,35 @@ dot         = ".".
 exclamation = "!".
 question    =  "?".
 
+// Primary
+left_paren    = "(".
+right_paren   = ")".
+left_bracket  = "[".
+right_bracket = "]".
+left_brace    = "{".
+right_brace   = "}".
+
+// Unary
 plus  = "+".
 minus = "-".
 
+// Arithmetic
+power          = "^".
+multiplication = "*".
+division       = "/".
+
+// Concatenation
+concatenation =
+	( "&"
+	// Prevent misparsing as binary, hexadecimal, or octal integer.
+	| "&" CONTEXT ( ("B"{bin}nonbin) | ("H"{hex}nonhex) | ("O"{oct}nonoct) )
+	).
+
+// Null coalescing
+null_coalescing = "|?".
+
+// Comparison
+tolerant           = "~".
 less_than          = "<".
 less_or_equal      = "<=".
 greater_than       = ">".
@@ -540,19 +569,7 @@ inequality         = "<>".
 equals_operator    = "=".
 spaceship_operator = "<=>".
 
-left_paren    = "(".
-right_paren   = ")".
-left_bracket  = "[".
-right_bracket = "]".
-left_brace    = "{".
-right_brace   = "}".
-
-concatenation_operator =
-	( "&"
-	// Prevent misparsing as binary, hexadecimal, or octal integer.
-	| "&" CONTEXT ( ("B"{bin}nonbin) | ("H"{hex}nonhex) | ("O"{oct}nonoct) )
-	).
-
+// Assignment
 colon_equals = ":=".
 
 // Literals
@@ -976,7 +993,7 @@ CompoundIfStatement<option_type nThen> (. ID(CompoundIfStatement) .)
 .
 ConcatenationExpression (. ID(ConcatenationExpression) .)
 =
-	AdditiveExpression { concatenation_operator AdditiveExpression }
+	AdditiveExpression { concatenation AdditiveExpression }
 .
 ConditionalComparison (. ID(ConditionalComparison) .)
 =
@@ -1154,7 +1171,7 @@ EnclosedExpression (. ID(EnclosedExpression) .)
 .
 EnclosedParameterList<int parent> (. ID(EnclosedParameterList) .)
 =
-	(. param_type param(parent); .)
+	(. param_type param(this, parent); .)
 	"("[line_break]
 	[ FormalParameter<param> { WEAK comma[line_break] FormalParameter<param> } ]
 	")"
@@ -1222,7 +1239,7 @@ FloatingPointType<int &tkn> (. ID(FloatingPointType) .)
 	(. tkn = la.kind; .)
 	( "Real32" | "Real64" | "Real" | "Real128" )
 .
-FormalParameter<param_type param> (. ID(FormalParameter) .)
+FormalParameter<param_type &param> (. ID(FormalParameter) .)
 =
 	( FormalParameterModifier<param>
 	| (. param.modifier(); .)
@@ -1238,7 +1255,7 @@ FormalParameterList<int parent> (. ID(FormalParameterList) .)
 =
 	( EnclosedParameterList<parent> | UnenclosedParameterList<parent> )
 .
-FormalParameterModifier<param_type param> (. ID(FormalParameterModifier) .)
+FormalParameterModifier<param_type &param> (. ID(FormalParameterModifier) .)
 =
 	( "ByRef"     (. param.modifier(_ByRef); .)
 	| "Optional"  (. param.modifier(_Optional); .)
@@ -1935,7 +1952,7 @@ UnenclosedArgumentList (. ID(UnenclosedArgumentList) .)
 .
 UnenclosedParameterList<int parent> (. ID(UnenclosedParameterList) .)
 =
-	(. param_type param(parent); .)
+	(. param_type param(this, parent); .)
 	FormalParameter<param> { WEAK comma[line_break] FormalParameter<param> }
 .
 UnitExpression (. ID(UnitExpression) .)
