@@ -322,6 +322,18 @@ void CCEval() {
 	}
 }
 
+// Resolvers
+
+bool IsAssignmentOp() {
+	switch (la->kind) {
+	case _concatenation: case _plus: case _minus: case _multiplication: case _division:
+	case _Mod: case _Rem: case _SHL: case _SHR: case _And: case _Or: case _Xor:
+	case _equals_operator: case _colon_equals:
+		return true;
+	}
+	return false;
+}
+
 bool IsCall() {
 	// Disambiguate "("[args]")" from "("["Is"]("<"|"<="|">"|">="|"<>"|"=")")".
 	if (la->kind == _left_paren) {
@@ -757,12 +769,12 @@ ArrayDimensionList (. ID(ArrayDimensionList) .)
 .
 AssignmentOperator (. ID(AssignmentOperator) .)
 =
-	[ "&" | "+" | "-" | "*" | "/" | "Mod" | "Rem" | "SHL" | "SHR" | "And" | "Or" | "Xor" ]
+	[ concatenation | "+" | "-" | "*" | "/" | "Mod" | "Rem" | "SHL" | "SHR" | "And" | "Or" | "Xor" ]
 	"="
 .
 AssignmentStatement (. ID(AssignmentStatement) .)
 =
-	( AssignmentOperator Expression
+	( AssignmentOperator[line_break] Expression
 	| ":=" Expression { ":=" Expression }
 	)
 .
@@ -1253,9 +1265,14 @@ IdentifierStatement (. ID(IdentifierStatement) .)
 		| "??"
 		)
 		Name [ TypeArgumentList ]
-	| EnclosedArgumentList
+	| EnclosedArgumentList // Also is array subscript.
 	}
-	[ AssignmentStatement ]
+	[ IF (IsAssignmentOp())
+		AssignmentStatement
+	| // A name must come before to be a proc call.
+		(. if (!IsIdentifier(t->kind)) Err(L"Unexpected symbol in IdentifierStatement"); .)
+		UnenclosedArgumentList
+	]
 .
 IfStatement (. ID(IfStatement) .)
 =
