@@ -21,8 +21,8 @@ void CodeGen::Visit(Assignment *node) {
 }
 
 void CodeGen::Visit(BinaryOp *node) {
-	node->left->Accept(this);
-	node->right->Accept(this);
+	node->lexpr->Accept(this);
+	node->rexpr->Accept(this);
 }
 
 void CodeGen::Visit(Block *node) {
@@ -34,21 +34,10 @@ node->Accept(this);
 void CodeGen::Visit(Call *node) {}
 
 void CodeGen::Visit(Case *node) {
-	for (CaseExpressionList::iterator it = node->exprs->begin(), end = node->exprs->end(); it != end; ++it)
-		(*it)->Accept(this);
 }
 
-void CodeGen::Visit(CaseExpression *node) {
+void CodeGen::Visit(CaseExpr *node) {
 	node->expr->Accept(this);
-}
-
-void CodeGen::Visit(CaseIs *node) {
-	node->expr->Accept(this);
-}
-
-void CodeGen::Visit(CaseTo *node) {
-	node->expr->Accept(this);
-	node->max->Accept(this);
 }
 
 void CodeGen::Visit(Catch *node) {
@@ -56,14 +45,11 @@ void CodeGen::Visit(Catch *node) {
 }
 
 void CodeGen::Visit(ComparisonChain *node) {
-	for (std::list<ComparisonChain::link>::iterator it = node->chain.begin(), end = node->chain.end(); it != end; ++it) {
-		it->expr->Accept(this);
-	}
 }
 
 void CodeGen::Visit(ComparisonOp *node) {
-	node->left->Accept(this);
-	node->right->Accept(this);
+	node->lexpr->Accept(this);
+	node->rexpr->Accept(this);
 }
 
 void CodeGen::Visit(Do *node) {
@@ -76,24 +62,24 @@ void CodeGen::Visit(DTConst *node) {}
 void CodeGen::Visit(For *node) {
 	node->var->Accept(this);
 	node->init->Accept(this);
-	node->max->Accept(this);
+	node->last->Accept(this);
 	if (node->step) node->step->Accept(this);
 	node->Accept(this);
 }
 
 void CodeGen::Visit(ForEach *node) {
 	node->var->Accept(this);
-	node->coll->Accept(this);
+	node->cont->Accept(this);
 	node->Accept(this);
 }
 
-void CodeGen::Visit(FPConst *node) {}
+void CodeGen::Visit(RealConst *node) {}
 
 void CodeGen::Visit(GotoCase *node) {}
 
 void CodeGen::Visit(Exit *node) {}
 
-void CodeGen::Visit(IfOp *node) {
+void CodeGen::Visit(BooleanConditional *node) {
 	node->cond->Accept(this);
 	node->tval->Accept(this);
 	node->fval->Accept(this);
@@ -101,7 +87,7 @@ void CodeGen::Visit(IfOp *node) {
 
 void CodeGen::Visit(IntConst *node) {}
 
-void CodeGen::Visit(LibraryModule *node) {
+void CodeGen::Visit(Library *node) {
 	node->Accept(this);
 }
 
@@ -110,13 +96,11 @@ void CodeGen::Visit(Return *node) {
 }
 
 void CodeGen::Visit(Select *node) {
-	node->test->Accept(this);
-	for (CaseList::iterator it = node->cases->begin(), end = node->cases->end(); it != end; ++it)
-		(*it)->Accept(this);
-	if (node->elseb) node->elseb->Accept(this);
+	node->expr->Accept(this);
+	for (auto it: node->cases) it->Accept(this);
 }
 
-void CodeGen::Visit(Throw *node) {
+void CodeGen::Visit(Raise *node) {
 	node->expr->Accept(this);
 }
 
@@ -130,10 +114,6 @@ void CodeGen::Visit(UnaryOp *node) {
 
 void CodeGen::Visit(Program *node) {
 	node->Accept(this);
-}
-
-void CodeGen::Visit(Wait *node) {
-	fprintf(stdout, "; Wait\n");
 }
 
 void CodeGen::Visit(While *node) {

@@ -1,254 +1,335 @@
 /*
-* ViviFire Programming Language
-*
-* Copyright 2021 Brent D. Thorn
-*
-* You can get the latest version at http://vivifire.com/.
-*
-* Use of this source code is governed by an MIT-style license that can be
-* found in the LICENSE file.
-*/
+ * ViviFire Programming Language
+ *
+ * Copyright 2021 Brent D. Thorn
+ *
+ * You can get the latest version at http://vivifire.com/.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file.
+ */
 
 #if !defined(_AST_H_)
 #define _AST_H_
 
+#include <cstdint>
 #include <inttypes.h>
 #include <list>
+#include "Parser.h"
 #include "Scanner.h"
 #include "Type.h"
 
-template<class T>
+template<typename T>
 inline void delete_list(std::list<T> &list) {
-	for (T::iterator it = list.begin(), end = list.end(); it != end; ++it) delete (*it);
+	for(auto &it: list) delete it; list.clear();
 }
 
 namespace AST {
 
+enum op_type {
+	PLUS, MINUS, NOT,
+	SHL, SHR,
+	POWER,
+	TIMES, SLASH, MOD, REM,
+	CONCAT,
+	NULL_COALESCING,
+	LESS, LESS_EQUAL, GREATER, GREATER_EQUAL, EQUAL, NOT_EQUAL,
+	AND, AND_THEN, OR, OR_ELSE, XOR
+};
+
+enum data_type {
+	DATETIME, INT, REAL, STRING, VERSION
+};
+
+enum block_type {
+	DO, FOR, FUNCTION, METHOD, PROPERTY, SUB, WHILE
+};
+
 // Forward declarations
 struct Assignment;
+//struct BaseUnit;
+struct BeginLoop;
 struct BinaryOp;
-struct BooleanCond;
+struct Block;
+struct BooleanConditional;
 struct Call;
+//struct CallBase;
+//struct CallConstructor;
+struct Case;
+struct CaseExpr;
 struct Catch;
 struct CharConst;
-struct CompareCond;
+struct Class;
+struct CompareConditional;
 struct ComparisonChain;
 struct ComparisonOp;
+//struct Declare;
 struct DTConst;
 struct Do;
 struct ElseIf;
 struct Enum;
+//struct Event;
 struct Exit;
-struct Expression;
-struct RealConst;
+struct Expr;
+struct Field;
 struct For;
 struct ForEach;
-struct Generics;
 struct GotoCase;
+struct Ident;
 struct If;
 struct IntConst;
 struct Library;
 struct Loop;
-struct Module Where;
+struct ModuleWhere;
+//struct Namespace;
 struct New;
+//struct Object;
 struct Parameter;
 struct Procedure;
 struct Program;
-struct QualifiedName;
+//struct Property;
+struct Raise;
+//struct RaiseEvent;
+struct RealConst;
+//struct ReDim;
+struct Require;
 struct Return;
 struct Select;
+struct Statement;
+//struct Struct;
 struct Symbol;
-struct Throw;
+//struct Trait;
 struct Try;
+struct TypeParam;
 struct UnaryOp;
+//struct Unit;
 struct Visitor;
-struct Wait;
+struct When;
 struct While;
+//struct Yield;
+
+typedef std::list<wchar_t *> StringList;
 
 #define TYPEDEFLIST(T) typedef std::list<T *> T##List;
 
 TYPEDEFLIST(Case)
-TYPEDEFLIST(CaseExpression)
+TYPEDEFLIST(CaseExpr)
 TYPEDEFLIST(Catch)
 TYPEDEFLIST(ElseIf)
-TYPEDEFLIST(Expression)
+TYPEDEFLIST(Expr)
+TYPEDEFLIST(Field)
+TYPEDEFLIST(Ident)
 TYPEDEFLIST(ModuleWhere)
 TYPEDEFLIST(Parameter)
-TYPEDEFLIST(QualifiedName)
+TYPEDEFLIST(Require)
 TYPEDEFLIST(Statement)
+TYPEDEFLIST(TypeParam)
+TYPEDEFLIST(When)
 
-// Enumerations
-
-enum block_type {
-	DoBlock, ForBlock, FunctionBlock, MethodBlock, ProgramBlock, PropertyBlock, SubBlock, WhileBlock
-};
-
-enum do_type {
-	DoWhileLoop, DoUntilLoop, DoLoopWhile, DoLoopUntil
-};
-
-enum op_type {
-	ConcatOp,
-	AddOp, SubOp,
-	MulOp, DivOp, ModOp, RemOp,
-	PowOp,
-	LTOp, LEOp, GTOp, GEOp, EQOp, NEOp,
-	NegOp, NotOp,
-	AndOp, AndThenOp, OrOp, OrElseOp, XorOp,
-	SHLOp, SHROp,
-	InOp, IsOp
-};
-
-enum param_type {
-	NormalParam, ByRefParam, OptionalParam
-};
-
+///////////////////////////////////////////////////////////////////////////
 // Nodes
 
 struct Node {
 	int line, col;
 	
+	Node() = delete;
+	Node(int line, int col): line(line), col(col) {}
 	virtual ~Node() = 0;
+	
 	virtual void Accept(Visitor *) = 0;
-
-	void SetLineCol(int l, int c) {
-		line = l;
-		col = c;
-	}
 };
 
-struct GenParam : public Node {
-	enum { NoMod, InMod, OutMod } mod;
-	wchar_t *ident;
+struct Field : public Node {
+	Symbol *sym;
+	// TODO: dimensions
+	Expr *init;
+	
+	Field(Symbol *sym, Expr *init, int line, int col): Node(line, col), sym(sym), init(init) {}
+	virtual ~Field() {
+		delete sym;
+		delete init;
+	}
+	
+	virtual void Accept(Visitor *);
+};
+
+struct Ident : public Node {
+	wchar_t *id;
+
+	Ident(wchar_t *id, int line, int col): Node(line, col), id(id) {}
+	~Ident() {
+		coco_string_delete(id);
+	}
+
+	virtual void Accept(Visitor *);
 };
 
 struct Symbol : public Node {
-	wchar_t *ident;
+	wchar_t *id;
 	Type::Type *type;
 	
-	Symbol() = delete;
-	Symbol(wchar_t *id, Type::Type *ty): type(ty) {
-		ident = coco_string_create(id);
-	}
+	Symbol(wchar_t *id, Type::Type *type, int line, int col): Node(line, col), id(id), type(type) {}
 	virtual ~Symbol() {
-		delete ident;
+		coco_string_delete(id);
 		delete type;
 	}
+	
+	virtual void Accept(Visitor *);
+};
 
+struct TypeParam : public Node {
+	int mod; // _In or _Out
+	Ident *id;
+	
+	TypeParam(int mod, Ident *id, int line, int col): Node(line, col), mod(mod), id(id) {}
+	virtual ~TypeParam() {
+		delete id;
+	}
+	
 	virtual void Accept(Visitor *);
 };
 
 /*---------------------------------------------------------------------------*/
 
-struct Expression : public Node {};
-
-template<typename T>
-struct Constant: public Expression {
-	T value;
-
-	Constant() = delete;
-	Constant(T val): value(val)
+struct Expr : public Node {
+	Type::Type *type = nullptr;
+	
+	Expr(int line, int col): Node(line, col) {}
+	virtual ~Expr() = 0;
+	
+	virtual bool IsLValue() const { return false; }
+	virtual bool IsConst() const { return false; }
 };
 
-struct IntConst : public Constant<int64_t> {
-	IntConst() = delete;
-	IntConst(int64_t val): Constant(val) {}
-	IntConst(wchar_t *s);
-	virtual void ~IntConst() {}
+///////////////////////////////////////////////////////////////////////////
+
+template<typename T>
+struct Constant : public Expr {
+	T val;
+	
+	Constant(int line, int col): Expr(line, col), val() {}
+	Constant(T val, int line, int col): Expr(line, col), val(val) {}
+	virtual ~Constant() {}
+	
+	virtual bool IsConst() const { return true; }
+};
+
+struct CharConst : public Constant<uint32_t> {
+	CharConst(uint32_t val, int line, int col): Constant<uint32_t>(val, line, col) {}
+	CharConst(wchar_t *s, int line, int col);
+	virtual ~CharConst() {}
+
+	virtual void Accept(Visitor *);
+};
+
+struct DTConst : public Constant<uint64_t> {
+	DTConst(uint64_t val, int line, int col): Constant<uint64_t>(val, line, col) {}
+	DTConst(wchar_t *s, int line, int col);
+	virtual ~DTConst() {}
+
+	virtual void Accept(Visitor *);
+};
+
+struct IntConst : public Constant<long long> {
+	IntConst(long long val, int line, int col): Constant<long long>(val, line, col) {}
+	IntConst(wchar_t *s, int line, int col);
+	virtual ~IntConst() {}
 
 	virtual void Accept(Visitor *);
 };
 
 struct RealConst : public Constant<long double> {
-	RealConst() = delete;
-	RealConst(long double val): Constant(val) {}
-	RealConst(wchar_t *);
+	RealConst(long double val, int line, int col): Constant<long double>(val, line, col) {}
+	RealConst(wchar_t *, int line, int col);
 	virtual ~RealConst() {}
 
 	virtual void Accept(Visitor *);
 };
 
 struct StringConst : public Constant<wchar_t *> {
-	StringConst() = delete;
-	StringConst(wchar_t *val): Constant(coco_string_create(val)) {}
+	StringConst(wchar_t *val, int line, int col): Constant<wchar_t *>(val, line, col) {}
 	virtual ~StringConst() {
-		coco_string_delete(value);
+		coco_string_delete(val);
 	}
 
 	virtual void Accept(Visitor *);
 };
 
-struct CharConst : public Constant<uint32_t> {
-	CharConst() = delete;
-	CharConst(uint32_t val): Constant(val) {}
-	CharConst(wchar_t *);
-	virtual ~CharConst() {}
+///////////////////////////////////////////////////////////////////////////
 
-	virtual void Accept(Visitor *);
-};
-
-struct DTConst : public Const<uint64_t> {
-	DTConst() = delete;
-	DTConst(uint64_t val): Constant(val) {}
-	DTConst(wchar_t *);
-	virtual ~DTConst() {}
-
-	virtual void Accept(Visitor *);
-};
-
-struct UnaryOp : public Expression {
-	op_type oper;
-	Expression *expr;
+struct UnaryOp : public Expr {
+	op_type op; // NOT, etc.
+	Expr *expr;
 	
-	UnaryOp() = delete;
-	UnaryOp(op_type op, Expression *ex): oper(op), expr(ex) {}
+	UnaryOp(op_type op, Expr *expr, int line, int col): Expr(line, col), op(op), expr(expr) {}
 	virtual ~UnaryOp() {
 		delete expr;
 	}
-
+	
+	virtual bool IsConst() const {
+		return expr->IsConst();
+	}
+	
 	virtual void Accept(Visitor *);
 };
 
-struct BinaryOp : public Expression {
-	op_type oper;
-	Expression *left, *right;
+struct BinaryOp : public Expr {
+	int op; // _plus, etc.
+	Expr *lexpr, *rexpr;
 	
-	BinaryOp() = delete;
-	BinaryOp(Expression *lt, op_type op, Expression *rt): left(lt), oper(op), right(rt) {}
+	BinaryOp(Expr *lexpr, int op, Expr *rexpr, int line, int col):
+		Expr(line, col), lexpr(lexpr), op(op), rexpr(rexpr) {}
 	virtual ~BinaryOp() {
-		delete left;
-		delete right;
+		delete lexpr;
+		delete rexpr;
 	}
-
+	
+	virtual bool IsConst() const {
+		return (lexpr->IsConst() && rexpr->IsConst());
+	}
 	virtual void Accept(Visitor *);
 };
 
 struct ComparisonOp : public BinaryOp {
 	double tol;
 	
-	ComparisonOp() = delete;
-	ComparisonOp(Expression *lt, op_type op, Expression *rt, double tol): BinaryOp(lt, op, rt), tol(tol) {}
+	ComparisonOp(Expr *lexpr, int op, Expr *rexpr, double tol, int line, int col):
+		BinaryOp(lexpr, op, rexpr, line, col), tol(tol) {}
 	virtual ~ComparisonOp() {}
 
 	virtual void Accept(Visitor *);
 };
 
-struct ComparisonChain : public Expression {
+struct ComparisonChain : public Expr {
 	struct link {
-		op_type op;
-		Expression *expr;
+		int op; // _less_than or _less_or_equal
+		Expr *expr;
+		link(int op, Expr *expr) : op(op), expr(expr) {}
+		~link() {
+			delete expr;
+		}
 	};
-	std::list<link> chain;
+	Expr *expr1;
+	std::list<link *> chain;
 	
+	ComparisonChain(Expr *expr1, int line, int col): Expr(line, col), expr1(expr1) {}
+	virtual ~ComparisonChain() {
+		delete expr1;
+		delete_list(chain);
+	}
+	
+	void Add(int op, Expr *expr) {
+		chain.push_back(new link(op, expr));
+	}
 	virtual void Accept(Visitor *);
 };
 
-struct BooleanCond : public Expression {
-	Expression *cond, *tval, *fval;
+struct BooleanConditional : public Expr {
+	Expr *cond, *tval, *fval;
 	
-	BoolCond() = delete;
-	BoolCond(Expression *con, Expression *tv, Expression *fv): cond(con), tval(tv), fval(fv) {}
-	virtual ~BoolCond() {
+	BooleanConditional(Expr *con, Expr *tval, Expr *fval, int line, int col):
+		Expr(line, col), cond(con), tval(tval), fval(fval) {}
+	virtual ~BooleanConditional() {
 		delete cond;
 		delete tval;
 		delete fval;
@@ -257,35 +338,44 @@ struct BooleanCond : public Expression {
 	virtual void Accept(Visitor *);
 };
 
-struct CompareCond : public Expression {
-	Expression *expr1, *expr2;
+struct CompareConditional : public Expr {
+	Expr *expr1, *expr2;
+	struct {
+		int op = 0; // _less_than, etc.
+		Expr *expr = NULL;
+	} result[3];
 	int results = 0;
-	op_type oper[3] = {0};
-	Expression *result[3] = {NULL};
+	enum {
+		NOP = 0, LT = 1, EQ = 2, LE = 3, GT = 4, NE = 5, GE = 6, ALL = 7
+	};
+	int	comps = NOP;
 
-	CompareCond() = delete;
-	CompareCond(Expression *ex1, Expression *ex2): expr1(ex1), expr2(ex2) {}
-	virtual ~CompareCond() {
+	CompareConditional(Expr *expr1, Expr *expr2, int line, int col):
+		Expr(line, col), expr1(expr1), expr2(expr2) {}
+	virtual ~CompareConditional() {
 		delete expr1;
 		delete expr2;
-		for (int i = 0; i < 3; i++) delete result[i];
+		for (int i = 0; result[i].expr; i++) delete result[i].expr;
 	}
 
-	void Add(op_type op, Expression *res);
+	bool Add(int op, Expr *expr);
 	virtual void Accept(Visitor *);
 };
 
 /*---------------------------------------------------------------------------*/
 
-struct Statement : public Node {};
+struct Statement : public Node {
+	Statement(int line, int col): Node(line, col) {}
+	virtual ~Statement() = 0;
+};
 
 struct Assignment : public Statement {
 	Symbol *var;
-	op_type op;
-	Expression *expr;
+	int op; // _plus for +=, etc.
+	Expr *expr;
 	
-	Assignment() = delete;
-	Assignment(Symbol *v, op_type op, Expression *ex): var(v), op(op), expr(ex) {}
+	Assignment(Symbol *var, int op, Expr *expr, int line, int col):
+		Statement(line, col), var(var), op(op), expr(expr) {}
 	virtual ~Assignment() {
 		delete var;
 		delete expr;
@@ -295,109 +385,85 @@ struct Assignment : public Statement {
 };
 
 struct New : public Statement {
-	// TODO: class id
-	wchar_t *ident;
-	ExpressionList args;
-	StatementList stats;
+	Symbol *var;
+	ExprList args;
+	StatementList stms;
 
-	New() = delete;
-	New(wchar_t *id) {
-		ident = coco_string_create(id);
-	}
+	New(Symbol *var, int line, int col): Statement(line, col), var(var) {}
 	virtual ~New() {
-		coco_string_delete(ident);
+		delete var;
 		delete_list(args);
-		delete_list(stats);
+		delete_list(stms);
 	}
 
-	Add(Expression *arg) {
+	void Add(Expr *arg) {
 		args.push_back(arg);
 	}
-	void Add(Statement *s) {
-		stats.push_back(s);
+	void Add(Statement *stm) {
+		stms.push_back(stm);
 	}
 	virtual void Accept(Visitor *);
 };
 
 struct Call : public Statement {
 	Symbol *proc;
-	ExpressionList args;
+	ExprList args;
 	
-	Call() = delete;
-	Call(Symbol *proc): proc(proc) {}
+	Call(Symbol *proc, int line, int col): Statement(line, col), proc(proc) {}
 	virtual ~Call() {
 		delete proc;
 		delete_list(args);
 	}
 
-	void Add(Expression *arg) {
+	void Add(Expr *arg) {
 		args.push_back(arg);
 	}
 	virtual void Accept(Visitor *);
 };
 
 struct Enum : public Statement {
-	struct constant: public Statement {
-		wchar_t *ident;
-		int64_t value;
-		
-		constant(wchar_t *id, int64_t val, int ln, int c): value(val), line(ln), col(c) {
-			ident = coco_string_create(id);
-		}
-		~constant() {
-			coco_string_delete(ident);
-		}
-	};
-
 	bool flags;
-	wchar_t *ident;
-	int64_t value;
-	std::list<constant *> consts;
+	Symbol *sym;
+	FieldList flds;
 	
-	Enum() = delete;
-	Enum(bool flags, wchar_t *id): flags(flags) {
-		ident = coco_string_create(id);
-	}
+	Enum(bool flags, Symbol *sym, int line, int col): Statement(line, col), flags(flags), sym(sym) {}
 	virtual ~Enum() {
-		coco_string_delete(ident);
-		delete_list(consts);
+		delete sym;
+		delete_list(flds);
 	}
-	void Add(wchar_t *id, int64_t val, int ln, int c) {
-		if (!flags) { value = val; } else { value |= val; }
-		consts.push_back(new constant(id, val, ln, c);
+	
+	void Add(Field *fld) {
+		flds.push_back(fld);
 	}
-	void Add(wchar_t *id, int ln, int c);
+	
 	virtual void Accept(Visitor *);
 };
 
 struct Exit : public Statement {
-	wchar_t *ident;
-	std::list<block_type> blocks;
+	Ident *id;
+	std::list<block_type> blks;
 	
-	Exit() = delete;
-	Exit(wchar_t *id) {
-		ident = coco_string_create(id);
-	}
-	Exit(block_type b): ident(NULL) {
-		blocks.push_back(b);
+	Exit(Ident *id, int line, int col): Statement(line, col), id(id) {}
+	Exit(block_type blk, int line, int col): Statement(line, col), id(nullptr) {
+		Add(blk);
 	}
 	virtual ~Exit() {
-		coco_string_delete(ident);
-		delete_list(blocks);
+		delete id;
+		blks.clear();
 	}
 
-	void Add(block_type b) {
-		blocks.push_back(b);
+	void Add(block_type blk) {
+		blks.push_back(blk);
 	}
 	virtual void Accept(Visitor *);
 };
 
 struct GotoCase : public Statement {
-	Expression *expr; // NULL for Goto Case Else
+	Expr *expr; // NULL for Goto Case Else
 		double tol;
 
-	GotoCase() = delete;
-	GotoCase(Expression *ex, double tol = 0.0): expr(ex), tol(tol) {}
+	GotoCase(Expr *expr, double tol, int line, int col):
+		Statement(line, col), expr(expr), tol(tol) {}
 	virtual ~GotoCase() {
 		delete expr;
 	}
@@ -406,9 +472,9 @@ struct GotoCase : public Statement {
 };
 
 struct Return : public Statement {
-	Expression *expr;
+	Expr *expr;
 	
-	Return(Expression *ex = NULL): expr(ex) {}
+	Return(Expr *expr, int line, int col): Statement(line, col), expr(expr) {}
 	virtual ~Return() {
 		delete expr;
 	}
@@ -416,13 +482,27 @@ struct Return : public Statement {
 	virtual void Accept(Visitor *);
 };
 
-struct Throw : public Statement {
-	Expression *expr;
+struct Raise : public Statement {
+	Expr *expr;
 	
-	Throw() = delete;
-	Throw(Expression *ex): expr(ex) {}
-	virtual ~Throw() {
+	Raise(Expr *expr, int line, int col): Statement(line, col), expr(expr) {}
+	virtual ~Raise() {
 		delete expr;
+	}
+
+	virtual void Accept(Visitor *);
+};
+
+struct Require : public Statement {
+	IdentList lib;
+	
+	Require(int line, int col): Statement(line, col) {}
+	~Require() {
+		delete_list(lib);
+	}
+	
+	void Add(Ident *id) {
+		lib.push_back(id);
 	}
 
 	virtual void Accept(Visitor *);
@@ -431,355 +511,388 @@ struct Throw : public Statement {
 /*---------------------------------------------------------------------------*/
 
 struct Block : public Statement {
-	StatementList stats;
+	StatementList stms;
 	Block *parent;
 	
-	Block() = delete;
-	Block(Block *scope): parent(scope) {}
+	Block(Block *parent, int line, int col): Statement(line, col), parent(parent) {}
 	virtual ~Block() {
-		delete_list(stats);
+		delete_list(stms);
 	}
 	
-	void Add(Statement *stat) {
-		stats.push_back(stat);
+	void Add(Statement *stm) {
+		stms.push_back(stm);
 	}
+
 	virtual void Accept(Visitor *);
 };
 
 struct ModuleWhere: public Statement {
-	enum data_type { StringType, VersionType } type;
-	wchar_t *ident, *value;
+	data_type type;
+	wchar_t *id, *val;
 
-	ModuleWhere(wchar_t *id, wchar_t *val, data_type t): type(t) {
-		ident = coco_string_create(id);
-		value = coco_string_create(val);
-		if (type == VersionType) normalize();
+	ModuleWhere(wchar_t *id, wchar_t *val, data_type type, int line, int col):
+		Statement(line, col), id(id), val(val), type(type) {
+		if (type== VERSION) normalize();
 	}
 	virtual ~ModuleWhere() {
-		coco_string_delete(ident);
-		coco_string_delete(value);
+		coco_string_delete(id);
+		coco_string_delete(val);
 	}
 
-	virtual void Accept(Visitor *);
 	void normalize(); // Removes unnecessary 0s.
-};
 
-struct QualifiedName: public Expression {
-	std::list<wchar_t *> ids;
-	void Add(wchar_t *id) {
-		ids.push_back(coco_string_create(id));
-	}
-	virtual ~QualifiedName() {
-		for (QualifiedNameList::iterator it = ids.begin(), end = ids.end(); it != end; ++it) coco_string_delete(*it);
-	}
 	virtual void Accept(Visitor *);
 };
 
 struct Program : public Block {
-	wchar_t *ident;
-	bool proc;
+	Ident *id;
+	bool procStart;
 	ModuleWhereList wheres;
-	QualifiedNameList requires;
+	RequireList reqs;
 
-	Program() = delete;
-	Program(wchar_t *id, bool proc): proc(proc) {
-		ident = coco_string_create(id);
-	}
+	Program(Ident *id, bool procStart, int line, int col):
+		Block(nullptr, line, col), id(id), procStart(procStart) {}
 	virtual ~Program() {
-		coco_string_delete(ident);
+		delete id;
 		delete_list(wheres);
-		delete_list(requires);
+		delete_list(reqs);
 	}
 
 	void Add(ModuleWhere *where) {
 		wheres.push_back(where);
 	}
-	void Add(QualifiedName *require) {
-		requires.push_back(require);
+	void Add(Require *req) {
+		reqs.push_back(req);
 	}
+	
 	virtual void Accept(Visitor *);
 };
 
 struct Library : public Block {
-	wchar_t *ident;
+	Ident *id;
 	ModuleWhereList wheres;
+	RequireList reqs;
 	
-	Library() = delete;
-	Library(wchar_t *id) {
-		ident = coco_string_create(id);
-	}
-	~LibraryModule() {
-		coco_string_delete(ident);
+	Library(Ident *id, int line, int col): Block(nullptr, line, col), id(id) {}
+	virtual ~Library() {
+		delete id;
 		delete_list(wheres);
+		delete_list(reqs);
 	}
 
 	void Add(ModuleWhere *where) {
 		wheres.push_back(where);
 	}
+	void Add(Require *req) {
+		reqs.push_back(req);
+	}
+	
 	virtual void Accept(Visitor *);
 };
 
 struct Class : public Block {
-	Symbol ident;
-	Generics *generics;
-	Class *base;
-};
-
-struct Constructor : public Procedure {
-	Constructor(ParameterList *params): Procedure(NULL, params) {}
-};
-
-struct Destructor : public Procedure {
-	Destructor(): Procedure(NULL, NULL) {}
+	Symbol *sym;
+	TypeParamList generics;
+	
+	Class(Symbol *sym, int line, int col):
+		Block(nullptr, line, col), sym(sym) {}
+	virtual ~Class() {
+		delete sym;
+		delete_list(generics);
+	}
+	
+	bool Add(TypeParam *param) {
+		generics.push_back(param);
+	}
+	
+	virtual void Accept(Visitor *);
 };
 
 struct ElseIf : public Block {
-	Expression *cond;
+	Expr *cond;
 	
-	ElseIf(Expression *cond): cond(cond), Block() {}
+	ElseIf(Block *parent, Expr *cond, int line, int col): Block(parent, line, col), cond(cond) {}
 	virtual ~ElseIf() {
 		delete cond;
 	}
+
 	virtual void Accept(Visitor *);
-	ElseIf() = delete;
 };
 
 struct If : public Block {
-	Expression *cond;
-	ElseIfList elseifs;
-	Block *elsebl;
+	Expr *cond;
+	ElseIfList elifs;
+	Block *el = nullptr;
 	
-	If() = delete;
-	If(Expression *con): cond(con), elsebl(NULL) {}
+	If(Block *parent, Expr *cond, int line, int col): Block(parent, line, col), cond(cond) {}
 	virtual ~If() {
 		delete cond;
-		delete_list(elseifs);
-		delete elsebl;
+		delete_list(elifs);
+		delete el;
 	}
-
 	void Add(ElseIf *elif) {
-		elseifs.push_back(elif);
+		assert(elif != nullptr);
+		elifs.push_back(elif);
 	}
-	void Else(Block *bl) {
-		elsebl = bl;
+	void SetElse(Block *blk) {
+		assert(blk != nullptr && el == nullptr);
+		el = blk;
 	}
+
 	virtual void Accept(Visitor *);
 };
 
-struct CaseExpression : public Node {
-	Expression *expr;
+struct CaseExpr : public Node {
+	Expr *expr, *expr2 = NULL;
+	int op = 0; // _less_than, etc.
 	
-	CaseExpression(= delete;
-	CaseExpression(Expression *expr): expr(expr) {}
-	virtual ~CaseExpression() {
+	CaseExpr(Expr *expr, int line, int col): // 'Case expr'.
+		Node(line, col), expr(expr) {}
+	CaseExpr(Expr *expr, Expr *expr2, int line, int col): // 'Case expr To expr2'.
+		Node(line, col), expr(expr), expr2(expr2) {}
+	CaseExpr(int op, Expr *expr, int line, int col): // 'Case Is < expr'
+		Node(line, col), op(op), expr(expr) {}
+	virtual ~CaseExpr() {
 		delete expr;
+		delete expr2;
 	}
-
-	virtual void Accept(Visitor *);
-};
-
-struct CaseIs : public CaseExpression {
-	op_type op;
-	
-	CaseIs() = delete;
-	CaseIs(op_type op, Expression *expr): op(op), CaseExpression(expr) {}
-	virtual ~CaseIs() {}
-
-	virtual void Accept(Visitor *);
-};
-
-struct CaseTo : public CaseExpression {
-	Expression *max;
-	
-	CaseTo() = delete;
-	CaseTo(Expression *min, Expression *max): CaseExpression(min), max(max) {}
-	virtual ~CaseTo() {
-		delete max;
-	}
-
 	virtual void Accept(Visitor *);
 };
 
 struct Case : public Block {
-	CaseExpressionList exprs;
+	CaseExprList exps;
 	
-	Case(): Block() {}
+	Case(Block *parent, int line, int col): Block(parent, line, col) {}
 	virtual ~Case() {
-		delete_list(exprs);
+		delete_list(exps);
+	}
+	void Add(CaseExpr *expr) {
+		exps.push_back(expr);
+	}
+	bool IsCaseElse() const {
+		return exps.empty();
 	}
 
-	void Add(CaseExpression *ex) {
-		exprs.push_back(ex);
-	}
 	virtual void Accept(Visitor *);
 };
 
-struct Select : public Statement {
-	Expression *test;
+struct Select : public Block {
+	Expr *expr;
 	double tol;
-	CaseList *cases;
-	Block *elsebl;
+	CaseList cases;
 	
-	Select() = delete;
-	Select(Expression *ex, double tol): test(ex), tol(tol) {}
+	Select(Block *parent, Expr *expr, double tol, int line, int col): Block(parent, line, col), expr(expr), tol(tol) {}
 	virtual ~Select() {
-		delete test;
+		delete expr;
 		delete_list(cases);
-		delete elsebl;
 	}
-
-	void Add(Case *bl) {
-		cases.push_back(bl);
+	bool Add(Case *acase) {
+		if (acase->IsCaseElse()) {
+			if (cases.empty()) return false; // 'Else' can't be first.
+			// TODO: false if existing 'Else'
+		}
+		cases.push_back(acase);
+		return true;
 	}
-	void Else(Block *bl) {
-		elsebl = bl;
-	}
+	
 	virtual void Accept(Visitor *);
 };
 
 struct Catch : public Block {
-	Expression *expr;
-
+	Symbol *sym; // catch-all if NULL.
+	
+	Catch(Block *parent, Symbol *sym, int line, int col): Block(parent, line, col), sym(sym) {}
 	virtual ~Catch() {
-		delete expr;
+		delete sym;
 	}
+	
+	bool IsCatchall() const {
+		return (sym == nullptr);
+	}
+
 	virtual void Accept(Visitor *);
 };
 
 struct Try : public Block {
 	CatchList catches;
-	Block *finally;
-
+	Block *finally = NULL;
+	
+	Try(Block *parent, int line, int col): Block(parent, line, col) {}
 	virtual ~Try() {
-		for (CatchList::iterator it = catches.begin(), end = catches.end(); it != end; ++it) delete *it;
+		delete_list(catches);
+		delete finally;
 	}
+	
+	bool Add(Catch *acatch); // false if dups.
+	
 	virtual void Accept(Visitor *);
-	void Add(Catch *cat) { catches.push_back(cat); }
 };
 
 /*---------------------------------------------------------------------------*/
 
-struct Loop : public Block {
-	// TODO: WHEN statements
+struct When : public Block {
+	Ident *id; // 'Else' if NULL
 	
-	Loop(Block *after, Block *other): Block(), after(after), other(other) {}
-	virtual ~Loop() {}
+	When(Block *parent, Ident *id, int line, int col): Block(parent, line, col), id(id) {}
+	virtual ~When() {
+		delete id;
+	}
+
 	virtual void Accept(Visitor *);
-	Loop() = delete;
+};
+
+struct BeginLoop : public Block {
+	std::list<wchar_t *> ids;
+	WhenList whens;
+	
+	BeginLoop(Block *parent, int line, int col): Block(parent, line, col) {}
+	virtual ~BeginLoop() {
+		delete_list(ids);
+		delete_list(whens);
+	}
+	
+	bool Add(wchar_t *id); // false if dups or is NULL, 'DONE', or 'NONE'.
+	bool Add(When *when); // false if dups.
+	
+	virtual void Accept(Visitor *);
+};
+
+///////////////////////////////////////////////////////////////////////////
+
+struct Loop : public Block {
+	Loop(Block *parent, int line, int col): Block(parent, line, col) {}
+	virtual ~Loop() = 0;
 };
 
 struct Do : public Loop {
-	do_type type;
-	Expression *cond;
+	enum order {
+		DoWhileLoop, DoUntilLoop, DoLoopWhile, DoLoopUntil
+	} ord;
+	Expr *cond;
 	
-	Do(do_type type, Expression *cond): type(type), cond(cond), Loop() {}
+	Do(Block *parent, order ord, Expr *cond, int line, int col): Loop(parent, line, col), ord(ord), cond(cond) {}
 	virtual ~Do() {
 		delete cond;
 	}
+	
 	virtual void Accept(Visitor *);
-	Do() = delete;
 };
 
 struct For : public Loop {
 	Symbol *var;
-	Expression *init, *max, *step;
+	Expr *init, *last, *step;
 	
-	For(Symbol *var, Expression *init, Expression *max, Expression *step): var(var), init(init), max(max), step(step), Loop() {}
+	For(Block *parent, Symbol *var, Expr *init, Expr *last, Expr *step, int line, int col):
+		Loop(parent, line, col), var(var), init(init), last(last), step(step) {}
 	virtual ~For() {
 		delete var;
 		delete init;
-		delete max;
+		delete last;
 		delete step;
 	}
+	
 	virtual void Accept(Visitor *);
-	For() = delete;
 };
 
 struct ForEach : public Loop {
 	Symbol *var;
-	Expression *coll;
+	Expr *cont;
 	
-	ForEach(Symbol *var, Expression *coll): var(var), coll(coll), Loop() {}
+	ForEach(Block *parent, Symbol *var, Expr *cont, int line, int col): Loop(parent, line, col), var(var), cont(cont) {}
 	virtual ~ForEach() {
 		delete var;
-		delete coll;
+		delete cont;
 	}
+	
 	virtual void Accept(Visitor *);
-	ForEach() = delete;
 };
 
 struct While : public Loop {
-	Expression *cond;
+	Expr *cond;
 	
-	While(Expression *cond): cond(cond), Loop() {}
+	While(Block *parent, Expr *cond, int line, int col): Loop(parent, line, col), cond(cond) {}
 	virtual ~While() {
 		delete cond;
 	}
+	
 	virtual void Accept(Visitor *);
-	While() = delete;
 };
 
 struct Parameter : public Symbol {
-	param_type modifiers;
+	int mod; // _ByRef, etc.
 	
-	Parameter(param_type mods, wchar_t *id, Type::Type *type): modifiers(mods), Symbol(id, type) {}
-	Parameter() = delete;
+	Parameter(int mod, wchar_t *id, Type::Type *type, int line, int col):
+		Symbol(id, type, line, col), mod(mod) {}
+	virtual ~Parameter() {}
+	
+	virtual void Accept(Visitor *);
 };
 
 struct Procedure : public Block {
-	Symbol *id;
-	Generics *generics;
-	ParameterList *params;
+	Symbol *sym;
+	TypeParamList generics;
+	ParameterList params;
 	
-	Procedure(Symbol *id, ParameterList *params): id(id), params(params), Block() {}
+	Procedure(Block *parent, Symbol *sym, int line, int col):
+		Block(parent, line, col), sym(sym) {}
 	virtual ~Procedure() {
-		delete id;
+		delete sym;
+		delete_list(generics);
 		delete_list(params);
 	}
-	Procedure() = delete;
+	
+	void Add(TypeParam *param) {
+		generics.push_back(param);
+	}
+	void Add(Parameter *param) {
+		params.push_back(param);
+	}
+
+	virtual void Accept(Visitor *);
 };
 
 struct Visitor {
 	virtual void Visit(Assignment *) = 0;
+	virtual void Visit(BeginLoop *) = 0;
 	virtual void Visit(BinaryOp *) = 0;
-	virtual void Visit(Block *node) {
-		for (StatementList::iterator it = node->stmts.begin(), end = node->stmts.end(); it != end; ++it)
-			(*it)->Accept(this);
-	}
+	virtual void Visit(Block *) = 0;
 	virtual void Visit(Call *) = 0;
 	virtual void Visit(Case *) = 0;
-	virtual void Visit(CaseExpression *) = 0;
-	virtual void Visit(CaseIs *) = 0;
-	virtual void Visit(CaseTo *) = 0;
+	virtual void Visit(CaseExpr *) = 0;
 	virtual void Visit(Catch *) = 0;
 	virtual void Visit(CharConst *) = 0;
 	virtual void Visit(Class *) = 0;
 	virtual void Visit(ComparisonChain *) = 0;
 	virtual void Visit(ComparisonOp *) = 0;
-	virtual void Visit(Constructor *) = 0;
-	virtual void Visit(Destructor *) = 0;
 	virtual void Visit(Do *) = 0;
 	virtual void Visit(DTConst *) = 0;
 	virtual void Visit(ElseIf *) = 0;
 	virtual void Visit(Enum *) = 0;
 	virtual void Visit(Exit *) = 0;
+	virtual void Visit(Field *) = 0;
 	virtual void Visit(For *) = 0;
 	virtual void Visit(ForEach *) = 0;
 	virtual void Visit(GotoCase *) = 0;
 	virtual void Visit(If *) = 0;
-	virtual void Visit(BooleanCond *) = 0;
-	virtual void Visit(CompareCond *) = 0;
+	virtual void Visit(BooleanConditional *) = 0;
+	virtual void Visit(CompareConditional *) = 0;
+	virtual void Visit(Ident *) = 0;
 	virtual void Visit(IntConst *) = 0;
 	virtual void Visit(Library *) = 0;
+	virtual void Visit(ModuleWhere *) = 0;
 	virtual void Visit(New *) = 0;
+	virtual void Visit(Parameter *) = 0;
+	virtual void Visit(Procedure *) = 0;
 	virtual void Visit(Program *) = 0;
+	virtual void Visit(Raise *) = 0;
 	virtual void Visit(RealConst *) = 0;
+	virtual void Visit(Require *) = 0;
 	virtual void Visit(Return *) = 0;
 	virtual void Visit(Select *) = 0;
 	virtual void Visit(Symbol *) = 0;
-	virtual void Visit(Throw *) = 0;
 	virtual void Visit(Try *) = 0;
 	virtual void Visit(UnaryOp *) = 0;
+	virtual void Visit(When *) = 0;
 	virtual void Visit(While *) = 0;
 };
 

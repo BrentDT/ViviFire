@@ -1,15 +1,19 @@
 /*
-* ViviFire Programming Language
-*
-* Copyright 2021 Brent D. Thorn
-*
-* You can get the latest version at http://vivifire.com/.
-*
-* Use of this source code is governed by an MIT-style license that can be
-* found in the LICENSE file.
-*/
+ * ViviFire Programming Language
+ *
+ * Copyright 2021 Brent D. Thorn
+ *
+ * You can get the latest version at http://vivifire.com/.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file.
+ */
 
+#include <cstdint>
+#include <inttypes.h>
 #include "AST.h"
+
+namespace AST {
 
 void removeChar(wchar_t *str, wchar_t garbage) {
 	wchar_t *src, *dst;
@@ -20,14 +24,11 @@ void removeChar(wchar_t *str, wchar_t garbage) {
 	*dst = L'\0';
 }
 
-namespace AST {
-
 // Pure virtual destructor requires implementation.
+Expr::~Expr() {}
 Node::~Node() {}
-Expression::~Expression() {}
-Statement::~Statement() {}
 
-IntConst::IntConst(wchar_t *s) {
+IntConst::IntConst(wchar_t *s, int line, int col): Constant(line , col) {
 	int base = 10;
 	if (s[0] == L'&') {
 		switch (s[1]) {
@@ -38,8 +39,8 @@ IntConst::IntConst(wchar_t *s) {
 		s += 2;
 	}
 	wchar_t *pc = wcschr(s, L'\0') - 1;
-	val = 0;
-	for (int64_t place = 1; pc >= s; place *= base, pc--) {
+	val = 0LL;
+	for (long long place = 1; pc >= s; place *= base, pc--) {
 		if (*pc == L'_') continue;
 		else if (*pc >= L'a') val += (*pc - L'a' + 10) * place;
 		else if (*pc >= L'A') val += (*pc - L'A' + 10) * place;
@@ -47,7 +48,7 @@ IntConst::IntConst(wchar_t *s) {
 	}
 }
 
-RealConst::RealConst(wchar_t *s) {
+RealConst::RealConst(wchar_t *s, int line, int col): Constant<long double>(line, col) {
 	// Strip out underscores
 	removeChar(s, L'_');
 	// Convert string to double
@@ -55,11 +56,11 @@ RealConst::RealConst(wchar_t *s) {
 	val = wcstod(s, &stopper);
 }
 
-CharConst::CharConst(wchar_t *s) {
+CharConst::CharConst(wchar_t *s, int line, int col): Constant<uint32_t>(line, col) {
 
 }
 
-DTConst::DTConst(wchar_t *s) {
+DTConst::DTConst(wchar_t *s, int line, int col): Constant<uint64_t>(line, col) {
 	const uint64_t ticks_per_sec = UINT64_C(10000000);
 	wchar_t *sep = wcschr(s, L':');
 	if (sep) {  // time constant
@@ -73,25 +74,31 @@ DTConst::DTConst(wchar_t *s) {
 	}
 }
 
-void Enum::Add(wchar_t *id, int ln, int c) {
-	int64_t val;
-	if (!flags) {
-		if (value == INT64_MAX) { /* TODO: Error: overflow */ }
-		val = value++;
-	} else  {
-		val = 1;
-		while (val && value == value | val) val <<= 1;
-		if (val == 0) { /* TODO: Error: no unused bits */ }
-		value |= val;
+bool CompareConditional::Add(int op, Expr *expr) {
+	int c = NOP;
+	switch (op) {
+		case LESS:          if (!(comps & LT)) c = LT; break;
+		case LESS_EQUAL:    if (!(comps & LE)) c = LE; break;
+		case GREATER:       if(!(comps & GT)) c = GT; break;
+		case GREATER_EQUAL: if (!(comps & GE)) c = GE; break;
+		case NOT_EQUAL:     if (!(comps & NE)) c = NE; break;
+		case EQUAL:         if (!(comps & EQ)) c = EQ; break;
 	}
-	consts.push_back(new constant(id, val, ln, c);
+	if (c == NOP) return false;
+	
+	comps |= c;
+	result[results].op = op;
+	result[results].expr = expr;
+	results++;
+	
+	return true;
 }
 
 void ModuleWhere::normalize() {
-	// Removes unnecessary 0s from 'value'.
-	int size = coco_string_length(value);
-	wchar_t *norm = coco_string_create(value);
-	wchar_t *src = value, *dest = norm;
+	// Removes unnecessary 0s from 'val'.
+	int size = coco_string_length(val);
+	wchar_t *norm = coco_string_create(val);
+	wchar_t *src = val, *dest = norm;
 	while (*src) {
 		while (*src == L'0') src++; // Move past zeros.
 		if (*src == L'\0' || *src == L'.') {
@@ -102,7 +109,7 @@ void ModuleWhere::normalize() {
 		if (*src == L'.') *dest++ = *src++; // Move to next group.
 	}
 	*dest = L'\0';
-	wcscpy_s(value, size, norm);
+	wcscpy_s(val, size, norm);
 	coco_string_delete(norm);
 }
 
@@ -112,38 +119,45 @@ void ModuleWhere::normalize() {
 	}
 
 GENERATE_ACCEPT(Assignment)
+GENERATE_ACCEPT(BeginLoop)
 GENERATE_ACCEPT(BinaryOp)
 GENERATE_ACCEPT(Block)
+GENERATE_ACCEPT(BooleanConditional)
 GENERATE_ACCEPT(Call)
 GENERATE_ACCEPT(Case)
-GENERATE_ACCEPT(CaseExpression)
-GENERATE_ACCEPT(CaseIs)
-GENERATE_ACCEPT(CaseTo)
+GENERATE_ACCEPT(CaseExpr)
 GENERATE_ACCEPT(Catch)
+GENERATE_ACCEPT(CharConst)
+GENERATE_ACCEPT(CompareConditional)
 GENERATE_ACCEPT(ComparisonChain)
 GENERATE_ACCEPT(ComparisonOp)
-GENERATE_ACCEPT(CharConst)
-GENERATE_ACCEPT(Do)
 GENERATE_ACCEPT(DTConst)
+GENERATE_ACCEPT(Do)
 GENERATE_ACCEPT(ElseIf)
+GENERATE_ACCEPT(Enum)
+GENERATE_ACCEPT(Exit)
+GENERATE_ACCEPT(Field)
 GENERATE_ACCEPT(For)
 GENERATE_ACCEPT(ForEach)
-GENERATE_ACCEPT(RealConst)
 GENERATE_ACCEPT(GotoCase)
-GENERATE_ACCEPT(Exit)
+GENERATE_ACCEPT(Ident)
 GENERATE_ACCEPT(If)
-GENERATE_ACCEPT(BooleanCond)
 GENERATE_ACCEPT(IntConst)
 GENERATE_ACCEPT(Library)
-GENERATE_ACCEPT(Loop)
+GENERATE_ACCEPT(ModuleWhere)
+GENERATE_ACCEPT(New)
+GENERATE_ACCEPT(Parameter)
+GENERATE_ACCEPT(Procedure)
 GENERATE_ACCEPT(Program)
+GENERATE_ACCEPT(Raise)
+GENERATE_ACCEPT(RealConst)
+GENERATE_ACCEPT(Require)
 GENERATE_ACCEPT(Return)
 GENERATE_ACCEPT(Select)
 GENERATE_ACCEPT(Symbol)
-GENERATE_ACCEPT(Throw)
 GENERATE_ACCEPT(Try)
 GENERATE_ACCEPT(UnaryOp)
-GENERATE_ACCEPT(Wait)
+GENERATE_ACCEPT(When)
 GENERATE_ACCEPT(While)
 
 } // namespace AST
