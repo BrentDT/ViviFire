@@ -12,6 +12,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include "Args.h"
+#include "AST.h"
 #include "Modifier.h"
 
 #define ID(n) static const wchar_t *s_name = L#n; wprintf(L">%s", s_name);
@@ -357,7 +358,7 @@ bool IsNewStatement() {
 	if (la->kind == _New) return true;
 	if (la->kind == _identifier) { // FIXME: could be qualified name
 		int next = scanner->Peek()->kind;
-		return (next == _nullable_identifier || next == _less_than);
+		return (next == _nullable_identifier || next == _left_bracket); // FIXME: nullable not necessary
 	}
 	return false;
 }
@@ -845,7 +846,7 @@ ClassMember (. ID(ClassMember) .)
 	[ ModifiersClause<mods> ]
 	( ConstructorStatement<mods>
 	| DestructorStatement<mods>
-	| DimStatement<mods>
+	| DimStatement<&mods>
 	| FunctionStatement<mods>
 	| MethodStatement<mods>
 	| PropertyStatement<mods>
@@ -1039,11 +1040,15 @@ DimOrVar (. ID(DimOrVar) .)
 	| "Var"  (. if (option.Dim_or_Var == TERNARY1) Err(L"Must use DIM because of @OPTION"); .)
 	)
 .
-DimStatement<Modif &mods> (. ID(DimStatement) .)
+DimStatement<Modif *mods> (. ID(DimStatement) .)
 =
-	// Allow @Deprecated?
-	(. bool bShared = mods.allow(Modif::Shared); .)
-	(. mods.validate(); .)
+// Allow @Deprecated?
+(.	bool bShared = false;
+	if (mods) {
+		bShared = mods->allow(Modif::Shared);
+		mods->validate();
+	}
+.)
 	DimOrVar
 	DeclaratorList<NO_BITS>
 .
@@ -1456,8 +1461,14 @@ NewMember (. ID(NewMember) .)
 	| ArgumentList SyncNewline<s_name>
 	)
 .
-NewStatement (. ID(NewStatement) .)
+NewStatement<Modif *mods> (. ID(NewStatement) .)
 =
+(.	bool bShared = false;
+	if (mods) {
+		bShared = mods->allow(Modif::Shared);
+		mods->validate();
+	}
+.)
 	(. bool bNew = false; .)
 	(. bool bInitExpr = false; .)
 	(. wchar_t *type_name = nullptr; .)
@@ -1700,8 +1711,8 @@ SimpleStatement (. ID(SimpleStatement) .)
 .
 Statement (. ID(Statement) .)
 =
-	( IF (IsNewStatement()) NewStatement
-	| SimpleStatement SyncNewline<s_name>
+	( IF (IsNewStatement()) NewStatement<nullptr>
+	| ( DimStatement<nullptr> | SimpleStatement ) SyncNewline<s_name>
 	| CompoundStatement
 	)
 .
@@ -1781,7 +1792,7 @@ TraitMember (. ID(TraitMember) .)
 =
 	(. Modif mods(this); .)
 	[ ModifiersClause<mods> ]
-	( DimStatement<mods>
+	( DimStatement<&mods>
 	| FunctionStatement<mods>
 	| MethodStatement<mods>
 	| PropertyStatement<mods>
