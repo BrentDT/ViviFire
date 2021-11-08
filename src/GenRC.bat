@@ -1,4 +1,7 @@
-:: Generates 'ViviFire.rc', a Windows resource script.
+: Touch the file that supplies the current date.
+Copy /B Now.inc+,,
+
+:: Generate 'ViviFire.rc', a Windows resource script.
 :: The version number is related to the date.
 @Echo Off
 SetLocal
