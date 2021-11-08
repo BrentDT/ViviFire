@@ -17,9 +17,9 @@
 #include "Scanner.h"
 
 struct mod_type {
-	bool present, allowed;
-	int line, col;
-	int order;
+	bool present = false, allowed = false;
+	int line = 0, col = 0;
+	int order = 0;
 };
 
 class Modif {
