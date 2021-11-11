@@ -1572,6 +1572,11 @@ PrimaryExpression (. ID(PrimaryExpression) .)
 	| "Base"
 	| "Self"
 	| "#Null"
+	| malformed_char_literal     (. Err(L"Malformed character constant"); .)
+	| malformed_fixed_literal    (. Err(L"Malformed fixed constant"); .)
+	| malformed_integer_literal  (. Err(L"Malformed integer constant"); .)
+	| malformed_real_literal     (. Err(L"Malformed real constant"); .)
+	| malformed_string_literal   (. Err(L"Malformed string constant"); .)
 	)
 .
 PrimitiveType<bool bBits> (. ID(PrimitiveType) .)
