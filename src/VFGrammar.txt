@@ -1000,7 +1000,7 @@ DeclareParameter<bool &isOptional> (. ID(DeclareParameter) .)
 =
 	[ "Optional" (. isOptional = true; .) ]
 	integer_literal
-	[ '=' Expression ]
+	[ "=" EnclosedExpression ]
 .
 DeclareParameterList (. ID(DeclareParameterList) .)
 =
@@ -1181,7 +1181,7 @@ FormalParameter<param_type &param> (. ID(FormalParameter) .)
 	Name
 	[ '(' [ Rank ] ')' ]
 	[ TypeClause<NO_BITS> ]
-	( "=" Expression
+	( "=" EnclosedExpression
 	| (. if (param.optional() && option.Optional_equals) Err(L"Optional parameter must have initializer because of @OPTION"); .)
 	)
 .
