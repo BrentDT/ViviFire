@@ -1147,6 +1147,14 @@ EnumStatement<Modif &mods> (. ID(EnumStatement) .)
 	(. Optional(_Enum); .)
 	Newline
 .
+EventStatement (. ID(EventStatement) .)
+=
+	"Event" identifier 
+	[ TypeParameterList ]
+	[ FormalParameterList<_Event> ]
+	[ WhereClause<_Event> ]
+	SyncNewline<s_name>
+.
 ExitStatement (. ID(ExitStatement) .)
 =
 	(. int tkn = 0; .)
@@ -1737,6 +1745,7 @@ Statement (. ID(Statement) .)
 =
 	( IF (IsNewStatement()) NewStatement<nullptr>
 	| DimStatement<nullptr>
+	| EventStatement
 	| SimpleStatement SyncNewline<s_name>
 	| CompoundStatement
 	)
