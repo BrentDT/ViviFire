@@ -1494,10 +1494,10 @@ NewStatement<Modif *mods> (. ID(NewStatement) .)
 	)
 	CallOrNew<0> // FIXME: not 0
 	[ "Begin"
-		( "Call" QualifiedName
+		[ "Call" QualifiedName
 			[ InitializationExpression (. bInitExpr = true; .) ]
 		| UserType
-		)
+		]
 		SyncNewline<s_name>
 		[	NewMember (. if (bInitExpr) Err(L"Expected End after initialization expression"); .)
 			{ NewMember }
