@@ -858,7 +858,7 @@ ClassMember (. ID(ClassMember) .)
 	[ ModifiersClause<mods> ]
 	( ConstructorStatement<mods>
 	| DestructorStatement<mods>
-	| DimStatement<&mods> SyncNewline<s_name>
+	| DimStatement<&mods>
 	| FunctionStatement<mods>
 	| MethodStatement<mods>
 	| PropertyStatement<mods>
@@ -944,7 +944,8 @@ ConstStatement<Modif &mods> (. ID(ConstStatement) .)
 =
 	(. mods.allow(Modif::Deprecated); .)
 	(. mods.validate(); .)
-	"Const" ConstantDeclarator { comma ConstantDeclarator }
+	"Const" ConstantDeclarator { WEAK comma ConstantDeclarator }
+	SyncNewline<s_name>
 .
 Constraint<int block> (. ID(Constraint) .)
 =
@@ -1063,6 +1064,7 @@ DimStatement<Modif *mods> (. ID(DimStatement) .)
 .)
 	DimOrVar
 	DeclaratorList<NO_BITS>
+	SyncNewline<s_name>
 .
 DoesClause (. ID(DoesClause) .)
 =
@@ -1734,7 +1736,8 @@ SimpleStatement (. ID(SimpleStatement) .)
 Statement (. ID(Statement) .)
 =
 	( IF (IsNewStatement()) NewStatement<nullptr>
-	| ( DimStatement<nullptr> | SimpleStatement ) SyncNewline<s_name>
+	| DimStatement<nullptr>
+	| SimpleStatement SyncNewline<s_name>
 	| CompoundStatement
 	)
 .
@@ -1814,7 +1817,7 @@ TraitMember (. ID(TraitMember) .)
 =
 	(. Modif mods(this); .)
 	[ ModifiersClause<mods> ]
-	( DimStatement<&mods> SyncNewline<s_name>
+	( DimStatement<&mods>
 	| FunctionStatement<mods>
 	| MethodStatement<mods>
 	| PropertyStatement<mods>
