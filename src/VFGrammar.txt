@@ -858,7 +858,7 @@ ClassMember (. ID(ClassMember) .)
 	[ ModifiersClause<mods> ]
 	( ConstructorStatement<mods>
 	| DestructorStatement<mods>
-	| DimStatement<&mods>
+	| DimStatement<&mods> SyncNewline<s_name>
 	| FunctionStatement<mods>
 	| MethodStatement<mods>
 	| PropertyStatement<mods>
@@ -1814,7 +1814,7 @@ TraitMember (. ID(TraitMember) .)
 =
 	(. Modif mods(this); .)
 	[ ModifiersClause<mods> ]
-	( DimStatement<&mods>
+	( DimStatement<&mods> SyncNewline<s_name>
 	| FunctionStatement<mods>
 	| MethodStatement<mods>
 	| PropertyStatement<mods>
