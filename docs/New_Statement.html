@@ -17,7 +17,7 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Statements_Reference.html">Statements</a></li>
-<li><a href="Statements_2.html">F&ndash;P Statements</a></li>
+<li><a rel="parent" href="Statements_2.html">F&ndash;P Statements</a></li>
 </ul>
 </nav>
 <main>
@@ -33,7 +33,7 @@ End [ New | class_name ] ]&#10;</code></pre>
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="at">@Shared</code></dt>
-<dd>Optional &ndash; There can be only one instance.</dd>
+<dd>Optional &ndash; There can be only one instance for all classes or procedure calls.</dd>
 <dt><code class="kw">New</code></dt>
 <dd>Optional keyword.</dd>
 <dt><code class="id">class_name</code></dt>
@@ -45,7 +45,7 @@ End [ New | class_name ] ]&#10;</code></pre>
 <dt><code class="id">argument_list</code></dt>
 <dd>Optional &ndash; One or more expressions with a comma between each.</dd>
 <dt><code class="kw">Begin</code></dt>
-<dd>Optional start of the block construct.</dd>
+<dd>Optional &ndash; Starts the block construct.</dd>
 <dt><code class="id">default_type</code></dt>
 <dd>Optional data type that the compiler will use for the subsequent statements, if the data type is not specified.
 The data type must be related to the type specified in a constructor of <code class="id">class_name</code>.</dd>
