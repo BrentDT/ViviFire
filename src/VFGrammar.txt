@@ -1112,6 +1112,7 @@ EnclosedParameterList<int parent> (. ID(EnclosedParameterList) .)
 .
 EnumMember (. ID(EnumMember) .)
 =
+	[ "@Deprecated" [ string_literal ] [ line_break ] ]
 	identifier
 	( "=" Expression
 	| (. if (option.Enum_equals) Err(L"Enumeration constant must have initializer because of @OPTION"); .)
@@ -1396,7 +1397,8 @@ Modifier<int &m> (. ID(Modifier) .)
 =
 	( "@Abstract"    (. m = Modif::Abstract; .)
 	| "@Backed"      (. m = Modif::Backed; .)
-	| "@Deprecated"  (. m = Modif::Deprecated; .)
+	| "@Deprecated" [ string_literal ]
+	                 (. m = Modif::Deprecated; .)
 	| "@Flags"       (. m = Modif::Flags; .)
 	| "@Iterator"    (. m = Modif::Iterator; .)
 	| "@Open"        (. m = Modif::Open; .)
