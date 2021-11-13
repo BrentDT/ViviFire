@@ -16,15 +16,23 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
-<li><a href="Program_Structure_and_Code_Conventions.html">Program Structure and Code Conventions</a></li>
+<li><a rel="parent" href="Program_Structure_and_Code_Conventions.html">Program Structure and Code Conventions</a></li>
 </ul>
 </nav>
 <main>
 <h1 id="top">Conditional Compilation</h1>
+<p>With <dfn>conditional compilation</dfn>, applicable blocks of code in a program can compile while other blocks are ignored.
+For example, you can compare different solutions to a problem, or you can make changes specially for a given culture.
+Conditional compilation statements operate only at compile-time, not at run-time.</p>
+<p>You specify conditional compilation of a block of code with the directives <code class="at">@If&hellip;@Else</code>.
+For example, you can make POSIX-compatible and Windows versions of the same program from the same source code.
+You put code special to each platform between the directives <code>@If</code>, <code>@Else</code>, and <code>@End</code>.
+Then you can use the compilation constants <code>POSIX</code> and <code>WINDOWS</code> to select the applicable code.
+The example below shows how.</p>
 <div class="language-vivifire listing">
 <pre><code>@If POSIX
 ' Unix-like code goes here.
-@ElseIf WINDOWS
+@Else If WINDOWS
 ' Windows-only code goes here.
 @End&#10;</code></pre>
 </div>
