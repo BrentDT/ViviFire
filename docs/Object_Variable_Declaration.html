@@ -17,21 +17,25 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
 <li><a href="Language_Features.html">Language Features</a></li>
-<li><a href="Variables.html">Variables</a></li>
+<li><a rel="parent" href="Variables.html">Variables</a></li>
 </ul>
 </nav>
 <main>
 <h1 id="top">Object Variable Declaration</h1>
-<h2>Syntax</h2>
+<p>You can declare an object variable the same as other data types.
+But there are also special statements available if necessary.</p>
+<h2>Declaration syntaxes</h2>
 <h3>Dim statement</h3>
 <div class="language-vivifire syntax">
 <pre><code>Dim variable_name As object_class&#10;</code></pre>
 </div>
-<h3>New statement</h3>
+<h3>New statement (one-line)</h3>
+<p>This construct is shorter to write than <code class="kw">Dim</code>.</p>
 <div class="language-vivifire syntax">
 <pre><code>[ New ] object_class variable_name&#10;</code></pre>
 </div>
-<h3>Block New statement</h3>
+<h3>New statement (block)</h3>
+<p>This construct is available if the last argument passed to a class is an array.</p>
 <div class="language-vivifire syntax">
 <pre><code>[ New ] object_class variable_name
 Begin
@@ -39,12 +43,20 @@ Begin
 End object_class&#10;</code></pre>
 </div>
 <h3>Object statement</h3>
+<p>This construct is available to make a singleton object.
+That is where a type is permitted to have only one instance variable.</p>
 <div class="language-vivifire syntax">
 <pre><code>Object variable_name
     object_members
-End Object&#10;</code></pre>
+End [ Object ]&#10;</code></pre>
 </div>
 <!-- Early vs. late binding -->
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Dim_Statement.html">Dim Statement</a></li>
+<li><a href="New_Statement.html">New Statement</a></li>
+<li><a href="Object_Statement.html">Object Statement</a></li>
+</ul>
 </main>
 <script src="common.js"></script>
 <script src="prism.js"></script>
