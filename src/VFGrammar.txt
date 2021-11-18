@@ -1238,11 +1238,13 @@ FunctionStatement<Modif &mods> (. ID(FunctionStatement) .)
 FunctionSignature<Modif &mods, bool &bodied> (. ID(FunctionSignature) .)
 =
 	"Function" Name
-	( [ TypeParameterList ]
+	(
+		[ TypeParameterList ]
 		[ EnclosedParameterList<_Function> ]
 		[ ReturnTypeClause ] //TODO: mandatory if name is not typed_identifier
 		[ WhereClause<_Function> ]
-	| "Does" identifier dot identifier
+	|
+		"Does" QualifiedName<0>
 		(. bodied = false; .)
 	)
 	SyncNewline<s_name>
@@ -1390,6 +1392,7 @@ MethodSignature<Modif &mods> (. ID(MethodSignature) .)
 	"Method" Name
 	[ EnclosedParameterList<_Method> [ ReturnTypeClause ]
 	| UnenclosedParameterList<_Method>
+	| ReturnTypeClause
 	]
 	SyncNewline<s_name>
 .
@@ -1825,8 +1828,9 @@ SubSignature (. ID(SubSignature) .)
 	[ TypeParameterList ]
 	[ EnclosedParameterList<_Sub> [ ReturnTypeClause ]
 	| UnenclosedParameterList<_Sub>
+	| ReturnTypeClause
 	]
-	[ "Handles" QualifiedName<0> ]
+	[ "Handles" QualifiedName<_identifier> ]
 	[ WhereClause<_Sub> ]
 	SyncNewline<s_name>
 .
