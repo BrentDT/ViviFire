@@ -1575,7 +1575,7 @@ PrimaryExpression (. ID(PrimaryExpression) .)
 			// "proc()" or "proc1().proc2().proc3()", respectively.
 
 			question
-			[ IF (IsIdentifier(la->kind))
+			[ /// IF (IsIdentifier(la->kind))
 				Name [ TypeArgumentList ]
 			]
 		}
@@ -1797,11 +1797,14 @@ StructState (. ID(StructState) .)
 =
 	(. Modif mods(this); .)
 	[ ModifiersClause<mods> ]
-	(. mods.allow(Modif::Deprecated); .)
-	(. mods.allow(Modif::Shared); .)
-	(. mods.validate(); .)
+	(.
+	mods.allow(Modif::Deprecated);
+	mods.allow(Modif::Shared);
+	mods.validate();
+	.)
 
 	[ DimOrVar ] Declarator<YES_BITS>
+	SyncNewline<s_name>
 .
 SubStatement<Modif &mods> (. ID(SubStatement) .)
 =
