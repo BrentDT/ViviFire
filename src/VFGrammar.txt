@@ -1653,7 +1653,7 @@ QualifiedName<int limit> (. ID(QualifiedName) .)
 =
 	(. const wchar_t *err_msg = L"Namespace or type name expected"; .)
 	Name
-		(. if (la->kind == _dot && t->kind != _identifier) Err(err_msg); .)
+		(. if ((limit == _identifier || la->kind == _dot) && t->kind != _identifier) Err(err_msg); .)
 	{ dot Name  
 		(. if (limit == _identifier && t->kind != _identifier) Err(err_msg); .)
 	}
