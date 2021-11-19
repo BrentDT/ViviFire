@@ -852,12 +852,16 @@ CatchClause (. ID(CatchClause) .)
 	"Catch" [ Name [ AsTypeClause<NO_BITS> ] ] SyncNewline<s_name>
 	{ Statement }
 .
-ClassMember (. ID(ClassMember) .)
+ClassOrObjectMember<int kind> (. ID(ClassOrObjectMember) .)
 =
 	(. Modif mods(this); .)
 	[ ModifiersClause<mods> ]
-	( ConstructorStatement<mods>
-	| DestructorStatement<mods>
+	(
+		 (. if (kind == _Object) errors->Error(la->line, la->col, L"Object cannot have constructor"); .)
+		ConstructorStatement<mods>
+	|
+		(. if (kind == _Object) errors->Error(la->line, la->col, L"Object cannot have destructor"); .)
+		DestructorStatement<mods>
 	| DimStatement<&mods>
 	| FunctionStatement<mods>
 	| MethodStatement<mods>
@@ -880,7 +884,7 @@ ClassStatement<Modif &mods> (. ID(ClassStatement) .)
 	SyncNewline<s_name>
 	{ WhereClause<_Class> SyncNewline<s_name> }
 //	{ Statement } // Conflict: assignment vs var decl
-	{ ClassMember }
+	{ ClassOrObjectMember<_Class> }
 	"End"
 	(. Optional(_Class); .)
 	Newline
@@ -1547,7 +1551,7 @@ ObjectStatement<Modif &mods> (. ID(ObjectStatement) .)
 	[ "Is" UserType ]
 	{ DoesClause }
 	SyncNewline<s_name>
-//	{ ObjectMember }
+	{ ClassOrObjectMember<_Object> }
 	"End"
 	(. Optional(_Object); .)
 	Newline
