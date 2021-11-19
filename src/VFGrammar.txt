@@ -736,6 +736,21 @@ PRODUCTIONS
 ViviFire (. ID(ViviFire) .)
 =
 	Module
+	( "Case"         (. Err(L"CASE without SELECT"); .)
+	| "Catch"        (. Err(L"CATCH without TRY"); .)
+	| "Constructor"  (. Err(L"CONSTRUCTOR without CLASS"); .)
+	| "Destructor"   (. Err(L"DESTRUCTOR without CLASS"); .)
+	| "Get"          (. Err(L"GET without PROPERTY"); .)
+	| "Else"         (. Err(L"ELSE without IF"); .)
+	| "End"          (. Err(L"END without start"); .)
+	| "Finally"      (. Err(L"FINALLY without TRY"); .)
+	| "Loop"         (. Err(L"LOOP without DO"); .)
+	| "Rem"          (. Err(L"REM is not a comment. Try ' or //"); .)
+	| "Set"          (. Err(L"SET without PROPERTY"); .)
+	| "Then"         (. Err(L"THEN without IF"); .)
+	| "Until"        (. Err(L"UNTIL without DO or LOOP"); .)
+	| "When"         (. Err(L"WHEN without BEGIN"); .)
+	)
 	EOF
 	(. printf("\n-- %d %s\n", errors->count, (errors->count == 1) ? "error" : "errors"); .)
 .
