@@ -17,28 +17,42 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
 <li><a href="Language_Features.html">Language Features</a></li>
-<li><a href="Data_Types.html">Language Features</a></li>
+<li><a rel="parent" href="Data_Types.html">Language Features</a></li>
 </ul>
 </nav>
 <main id="stub">
 <h1 id="top">Nullable Value Types</h1>
 <p>TODO</p>
 <div class="language-vivifire listing">
-<pre><code>Dim #LikesChocolate As Boolean&#10;</code></pre>
+<pre><code>Var #EatsChocolate As Boolean&#10;</code></pre>
 </div>
-<p>The variable <code>#LikesChocolate</code> can have one of three values:
+<p>The variable <code>#EatsChocolate</code> can have one of three values:
 <code>True</code>, <code>False</code>, or <code class="kw">#Null</code>.
 Its initial value is <code class="kw">#Null</code>.</p>
 <h2>To use a nullable type variable</h2>
 <p>TODO</p>
-<h3>Default values</h3>
+<h3>Initial values</h3>
 <p>TODO</p>
-<h3>To change values</h3>
+<div class="language-vivifire listing">
+<pre><code>Var #TotalUnits As Int&#10;</code></pre>
+</div>
+<p>You can use null values to show something is not given or is unknown.
+If you change <code>#TotalUnits</code> to <code>TotalUnits</code>, then you cannot show that the information is not available.</p>
+<h3>To set values</h3>
 <p>TODO</p>
-<h3>To return values</h3>
+<div class="language-vivifire listing">
+<pre><code>#TotalUnits = 5&#10;</code></pre>
+</div>
+<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>#TotalUnits = #Null&#10;</code></pre>
+</div>
+<h3>To get values</h3>
 <p>TODO</p>
 <h2>To compare nullable variables</h2>
-<p>TODO</p>
+<p>When you use nullable Boolean variables in a Boolean expression, the result can be <code>True</code>, <code>False</code>, or <code>#NULL</code>.
+The truth table that follows gives results for <code>And</code> and <code>Or</code>.
+Because <code>#b1</code> and <code>#b2</code> have three possible values, there are nine mixtures.</p>
 <table>
 <thead>
 <tr><th><code>#b1</code></th><th><code>#b2</code></th><th><code>#b1 And #b2</code></th><th><code>#b1 Or #b2</code></th></tr>
@@ -55,7 +69,7 @@ Its initial value is <code class="kw">#Null</code>.</p>
 <tr><td><code>False</code></td><td><code>False</code></td><td><samp>False</samp></td><td><samp>False</samp></td></tr>
 </tbody>
 </table>
-<h2>Nullable types and data</h2>
+<h2>Nullable types and databases</h2>
 <p>TODO</p>
 <h2>See also</h2>
 <ul class="articles">
