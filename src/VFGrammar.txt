@@ -495,7 +495,7 @@ greater_than       = ">".
 greater_or_equal   = ">=".
 inequality         = "<>".
 equals_operator    = "=".
-spaceship_operator = "<=>".
+///spaceship_operator = "<=>".
 
 // Assignment
 colon_equals = ":=".
@@ -736,7 +736,7 @@ PRODUCTIONS
 ViviFire (. ID(ViviFire) .)
 =
 	Module
-	( "Case"         (. Err(L"CASE without SELECT"); .)
+	[ "Case"         (. Err(L"CASE without SELECT"); .)
 	| "Catch"        (. Err(L"CATCH without TRY"); .)
 	| "Constructor"  (. Err(L"CONSTRUCTOR without CLASS"); .)
 	| "Destructor"   (. Err(L"DESTRUCTOR without CLASS"); .)
@@ -750,7 +750,7 @@ ViviFire (. ID(ViviFire) .)
 	| "Then"         (. Err(L"THEN without IF"); .)
 	| "Until"        (. Err(L"UNTIL without DO or LOOP"); .)
 	| "When"         (. Err(L"WHEN without BEGIN"); .)
-	)
+	]
 	EOF
 	(. printf("\n-- %d %s\n", errors->count, (errors->count == 1) ? "error" : "errors"); .)
 .
@@ -837,7 +837,7 @@ CallOrNew<int which> (. ID(CallOrNew) .)
 CallStatement (. ID(CallStatement) .)
 =
 	"Call"
-	( Name
+	( QualifiedName<0>
 	| "Base"
 	| "Constructor"
 	)
@@ -942,16 +942,16 @@ ConcatenationExpression (. ID(ConcatenationExpression) .)
 =
 	AdditiveExpression { concatenation AdditiveExpression }
 .
-ConditionalComparison (. ID(ConditionalComparison) .)
-=
-	"(" [ "Is" ] ComparisonOperator ")" EnclosedExpression
-.
+///ConditionalComparison (. ID(ConditionalComparison) .)
+///=
+///	ComparisonOperator "Is" NullCoalescingExpression
+///.
 ConditionalExpression (. ID(ConditionalExpression) .)
 =
 	( EnclosedExpression
 	| "If" EnclosedExpression
 		( "Then" EnclosedExpression "Else" EnclosedExpression
-		| "<=>" EnclosedExpression ConditionalComparison { ConditionalComparison }
+///		| "<=>" NullCoalescingExpression ConditionalComparison { ConditionalComparison }
 		)
 	)
 .

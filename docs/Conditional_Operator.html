@@ -22,68 +22,35 @@
 </nav>
 <main>
 <h1 id="top">Conditional Operator</h1>
-<p>Selects one expression to calculate, given two or more expressions, because of a condition.</p>
+<p>Selects one of two expressions to calculate because of a condition.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<h3>Boolean construct</h3>
-<pre><code>If condition Then then_result Else else_result&#10;</code></pre>
-<h3>Comparison construct</h3>
-<pre><code>If expression_1 &lt;=&gt; expression_2 { ( [ Is ] comparison_op ) result_n }&hellip;&#10;</code></pre>
+<pre><code>If condition Then true_result Else false_result&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="id">condition</code></dt>
 <dd>A Boolean expression</dd>
-<dt><code class="id">then_result</code></dt>
+<dt><code class="id">true_result</code></dt>
 <dd>An expression.
 When <code class="id">condition</code> is true, it becomes the result of the conditional expression.</dd>
-<dt><code class="id">else_result</code></dt>
-<dd>An expression.</dd>
-<dd>Mandatory in the Boolean construct.
+<dt><code class="id">false_result</code></dt>
+<dd>An expression.
 When <code class="id">condition</code> is false, it becomes the result of the conditional expression.</dd>
-<dt><code class="id">expression_1</code></dt>
-<dd>An expression of a data type that can be compared.</dd>
-<dt><code class="id">expression_2</code></dt>
-<dd>An expression of a data type compatible with <code class="id">expression_1</code>.</dd>
-<dt><code class="id">comparison_op</code></dt>
-<dd>Comes after a left parenthesis and optionally <code class="kw">Is</code>.</dd>
-<dt><code class="id">result_n</code></dt>
-<dd>One of two or more expressions calculated only when the related operator <code class="id">comparison_op</code> makes a true comparison between <code class="id">expression_1</code> and <code class="id">expression_2</code>.</dd>
 </dl>
 <h2>Instructions</h2>
-<h3>Boolean construct</h3>
-<p>The Boolean construct can look almost the same as the statement <code class="kw">If&hellip;Else</code>.
+<p>The conditional operator can look almost the same as the statement <code class="kw">If&hellip;Else</code>.
 But the operator evaluates expressions, not statements.</p>
-<p>When <code class="id">condition</code> evaluates as true, <code class="id">then_result</code> is evaluated and its value is the result of the operation&mdash;<code class="id">else_result</code> is not evaluated.
-When <code class="id">condition</code> evaluates as false, <code class="id">else_result</code> is evaluated and its value is the result of the operation&mdash;<code class="id">then_result</code> is not evaluated.</p>
-<p>Usually, <code class="id">then_result</code> and <code class="id">else_result</code> must be compatible data types.
-But they can be different types if, for example, the outer expression can accept more than one data type, a polymorphic method.</p>
-<h3>Comparison construct</h3>
-<p>The comparison construct lets you compare two values, and returns a different value given how they compare.
-This construct can look almost the same as the statement <code class="kw">Select&hellip;Case</code>.</p>
-<p>With this construct, you must use the comparison operators <span class="ops"><code>&lt;</code>, <code>=</code>, and <code>&gt;</code></span>.
-You can use all three, or you can put them together as <span class="ops"><code>&lt;=</code>, <code>&gt;=</code>, or <code>&lt;&gt;</code></span>.</p>
-<p>With all three comparisons, the expression must have three <code class="kw">Is</code> clauses with three result values.
-With only two comparisons, the expression then must have only two <code class="kw">Is</code> clauses with two result values.</p>
-<p>Usually the data types of the result expressions must be compatible.
-But they can be different types if, for example, the outer expression can accept more than one data type, a polymorphic method.</p>
+<p>When <code class="id">condition</code> is true, <code class="id">true_result</code> evaluates and its value becomes the result of the operation.
+Thus <code class="id">false_result</code> does not evaluate.</p>
+<p>When <code class="id">condition</code> is false, <code class="id">false_result</code> evaluates and its value becomes the result of the operation.
+Thus <code class="id">true_result</code> does not evaluate.</p>
+<p>Usually, <code class="id">true_result</code> and <code class="id">false_result</code> must be compatible data types.
+But they can be different types if, for example, the outer expression can accept more than one data type, an overloaded method.</p>
 <h2 id="Examples">Examples</h2>	
-<h3>Boolean construct</h3>
 <div class="language-vivifire listing">
 <pre><code>Function FootOrFeet(dist As Real) As String
     Return If dist = 1.0 Then "foot" Else "feet"
-End Function&#10;</code></pre>
-</div>
-<h3>Comparison construct</h3>
-<div class="language-vivifire listing">
-<pre><code>Function Polarity(x As Real) As String
-    Return If x &lt;=&gt; 0.0 (&lt;) "negative" (=) "neutral" (&gt;) "positive"
-End Function&#10;</code></pre>
-</div>
-<hr>
-<div class="language-vivifire listing">
-<pre><code>Function FootOrFeet(dist As Real) As String
-    Return If dist &lt;=&gt; 1.0 (=) "foot" (&lt;&gt;) "feet"
 End Function&#10;</code></pre>
 </div>
 <h2>See also</h2>
