@@ -21,7 +21,7 @@ extern Args args;
 COMPILER ViviFire
 
 enum case_type { case_zero, case_expr, case_else };
-enum option_type { option_default, then_found, then_not_found };
+enum option_type { option_default, WITH_THEN, WITHOUT_THEN };
 enum ternary { TERNARY0, TERNARY1, TERNARY2, YES = TERNARY1, NO = TERNARY2 };
 enum when_type { when_zero = 0, when_done = 1, when_none = 2, when_else = 3 };
 enum { NO_BITS, YES_BITS };
@@ -252,12 +252,12 @@ void Optional(int kind, option_type nOption = option_default) {
 		break;
 	case _Then:
 		if (nOption == option_default && la->kind == _Then) {
-			nOption = then_found;
+			nOption = WITH_THEN;
 			Get();
 		}
-		if (nOption == then_found && option.If_Then == NO)
+		if (nOption == WITH_THEN && option.If_Then == NO)
 			Err(L"IF cannot have THEN because of @Option");
-		else if (nOption == then_not_found && option.If_Then == YES)
+		else if (nOption == WITHOUT_THEN && option.If_Then == YES)
 			Err(L"IF must have THEN because of @Option");
 		break;
 	default:
@@ -328,6 +328,7 @@ bool IsAssignmentOp() {
 	switch (la->kind) {
 	case _concatenation: case _plus: case _minus: case _multiplication: case _division:
 	case _Mod: case _Rem: case _SHL: case _SHR: case _And: case _Or: case _Xor:
+		if (scanner->Peek()->kind != _equals_operator) return false;
 	case _equals_operator: case _colon_equals:
 		return true;
 	}
@@ -736,6 +737,8 @@ PRODUCTIONS
 ViviFire (. ID(ViviFire) .)
 =
 	Module
+
+	// Catch errors in compound statements.
 	[ "Case"         (. Err(L"CASE without SELECT"); .)
 	| "Catch"        (. Err(L"CATCH without TRY"); .)
 	| "Constructor"  (. Err(L"CONSTRUCTOR without CLASS"); .)
@@ -751,8 +754,10 @@ ViviFire (. ID(ViviFire) .)
 	| "Until"        (. Err(L"UNTIL without DO or LOOP"); .)
 	| "When"         (. Err(L"WHEN without BEGIN"); .)
 	]
+
 	EOF
-	(. printf("\n-- %d %s\n", errors->count, (errors->count == 1) ? "error" : "errors"); .)
+
+	(. wprintf(L"\n-- %d %ls\n", errors->count, (errors->count == 1) ? L"error" : L"errors"); .)
 .
 
 /*A*/
@@ -828,11 +833,20 @@ Block<int &tkn> (. ID(Block) .)
 	( "Do" | "For" | "Function" | "Method" | "Property" | "Sub" | "While" )
 .
 /*C*/
-CallOrNew<int which> (. ID(CallOrNew) .)
+CallOrNew<int which, Modif *mods> (. ID(CallOrNew) .)
 =
-	UserType ObjectName
-	[ comma[line_break] UnenclosedArgumentList ]
-	SyncNewline<s_name>
+	(.
+	bool bShared = false;
+	if (mods) {
+		bShared = mods->allow(Modif::Shared);
+		mods->validate();
+	}
+	.)
+	UnenclosedArgumentList
+	[ IF (la->kind == _line_break && scanner->Peek()->kind == _Begin) // FIXME: multiple line breaks?
+		SyncNewline<s_name>
+		CompoundNewStatement
+	]
 .
 CallStatement (. ID(CallStatement) .)
 =
@@ -928,15 +942,28 @@ CompoundIfStatement<option_type nThen> (. ID(CompoundIfStatement) .)
 	}
 	"End"
 	(. Optional(_If); .)
-.CompoundStatement (. ID(CompoundStatement) .)
+.
+CompoundNewStatement (. ID(CompoundNewStatement) .)
 =
-	( DoStatement
-	| ForStatement
-	| IfStatement
-	| SelectStatement
-	| TryStatement
-	| WhileStatement
-	)
+	(.
+	bool bInitExpr = false;
+	wchar_t *type_name = nullptr;
+	.)
+///	( "New" (. bNew = true; .)
+///	| (. if (option.New) Err(L"NEW is mandatory  because of @OPTION"); .)
+///	)
+	"Begin"
+		[ "Call" QualifiedName<0>
+			[ InitializationExpression (. bInitExpr = true; .) ]
+		| UserType
+		]
+		SyncNewline<s_name>
+		[	NewMember (. if (bInitExpr) Err(L"Expected End after initialization expression"); .)
+			{ NewMember }
+		]
+		"End"
+	[ "New" | identifier ] // TODO: test type_name
+	(. coco_string_delete(type_name); .)
 .
 ConcatenationExpression (. ID(ConcatenationExpression) .)
 =
@@ -1177,11 +1204,11 @@ EventStatement (. ID(EventStatement) .)
 .
 ExitStatement (. ID(ExitStatement) .)
 =
-	(. int tkn = 0; .)
+	(. int kind = 0; .)
 	"Exit"
 	( identifier
-	| Block<tkn> { WEAK comma Block<tkn> }
-	| "Program" [ Expression ]
+	| Block<kind> { WEAK comma Block<kind> }
+	| "Program" [ EnclosedExpression ]
 	)
 .
 Expression (. ID(Expression) .)
@@ -1275,14 +1302,6 @@ GotoStatement (. ID(GotoStatement) .)
 .
 /*H*/
 /*I*/
-/*
-IdentifierExpression (. ID(IdentifierExpression) .)
-=
-	( IF (IsDict()) Name "!" identifier
-	| PropertyOrCall { WEAK dot PropertyOrCall }
-	)
-.
-*/
 IdentifierStatement (. ID(IdentifierStatement) .)
 =
 	// Related: SimpleExpression
@@ -1301,21 +1320,23 @@ IdentifierStatement (. ID(IdentifierStatement) .)
 	}
 	[ IF (IsAssignmentOp())
 		AssignmentStatement
-	| // A name must come before to be a proc call.
-		(. if (!IsIdentifier(t->kind)) Err(L"Unexpected symbol in IdentifierStatement"); .)
-		UnenclosedArgumentList
+	|
+		CallOrNew<0, nullptr>
 	]
 .
 IfStatement (. ID(IfStatement) .)
 =
 	"If" Expression
 	(	"Then"
-		( CompoundIfStatement<then_found>
-		| (. if (option.If_End) Err(L"IF statement must use block construct because of @OPTION"); .)
+		(
+			CompoundIfStatement<WITH_THEN>
+		|
+			(. if (option.If_End) Err(L"IF statement must use block construct because of @OPTION"); .)
 			SimpleStatement
 			[ "Else" SimpleStatement ]
 		)
-	|	CompoundIfStatement<then_not_found>
+	|
+		CompoundIfStatement<WITHOUT_THEN>
 	)
 	SyncNewline<s_name>
 .
@@ -1508,39 +1529,14 @@ NamespaceStatement<Modif &mods> (. ID(NamespaceStatement) .)
 .
 NewMember (. ID(NewMember) .)
 =
-	( "New" CallOrNew<2>
+	( NewStatement
 	| ArgumentList SyncNewline<s_name>
 	)
 .
-NewStatement<Modif *mods> (. ID(NewStatement) .)
+NewStatement (. ID(NewStatement) .)
 =
-(.	bool bShared = false;
-	if (mods) {
-		bShared = mods->allow(Modif::Shared);
-		mods->validate();
-	}
-.)
-	(. bool bNew = false; .)
-	(. bool bInitExpr = false; .)
-	(. wchar_t *type_name = nullptr; .)
-	( "New" (. bNew = true; .)
-	| (. if (option.New) Err(L"NEW is mandatory  because of @OPTION"); .)
-	)
-	CallOrNew<0> // FIXME: not 0
-	[ "Begin"
-		[ "Call" QualifiedName<0>
-			[ InitializationExpression (. bInitExpr = true; .) ]
-		| UserType
-		]
-		SyncNewline<s_name>
-		[	NewMember (. if (bInitExpr) Err(L"Expected End after initialization expression"); .)
-			{ NewMember }
-		]
-		"End"
-	[ "New" | identifier ] // TODO: test type_name
-		SyncNewline<s_name>
-	]
-	(. coco_string_delete(type_name); .)
+	"New" UserType CallOrNew<0, nullptr>
+	SyncNewline<s_name>
 .
 Newline (. ID(Newline) .)
 =
@@ -1784,11 +1780,16 @@ SimpleStatement (. ID(SimpleStatement) .)
 .
 Statement (. ID(Statement) .)
 =
-	( IF (IsNewStatement()) NewStatement<nullptr>
-	| DimStatement<nullptr>
+	( DimStatement<nullptr>
+	| NewStatement
 	| EventStatement
 	| SimpleStatement SyncNewline<s_name>
-	| CompoundStatement
+	| DoStatement
+	| ForStatement
+	| IfStatement
+	| SelectStatement
+	| TryStatement
+	| WhileStatement
 	)
 .
 StringExpression (. ID(StringExpression) .)
