@@ -761,7 +761,7 @@ ViviFire (. ID(ViviFire) .)
 .
 
 /*A*/
-AdditiveExpression (. ID(AdditiveExpression) .)
+AdditiveExpression (. ID(Additive) .)
 =
 	MultiplicativeExpression { ( '+' | '-' ) MultiplicativeExpression }
 .
@@ -823,7 +823,7 @@ BitFieldType<int &tkn> (. ID(BitFieldType) .)
 	(. tkn = la->kind; .)
 	( "SBits" | "UBits" ) "(" integer_literal ")"
 .
-BitShiftExpression (. ID(BitShiftExpression) .)
+BitShiftExpression (. ID(BitShift) .)
 =
 	UnaryExpression { ( "SHL" | "SHR" ) UnaryExpression }
 .
@@ -918,7 +918,7 @@ ClassStatement<Modif &mods> (. ID(ClassStatement) .)
 	(. Optional(_Class); .)
 	Newline
 .
-ComparisonExpression (. ID(ComparisonExpression) .)
+ComparisonExpression (. ID(Comparison) .)
 =
 	NullCoalescingExpression { ComparisonOperator NullCoalescingExpression }
 .
@@ -965,7 +965,7 @@ CompoundNewStatement (. ID(CompoundNewStatement) .)
 	[ "New" | identifier ] // TODO: test type_name
 	(. coco_string_delete(type_name); .)
 .
-ConcatenationExpression (. ID(ConcatenationExpression) .)
+ConcatenationExpression (. ID(Concatenation) .)
 =
 	AdditiveExpression { concatenation AdditiveExpression }
 .
@@ -973,7 +973,7 @@ ConcatenationExpression (. ID(ConcatenationExpression) .)
 ///=
 ///	ComparisonOperator "Is" NullCoalescingExpression
 ///.
-ConditionalExpression (. ID(ConditionalExpression) .)
+ConditionalExpression (. ID(Conditional) .)
 =
 	( EnclosedExpression
 	| "If" EnclosedExpression
@@ -1025,7 +1025,7 @@ ConvertibleType (. ID(ConvertibleType) .)
 	( PrimitiveType<NO_BITS> | UserType )
 .
 /*D*/
-DateTimeExpression (. ID(DateTimeExpression) .)
+DateTimeExpression (. ID(DateTime) .)
 =
 	( date_literal [ time_literal ]
 	| time_literal
@@ -1145,7 +1145,7 @@ EnclosedArgumentList (. ID(EnclosedArgumentList) .)
 	}
 	")"
 .
-EnclosedExpression (. ID(EnclosedExpression) .)
+EnclosedExpression (. ID(Enclosed) .)
 =
 	LogicalExpression
 .
@@ -1384,7 +1384,7 @@ IsExpression (. ID(IsExpression) .)
 /*J*/
 /*K*/
 /*L*/
-LogicalExpression (. ID(LogicalExpression) .)
+LogicalExpression (. ID(Logical) .)
 =
 	ComparisonExpression { LogicalOperator ComparisonExpression }
 .
@@ -1501,7 +1501,7 @@ ModuleStatement<bool bProcEntry> (. ID(ModuleStatement) .)
 	(. if (bProcEntry) Warn(L"Executable statements at module level ignored when entry point is a procedure"); .)
 	Statement
 .
-MultiplicativeExpression (. ID(MultiplicativeExpression) .)
+MultiplicativeExpression (. ID(Multiplicative) .)
 =
 	PowerExpression { MultiplicativeOperator PowerExpression }
 .
@@ -1542,7 +1542,7 @@ Newline (. ID(Newline) .)
 =
 	line_break { line_break }
 .
-NullCoalescingExpression (. ID(NullCoalescingExpression) .)
+NullCoalescingExpression (. ID(NullCoalescing) .)
 =
 	TypeExpression [ "|?" NullCoalescingExpression ]
 .
@@ -1573,11 +1573,11 @@ PassableType (. ID(PassableType) .)
 	( PrimitiveType<NO_BITS> | UserType )
 	[ Rank ]
 .
-PowerExpression (. ID(PowerExpression) .)
+PowerExpression (. ID(Power) .)
 =
 	BitShiftExpression [ "^" PowerExpression ]
 .
-PrimaryExpression (. ID(PrimaryExpression) .)
+PrimaryExpression (. ID(Primary) .)
 =
 	( char_literal
 	| integer_constant
@@ -1752,7 +1752,7 @@ SelfConstraint (. ID(SelfConstraint) .)
 	"Self"
 	( "<" | "<=" | "Is" ) UserType
 .
-SimpleExpression (. ID(SimpleExpression) .)
+SimpleExpression (. ID(Simple) .)
 =
 	// Related: IdentifierStatement
 	PrimaryExpression
@@ -1924,7 +1924,7 @@ TypeConversion (. ID(TypeConversion) .)
 	| InUnitClause
 	)
 .
-TypeExpression (. ID(TypeExpression) .)
+TypeExpression (. ID(Type) .)
 =
 	ConcatenationExpression [ IsExpression | TypeConversion ]
 .
@@ -1937,7 +1937,7 @@ TypeParameterList (. ID(TypeParameterList) .)
 	'[' TypeParameter { WEAK comma TypeParameter } ']'
 .
 /*U*/
-UnaryExpression (. ID(UnaryExpression) .)
+UnaryExpression (. ID(Unary) .)
 =
 	{ UnaryOperator } SimpleExpression
 .
