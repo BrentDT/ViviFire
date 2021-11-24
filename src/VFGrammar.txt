@@ -1490,6 +1490,7 @@ ModuleMember (. ID(ModuleMember) .)
 	| MethodStatement<mods>
 	| NamespaceStatement<mods>
 	| ObjectStatement<mods>
+	| PropertyStatement<mods>
 	| StructStatement<mods>
 	| SubStatement<mods>
 	| TraitStatement<mods>
