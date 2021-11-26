@@ -15,7 +15,11 @@
 #include "AST.h"
 #include "Modifier.h"
 
-#define ID(n) static const wchar_t *s_name = L#n; wprintf(L">%s", s_name);
+// IMPORTANT: Use this macro with all productions.
+// 'SyncNewline' gets passed 's_name'.
+#define ID(n) \
+	static const wchar_t *s_name = L#n; \
+	wprintf(L">%ls", s_name);
 extern Args args;
 
 COMPILER ViviFire
