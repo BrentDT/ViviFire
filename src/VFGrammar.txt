@@ -10,6 +10,7 @@
  */
 
 #include <assert.h>
+#include <memory>
 #include <stdio.h>
 #include "Args.h"
 #include "AST.h"
@@ -53,19 +54,21 @@ struct tag_option {
 
 	bool match(const wchar_t *s) const {
 		// Returns true if next token is the same as s, then consumes it.
-		if (parser->la->kind != _identifier || wcscmp(s, parser->la->val) == NULL) return false;
+		if (parser->la->kind != _identifier || _wcsicmp(s, parser->la->val) != 0) return false;
 		parser->Get();
 		return true;
 	}
 	bool left_match(const wchar_t *s) const {
 		// Returns true if next token starts with s, then consumes it.
-		if (parser->la->kind != _identifier || wcsstr(parser->la->val, s) != parser->la->val) return false;
+		std::unique_ptr<wchar_t> lcval(coco_string_create_lower(parser->la->val));
+		if (parser->la->kind != _identifier || wcsstr(lcval.get(), s) != lcval.get()) return false;
 		parser->Get();
 		return true;
 	}
 
 	void Parse() {
 		static const wchar_t *s_block = L"block", *s_equals = L"equals", *s_id = L"id", *s_no = L"no", *s_warning = L"warning";
+		parser->Get();
 		switch (parser->la->kind) {
 		case _Dim:
 			parser->Get();
@@ -713,11 +716,11 @@ LineContinuation = '_'{notEOL}eol[n].
 atOption = "@Option". (. option.Parse(); .)
 atError  = "@Error". (.
 	int l = la->line, c = la->col;
-	Get(); //FIXME: necessary?
+	Get();
 	Expect(_string_literal);
 	errors->Error(l, c, t->val); .)
 atWarn   = "@Warn". (.
-	Get(); //FIXME: necessary?
+	Get();
 	Expect(_string_literal);
 	Warn(t->val); .)
 
