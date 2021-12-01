@@ -239,11 +239,18 @@ void Optional(int kind, option_type nOption = option_default) {
 	case _Trait:        // End [ Trait ]
 	case _Try:          // End [ Try ]
 	case _While:  // End [ While ]
-		if (la->kind == kind) {
-			Get();
-			if (option.End_block == NO) Err(L"END cannot have block type because of @Option");
+		if (la->kind == _line_break) { // END without block type.
+			if (option.End_block == YES) Err(L"END must have block type because of @Option");
+		} else { // END with block type.
+			if (option.End_block == NO) {
+				Get();
+				Err(L"END cannot have block type because of @Option");
+			} else if (la->kind != kind) { // Incorrect block type.
+				Expect(kind);
+			} else {
+				Get();
+			}
 		}
-		else if (option.End_block == YES) Err(L"END must have block type because of @Option");
 		break;
 	case _For:  // End [ For [ name ] ]
 		if (la->kind == _For) {
