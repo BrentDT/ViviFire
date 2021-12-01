@@ -149,8 +149,10 @@ struct tag_option {
 				break;
 			} else if (left_match(s_warning)) {
 				short level = (short)parser->t->val[coco_string_length(s_warning)]; // Valid: '\0', '1', '2', '3', '4', & '5'.
-				if (wcschr(L"12345", level) == NULL) goto bad_option;
-				 if (level) level -= L'0'; else level = 4; // Default is 4.
+				if (level == 0) {
+					level = L'4'; // Default is 4.
+				} else if (level < L'1' || level > L'5') goto bad_option;
+				level -= L'0';
 				if (match(L"error")) {
 					warning_error = level; // @Option Warning[1-5] Error
 					break;
