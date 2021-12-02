@@ -826,8 +826,10 @@ AsTypeClause<bool bBits> (. ID(AsTypeClause) .)
 /*B*/
 BaseUnitStatement<class Modif &mods> (. ID(BaseUnitStatement) .)
 =
-	(. mods.allow(Modif::Deprecated); .)
-	(. mods.validate(); .)
+	(.
+	mods.allow(Modif::Deprecated);
+	mods.validate();
+	.)
 	"Base"
 	( "Unit" identifier InUnitClause
 		[ "=" MultiplicativeExpression ]
@@ -918,10 +920,12 @@ ClassOrObjectMember<int kind> (. ID(ClassOrObjectMember) .)
 .
 ClassStatement<Modif &mods> (. ID(ClassStatement) .)
 =
-	(. bool bAbstract = mods.allow(Modif::Abstract); .)
-	(. mods.allow(Modif::Deprecated); .)
-	(. bool bOpen = mods.allow(Modif::Open); .)
-	(. mods.validate(); .)
+	(.
+	bool bAbstract = mods.allow(Modif::Abstract);
+	mods.allow(Modif::Deprecated);
+	bool bOpen = mods.allow(Modif::Open);
+	mods.validate();
+	.)
 	"Class" identifier
 	[ TypeParameterList ]
 	[ "Is" UserType ]
@@ -1005,8 +1009,10 @@ ConstantDeclarator (. ID(ConstantDeclarator) .)
 .
 ConstStatement<Modif &mods> (. ID(ConstStatement) .)
 =
-	(. mods.allow(Modif::Deprecated); .)
-	(. mods.validate(); .)
+	(.
+	mods.allow(Modif::Deprecated);
+	mods.validate();
+	.)
 	"Const" ConstantDeclarator { WEAK comma ConstantDeclarator }
 	SyncNewline<s_name>
 .
@@ -1027,8 +1033,10 @@ ConstructorConstraint (. ID(ConstructorConstraint) .)
 .
 ConstructorStatement<Modif &mods> (. ID(ConstructorStatement) .)
 =
-	(. mods.allow(Modif::Deprecated); .)
-	(. mods.validate(); .)
+	(.
+	mods.allow(Modif::Deprecated);
+	mods.validate();
+	.)
 	"Constructor"
 	[ FormalParameterList<_Constructor> | DimOrVar ]
 	SyncNewline<s_name>
@@ -1084,8 +1092,10 @@ DeclareSignature<bool isAlias> (. ID(DeclareSignature) .)
 .
 DeclareStatement<Modif &mods> (. ID(DeclareStatement) .)
 =
-	(. mods.allow(Modif::Deprecated); .)
-	(. mods.validate(); .)
+	(.
+	mods.allow(Modif::Deprecated);
+	mods.validate();
+	.)
 	(. bool isAlias = true; .)
 	"Declare"
 	[ string_literal
@@ -1103,7 +1113,9 @@ DeclareStatement<Modif &mods> (. ID(DeclareStatement) .)
 .
 DestructorStatement<Modif &mods> (. ID(DestructorStatement) .)
 =
-	(. mods.validate(); .)
+	(.
+	mods.validate();
+	.)
 	"Destructor" Newline
 	{ Statement }
 	"End"
@@ -1118,13 +1130,14 @@ DimOrVar (. ID(DimOrVar) .)
 .
 DimStatement<Modif *mods> (. ID(DimStatement) .)
 =
-// Allow @Deprecated?
-(.	bool bShared = false;
+	(.
+	// Permit @Deprecated?
+	bool bShared = false;
 	if (mods) {
 		bShared = mods->allow(Modif::Shared);
 		mods->validate();
 	}
-.)
+	.)
 	DimOrVar
 	DeclaratorList<NO_BITS>
 	SyncNewline<s_name>
@@ -1184,10 +1197,12 @@ EnumMember (. ID(EnumMember) .)
 .
 EnumStatement<Modif &mods> (. ID(EnumStatement) .)
 =
-	(. mods.allow(Modif::Deprecated); .)
-	(. bool bFlags = mods.allow(Modif::Flags); .)
-	(. bool bOpen = mods.allow(Modif::Open); .)
-	(. mods.validate(); .)
+	(.
+	mods.allow(Modif::Deprecated);
+	bool bFlags = mods.allow(Modif::Flags);
+	bool bOpen = mods.allow(Modif::Open);
+	mods.validate();
+	.)
 	"Enum"
 	( identifier
 	| (. if (bFlags || bOpen || option.Enum_id) {
@@ -1285,9 +1300,11 @@ ForStatement (. ID(ForStatement) .)
 .
 FunctionStatement<Modif &mods> (. ID(FunctionStatement) .)
 =
-	(. mods.allow(Modif::Deprecated); .)
-	(. bool bShared = mods.allow(Modif::Shared); .)
-	(. mods.validate(); .)
+	(.
+	mods.allow(Modif::Deprecated);
+	bool bShared = mods.allow(Modif::Shared);
+	mods.validate();
+	.)
 	(. bool bodied = true; .)
 	FunctionSignature<mods, bodied>
 	[ IF (bodied)
@@ -1431,13 +1448,15 @@ LoopBody<bool isPreconditional> (. ID(LoopBody) .)
 /*M*/
 MethodStatement<Modif &mods> (. ID(MethodStatement) .)
 =
-	(. bool bAbstract = mods.allow(Modif::Abstract); .)
-	(. mods.allow(Modif::Deprecated); .)
-	(. bool bIterator = mods.allow(Modif::Iterator); .)
-	(. bool bOpen     = mods.allow(Modif::Open); .)
-	(. bool bOverride = mods.allow(Modif::Override); .)
-	(. bool bShared   = mods.allow(Modif::Shared); .)
-	(. mods.validate(); .)
+	(.
+	bool bAbstract = mods.allow(Modif::Abstract);
+	mods.allow(Modif::Deprecated);
+	bool bIterator = mods.allow(Modif::Iterator);
+	bool bOpen     = mods.allow(Modif::Open);
+	bool bOverride = mods.allow(Modif::Override);
+	bool bShared   = mods.allow(Modif::Shared);
+	mods.validate();
+	.)
 	MethodSignature<mods>
 	{ Statement }
 	"End"
@@ -1489,8 +1508,7 @@ Module (. ID(Module) .)
 	SyncNewline<s_name>
 	{ WhereStatement }
 	{ RequireStatement }
-	{ IF (la->kind == _Base) ModuleMember  // Assume "Base Unit" because Base object is invalid here.
-	| ModuleMember
+	{ ModuleMember
 	| ModuleStatement<bProcEntry>
 	}
 .
@@ -1537,8 +1555,10 @@ Name (. ID(Name) .)
 .
 NamespaceStatement<Modif &mods> (. ID(NamespaceStatement) .)
 =
-	(. mods.allow(Modif::Deprecated); .)
-	(. mods.validate(); .)
+	(.
+	mods.allow(Modif::Deprecated);
+	mods.validate();
+	.)
 	"Namespace" QualifiedName<_identifier> SyncNewline<s_name>
 	{ ModuleMember }
 	"End"
@@ -1573,9 +1593,11 @@ ObjectName (. ID(ObjectName) .)
 .
 ObjectStatement<Modif &mods> (. ID(ObjectStatement) .)
 =
-	(. mods.allow(Modif::Deprecated); .)
-	(. bool bShared = mods.allow(Modif::Shared); .)
-	(. mods.validate(); .)
+	(.
+	mods.allow(Modif::Deprecated);
+	bool bShared = mods.allow(Modif::Shared);
+	mods.validate();
+	.)
 	"Object" ObjectName
 	[ "Is" UserType ]
 	{ DoesClause }
@@ -1661,16 +1683,18 @@ PropertySignature<Modif &mods> (. ID(PropertySignature) .)
 .
 PropertyStatement<Modif &mods> (. ID(PropertyStatement) .)
 =
-	(. bool bAbstract  = mods.allow(Modif::Abstract); .)
-	(. bool bBacked    = mods.allow(Modif::Backed); .)
-	(. mods.allow(Modif::Deprecated); .)
-	(. bool bIterator  = mods.allow(Modif::Iterator); .)
-	(. bool bOpen      = mods.allow(Modif::Open); .)
-	(. bool bOverride  = mods.allow(Modif::Override); .)
-	(. bool bReadOnly  = mods.allow(Modif::ReadOnly); .)
-	(. bool bShared    = mods.allow(Modif::Shared); .)
-	(. bool bWriteOnly = mods.allow(Modif::WriteOnly); .)
-	(. mods.validate(); .)
+	(.
+	bool bAbstract  = mods.allow(Modif::Abstract);
+	bool bBacked    = mods.allow(Modif::Backed);
+	mods.allow(Modif::Deprecated);
+	bool bIterator  = mods.allow(Modif::Iterator);
+	bool bOpen      = mods.allow(Modif::Open);
+	bool bOverride  = mods.allow(Modif::Override);
+	bool bReadOnly  = mods.allow(Modif::ReadOnly);
+	bool bShared    = mods.allow(Modif::Shared);
+	bool bWriteOnly = mods.allow(Modif::WriteOnly);
+	mods.validate();
+	.)
 	PropertySignature<mods>
 	[ IF (la->kind == _Get || la->kind == _Set)
 		[	"Get" Newline
@@ -1817,8 +1841,10 @@ StringExpression (. ID(StringExpression) .)
 .
 StructStatement<Modif &mods> (. ID(StructStatement) .)
 =
-	(. mods.allow(Modif::Deprecated); .)
-	(. mods.validate(); .)
+	(.
+	mods.allow(Modif::Deprecated);
+	mods.validate();
+	.)
 	"Struct" identifier
 	[ TypeParameterList ]
 	[ "Is" ValueType ]
@@ -1837,22 +1863,25 @@ StructProcedure (. ID(StructProcedure) .)
 StructState (. ID(StructState) .)
 =
 	(. Modif mods(this); .)
-	[ ModifiersClause<mods> ]
-	(.
-	mods.allow(Modif::Deprecated);
-	mods.allow(Modif::Shared);
-	mods.validate();
-	.)
-
+	[
+		ModifiersClause<mods>
+		(.
+		mods.allow(Modif::Deprecated);
+		mods.allow(Modif::Shared);
+		mods.validate();
+		.)
+	]
 	[ DimOrVar ] Declarator<YES_BITS>
 	SyncNewline<s_name>
 .
 SubStatement<Modif &mods> (. ID(SubStatement) .)
 =
-	(. mods.allow(Modif::Deprecated); .)
-	(. bool bIterator = mods.allow(Modif::Iterator); .)
-	(. bool bShared   = mods.allow(Modif::Shared); .)
-	(. mods.validate(); .)
+	(.
+	mods.allow(Modif::Deprecated);
+	bool bIterator = mods.allow(Modif::Iterator);
+	bool bShared   = mods.allow(Modif::Shared);
+	mods.validate();
+	.)
 	SubSignature
 	{ WhereClause<_Sub> SyncNewline<s_name> }
 	{ Statement }
@@ -1900,9 +1929,11 @@ TraitMember (. ID(TraitMember) .)
 .
 TraitStatement<Modif &mods> (. ID(TraitStatement) .)
 =
-	(. bool bAbstract = mods.allow(Modif::Abstract); .)
-	(. mods.allow(Modif::Deprecated); .)
-	(. mods.validate(); .)
+	(.
+	bool bAbstract = mods.allow(Modif::Abstract);
+	mods.allow(Modif::Deprecated);
+	mods.validate();
+	.)
 	"Trait" Name
 	[ TypeParameterList ]
 	{ DoesClause }
@@ -1995,9 +2026,11 @@ UnitAlias (. ID(UnitAlias) .)
 .
 UnitStatement<Modif &mods> (. ID(UnitStatement) .)
 =
-	(. mods.allow(Modif::Deprecated); .)
-	(. bool bSI = mods.allow(Modif::SI); .)
-	(. mods.validate(); .)
+	(.
+	mods.allow(Modif::Deprecated);
+	bool bSI = mods.allow(Modif::SI);
+	mods.validate();
+	.)
 	"Unit" [ UnitParameter ]
 	UnitAlias { UnitAlias }
 	[ '=' AdditiveExpression ]
