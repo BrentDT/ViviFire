@@ -68,6 +68,7 @@ struct tag_option {
 
 	void Parse() {
 		static const wchar_t *s_block = L"block", *s_equals = L"equals", *s_id = L"id", *s_no = L"no", *s_warning = L"warning";
+		if (last) Err(L"@OPTION not permitted after LAST");
 		parser->Get();
 		switch (parser->la->kind) {
 		case _Dim:
