@@ -485,6 +485,7 @@ left_bracket  = "[".
 right_bracket = "]".
 left_brace    = "{".
 right_brace   = "}".
+backslash     = "\\".
 
 // Unary
 plus  = "+".
@@ -583,12 +584,12 @@ string_constant =
 string_literal =
 	['_']          // continuation
 	'"'{str}'"'    // normal string
-	{ ['/'|'\\']   // path string
+	{ ///['/'|'\\']   // path string
 	  '"'{str}'"'  // double quotes
 	}.
 
 malformed_string_literal =
-	['_']'"'{str}{'"'['/'|'\\']'"'{str}}['"'('/'|'\\')].
+	['_']'"'{str}{'"'/*['/'|'\\']*/'"'{str}}/*['"'('/'|'\\')]*/.
 
 time_literal =
 	dec{dec}":"dec{dec}[":"dec{dec}["."dec{dec}]].
@@ -1834,10 +1835,13 @@ Statement (. ID(Statement) .)
 	| WhileStatement
 	)
 .
-StringExpression (. ID(StringExpression) .)
+StringExpression (. ID(String) .)
 =
 	( string_literal | string_constant )
-	{ string_literal | string_constant }
+	{ IF (la->kind == _string_constant || la->kind == _string_literal || la->kind == _division || la->kind == _backslash)
+		[ "/" | "\\" ]
+		( string_literal | string_constant )
+	}
 .
 StructStatement<Modif &mods> (. ID(StructStatement) .)
 =
