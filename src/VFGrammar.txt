@@ -1339,7 +1339,7 @@ GotoStatement (. ID(GotoStatement) .)
 IdentifierStatement (. ID(IdentifierStatement) .)
 =
 	// Related: SimpleExpression
-	( Name
+	( Name [ TypeArgumentList ]
 	| "Base"
 	| "Self"
 	)
