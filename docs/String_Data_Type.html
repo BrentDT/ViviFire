@@ -16,7 +16,7 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
-<li><a href="Data_Type_Summary.html">Data Type Summary</a></li>
+<li><a rel="parent" href="Data_Type_Summary.html">Data Type Summary</a></li>
 </ul>
 </nav>
 <main>
@@ -30,23 +30,53 @@ A string can contain from zero to TBD characters.</p>
 <dt>Type characters</dt>
 <dd>When you put a dollar sign (<code class="op">$</code>) at the end of a name, it declares it has the type <code class="kw">String</code>.</dd>
 </dl>
-<h2>String literals</h2>
+<h2>String literals and constants</h2>
+<h3>String literal</h3>
 <div class="language-literal">
-<h3>Usual string</h3>
+<div>Syntax</div>
 <pre><code>{ <kbd>&quot;</kbd> [ <var>char</var>&hellip; ] <kbd>&quot;</kbd> ]}&hellip;</code></pre>
-<h3>File-path string</h3>
-<pre><code><kbd>&quot;</kbd> [ <var>char</var>&hellip; ] <kbd>&quot;</kbd> { { <kbd>/</kbd> | <kbd>\</kbd> } <kbd>&quot;</kbd> [ <var>char</var>&hellip; ] <kbd>&quot;</kbd> }&hellip;</code></pre>
 </div>
-<p>TODO</p>
-<h2>String constants</h2>
+<p>A typical string literal starts and ends with double quotation symbols (<code class="op">&quot;</code>).
+If you write only two such symbols (<code class="op">&quot;&quot;</code>), then this is known as an <dfn>empty string</dfn>.</p>
+<p>A string can include a quotation symbol if you write two of them together.
+For example, <code class="op">&quot;&quot;&quot;&quot;</code> is a string that contains one quotation symbol.</p>
+<h3>String constant</h3>
 <div class="language-literal">
+<div>Syntax</div>
 <pre><code>{ <kbd>$</kbd> <var>name</var>
 | <kbd>$</kbd> <var>decimal</var>
 | <kbd>$H</kbd> <var>hexadecimal</var>
+| <kbd>$U</kbd> <var>hexadecimal</var>
 | <kbd>$O</kbd> <var>octal</var>
 | <kbd>$B</kbd> <var>binary</var> }</code></pre>
 </div>
-<p>TODO</p>
+<p>A string constant starts with a dollar symbol (<code class="op">$</code>).
+The remaining part can be a name or a number.
+Most string constants hold a string value of one character.
+But some named constants can hold longer strings.</p>
+<p>The numbers can be in one of four bases:
+decimal (not marked), hexadecimal (starts with <code class="op">$H</code> or <code class="op">$U</code>), octal (starts with <code class="op">$O</code>), or binary (starts with <code class="op">$B</code>).</p>
+<p>For example, the space character can be <code>$32</code>, <code>$H20</code>, <code>$U20</code>, <code>$O40</code>, or <code>$B100000</code>.</p>
+<p>You can use an underscore (<code class="op">_</code>) to divide long numbers into groups.
+For example, you can write the space character in binary as <code>$B0010_0000</code>.</p>
+<p>Several non-printable characters have names.
+For example, you can write the space character as <code>$SPACE</code>, <code>$SPC</code>, or <code>$S</code>.</p>
+<p>Some non-printable characters are known as control characters.
+But different platforms can use different control characters.
+For example, you can write the end-of-line character sequence as <code>$N</code>, which will hold <code>$10</code> on Linux and <code>$13$10</code> on Windows.
+Thus, we recommend that you use named constants to make your code easier to port.</p>
+<h3>Automatic string concatenation</h3>
+<p>You can write string literals and constants without operators between them.
+When you do, then all such strings become concatenated at compile-time.</p>
+<h3>File path string</h3>
+<p>If you must write a file path in code, then you must use the correct path separator.
+The problem is that this can be different on different platforms.
+Because of this, ViviFire has two special operators.</p>
+<p>The operators <code class="op">/</code> and <code class="op">\</code> give the path separator when put between string literals and/or constants.
+They are an alternative to the constants <code>$PATHSEP</code> and <code>$PS</code>.
+All of these give <code>&quot;/&quot;</code> on Linux and <code>&quot;\&quot;</code> on Windows.
+Although the two operators are interchangeable, we recommend that you select one for all code in a project.</p>
+<p>For example, <code>&quot;resources&quot; / &quot;graphics&quot;</code> gives <code>&quot;resources\graphics&quot;</code> on Windows.</p>
 <h2>Shared methods and properties</h2>
 <dl class="language-vivifire listing">
 <dt><pre><code>String.CharAt(str As String, pos As Int) As Char</code></pre></dt>
