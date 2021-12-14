@@ -17,7 +17,7 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Statements_Reference.html">Statements</a></li>
-<li><a href="Statements_3.html">Q&ndash;Z Statements</a></li>
+<li><a rel="parent" href="Statements_3.html">Q&ndash;Z Statements</a></li>
 </ul>
 </nav>
 <main>
@@ -30,11 +30,31 @@
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="id">expression</code></dt>
-<dd>Mandatory value to send to the loop.</dd>
+<dd>Mandatory value of a data type compatible with the return type of the procedure.
+The loop receives this value.</dd>
 </dl>
 <h2>Instructions</h2>
+<p><code class="kw">Yield</code> returns one element of a collection.
+You must use <code class="kw">Yield</code> in a method or <code class="kw">Get</code> accessor of a property with the modifier <code class="at">@Iterator</code>.
+An <dfn>iterator</dfn> is a procedure that does special iterations over a collection.</p>
+<p>The statement <code class="kw">For Each</code> consumes data from an iterator.
+Each iteration of the loop calls the iterator procedure.
+While in the procedure, <code class="kw">Yield</code> returns <code class="id">expression</code> and stores the location where execution stopped.
+Execution starts again from that location with a subsequent call to the iterator.</p>
 <p>The data type of <code class="id">expression</code> must be compatible with the return type of the procedure.</p>
-<p><code class="kw">Yield</code> is not permitted in blocks of the type <code class="kw">Finally</code>.</p>
+<p>You can use one of the statements <span class="kws"><code>Exit Method</code>, <code>Exit Property</code>, or <code>Return</code></span> to stop the iterator.</p>
+<h2>Iterator procedures</h2>
+<p>An iterator procedure must obey the rules that follow.</p>
+<ul>
+<li>It must be one of <code class="kw">Method</code> or <code class="kw">Property</code>.</li>
+<li>If <code class="kw">Property</code>, then it must have an accessor (<code class="kw">Get</code>).</li>
+<li>It must have the modifier <code class="at">@Iterator</code>.</li>
+<li>It must not have a parameter with the modifier <code class="kw">ByRef</code>.</li>
+</ul>
+<p>See <a href="Iterators.html">Iterators</a> for more information.</p>
+<h2>Exception handling</h2>
+<p><code class="kw">Yield</code> is permitted in the block <code class="kw">Try</code> of the statement <code class="kw">Try&hellip;Catch&hellip;Finally</code>.
+But it is not permitted in blocks of the types <code class="kw">Catch</code> and <code class="kw">Finally</code>.</p>
 <h2>Examples</h2>
 <p>TODO</p>
 <h2>See also</h2>
@@ -42,8 +62,8 @@
 <li><a href="For_Each_In_Statement.html">For Each Statement</a></li>
 <li><a href="Exit_Statement.html">Exit Statement</a></li>
 <!-- li><a href="Function_Statement.html">Function Statement</a></li -->
-<!-- li><a href="Iterator.html">@Iterator</a></li -->
-<!-- li><a href="Iterators.html">Iterators</a></li -->
+<li><a href="Iterator.html">@Iterator</a></li>
+<li><a href="Iterators.html">Iterators</a></li>
 <li><a href="Method_Statement.html">Method Statement</a></li>
 <li><a href="Property_Statement.html">Property Statement</a></li>
 <li><a href="Return_Statement.html">Return Statement</a></li>
