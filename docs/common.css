@@ -252,6 +252,13 @@ code.IPA {
 	}
 }
 
+@media (any-pointer: fine) {
+	/* Non-touch devices */
+	.touch-only {
+		display: none;
+	}
+}
+
 @media all and (min-width: 40em) {
 	/* Wide-screen devices */
 	dl.parts {
