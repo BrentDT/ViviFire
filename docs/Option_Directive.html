@@ -16,7 +16,7 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
-<li><a href="Directives.html">Directives</a></li>
+<li><a rel="parent" href="Directives.html">Directives</a></li>
 </ul>
 </nav>
 <main>
@@ -24,7 +24,7 @@
 <p>Makes sure that your code agrees with a given style.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<pre><code>@Option options [ , options ]&hellip;&#10;</code></pre>
+<pre><code>@Option options&hellip;&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
@@ -214,7 +214,8 @@ Thus &ldquo;kilometer&rdquo; is correct syntax, but &ldquo;km&rdquo; is incorrec
 You can use the two syntaxes together if the level for errors is less than the level for warnings.
 An example follows.</p>
 <div class="language-vivifire listing">
-<pre><code>@Option Warning1 Error, Warning5&#10;</code></pre>
+<pre><code>@Option Warning1 Error
+@Option Warning5&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
