@@ -1202,6 +1202,7 @@ EnumStatement<Modif &mods> (. ID(L"EnumStatement", 3) .)
 	mods.allow(Modif::Deprecated);
 	bool bFlags = mods.allow(Modif::Flags);
 	bool bOpen = mods.allow(Modif::Open);
+	bool bUnique = mods.allow(Modif::Unique);
 	mods.validate();
 	.)
 	"Enum"
@@ -1486,6 +1487,7 @@ Modifier<int &m> (. ID(L"Modifier", 3) .)
 	| "@ReadOnly"    (. m = Modif::ReadOnly; .)
 	| "@Shared"      (. m = Modif::Shared; .)
 	| "@SI"          (. m = Modif::SI; .)
+	| "@Unique"      (. m = Modif::Unique; .)
 	| "@WriteOnly"   (. m = Modif::WriteOnly; .)
 	)
 	[ line_break ]

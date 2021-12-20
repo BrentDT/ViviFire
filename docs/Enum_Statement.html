@@ -17,7 +17,7 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Statements_Reference.html">Statements</a></li>
-<li><a href="Statements_1.html">A&ndash;E Statements</a></li>
+<li><a rel="parent" href="Statements_1.html">A&ndash;E Statements</a></li>
 </ul>
 </nav>
 <main>
@@ -26,20 +26,26 @@
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <h3>Usual construct</h3>
-<pre><code>[ @Open ] Enum [ enumeration_name ] [ Is type ]
+<pre><code>[ modifiers ] Enum [ enumeration_name ] [ Is type ]
     member_name [ = value ]
     &hellip;
 End [ Enum ]&#10;</code></pre>
 <h3>Bit flag construct</h3>
-<pre><code>[ @Open ] @Flags Enum enumeration_name Is type
+<pre><code>[ modifiers ] @Flags Enum enumeration_name Is type
     member_name [ = value ]
     &hellip;
 End [ Enum ]&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
-<dt><code class="at">@Open</code></dt>
-<dd>Optional modifier Specifies that the enumeration can be extended.</dd>
+<dt><code class="id">modifiers</code></dt>
+<dd><p>Optional modifiers:</p>
+	<ul>
+	<li><code class="at">@Deprecated</code> &ndash; See <a href="Deprecated.html">@Deprecated</a>.</li>
+	<li><code class="at">@Open</code> &ndash; The enumeration can be extended.</li>
+	<li><code class="at">@Unique</code> &ndash; All the values must be different.</li>
+	</ul>
+</dd>
 <dt><code class="at">@Flags</code></dt>
 <dd>Changes the enumeration into a set of bit flags.</dd>
 <dt><code>enumeration_name</code></dt>
@@ -70,7 +76,7 @@ The compiler can make sure that each one is different.</p>
 <h3>Usual construct</h3>
 <p>If an enumeration is not an extension to a different one and the first member is not given a value with the operator &ldquo;<code class="op">=</code>&rdquo;, then its default value is zero.
 Members of an enumeration can be positive or negative.
-Members can have the same value, but the names in an enumeration must be different.</p>
+members can have the same value, unless given the modifier <code class="at">@Unique</code>, but the names in an enumeration must be different.</p>
 <p>If <code class="id">type</code> is a different enumeration, then the new one is an extension of <code class="id">type</code>.
 Thus the default value of the first member is the largest member of <code class="id">type</code> plus one.</p>
 <h3>Bit-flag construct</h3>
@@ -83,7 +89,7 @@ The first member thus has a default value of one, the second is 2, the third is 
 <span class="kws"><code>Int8</code>, <code>UInt8</code>, <code>Int16</code>, <code>UInt16</code>, <code>Int32</code>, <code>UInt32</code>, <code>Int</code>, <code>UInt</code>, <code>Int64</code>, <code>UInt64</code>, <code>Int128</code>, or <code>UInt128</code></span>.</p>
 <p>A member can be given one value in the range of <code class="id">type</code>.
 If you try to initialize a member with a value out of range, then it causes a compiler error.
-Members can have the same values, but the names in a set of flags must be different.</p>
+Members can have the same values, unless given the modifier <code class="at">@Unique</code>, but the names in a set of flags must be different.</p>
 <p>If <code class="id">type</code> is the name of a bit field, then the new statement is an extension to the flags.
 The range of an extension is the same as its parent.</p>
 <h3>Changes in syntax with <code>@Option</code></h3>
