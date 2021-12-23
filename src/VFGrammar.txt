@@ -687,6 +687,7 @@ ReDim       = "ReDim".
 Rem         = "Rem".
 Require     = "Require".
 Return      = "Return".
+SafeString  = "SafeString".
 SBits       = "SBits".
 Select      = "Select".
 Self        = "Self".
@@ -1654,12 +1655,13 @@ PrimaryExpression (. ID(L"Primary", 2) .)
 .
 PrimitiveType<bool bBits> (. ID(L"PrimitiveType", 3) .)
 =
-	(. int tkn = 0; .)
-	( "Boolean" | "Char" | "DateTime" | "String"
-	| IntegerType<tkn>
-	| FloatingPointType<tkn>
-	| FixedPointType<tkn>
-	| BitFieldType<tkn>  (. if (!bBits) Err(L"Bit field not permitted here"); .)
+	(. int kind = 0; .)
+	( "Boolean" | "Char" | "DateTime"
+	| "SafeString" | "String"  //TODO: Limit on where can use SafeString.
+	| IntegerType<kind>
+	| FloatingPointType<kind>
+	| FixedPointType<kind>
+	| BitFieldType<kind>  (. if (!bBits) Err(L"Bit field not permitted here"); .)
 	)
 .
 ///PropertyOrCall (. ID(PropertyOrCall) .)
