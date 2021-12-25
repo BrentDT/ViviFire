@@ -17,7 +17,7 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Statements_Reference.html">Statements</a></li>
-<li><a href="Statements_3.html">Q&ndash;Z Statements</a></li>
+<li><a rel="parent" href="Statements_3.html">Q&ndash;Z Statements</a></li>
 </ul>
 </nav>
 <main>
@@ -28,12 +28,12 @@
 <h3>Usual construct</h3>
 <pre><code>[ @SI ] Unit unit_names [ = expression ]&#10;</code></pre>
 <h3>Interval-scale construct</h3>
-<pre><code>[ @SI ] Unit ( parameter In unit ) unit_names = expression&#10;</code></pre>
+<pre><code>[ @SI ] Unit unit_names ( parameter In unit ) = expression&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="at">@SI</code></dt>
-<dd>Optional indication of an SI unit.</dd>
+<dd>Optional indication of an SI (metric) unit.</dd>
 <dt><code class="id">unit_names</code></dt>
 <dd>Mandatory one or more names with a space between each.
 All names identify the same unit.
@@ -55,7 +55,7 @@ You use it with <code class="id">expression</code> for a unit with an interval s
 <pre><code>@SI Unit meter+s metre+s m
 Unit light_year+s ly = 9.4605284 petameters
 Unit Kelvin K
-Unit (k In Kelvin) Celsius degree_C degrees_C = k + 273.15&#10;</code></pre>
+Unit Celsius degree_C degrees_C (k In Kelvin) = k + 273.15&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
