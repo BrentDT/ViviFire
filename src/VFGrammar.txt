@@ -2037,14 +2037,15 @@ UnitStatement<Modif &mods> (. ID(L"UnitStatement", 3) .)
 	bool bSI = mods.allow(Modif::SI);
 	mods.validate();
 	.)
-	"Unit" [ UnitParameter ]
+	"Unit"
 	UnitAlias { UnitAlias }
-	[ '=' AdditiveExpression ]
+	[ UnitParameter ]
+	[ "=" AdditiveExpression ]
 	SyncNewline<s_name>
 .
 UnitParameter (. ID(L"UnitParameter", 3) .)
 =
-	'(' identifier InUnitClause ')'
+	"(" identifier InUnitClause ")"
 .
 UserType (. ID(L"UserType", 3) .)
 =
