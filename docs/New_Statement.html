@@ -25,7 +25,7 @@
 <p>Makes an instance of an object and initializes it.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<pre><code>[ @Shared ] [ New ] class_name [ type_list ] object_name [ , argument_list ]
+<pre><code>[ @Shared ] [ New ] class_name object_name [ , argument_list ]
 [ Begin [ default_type  |  Call method_name [ initializer ] ]
     [ statements ]
 End [ New | class_name ] ]&#10;</code></pre>
@@ -35,11 +35,10 @@ End [ New | class_name ] ]&#10;</code></pre>
 <dt><code class="at">@Shared</code></dt>
 <dd>Optional &ndash; There can be only one instance for all classes or procedure calls.</dd>
 <dt><code class="kw">New</code></dt>
-<dd>Optional keyword.</dd>
+<dd>Usually optional keyword.</dd>
+<dd>Mandatory if the statement is a nested member of <code class="kw">New</code>.</dd>
 <dt><code class="id">class_name</code></dt>
 <dd>Mandatory name of a class.</dd>
-<dt><code class="id">type_list</code></dt>
-<dd>Optional &ndash; See <a href="Type_List.html#">Type List</a> for more information.</dd>
 <dt><code class="id">object_name</code></dt>
 <dd>Mandatory name for the object.</dd>
 <dt><code class="id">argument_list</code></dt>
@@ -60,7 +59,7 @@ It must be a list of values with a comma between each, all between braces (<code
 See the section &ldquo;<a href="#Permitted_members">Permitted members</a>&rdquo; for more information.</dd>
 <dt><code class="kw">End</code></dt>
 <dd>Completes the block construct.
-You can also use one of <code class="kw">End New</code> or <code class="kw">End</code> <code class="id">class_name</code>.</dd>
+You can also use one of <code class="kw">End New</code> or <code class="kw">End</code>&nbsp;<code class="id">class_name</code>.</dd>
 </dl>
 <h2>Instructions</h2>
 <h3 id="Permitted_members">Permitted members</h3>
@@ -80,14 +79,30 @@ You can also use one of <code class="kw">End New</code> or <code class="kw">End<
 <h3>One-line constructs</h3>
 <div class="language-vivifire listing">
 <pre><code>' Find all text files in the current directory.
-Files txtFiles, "*.txt"&#10;</code></pre>
+Files txtFiles, "*.txt"
+
+For Each file In txtFiles
+    PrintLine file.Name
+End For&#10;</code></pre>
 </div>
-<hr>
+<h3>One-line construct compared to the block construct</h3>
+<p>First we make a menu with a one-line statement.
+It shows &ldquo;File&rdquo; on the menu bar.
+In the related popup menu, it shows two commands: &ldquo;Open&hellip;&rdquo; and &ldquo;Exit&rdquo.
+Between these two items we write a vertical bar, which shows as a separator.
+This symbol is an alternative to <code class="kw">#Null</code> that you can use only in argument lists.
+If you select one of the commands, then it calls the related procedure.</p>
 <div class="language-vivifire listing">
 <pre><code>' Make a menu.
 Menu FileMenu, "&File", "&amp;Open...", DoOpen, |, "E&amp;xit", DoExit&#10;</code></pre>
 </div>
-<h3>Block constructs</h3>
+<hr>
+<p>Then we re-write the example as a block construct.
+It starts the same as before, until we get to the first command.
+Before the commands, we must write the keyword Begin on one line.
+Then we write each item on separate lines.
+The vertical bar permits hyphens without limit.
+Then we write <code class="kw">End New</code> to complete the statement.</p>
 <div class="language-vivifire listing">
 <pre><code>New Menu FileMenu, "&amp;File"
 Begin
@@ -97,19 +112,35 @@ Begin
 End New&#10;</code></pre>
 </div>
 <hr>
+<p>In the next example, we add a sub-menu to the menu with the text &ldquo;New&rdquo;.
+The sub-menu has two commands: &ldquo;File&rdquo; and &ldquo;Folder&rdquo;.
+We cannot add a sub-menu to the one-line construct.
+But the block construct does not have this limit.</p>
 <div class="language-vivifire listing">
 <pre><code>Menu FileMenu, "&amp;File"
 Begin
+    New menu newMenu, "&New"
+    Begin
+        "&File", DoNewFile
+        "Fol&der", DoNewFolder
+    End Menu
     "&amp;Open...", DoOpen
     |----
     "E&amp;xit", DoExit
 End Menu&#10;</code></pre>
 </div>
 <h3>Call construct</h3>
+<p>In this example, we declare a list of strings and add some items.
+The class <code>List</code> has a method (<code>Add</code>) to add one item at a time.
+We write <code>Add</code> after <code class="kw">Begin Call</code> to give the method to call for each item in an array.
+We supply the items in an array initializer.
+The initializer must be on the same line that starts with Begin.
+We can use the automatic line continuation of braces and commas to make the code easier to read.</p>
 <div class="language-vivifire listing">
 <pre><code>List[String] fruits
 Begin Call Add {
-    "apple", "banana", "cherry"
+    "apple", "banana", "cherry",
+    "peach", "pear", "pineapple"
 }
 End&#10;</code></pre>
 </div>
