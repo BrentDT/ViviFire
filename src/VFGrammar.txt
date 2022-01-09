@@ -1172,8 +1172,8 @@ EnclosedArgumentList (. ID(L"EnclosedArgumentList", 3) .)
 =
 	"("[line_break]
 	[ Argument ]
-	{ WEAK comma[line_break]
-		[ Argument ]
+	{ WEAK comma
+		[ [line_break] Argument ]
 	}
 	")"
 .
