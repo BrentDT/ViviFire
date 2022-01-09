@@ -2000,16 +2000,23 @@ UnaryOperator (. ID(L"UnaryOperator", 3) .)
 =
 	( '+' | '-' | "Not" )
 .
-UnenclosedArgument (. ID(L"UnenclosedArgument", 3) .)
-=
-	( line_break Argument
-	| Argument
-	)
-.
+///UnenclosedArgument (. ID(L"UnenclosedArgument", 3) .)
+///=
+///	( line_break Argument
+///	| Argument
+///	)
+///.
 UnenclosedArgumentList (. ID(L"UnenclosedArgumentList", 3) .)
 =
-	( Argument | comma UnenclosedArgument )
-	{ WEAK comma UnenclosedArgument }
+	( Argument
+	| comma (. Err(L"Argument list cannot start with comma"); .)
+	)
+	{ WEAK comma
+		( [line_break] Argument
+		| (. /* TODO: empty arg */ .)
+		)
+	}
+	(. if (t->kind == _comma) Err(L"Argument list cannot end with comma"); .)
 .
 UnenclosedParameterList<int parent> (. ID(L"UnenclosedParameterList", 3) .)
 =
