@@ -26,14 +26,18 @@
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <h3>Usual construct</h3>
-<pre><code>Require library_name [ , library_name ]&hellip;&#10;</code></pre>
+<pre><code>Require library_name [ As short_name ] [ , library_name ]&hellip;&#10;</code></pre>
 <h3>Limits construct</h3>
-<pre><code>Require library_name Where limit [ { And | Or } limit ]&hellip;&#10;</code></pre>
+<pre><code>Require library_name [ As short_name ] Where limit [ { And | Or } limit ]&hellip;&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="id">library_name</code></dt>
-<dd>Mandatory qualified name.</dd>
+<dd>Mandatory qualified name for a library.
+The usual construct permits a list with commas between each.
+But the limits construct can have only one.</dd>
+<dt><code class="id">short_name</code></dt>
+<dd>Optional alternative name that you give for a library.</dd>
 <dt><code class="id">limit</code></dt>
 <dd><p>Mandatory in the limits construct, a comparison expression.
 You can use one or more limits to find the correct library if different libraries have the same name.</p>
