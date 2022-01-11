@@ -1761,8 +1761,9 @@ RequireLogic (. ID(L"RequireLogic", 3) .)
 .
 RequireStatement (. ID(L"RequireStatement", 3) .)
 =
-	"Require" QualifiedName<_identifier>
-	( { comma QualifiedName<_identifier> }
+	"Require"
+	QualifiedName<_identifier> [ "As" identifier ]
+	( { comma QualifiedName<_identifier> [ "As" identifier ] }
 	| "Where" RequireLogic
 	)
 	SyncNewline<s_name>
