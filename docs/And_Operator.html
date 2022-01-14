@@ -17,7 +17,7 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Operators.html">Operators</a></li>
-<li><a href="Logical_and_Bitwise_Operators.html">Logical and Bitwise Operators</a></li>
+<li><a rel="parent" href="Logical_and_Bitwise_Operators.html">Logical and Bitwise Operators</a></li>
 </ul>
 </nav>
 <main>
@@ -76,7 +76,40 @@ The table that follows shows how to calculate the bit in the result.</p>
 The logical and bitwise operators have lower precedence than the arithmetic and relational operators.
 Thus, we recommend that you put parentheses around bitwise operations to make sure they give correct results.</p>
 <h2>Examples</h2>
-<p>TODO</p>
+<h3>Example 1</h3>
+<div class="language-vivifire listing">
+<pre><code>Var a = 5, b = 10, c = 15
+Var test1 = a &lt; b And b &lt; c
+Var test2 = a &gt; b And b &lt; c&#10;</code></pre>
+</div>
+<table class="results">
+<caption>After execution</caption>
+<thead>
+<tr><th>Variable</th><th>Value</th></tr>
+</thead>
+<tbody>
+<tr><th><code>test1</code></th><td><samp>True</samp></td></tr>
+<tr><th><code>test2</code></th><td><samp>False</samp></td></tr>
+</tbody>
+</table>
+<h3>Example 2</h3>
+<div class="language-vivifire listing">
+<pre><code>var a = 5, b = 10, c = 15
+Var pattern1 = a And b
+Var pattern2 = b And c
+Var pattern3 = a And c&#10;</code></pre>
+</div>
+<table class="results">
+<caption>After execution</caption>
+<thead>
+<tr><th>Variable</th><th>Value</th></tr>
+</thead>
+<tbody>
+<tr><th><code>pattern1</code></th><td><samp>0</samp></td></tr>
+<tr><th><code>pattern2</code></th><td><samp>10</samp></td></tr>
+<tr><th><code>pattern3</code></th><td><samp>5</samp></td></tr>
+</tbody>
+</table>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="And_Equals_Operator.html">And= Operator</a></li>
