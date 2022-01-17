@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2021 Brent D. Thorn
+ * Copyright 2022 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.com/.
  *
@@ -165,9 +165,11 @@ struct tag_option {
 			// Fall through for error
 		default:
 		bad_option:
+			parser->Get();
 			parser->Err(L"Unknown or missing option");
 			break;
 		}
+		if (parser->la->kind != _line_break) goto bad_option;
 	}
 
 } option = { /* parser */ this };
