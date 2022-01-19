@@ -16,7 +16,7 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
-<li><a href="Language_Features.html">Language Features</a></li>
+<li><a rel="parent" href="Language_Features.html">Language Features</a></li>
 </ul>
 </nav>
 <main>
@@ -28,12 +28,27 @@ But we recommend a procedure for a program that is larger than an example.</p>
 <h2>Calling a procedure</h2>
 <p>You execute a procedure from a different area of the code.
 This is known as a <dfn>procedure call</dfn>.
-When the procedure completes, it moves control back to the code that executed it, also known as the <dfn>calling code</dfn>.
-The calling code is a statement (or an expression in a statement) that refers to the procedure by its name and moves control to it.</p>
+When the procedure completes, it moves control back to the code that executed it, also known as the <dfn>caller</dfn>.
+The caller is a statement (or an expression in a statement) that refers to the procedure by its name and moves control to it.</p>
 <h2>Returning from a procedure</h2>
-<p>TODO2</p>
+<p>A procedure gives back control to the caller when it is done.
+It can use one of the statements <code class="kw">Return</code> or <code class="kw">Exit</code>, or let it execute until the clause <code class="kw">End</code>.
+Then control moves to the caller after the point of the procedure call.</p>
+<ul>
+<li>With <code class="kw">Return</code>, control immediately goes back to the caller.
+Statements after <code class="kw">Return</code> do not execute.
+You can have more than one <code class="kw">Return</code> in the same procedure.</li>
+<li>With <code class="kw">Exit</code>, control immediately goes back to the caller.
+Statements after <code class="kw">Exit</code> do not execute.
+You can have more than one <code class="kw">Exit</code> in the same procedure.
+Also, you can mix <code class="kw">Return</code> and <code class="kw">Exit</code> in the same procedure.</li>
+<li>If a procedure does not have one of the statements <code class="kw">Return</code> or <code class="kw">Exit</code>, then it stops at the clause <code class="kw">End</code>.
+<code class="kw">End</code> follows the last statement of the procedure body.
+<code class="kw">End</code> immediately causes control to go back to the caller.
+You can have only one clause <code class="kw">End</code> in a procedure.</li>
+</ul>
 <h2>Parameters and arguments</h2>
-<p>TODO2</p>
+<p>TODO</p>
 <h2>Types of procedures</h2>
 <ul>
 <li><a href="Sub_Procedures.html">Sub procedures</a></li>
@@ -44,7 +59,7 @@ The calling code is a statement (or an expression in a statement) that refers to
 <li><a href="Generic_Procedures.html">Generic procedures</a></li>
 </ul>
 <h2>Procedures and structured code</h2>
-<p>TODO2</p>
+<p>TODO</p>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Function_Procedures.html">Function Procedures</a></li>
