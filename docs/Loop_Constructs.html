@@ -17,7 +17,7 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
 <li><a href="Language_Features.html">Language Features</a></li>
-<li><a href="Control_Flow.html">Control Flow</a></li>
+<li><a rel="parent" href="Control_Flow.html">Control Flow</a></li>
 </ul>
 </nav>
 <main>
@@ -39,12 +39,12 @@ You can optionally specify the interval of the step, which has a default of one 
 See <a href="For_To_Statement.html">For Statement</a> for more information.</p>
 <h2><code>For Each</code> loops</h2>
 <p>The construct <code class="kw">For Each</code> executes a block of statements one time for each element in a collection.
-It is best used where you can safely ignore qualities, for example, the dimensions and configuration of the collection.
+It is best used where you can safely ignore the dimensions and configuration of the collection, for example.
 See <a href="For_Each_In_Statement.html">For Each Statement</a> for more information.</p>
 <h2><code>Begin&hellip;When</code> clauses</h2>
-<p>For most loop constructs, ViviFire lets you write statements that are in the loop but execute externally.
-The line <code>When DONE</code> executes only if the body of the loop executed fully and completed as usual.
-The line <code>When NONE</code> executes only if the body of the loop did not start.
+<p>For most loop constructs, ViviFire lets you write statements that are a part of the loop but have an auxiliary function.
+The code <code>When DONE</code> executes only if the body of the loop executed fully and completed as usual.
+The code <code>When NONE</code> executes only if the body of the loop did not start.
 See <a href="Begin_When_Statements.html">Begin&hellip;When Statements</a> for more information.</p>
 <h2>See also</h2>
 <ul class="articles">
