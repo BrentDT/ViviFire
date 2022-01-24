@@ -354,15 +354,15 @@ bool IsAssignmentOp() {
 	return false;
 }
 
-bool IsCall() {
-	// Disambiguate "("[args]")" from "("["Is"]("<"|"<="|">"|">="|"<>"|"=")")".
-	if (la->kind == _left_paren) {
-		int first = scanner->Peek()->kind;
-		if (first == _Is || (first >= _less_than && first <= _equals_operator)) return false;
-		return true;
-	}
-	return false;
-}
+///bool IsCall() {
+///	// Disambiguate "("[args]")" from "("["Is"]("<"|"<="|">"|">="|"<>"|"=")")".
+///	if (la->kind == _left_paren) {
+///		int first = scanner->Peek()->kind;
+///		if (first == _Is || (first >= _less_than && first <= _equals_operator)) return false;
+///		return true;
+///	}
+///	return false;
+///}
 
 bool IsDeclareParameterList() {
 	if (la->kind == _left_paren) {
@@ -386,14 +386,14 @@ bool IsNamedArgument() {
 	return (IsIdentifier(la->kind) && scanner->Peek()->kind == _colon_equals);
 }
 
-bool IsNewStatement() {
-	if (la->kind == _New) return true;
-	if (la->kind == _identifier) { // FIXME: could be qualified name
-		int next = scanner->Peek()->kind;
-		return (next == _nullable_identifier || next == _left_bracket); // FIXME: nullable not necessary
-	}
-	return false;
-}
+///bool IsNewStatement() {
+///	if (la->kind == _New) return true;
+///	if (la->kind == _identifier) { // FIXME: could be qualified name
+///		int next = scanner->Peek()->kind;
+///		return (next == _nullable_identifier || next == _left_bracket); // FIXME: nullable not necessary
+///	}
+///	return false;
+///}
 
 bool IsPropertySelf() {
 	// "Self", "Self%", "Self!", or "Self$"
@@ -421,21 +421,20 @@ bool IsUnorderedInit() {
 	return ((k == _char_literal || k == _integer_constant || k == _integer_literal) && scanner->Peek()->kind == _colon_equals);
 }
 
-
-void ExpectEndNew(const wchar_t *tn) {
-	if (la->kind == _End) {
-		Get();
-		if (tn == NULL && la->kind != _New) {
-			Err(L"End New expected");
-			return;
-		}
-		else if (tn != NULL && wcscmp(tn, la->val) != 0) {
-			Err(L"End %ls expected"); // FIXME: show ident
-			return;
-		}
-	}
-	Get();
-}
+///void ExpectEndNew(const wchar_t *tn) {
+///	if (la->kind == _End) {
+///		Get();
+///		if (tn == NULL && la->kind != _New) {
+///			Err(L"End New expected");
+///			return;
+///		}
+///		else if (tn != NULL && wcscmp(tn, la->val) != 0) {
+///			Err(L"End %ls expected"); // FIXME: show ident
+///			return;
+///		}
+///	}
+///	Get();
+///}
 
 IGNORECASE
 
