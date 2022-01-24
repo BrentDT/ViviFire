@@ -26,12 +26,9 @@ document.write('<hr><p>'+
 '<div id="poll" role="status" aria-live="polite" aria-relevant="text">' +
 '<div role="form" aria-label="poll">' +
 'This article is ' +
-'<button onclick="vote(0)" title="good">good</button>' +
-'<button onclick="vote(1)" title="bad">bad</button>' +
-'<button class="touch-only" onclick="vote(5)">bad on mobile</button>' +
-'<button onclick="vote(2)" title="messy">not polished</button>' +
-'<button onclick="vote(3)" title="confusing">not easy</button>' +
-'<button onclick="vote(4)" title="inaccurate">incorrect</button>' +
+'<button onclick="vote(0)">good</button>' +
+'<button onclick="vote(1)">bad</button>' +
+'<button class="touch-only" onclick="vote(2)">bad on mobile</button>' +
 '</div>' +
 '</div></p>');
 
