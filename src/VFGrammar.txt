@@ -1653,6 +1653,12 @@ PrimaryExpression (. ID(L"Primary", 2) .)
 	| malformed_real_literal     (. Err(L"Malformed real constant"); .)
 	| malformed_string_literal   (. Err(L"Malformed string constant"); .)
 	)
+	(.
+	if (la->kind == _integer_literal && la->val[0] == L'&') {
+		Get();
+		Err(L"This is an integer literal. For concatenation, put space around \"&\".");
+	}
+	.)
 .
 PrimitiveType<bool bBits> (. ID(L"PrimitiveType", 3) .)
 =
