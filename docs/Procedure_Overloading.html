@@ -17,10 +17,10 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
 <li><a href="Language_Features.html">Language Features</a></li>
-<li><a href="Procedures.html">Procedures</a></li>
+<li><a rel="parent" href="Procedures.html">Procedures</a></li>
 </ul>
 </nav>
-<main id="stub">
+<main>
 <h1 id="top">Procedure Overloading</h1>
 <p>To <dfn>overload</dfn> a procedure is to make two or more procedures with the same name but different parameter lists.
 You can make many related procedures, but it is not necessary to select different names.
@@ -29,14 +29,40 @@ To do this, you change the parameter list.</p>
 <p>When you overload a procedure, you must obey the instructions that follow.</p>
 <dl>
 <dt>Same name</dt>
-<dd>TODO</dd>
+<dd>Each overloaded set of procedures must use the same procedure name.</dd>
 <dt>Different signatures</dt>
-<dd>TODO</dd>
+<dd>The differences between each procedure in a set of overloaded procedures must be at least one from this list:
+	<ul>
+	<li>Number of parameters</li>
+	<li>Sequence of the parameters</li>
+	<li>Data types of the parameters</li>
+	<li>Number of type parameters (for a generic procedure)</li>
+	<!-- TBD li>Return type (only for a conversion operator)</li -->
+	</ul>
+</dd>
+<dd>The procedure name and the above items together are known as the <dfn>signature</dfn> of the procedure.
+When you call an overloaded procedure, the compiler uses the signature to make sure that the call agrees with the implementation.</dd>
 <dt>Items not part of the signature</dt>
-<dd>TODO</dd>
+<dd>You cannot overload a procedure unless the signatures are different.
+The items that follow are not part of the signature:
+	<ul>
+	<li>Procedure types and modifiers, for example, <code class="kw">Function</code>, <code class="kw">Method</code>, and <code class="at">@Shared</code></li>
+	<li>Names of parameters or type parameters</li>
+	<li>Constraints on type parameters (for a generic procedure)</li>
+	<li>Parameter modifiers, for example, <code class="kw">ByRef</code> and <code class="kw">Optional</code></li>
+	<li>If it returns a value or not</li>
+	<li>The data type of the return value<!-- TBD (not applicable to conversion operators) --></li>
+	</ul>
+</dd>
+<dd>Although you cannot use the above items to overload procedures, you can use them with correctly overloaded procedures.
+Thus, the compiler ignores those items not applicable to the signature.</dd>
 </dl>
 <h2>How overloading helps</h2>
 <p>TODO</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Generic_Procedures.html">Generic Procedures</a></li>
+</ul>
 </main>
 <script src="common.js"></script>
 </body>
