@@ -16,7 +16,7 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
-<li><a href="Operators.html">Operators</a></li>
+<li><a rel="parent" href="Operators.html">Operators</a></li>
 </ul>
 </nav>
 <main>
@@ -28,53 +28,54 @@
 <pre><code>value_1 comparison_op value_2&#10;</code></pre>
 <h3>Range comparison</h3>
 <pre><code>value_1 { &lt; | &lt;= } value_2 { { &lt; | &lt;= } value_n }&hellip;&#10;</code></pre>
-<h3>Tolerant comparison</h3>
-<pre><code>value_1 tolerant_comparison value_2 [ tolerant_comparison value_n ]&hellip; Tol tolerance&#10;</code></pre>
+<h3>Tolerance comparison</h3>
+<pre><code>value_1 [ ~ ] comparison_op value_2 [ [ ~ ] comparison_op value_n ]&hellip; Tol tolerance&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
-<dt><code class="id">value_1</code></dt>
-<dd>An expression to compare.</dd>
+<dt><code class="id">value_1</code>, <code class="id">value_2</code></dt>
+<dd>An expression with a value to compare.</dd>
 <dt><code class="id">comparison_op</code></dt>
 <dd>One of the comparison operators:
 <span class="ops"><code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>=</code>, or <code>&lt;&gt;</code></span>.</dd>
-<dt><code class="id">value_2</code></dt>
-<dd>An expression of a type compatible with that of <code class="id">value_1</code>.</dd>
 <dt><code class="id">value_n</code></dt>
 <dd>For a range comparison, an expression of a type compatible with that of <code class="id">value_1</code> and <code class="id">value_2</code>.</dd>
-<dt><code class="id">tolerant_comparison</code></dt>
-<dd>One of the comparison operators with an optional tilde (<code class="op">~</code>) before it.
-Not all comparisons must be tolerant, but all tolerant comparisons use the same tolerance in the full expression.</dd>
+<dt><code class="op">~</code></dt>
+<dd>
+Optional symbol before a comparison operator.
+It shows which comparisons have a tolerance.
+Not all comparisons must have a tolerance, but all such comparisons use the same tolerance in the full expression.</dd>
 <dt><code class="id">tolerance</code></dt>
 <dd>After <code class="kw">Tol</code>, a numeric expression to specify the floating-point error tolerance of the comparisons.
 See <a href="Tol_Clause.html">Tol Clause</a> for more information.</dd>
 </dl>
 <h2>Instructions</h2>
+<p>The table that follows shows the comparison operators and the different conditions that give results of <code>True</code> or <code>False</code>.</p>
 <table>
 <thead>
 <tr><th>Operator</th>
-<th>True if</th>
-<th>False if</th></tr>
+<th><code>True</code> if</th>
+<th><code>False</code> if</th></tr>
 </thead>
-<tbody>
+<tbody class="language-vivifire syntax">
 <tr><td><code class="op">&lt;</code> (Less than)</td>
-<td><code class="id">value_1</code> &lt; <code class="id">value_2</code></td>
-<td><code class="id">value_1</code> &gt;= <code class="id">value_2</code></td></tr>
+<td><pre><code>value_1 &lt; value_2</code></pre></td>
+<td><pre><code>value_1 &gt;= value_2</code></pre></td></tr>
 <tr><td><code class="op">&lt;=</code> (Less than or equal)</td>
-<td><code class="id">value_1</code> &lt;= <code class="id">value_2</code></td>
-<td><code class="id">value_1</code> &gt; <code class="id">value_2</code></td></tr>
+<td><pre><code>value_1 &lt;= value_2</code></pre></td>
+<td><pre><code>value_1 &gt; value_2</code></pre></td></tr>
 <tr><td><code class="op">&gt;</code> (More than)</td>
-<td><code class="id">value_1</code> &gt; <code class="id">value_2</code></td>
-<td><code class="id">value_1</code> &lt;= <code class="id">value_2</code></td></tr>
+<td><pre><code>value_1 &gt; value_2</code></pre></td>
+<td><pre><code>value_1 &lt;= value_2</code></pre></td></tr>
 <tr><td><code class="op">&gt;=</code> (More than or equal)</td>
-<td><code class="id">value_1</code> &gt;= <code class="id">value_2</code></td>
-<td><code class="id">value_1</code> &lt; <code class="id">value_2</code></td></tr>
+<td><pre><code>value_1 &gt;= value_2</code></pre></td>
+<td><pre><code>value_1 &lt; value_2</code></pre></td></tr>
 <tr><td><code class="op">=</code> (Equal)</td>
-<td><code class="id">value_1</code> = <code class="id">value_2</code></td>
-<td><code class="id">value_1</code> &lt;&gt; <code class="id">value_2</code></td></tr>
+<td><pre><code>value_1 = value_2</code></pre></td>
+<td><pre><code>value_1 &lt;&gt; value_2</code></pre></td></tr>
 <tr><td><code class="op">&lt;&gt;</code> (Not equal)</td>
-<td><code class="id">value_1</code> &lt;&gt; <code class="id">value_2</code></td>
-<td><code class="id">value_1</code> = <code class="id">value_2</code></td></tr>
+<td><pre><code>value_1 &lt;&gt; value_2</code></pre></td>
+<td><pre><code>value_1 = value_2</code></pre></td></tr>
 </tbody>
 </table>
 <h3>Comparing numbers</h3>
@@ -83,6 +84,12 @@ See <a href="Tol_Clause.html">Tol Clause</a> for more information.</dd>
 <p>You can use the keyword <code class="kw">Tol</code> to make floating-point comparisons with a tolerance to rounding errors.
 A comparison expression without this clause could possibly give incorrect results because of how calculated results can have small rounding errors.
 The tolerance value is the maximum the two values can be different but compare as equal.</p>
+<p>At times you could have an expression with a mixture of comparisons with and without a tolerance.
+You can use a tilde (<code class="op">~</code>) written before the comparison operator to show which comparisons have a tolerance.
+If you use a tilde, then you must also supply a tolerance.</p>
+<p>A tolerance is applicable only to equality-type comparisons
+(<span class="ops"><code>&lt;=</code>, <code>&gt;=</code>, <code>=</code>, and <code>&lt;&gt;</code></span>).
+If you use a tolerance on an expression without one of these operators, then you get a warning, and the tolerance is ignored.</p>
 <h3>Comparing strings</h3>
 <p>TODO</p>
 <h3>Range comparisons</h3>
@@ -94,15 +101,19 @@ This syntax is almost the same as that used by mathamatics.</p>
 <div class="language-vivifire syntax">
 <pre><code>value_1 { &lt; | &lt;= } value_2 And value_2 { &lt; | &lt;= } value_3&#10;</code></pre>
 </div>
-<p>If you wrote code the same as above and <code class="id">value_2</code> is an expression with side effects, then the results could be unknown.
+<p>If you wrote code the same as above and <code class="id">value_2</code> is an expression with side effects, then it can have unknown results.
 The range comparison makes sure that each expression does not calculate more than one time.</p>
 <p>Only the operators <code class="op">&lt;</code> and <code class="op">&lt;=</code> are correct in this type of comparison.
-It is not a syntax error to use other comparison operators the same.
-But it is usually a programming error.
-Each comparison will evaluate from left to right, then the Boolean result will be compared to the next value in the chain.
-Thus this usually makes incorrect code.</p>
+It is not a syntax error to mix these with the other comparison operators, but it is usually a programming error.
+Each comparison will evaluate from left to right, then the Boolean result will be compared to the next value in sequence.
+Thus, we do not recommend it.</p>
 <h3>Comparing objects</h3>
-<p>Unlike other values, objects can only be compared for equality with the <a href="Is_Operator.html">Is operator</a>.</p>
+<p>While you can use all the comparison operators on number and string values, object references are different.
+Objects can only compare for equality with the <a href="Is_Operator.html">Is operator</a>.
+This operator lets you know if two object references refer to the same object.</p>
+<p>If an object boxes a number or string, then you can use the usual comparison operators.
+Number objects compare <code class="kw">#Null</code> as zero.
+String objects compare <code class="kw">#Null</code> as the empty string.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
 <pre><code>If x ~= 4.5 Tol 1e-2 Then
