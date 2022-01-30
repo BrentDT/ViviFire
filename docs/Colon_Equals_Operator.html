@@ -17,12 +17,12 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Operators.html">Operators</a></li>
-<li><a href="Assignment_Operators.html">Assignment Operators</a></li>
+<li><a rel="parent" href="Assignment_Operators.html">Assignment Operators</a></li>
 </ul>
 </nav>
 <main>
 <h1 id="top">:= Operator</h1>
-<p>Assigns a value to a variable or property.</p>
+<p>Changes the value of a variable or property.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <pre><code>variable [ := variable ]&hellip; := value&#10;</code></pre>
@@ -30,23 +30,25 @@
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="id">variable</code></dt>
-<dd>A variable or property that you can change.</dd>
+<dd>A variable or property that you can change.
+You can set several in one statement.</dd>
 <dt><code class="id">value</code></dt>
 <dd>An expression of a data type compatible with <code class="id">variable</code>.</dd>
 </dl>
 <h2>Instructions</h2>
 <p>The element on the left side can be a scalar variable, a property, or an array element.
-The operator <code class="op">:=</code> assigns the value on its right to the variable or property on its left.</p>
-<p>The operator <code class="op">:=</code> is almost the same as the operator <code class="op">=</code> when used to assign a new value to a variable.
-The operator <code class="op">=</code> can do one of two operations: (1) assign a value to a variable or (2) do a test for equality.
+The operator <code class="op">:=</code> sets the value of the variable on its left to the value on its right.</p>
+<p>The operator <code class="op">:=</code> is almost the same as the operator <code class="op">=</code> when used to change the value of a variable.
+The operator <code class="op">=</code> can do one of two operations: (1) change the value of a variable or (2) do a test for equality.
 But the operator <code class="op">:=</code> is for assignment only.</p>
-<p class="note">Note: The operator <code class="op">:=</code> is also used in procedure calls to pass arguments by name.
+<p class="note">Note:
+You can also use the operator <code class="op">:=</code> in procedure calls to pass arguments by name.
 See <a href="Passing_Arguments_Position_Name.html">Passing Arguments by Position and by Name</a> for more information.</p>
 <h2>Examples</h2>
 <h3>Variable</h3>
-<p>The following code shows how a 3-D application can zero out its x, y, and z variables:</p>
+<p>The code that follows shows how a 3-D program can set its variables for x, y, and z to zero:</p>
 <div class="language-vivifire listing">
-<pre><code>x := y := z := 0&#10;</code></pre>
+<pre><code>x := y := z := 0.0&#10;</code></pre>
 </div>
 <table class="result">
 <caption>After execution</caption>
@@ -54,9 +56,9 @@ See <a href="Passing_Arguments_Position_Name.html">Passing Arguments by Position
 <tr><th>variable</th><th>value</th></tr>
 </thead>
 <tbody>
-<tr><td>x</td><td>0</td></tr>
-<tr><td>y</td><td>0</td></tr>
-<tr><td>z</td><td>0</td></tr>
+<tr><td><code>x</code></td><td><samp>0.0</samp></td></tr>
+<tr><td><code>y</code></td><td><samp>0.0</samp></td></tr>
+<tr><td><code>z</code></td><td><samp>0.0</samp></td></tr>
 </tbody>
 </table>
 <h3>Property</h3>
