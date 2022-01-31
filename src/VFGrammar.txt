@@ -218,6 +218,12 @@ void Warn(const wchar_t *msg) {
 	else errors->Warning(msg);
 }
 
+void Warn(int line, int col, const wchar_t *msg) {
+	// TODO: warning levels.
+	if (option.warning_error) Err(line, col, msg);
+	else errors->Warning(line, col, msg);
+}
+
 void Optional(int kind, option_type nOption = option_default) {
 	switch (kind) {
 	case _Case:  // Select [ Case ]
@@ -791,6 +797,10 @@ Argument (. ID(L"Argument", 3) .)
 	| [ IF (IsNamedArgument()) Name ":=" ]
 	  EnclosedExpression
 	)
+	// If non-decimal integer ("&b...", "&h...", or "&o...")
+	(. if (la->kind == _integer_literal && la->val[0] == L'&') {
+		Warn(la->line, la->col, L"Possibly argument list has missing comma");
+	} .)
 .
 ArgumentList (. ID(L"ArgumentList", 3) .)
 =
@@ -991,7 +1001,13 @@ CompoundNewStatement (. ID(L"CompoundNewStatement", 3) .)
 .
 ConcatenationExpression (. ID(L"Concatenation", 2) .)
 =
-	AdditiveExpression { concatenation AdditiveExpression }
+	AdditiveExpression
+	{ concatenation AdditiveExpression }
+	// If non-decimal integer ("&b...", "&h...", or "&o...")
+	(. if (la->kind == _integer_literal && la->val[0] == L'&') {
+		std::unique_ptr<wchar_t> msg(coco_string_create_append(L"Possibly concatenation is incorrectly written as integer literal: ", la->val));
+		Warn(la->line, la->col, msg.get());
+	} .)
 .
 ///ConditionalComparison (. ID(ConditionalComparison) .)
 ///=
@@ -1653,12 +1669,6 @@ PrimaryExpression (. ID(L"Primary", 2) .)
 	| malformed_real_literal     (. Err(L"Malformed real constant"); .)
 	| malformed_string_literal   (. Err(L"Malformed string constant"); .)
 	)
-	(.
-	if (la->kind == _integer_literal && la->val[0] == L'&') {
-		Get();
-		Err(L"This is an integer literal. For concatenation, put space around \"&\".");
-	}
-	.)
 .
 PrimitiveType<bool bBits> (. ID(L"PrimitiveType", 3) .)
 =
