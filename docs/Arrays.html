@@ -16,7 +16,7 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
-<li><a href="Language_Features.html">Language Features</a></li>
+<li><a rel="parent" href="Language_Features.html">Language Features</a></li>
 </ul>
 </nav>
 <main>
@@ -26,7 +26,7 @@ You refer to these values by the same variable name and use a number called an <
 These values are known as the <dfn>elements</dfn> of the array and fully use a range from zero thru a specified maximum.</p>
 <p>Variables other than arrays are known as <dfn>scalars</dfn>.
 A scalar can hold only one value at a time.</p>
-<h2>Creating an array</h2>
+<h2>To make an array</h2>
 <p>You make an array with the same statements you use to make other variables.
 The only difference is the dimensions of the array, which you put in parentheses.
 Some examples follow.</p>
@@ -36,12 +36,12 @@ Some examples follow.</p>
 <p>Because <code>my_first_array</code> uses one index or subscript, it is known as a <dfn>onee-dimensional array</dfn>.
 You also can make arrays with more than one subscript, usually known as <dfn>multidimensional arrays</dfn>.
 See <a href="Array_Dimensions.html">Array Dimensions</a> for more information.</p>
-<h2>Storing values in an array</h2>
+<h2>To store values in an array</h2>
 <p>You get access to each element in an array with an index of type <code class="kw">Int</code>.
 You write the name of the array, then the index between parentheses.
 Indexes for multidimensional arrays have a comma between each.
 You use one index for each array dimension.</p>
-<h2>Giving an array initial values</h2>
+<h2>To give an array initial values</h2>
 <p>You can give an array some initial values with an <dfn>array initializer</dfn>.
 An array initializer is a list of values with a comma (<code class="op">,</code>) between each, all between braces (<code class="op">{ }</code>).</p>
 <div class="language-vivifire listing">
@@ -52,18 +52,23 @@ An array initializer is a list of values with a comma (<code class="op">,</code>
 <div class="language-vivifire listing">
 <pre><code>Dim magic() = {{4, 9, 2}, {3, 5, 7}, {8, 1, 6}}&#10;</code></pre>
 </div>
-<h2>Iterating through an array</h2>
-<p>TODO2</p>
+<h2>To iterate through an array</h2>
+<p>When you iterate through an array, you do something to each item in the array.
+You can go from lowest to highest or highest to lowest.
+Typically you use one of the two statements <code class="kw">For</code> or <code class="kw">For Each</code>.
+If you do not know the limits of the array, then you can call the method <code>Last</code> to get the highest index value.</p>
+<p>The example that follows uses the statement <code class="kw">For</code> to iterate through an array with one dimension.</p>
 <div class="language-vivifire listing">
 <pre><code>Dim numbers() As Int = { 1, 2, 3 }
 
-For index = 0 To numbers.Last
+For index = 0 To numbers.Last(0)
     PrintLine numbers(index)
 End For&#10;</code></pre>
 <div>Output:</div>
 <pre><samp>1
 2
 3</samp></pre>
+<p>The example that follows uses the statement <code class="kw">For</code> to iterate through an array with two dimensions.</p>
 </div>
 <div class="language-vivifire listing">
 <pre><code>Dim numbers(*2) = {{1, 2}, {3, 4}, {5, 6}}
@@ -79,6 +84,8 @@ End For&#10;</code></pre>
 3 4
 5 6</samp></pre>
 </div>
+
+<p>The example that follows uses the statement <code class="kw">For Each</code> to iterate through arrays with one and two dimensions.</p>
 <div class="language-vivifire listing">
 <pre><code>Dim numbers1D() As Int = { 1, 2, 3 }
 
@@ -103,13 +110,13 @@ End For&#10;</code></pre>
 9</samp></pre>
 </div>
 <h2>Arrays as return values and parameters</h2>
-<p>TODO2</p>
+<p>TODO</p>
 <div class="language-vivifire listing">
 <pre><code>Dim my_numbers() = GetNumbers()
 ShowNumbers my_numbers
 
 Sub GetNumbers() As Int*1
-    Dim numbers() As Int = { 97, 114, 114, 97, 121 }
+    Dim numbers() As Int = { 119, 111, 114, 108, 100 }
     Return numbers
 End Sub
 
@@ -119,11 +126,11 @@ Sub ShowNumbers(numbers(*1) As Int)
     End For
 End Sub&#10;</code></pre>
 <div>Output:</div>
-<pre><samp>97
+<pre><samp>119
+111
 114
-114
-97
-121</samp></pre>
+108
+100</samp></pre>
 </div>
 <h2>Array dimensions</h2>
 <p>TODO</p>
