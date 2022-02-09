@@ -940,7 +940,7 @@ ClassStatement<Modif &mods> (. ID(L"ClassStatement", 3) .)
 	mods.validate();
 	.)
 	"Class" identifier
-	[ TypeParameterList ]
+	[ TypeParameterList<_Class> ]
 	[ "Is" UserType ]
 	{ DoesClause }
 	[ WhereClause<_Class> ]
@@ -1249,7 +1249,7 @@ EnumStatement<Modif &mods> (. ID(L"EnumStatement", 3) .)
 EventStatement (. ID(L"EventStatement", 3) .)
 =
 	"Event" identifier 
-	[ TypeParameterList ]
+	[ TypeParameterList<_Event> ]
 	[ FormalParameterList<_Event> ]
 	[ WhereClause<_Event> ]
 	SyncNewline<s_name>
@@ -1339,7 +1339,7 @@ FunctionSignature<Modif &mods, bool &bodied> (. ID(L"FunctionSignature", 3) .)
 =
 	"Function" Name
 	(
-		[ TypeParameterList ]
+		[ TypeParameterList<_Function> ]
 		[ EnclosedParameterList<_Function> ]
 		[ ReturnTypeClause ] //TODO: mandatory if name is not typed_identifier
 		[ WhereClause<_Function> ]
@@ -1870,7 +1870,7 @@ StructStatement<Modif &mods> (. ID(L"StructStatement", 3) .)
 	mods.validate();
 	.)
 	"Struct" identifier
-	[ TypeParameterList ]
+	[ TypeParameterList<_Struct> ]
 	[ "Is" ValueType ]
 	SyncNewline<s_name>
 	{ StructState }
@@ -1916,7 +1916,7 @@ SubStatement<Modif &mods> (. ID(L"SubStatement", 3) .)
 SubSignature (. ID(L"SubSignature", 3) .)
 =
 	"Sub" Name
-	[ TypeParameterList ]
+	[ TypeParameterList<_Sub> ]
 	[ EnclosedParameterList<_Sub> [ ReturnTypeClause ]
 	| UnenclosedParameterList<_Sub>
 	| ReturnTypeClause
@@ -1959,7 +1959,7 @@ TraitStatement<Modif &mods> (. ID(L"TraitStatement", 3) .)
 	mods.validate();
 	.)
 	"Trait" Name
-	[ TypeParameterList ]
+	[ TypeParameterList<_Trait> ]
 	{ DoesClause }
 	[ WhereClause<_Trait> ]
 	SyncNewline<s_name>
@@ -2001,13 +2001,17 @@ TypeExpression (. ID(L"Type", 2) .)
 =
 	ConcatenationExpression [ IsExpression | TypeConversion ]
 .
-TypeParameter (. ID(L"TypeParameter", 3) .)
+TypeParameter<int parent> (. ID(L"TypeParameter", 3) .)
 =
-	[ "In" | "Out" ] identifier
+	[ "In" | "Out" ] // TODO: Is permitted in parent?
+	identifier
 .
-TypeParameterList (. ID(L"TypeParameterList", 3) .)
+TypeParameterList<int parent> (. ID(L"TypeParameterList", 3) .)
 =
-	'[' TypeParameter { WEAK comma TypeParameter } ']'
+	"["
+	TypeParameter<parent>
+	{ WEAK comma TypeParameter<parent> }
+	"]"
 .
 /*U*/
 UnaryExpression (. ID(L"Unary", 2) .)
