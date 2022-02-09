@@ -16,15 +16,51 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
-<li><a href="Modifiers.html">Modifiers</a></li>
+<li><a rel="parent" href="Modifiers.html">Modifiers</a></li>
 </ul>
 </nav>
 <main id="stub">
 <h1 id="top"><code>Out</code> (Generics)</h1>
 <p>Specifies that a type parameter is covariant.</p>
+<h2>Instructions</h2>
+<p>Covariance lets you use a child class of the class specified by a generic parameter.
+This permits automatic conversion of classes that implement variant traits and automatic conversion of event types.
+See <a href="Covariance_and_Contravariance.html">Covariance and Contravariance</a> for more information.</p>
+<h2>Limits</h2>
+<p>You can use the modifier <code class="kw">Out</code> with generic traits and events.</p>
+<p>
+In a generic trait, you can declare a type parameter as covariant if you obey the instructions that follow:</p>
+<ul>
+<li>Use the type parameter only as a return type of trait methods.
+Do not use it as a type for method arguments.
+<!-- TBD: exception with events --></li>
+Do not use the type parameter as a generic constraint for the trait methods.
+</ul>
+<h2>Examples</h2>
+<div class="language-vivifire listing">
+<pre><code>' Covariant trait.
+Trait TCovariant[Out T]
+End Trait
+
+' Extending covariant trait.
+Trait TExtCovariant[Out T] Does TCovariant[T]
+End Trait
+
+' Implementing covariant trait.
+Class Sample[T] Does TCovariant[T]
+End Class
+
+Var parent As TCovariant[CParent] = CSample[CParent]
+Var child As TCovariant[CChild] = CSample[CChild]
+
+' You can assign child to parent because
+' the TCovariant trait is covariant.
+parent = child&#10;</code></pre>
+</div>
 <h2>Applies to</h2>
 <ul class="articles">
-<li><a href="Type_List.html">Type List</a></li>
+<li><a href="Event_Statement.html">Event Statement</a></li>
+<li><a href="Trait_Statement.html">Trait Statement</a></li>
 </ul>
 <h2>See also</h2>
 <ul class="articles">
@@ -32,5 +68,6 @@
 </ul>
 </main>
 <script src="common.js"></script>
+<script src="prism.js"></script>
 </body>
 </html>
