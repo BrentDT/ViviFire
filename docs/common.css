@@ -229,9 +229,10 @@ code.IPA {
 	font-family: "DejaVu Sans", "Lucida Sans Unicode", Gentium;
 	font-size: inherit;
 }
-/* Stubs - updated 2022/02/02 */
+/* Stubs - updated 2022/02/09 */
 a[href^="Collection_Initializers."],
 a[href^="Conversions_Between_Strings_and_Other_Types."],
+a[href^="Covariance_and_Contravariance."],
 a[href^="Declaration_Contexts_and_Default_Access_Levels."],
 a[href^="Effects_of_Culture_on_Strings."],
 a[href^="How_Make_Strings."],
@@ -240,7 +241,7 @@ a[href^="Installation."],
 a[href^="Iterators."],
 a[href^="Language_Limits."],
 a[href^="Namespaces."],
-a[href^="Out."],
+a[href^="Programming_Concepts."],
 a[href^="References_to_Declared_Elements."],
 a[href^="Running_ViviFire."],
 a[href^="StringBuilder_Class."],
