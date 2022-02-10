@@ -2003,7 +2003,10 @@ TypeExpression (. ID(L"Type", 2) .)
 .
 TypeParameter<int parent> (. ID(L"TypeParameter", 3) .)
 =
-	[ "In" | "Out" ] // TODO: Is permitted in parent?
+	[
+		( "In" | "Out" )
+		(. if (parent != _Event && parent != _Trait) Err(L"IN and OUT are permitted only with EVENT and TRAIT"); .)
+	]
 	identifier
 .
 TypeParameterList<int parent> (. ID(L"TypeParameterList", 3) .)
