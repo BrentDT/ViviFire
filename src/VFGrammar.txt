@@ -1044,17 +1044,14 @@ ConstStatement<Modif &mods> (. ID(L"ConstStatement", 3) .)
 Constraint<int block> (. ID(L"Constraint", 3) .)
 =
 	( identifier
-		( ( "<" | "<=" ) identifier [ ( "<" | "<=" ) identifier ] [ IsConstraint ] { DoesConstraint } [ ConstructorConstraint ]
-		| IsConstraint { DoesConstraint } [ ConstructorConstraint ]
-		| DoesConstraint { DoesConstraint } [ ConstructorConstraint ]
-		| ConstructorConstraint
-		)
-	| SelfConstraint  // TODO: only traits
+		(. int c = 0; .)
+		[ (. c++; .) ( "<" | "<=" ) identifier [ ( "<" | "<=" ) identifier ] ]
+		[ (. c++; .) "Is" ( "Class" | "Struct" ) ]
+		{ (. c++; .) "Does" UserType }
+		[ (. c++; .) "Constructor" ( "(" ")" | "?" ) ]
+		(. if (c == 0) Err(L"Invalid constraint"); .)
+	| "Self" ( "<" | "<=" | "Is" ) UserType  // TODO: only traits
 	)
-.
-ConstructorConstraint (. ID(L"ConstructorConstraint", 3) .)
-=
-	"Constructor" "(" ")"
 .
 ConstructorStatement<Modif &mods> (. ID(L"ConstructorStatement", 3) .)
 =
@@ -1168,10 +1165,6 @@ DimStatement<Modif *mods> (. ID(L"DimStatement", 3) .)
 	SyncNewline<s_name>
 .
 DoesClause (. ID(L"DoesClause", 3) .)
-=
-	"Does" UserType
-.
-DoesConstraint (. ID(L"DoesConstraint", 3) .)
 =
 	"Does" UserType
 .
@@ -1432,10 +1425,6 @@ IntegerTypeOrExtension (. ID(L"IntegerTypeOrExtension", 3) .)
 InUnitClause (. ID(L"InUnitClause", 3) .)
 =
 	"In" UnitOfMeasure
-.
-IsConstraint (. ID(L"IsConstraint", 3) .)
-=
-	"Is" ( "Class" | "Struct" )
 .
 IsExpression (. ID(L"IsExpression", 2) .)
 =
@@ -1815,11 +1804,6 @@ SelectStatement (. ID(L"SelectStatement", 3) .)
 		(. if (option.Select_Else == SCE_ELSE && clause != case_else) Err(L"SELECT must have CASE ELSE because of @OPTION"); .)
 	(. Optional(_Select); .)
 	Newline
-.
-SelfConstraint (. ID(L"SelfConstraint", 3) .)
-=
-	"Self"
-	( "<" | "<=" | "Is" ) UserType
 .
 SimpleExpression (. ID(L"Simple", 2) .)
 =
