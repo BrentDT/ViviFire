@@ -2090,6 +2090,7 @@ WhenStatement<bool isPreconditional, when_type &whens> (. ID(L"WhenStatement", 3
 		(. if (whens == WHEN_ELSE) Err(L"WHEN DONE and WHEN NONE cannot be in the same loop with WHEN ELSE"); .)
 	| "Else"
 		(. if (whens == WHEN_DONE || whens == WHEN_NONE) Err(L"WHEN ELSE cannot be in the same loop with WHEN DONE or WHEN NONE"); .)
+		(. if (whens == WHEN_ELSE) Err(L"Cannot have more than one WHEN ELSE"); .)
 		(. whens = WHEN_ELSE; .)
 	) Newline
 	{ Statement }
