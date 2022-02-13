@@ -2039,6 +2039,10 @@ UnenclosedParameterList<int parent> (. ID(L"UnenclosedParameterList", 3) .)
 	(. param_type param(this, parent); .)
 	FormalParameter<param> { WEAK comma[line_break] FormalParameter<param> }
 .
+UnitAlias (. ID(L"UnitAlias", 3) .)
+=
+	identifier [ ( "-" | "+" ) identifier ] // Plurals by "prefix-unit" or "unit+suffix"
+.
 UnitExpression (. ID(L"Unit", 2) .)
 =
 	UnitOfMeasure  { ( integer_literal | real_literal ) UnitOfMeasure  }
@@ -2049,9 +2053,9 @@ UnitOfMeasure (. ID(L"UnitOfMeasure", 3) .)
 	| "(" identifier { [ "*" | "/" ] identifier } ")"
 	)
 .
-UnitAlias (. ID(L"UnitAlias", 3) .)
+UnitParameter (. ID(L"UnitParameter", 3) .)
 =
-	identifier [ ( "-" | "+" ) identifier ] // Plurals by "prefix-unit" or "unit+suffix"
+	"(" identifier InUnitClause ")"
 .
 UnitStatement<Modif &mods> (. ID(L"UnitStatement", 3) .)
 =
@@ -2066,10 +2070,11 @@ UnitStatement<Modif &mods> (. ID(L"UnitStatement", 3) .)
 	| "=" AdditiveExpression
 	]
 	SyncNewline<s_name>
-.
-UnitParameter (. ID(L"UnitParameter", 3) .)
-=
-	"(" identifier InUnitClause ")"
+	// TODO: Think about block construct to do range tests, for example:
+	//  Unit Kelvin K
+	//  Set value
+	//      If value < 0.0 Then Raise RangeError
+	//  End Unit
 .
 UserType (. ID(L"UserType", 3) .)
 =
