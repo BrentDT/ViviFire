@@ -1862,7 +1862,9 @@ StructStatement<Modif &mods> (. ID(L"StructStatement", 3) .)
 	"Struct" identifier
 	[ TypeParameterList<_Struct> ]
 	[ "Is" ValueType ]
+	[ WhereClause<_Class> ]
 	SyncNewline<s_name>
+	{ WhereClause<_Class> SyncNewline<s_name> }
 	{ StructState }
 	{ StructProcedure }
 	"End"
