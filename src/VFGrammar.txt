@@ -410,8 +410,7 @@ bool IsNamedArgument() {
 bool IsPropertySelf() {
 	// "Self", "Self%", "Self!", or "Self$"
 	if (la->kind == _Self) return true;
-	if (la->kind == _typed_identifier && _wcsnicmp(L"self", la->val, 4) == 0
-	&& (la->val[4] == L'%' || la->val[4] == L'!' || la->val[4] == L'$')) {
+	if (la->kind == _typed_identifier && _wcsnicmp(L"self", la->val, 4) == 0 && wcschr(L"%!$", la->val[4])) {
 		return true;
 	}
 	return false;
