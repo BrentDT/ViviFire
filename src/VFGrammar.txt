@@ -25,11 +25,11 @@ extern Args args;
 
 COMPILER ViviFire
 
-enum case_type { case_zero, case_expr, case_else };
-enum option_type { option_default, WITH_THEN, WITHOUT_THEN };
+enum case_type { CASE_ZERO, CASE_EXPR, CASE_ELSE };
+enum option_type { OPTION_DEFAULT, WITH_THEN, WITHOUT_THEN };
 enum select_type { SELECT_DEFAULT, SELECT_ELSE, SELECT_ELSE_STRING };
 enum ternary { TERNARY0, TERNARY1, TERNARY2, YES = TERNARY1, NO = TERNARY2 };
-enum when_type { when_zero = 0, when_done = 1, when_none = 2, when_else = 3 };
+enum when_type { WHEN_ZERO, WHEN_DONE, WHEN_NONE, WHEN_ELSE };
 enum { NO_BITS, YES_BITS };
 enum { POSTCONDITIONAL, PRECONDITIONAL };
 
@@ -230,7 +230,7 @@ void Warn(int line, int col, const wchar_t *msg) {
 	else errors->Warning(line, col, msg);
 }
 
-void Optional(int kind, option_type nOption = option_default) {
+void Optional(int kind, option_type nOption = OPTION_DEFAULT) {
 	switch (kind) {
 	case _Case:  // Select [ Case ]
 		if (la->kind == _Case) {
@@ -282,7 +282,7 @@ void Optional(int kind, option_type nOption = option_default) {
 		//TODO: else if (end_block)
 		break;
 	case _Then:
-		if (nOption == option_default && la->kind == _Then) {
+		if (nOption == OPTION_DEFAULT && la->kind == _Then) {
 			nOption = WITH_THEN;
 			Get();
 		}
@@ -898,12 +898,12 @@ CallStatement (. ID(L"CallStatement", 3) .)
 CaseClause<case_type &clause> (. ID(L"CaseClause", 3) .)
 =
 	"Case"
-		(. if (clause == case_else) Err(L"CASE cannot follow CASE ELSE in SELECT"); .)
+		(. if (clause == CASE_ELSE) Err(L"CASE cannot follow CASE ELSE in SELECT"); .)
 	( "Else"
-		(. if (clause == case_zero) Err(L"CASE ELSE cannot be first CASE in SELECT"); .)
-		(. clause = case_else; .)
+		(. if (clause == CASE_ZERO) Err(L"CASE ELSE cannot be first CASE in SELECT"); .)
+		(. clause = CASE_ELSE; .)
 	| CaseExpression { WEAK comma[line_break] CaseExpression }
-		(. clause = case_expr; .)
+		(. clause = CASE_EXPR; .)
 	)
 	SyncNewline<s_name>
 	{ Statement }
@@ -1453,7 +1453,7 @@ LoopControlVariable (. ID(L"LoopControlVariable", 3) .)
 LoopBody<bool isPreconditional> (. ID(L"LoopBody", 3) .)
 =
 	( Statement { Statement }
-	| (. when_type whens = when_zero; .)
+	| (. when_type whens = WHEN_ZERO; .)
 		"Begin" [ identifier { WEAK comma identifier } ] SyncNewline<s_name>
 		{ Statement }
 		WhenStatement<isPreconditional, whens>
@@ -1793,15 +1793,15 @@ ReturnTypeClause (. ID(L"ReturnTypeClause", 3) .)
 /*S*/
 SelectStatement (. ID(L"SelectStatement", 3) .)
 =
-	(. case_type clause = case_zero; .)
+	(. case_type clause = CASE_ZERO; .)
 	"Select"
 	(. Optional(_Case); .)
 	Expression
 	SyncNewline<s_name>
 	{ CaseClause<clause> }
 	"End"
-		(. if (clause == case_zero) Err(L"SELECT must have a minimum of one CASE"); .)
-		(. if (option.Select_Else == SELECT_ELSE && clause != case_else) Err(L"SELECT must have CASE ELSE because of @OPTION"); .)
+		(. if (clause == CASE_ZERO) Err(L"SELECT must have a minimum of one CASE"); .)
+		(. if (option.Select_Else == SELECT_ELSE && clause != CASE_ELSE) Err(L"SELECT must have CASE ELSE because of @OPTION"); .)
 	(. Optional(_Select); .)
 	Newline
 .
@@ -2087,10 +2087,10 @@ WhenStatement<bool isPreconditional, when_type &whens> (. ID(L"WhenStatement", 3
 	"When"
 	( identifier
 		// TODO: Check for "Done" or "None"
-		(. if (whens == when_else) Err(L"WHEN DONE and WHEN NONE cannot be in the same loop with WHEN ELSE"); .)
+		(. if (whens == WHEN_ELSE) Err(L"WHEN DONE and WHEN NONE cannot be in the same loop with WHEN ELSE"); .)
 	| "Else"
-		(. if (whens == when_done || whens == when_none) Err(L"WHEN ELSE cannot be in the same loop with WHEN DONE or WHEN NONE"); .)
-		(. whens = when_else; .)
+		(. if (whens == WHEN_DONE || whens == WHEN_NONE) Err(L"WHEN ELSE cannot be in the same loop with WHEN DONE or WHEN NONE"); .)
+		(. whens = WHEN_ELSE; .)
 	) Newline
 	{ Statement }
 .
