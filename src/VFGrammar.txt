@@ -27,7 +27,7 @@ COMPILER ViviFire
 
 enum case_type { case_zero, case_expr, case_else };
 enum option_type { option_default, WITH_THEN, WITHOUT_THEN };
-enum opt_sce { SCE_DEFAULT, SCE_ELSE, SCE_STRING };
+enum select_type { SELECT_DEFAULT, SELECT_ELSE, SELECT_ELSE_STRING };
 enum ternary { TERNARY0, TERNARY1, TERNARY2, YES = TERNARY1, NO = TERNARY2 };
 enum when_type { when_zero = 0, when_done = 1, when_none = 2, when_else = 3 };
 enum { NO_BITS, YES_BITS };
@@ -47,8 +47,8 @@ struct tag_option {
 	bool    last           = false;
 	bool    New            = false;
 	bool    Optional_equals= false;
-	ternary Select_Case    = TERNARY0;
-	opt_sce Select_Else    = SCE_DEFAULT;
+	ternary     Select_Case    = TERNARY0;
+	select_type Select_Else    = SELECT_DEFAULT;
 	bool    unit_full      = false;
 	short   warning        = 4;
 	short   warning_error  = 0;
@@ -132,9 +132,9 @@ struct tag_option {
 				parser->Get();
 				if (parser->la->kind == _String) {
 					parser->Get();
-					Select_Else = SCE_STRING; // @Option SELECT ELSE STRING
+					Select_Else = SELECT_ELSE_STRING; // @Option SELECT ELSE STRING
 				} else {
-					Select_Else = SCE_ELSE; // @Option SELECT ELSE
+					Select_Else = SELECT_ELSE; // @Option SELECT ELSE
 				}
 			} else if (parser->la->kind == _Case) {
 				parser->Get();
@@ -1801,7 +1801,7 @@ SelectStatement (. ID(L"SelectStatement", 3) .)
 	{ CaseClause<clause> }
 	"End"
 		(. if (clause == case_zero) Err(L"SELECT must have a minimum of one CASE"); .)
-		(. if (option.Select_Else == SCE_ELSE && clause != case_else) Err(L"SELECT must have CASE ELSE because of @OPTION"); .)
+		(. if (option.Select_Else == SELECT_ELSE && clause != case_else) Err(L"SELECT must have CASE ELSE because of @OPTION"); .)
 	(. Optional(_Select); .)
 	Newline
 .
