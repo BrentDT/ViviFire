@@ -1042,14 +1042,28 @@ ConstStatement<Modif &mods> (. ID(L"ConstStatement", 3) .)
 .
 Constraint<int block> (. ID(L"Constraint", 3) .)
 =
-	( identifier
+	(
 		(. int c = 0; .)
-		[ (. c++; .) ( "<" | "<=" ) identifier [ ( "<" | "<=" ) identifier ] ]
-		[ (. c++; .) "Is" ( "Class" | "Struct" ) ]
-		{ (. c++; .) "Does" UserType }
-		[ (. c++; .) "Constructor" ( "(" ")" | "?" ) ]
+
+		identifier
+		[ (. c++; .)
+			( "<" | "<=" ) identifier [ ( "<" | "<=" ) identifier ]
+		]
+		[ (. c++; .)
+			"Is" ( "Class" | "Struct" )
+		]
+		{ (. c++; .)
+			"Does" UserType
+		}
+		[ (. c++; .)
+			"Constructor" ( "(" ")" | "?" )
+		]
 		(. if (c == 0) Err(L"Invalid constraint"); .)
-	| "Self" ( "<" | "<=" | "Is" ) UserType  // TODO: only traits
+	|
+		"Self"
+		(. if (block != _Trait) Err(L"SELF constraint only available in TRAIT"); .)
+		( "<" | "<=" | "Is" )
+		UserType
 	)
 .
 ConstructorStatement<Modif &mods> (. ID(L"ConstructorStatement", 3) .)
