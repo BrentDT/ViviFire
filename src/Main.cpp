@@ -1,21 +1,26 @@
 /*
-* ViviFire Programming Language
-*
-* Copyright 2021 Brent D. Thorn
-*
-* You can get the latest version at http://vivifire.com/.
-*
-* Use of this source code is governed by an MIT-style license that can be
-* found in the LICENSE file.
-*/
+ * ViviFire Programming Language
+ *
+ * Copyright 2022 Brent D. Thorn
+ *
+ * You can get the latest version at http://vivifire.com/.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file.
+ */
 
 #define NOMINMAX
 #define UNICODE
 #define _UNICODE
 #define __UNICODE
-#include <stdio.h>
+
+#include <cstdio>
+#if defined(_WIN32)
 #include <windows.h>
 #include <psapi.h>  // For MinGW, also give the linker "-lpsapi".
+#else
+#include <unistd.h> // For 'isatty'.
+#endif
 #include "Scanner.h"
 #include "Parser.h"
 #include "Args.h"
@@ -23,7 +28,14 @@
 Args args;
 
 bool separate_console () {
-// Returns true if app was started from the Windows shell.
+// Returns true if app was started from the desktop.
+#if defined(_WIN32)
+	return !_isatty(fileno(stdin));
+#else
+	return !isatty(fileno(stdin));
+#endif
+
+#if 0
 // Checks if the console cursor is at 0,0.
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	
@@ -33,8 +45,10 @@ bool separate_console () {
 	}
 	
 	return ((!csbi.dwCursorPosition.X) && (!csbi.dwCursorPosition.Y));
+#endif
 }
 
+#if defined(_WIN32)
 char *FormatBytes (double size, char *buf) {
 // Returns a string containing a human-readable size for data given in bytes.
 // The 'buf' should point to a buffer at least 16 bytes in size.
@@ -75,13 +89,14 @@ void PrintMemoryInfo ( DWORD processID ) {
 	}
 	CloseHandle( hProcess );
 }
+#endif
 
 int main (int argc, char *argv[]) {
 	bool separate = separate_console();
 	
 	if (!args.Parse(argc, argv)) {
 		if (separate) {
-			fputs("\nPress any key to close. ", stdout);
+			printf("\nPress Enter to close... ");
 			getchar();
 		}
 		return 1;
@@ -96,11 +111,12 @@ int main (int argc, char *argv[]) {
 	coco_string_delete(fileName);
 	delete p;
 	delete s;
-	
+
+#if defined(_WIN32)
 	if (args.m) {
 		PrintMemoryInfo(GetCurrentProcessId());
 	}
-	
+#endif
 	return 0;
 }
 
