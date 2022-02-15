@@ -229,27 +229,27 @@ code.IPA {
 	font-family: "DejaVu Sans", "Lucida Sans Unicode", Gentium;
 	font-size: inherit;
 }
-/* Stubs - updated 2022/02/09 */
-a[href^="Collection_Initializers."],
-a[href^="Conversions_Between_Strings_and_Other_Types."],
-a[href^="Covariance_and_Contravariance."],
-a[href^="Declaration_Contexts_and_Default_Access_Levels."],
-a[href^="Effects_of_Culture_on_Strings."],
-a[href^="How_Make_Strings."],
-a[href^="In."],
-a[href^="Installation."],
-a[href^="Iterators."],
-a[href^="Language_Limits."],
-a[href^="Namespaces."],
-a[href^="Programming_Concepts."],
-a[href^="References_to_Declared_Elements."],
-a[href^="Running_ViviFire."],
-a[href^="StringBuilder_Class."],
-a[href^="String_Manipulations."],
-a[href^="Structures_and_Classes."],
-a[href^="System_Requirements."],
-a[href^="ViviFire_Runtime_Library_Members."],
-a[href^="Widening_and_Narrowing_Conversions."] {
+/* Stubs - updated 2022/02/14 */
+a[href^="Collection_Initializers."]:link,
+a[href^="Conversions_Between_Strings_and_Other_Types."]:link,
+a[href^="Covariance_and_Contravariance."]:link,
+a[href^="Declaration_Contexts_and_Default_Access_Levels."]:link,
+a[href^="Effects_of_Culture_on_Strings."]:link,
+a[href^="How_Make_Strings."]:link,
+a[href^="In."]:link,
+a[href^="Installation."]:link,
+a[href^="Iterators."]:link,
+a[href^="Language_Limits."]:link,
+a[href^="Namespaces."]:link,
+a[href^="Programming_Concepts."]:link,
+a[href^="References_to_Declared_Elements."]:link,
+a[href^="Running_ViviFire."]:link,
+a[href^="StringBuilder_Class."]:link,
+a[href^="String_Manipulations."]:link,
+a[href^="Structures_and_Classes."]:link,
+a[href^="System_Requirements."]:link,
+a[href^="ViviFire_Runtime_Library_Members."]:link,
+a[href^="Widening_and_Narrowing_Conversions."]:link {
 	color: inherit;
 }
 
