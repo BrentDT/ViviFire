@@ -17,7 +17,7 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Statements_Reference.html">Statements</a></li>
-<li><a href="Statements_2.html">F&ndash;P Statements</a></li>
+<li><a rel="parent" href="Statements_2.html">F&ndash;P Statements</a></li>
 </ul>
 </nav>
 <main>
@@ -66,20 +66,24 @@ You can also use <code class="kw">End If</code>.</dd>
 <p>When <code class="kw">If&hellip;Else</code> becomes too long, you can replace it with a <a href="Select_Case_Statement.html">Select&hellip;Case Statement</a>.</p>
 <h3>One-line construct</h3>
 <p>You can use the one-line construct for short, easy tests.
-There are a small number of statements that can be used with this construct.
-They include:</p>
+There are only 12 statements that you can use with this construct.</p>
 <ul class="kws" style="display: inline-block; columns: 2">
 <li>assignment</li>
 <li>method call</li>
 <li><a href="Call_Statement.html"><code>Call</code></a></li>
 <li><a href="Call_Base_Statement.html"><code>Call Base</code></a></li>
+<li><a href="Call_Constructor_Statement.html"><code>Call Constructor</code></a></li>
 <li><a href="Exit_Statement.html"><code>Exit</code></a></li>
 <li><a href="GoTo_Case_Statement.html"><code>GoTo Case</code></a></li>
 <li><a href="Throw_Statement.html"><code>Raise</code></a></li>
 <li><a href="Call_Event_Statement.html"><code>Raise Event</code></a></li>
 <li><a href="ReDim_Statement.html"><code>ReDim</code></a></li>
 <li><a href="Return_Statement.html"><code>Return</code></a></li>
+<li><a href="Yield_Statement.html"><code>Yield</code></a></li>
 </ul>
+<p class="note">Note:
+You cannot nest the one-line constructs of <code class="kw">If&hellip;Then</code>.
+This is because it can cause problems when some of the statements have <code class="kw">Else</code> while other statements do not.</p>
 <h3>Changes in syntax with <code>@Option</code></h3>
 <p>There are three areas where you can change the syntax of the statement:</p>
 <ul>
