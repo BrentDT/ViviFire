@@ -769,7 +769,7 @@ ViviFire (. ID(L"ViviFire", 3) .)
 =
 	Module
 
-	// Catch errors in compound statements.
+	// Catch errors in block statements.
 	[ "Case"         (. Err(L"CASE without SELECT"); .)
 	| "Catch"        (. Err(L"CATCH without TRY"); .)
 	| "Constructor"  (. Err(L"CONSTRUCTOR without CLASS"); .)
@@ -869,6 +869,19 @@ Block<int &tkn> (. ID(L"Block", 3) .)
 	(. tkn = la->kind; .)
 	( "Do" | "For" | "Function" | "Method" | "Property" | "Sub" | "While" )
 .
+BlockStatement (. ID(L"BlockStatement", 3) .)
+=
+	( DimStatement<nullptr>
+	| NewStatement
+	| EventStatement
+	| DoStatement
+	| ForStatement
+	| IfStatement
+	| SelectStatement
+	| TryStatement
+	| WhileStatement
+	)
+.
 /*C*/
 CallOrNew<int which, Modif *mods> (. ID(L"CallOrNew", 3) .)
 =
@@ -882,7 +895,7 @@ CallOrNew<int which, Modif *mods> (. ID(L"CallOrNew", 3) .)
 	UnenclosedArgumentList
 	[ IF (la->kind == _line_break && scanner->Peek()->kind == _Begin) // FIXME: multiple line breaks?
 		SyncNewline<s_name>
-		CompoundNewStatement
+		NewBlockStatement
 	]
 .
 CallStatement (. ID(L"CallStatement", 3) .)
@@ -965,44 +978,6 @@ ComparisonOperator (. ID(L"ComparisonOperator", 3) .)
 =
 	[ "~" ]
 	( "=" | "<>" | "<" | "<=" | ">" | ">=" )
-.
-CompoundIfStatement<option_type nThen> (. ID(L"CompoundIfStatement", 3) .)
-=
-	(. bool bElseSeen = false; .)
-	(. Optional(_Then, nThen); .)
-	SyncNewline<s_name>
-	{ Statement }
-	{	"Else" (. if (bElseSeen) Err(L"ELSE or ELSE IF cannot follow ELSE"); .)
-		( "If" Expression (. Optional(_Then); .)
-		| (. bElseSeen = true; .)
-		)
-		SyncNewline<s_name>
-		{ Statement }
-	}
-	"End"
-	(. Optional(_If); .)
-.
-CompoundNewStatement (. ID(L"CompoundNewStatement", 3) .)
-=
-	(.
-	bool bInitExpr = false;
-	wchar_t *type_name = nullptr;
-	.)
-///	( "New" (. bNew = true; .)
-///	| (. if (option.New) Err(L"NEW is mandatory  because of @OPTION"); .)
-///	)
-	"Begin"
-		[ "Call" QualifiedName<0>
-			[ InitializationExpression (. bInitExpr = true; .) ]
-		| UserType
-		]
-		SyncNewline<s_name>
-		[	NewMember (. if (bInitExpr) Err(L"Expected End after initialization expression"); .)
-			{ NewMember }
-		]
-		"End"
-	[ "New" | identifier ] // TODO: test type_name
-	(. coco_string_delete(type_name); .)
 .
 ConcatenationExpression (. ID(L"Concatenation", 2) .)
 =
@@ -1390,19 +1365,35 @@ IdentifierStatement (. ID(L"IdentifierStatement", 3) .)
 		CallOrNew<0, nullptr>
 	]
 .
+IfBlockStatement<option_type nThen> (. ID(L"IfBlockStatement", 3) .)
+=
+	(. bool bElseSeen = false; .)
+	(. Optional(_Then, nThen); .)
+	SyncNewline<s_name>
+	{ Statement }
+	{	"Else" (. if (bElseSeen) Err(L"ELSE or ELSE IF cannot follow ELSE"); .)
+		( "If" Expression (. Optional(_Then); .)
+		| (. bElseSeen = true; .)
+		)
+		SyncNewline<s_name>
+		{ Statement }
+	}
+	"End"
+	(. Optional(_If); .)
+.
 IfStatement (. ID(L"IfStatement", 3) .)
 =
 	"If" Expression
 	(	"Then"
 		(
-			CompoundIfStatement<WITH_THEN>
+			IfBlockStatement<WITH_THEN>
 		|
 			(. if (option.If_End) Err(L"IF statement must use block construct because of @OPTION"); .)
-			SimpleStatement
-			[ "Else" SimpleStatement ]
+			( SimpleStatement | SimpleStatementError )
+			[ "Else" ( SimpleStatement | SimpleStatementError ) ]
 		)
 	|
-		CompoundIfStatement<WITHOUT_THEN>
+		IfBlockStatement<WITHOUT_THEN>
 	)
 	SyncNewline<s_name>
 .
@@ -1593,6 +1584,28 @@ NamespaceStatement<Modif &mods> (. ID(L"NamespaceStatement", 3) .)
 	"End"
 	(. Optional(_Namespace); .)
 	Newline
+.
+NewBlockStatement (. ID(L"NewBlockStatement", 3) .)
+=
+	(.
+	bool bInitExpr = false;
+	wchar_t *type_name = nullptr;
+	.)
+///	( "New" (. bNew = true; .)
+///	| (. if (option.New) Err(L"NEW is mandatory  because of @OPTION"); .)
+///	)
+	"Begin"
+		[ "Call" QualifiedName<0>
+			[ InitializationExpression (. bInitExpr = true; .) ]
+		| UserType
+		]
+		SyncNewline<s_name>
+		[	NewMember (. if (bInitExpr) Err(L"Expected End after initialization expression"); .)
+			{ NewMember }
+		]
+		"End"
+	[ "New" | identifier ] // TODO: test type_name
+	(. coco_string_delete(type_name); .)
 .
 NewMember (. ID(L"NewMember", 3) .)
 =
@@ -1844,18 +1857,15 @@ SimpleStatement (. ID(L"SimpleStatement", 3) .)
 	| YieldStatement
 	)
 .
+SimpleStatementError (. ID(L"SimpleStatementError", 3) .)
+=
+	(. Err(la->line, la->col, L"This statement not permitted with one-line IF...ELSE"); .)
+	BlockStatement
+.
 Statement (. ID(L"Statement", 3) .)
 =
-	( DimStatement<nullptr>
-	| NewStatement
-	| EventStatement
+	( BlockStatement
 	| SimpleStatement SyncNewline<s_name>
-	| DoStatement
-	| ForStatement
-	| IfStatement
-	| SelectStatement
-	| TryStatement
-	| WhileStatement
 	)
 .
 StringExpression (. ID(L"String", 2) .)
