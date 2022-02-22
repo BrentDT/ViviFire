@@ -956,14 +956,16 @@ ClassStatement<Modif &mods> (. ID(L"ClassStatement", 3) .)
 	mods.allow(Modif::Deprecated);
 	bool bOpen = mods.allow(Modif::Open);
 	mods.validate();
+
+	bool generic = false;
 	.)
 	"Class" identifier
-	[ TypeParameterList<_Class> ]
+	[ TypeParameterList<_Class> (. generic = true; .) ]
 	[ "Is" UserType ]
 	{ DoesClause }
-	[ WhereClause<_Class> ]
+	[ WhereClause<_Class, generic> ]
 	SyncNewline<s_name>
-	{ WhereClause<_Class> SyncNewline<s_name> }
+	{ WhereClause<_Class, generic> SyncNewline<s_name> }
 //	{ Statement } // Conflict: assignment vs var decl
 	{ ClassOrObjectMember<_Class> }
 	"End"
@@ -1235,10 +1237,11 @@ EnumStatement<Modif &mods> (. ID(L"EnumStatement", 3) .)
 .
 EventStatement (. ID(L"EventStatement", 3) .)
 =
+	(. bool generic = false; .)
 	"Event" identifier 
-	[ TypeParameterList<_Event> ]
+	[ TypeParameterList<_Event> (. generic = true; .) ]
 	[ FormalParameterList<_Event> ]
-	[ WhereClause<_Event> ]
+	[ WhereClause<_Event, generic> ]
 	SyncNewline<s_name>
 .
 ExitStatement (. ID(L"ExitStatement", 3) .)
@@ -1305,36 +1308,42 @@ ForStatement (. ID(L"ForStatement", 3) .)
 	(. Optional(_For); .)
 	Newline
 .
+FunctionSignature<Modif &mods, bool &bodied, bool &generic> (. ID(L"FunctionSignature", 3) .)
+=
+	"Function"
+	Name
+	(. bool typed_name = (t->kind == _typed_identifier); .)
+	(
+		[ TypeParameterList<_Function> (. generic = true; .) ]
+		[ EnclosedParameterList<_Function> ]
+		( ReturnTypeClause
+		| (. if (!typed_name) Err(L"FUNCTION must have a return type"); .)
+		)
+		[ WhereClause<_Function, generic> ]
+	|
+		"Does" QualifiedName<0>
+		(. bodied = false; .)
+	)
+	SyncNewline<s_name>
+.
 FunctionStatement<Modif &mods> (. ID(L"FunctionStatement", 3) .)
 =
 	(.
 	mods.allow(Modif::Deprecated);
 	bool bShared = mods.allow(Modif::Shared);
 	mods.validate();
+
+	bool bodied = true;
+	bool generic = false;
 	.)
-	(. bool bodied = true; .)
-	FunctionSignature<mods, bodied>
+	FunctionSignature<mods, bodied, generic>
 	[ IF (bodied)
-		{ WhereClause<_Function> SyncNewline<s_name> }
+		{ WhereClause<_Function, generic> SyncNewline<s_name> }
 		{ Statement }
 	"End"
 	(. Optional(_Function); .)
 		Newline
 	]
-.
-FunctionSignature<Modif &mods, bool &bodied> (. ID(L"FunctionSignature", 3) .)
-=
-	"Function" Name
-	(
-		[ TypeParameterList<_Function> ]
-		[ EnclosedParameterList<_Function> ]
-		[ ReturnTypeClause ] //TODO: mandatory if name is not typed_identifier
-		[ WhereClause<_Function> ]
-	|
-		"Does" QualifiedName<0>
-		(. bodied = false; .)
-	)
-	SyncNewline<s_name>
 .
 /*G*/
 GotoStatement (. ID(L"GotoStatement", 3) .)
@@ -1881,13 +1890,15 @@ StructStatement<Modif &mods> (. ID(L"StructStatement", 3) .)
 	(.
 	mods.allow(Modif::Deprecated);
 	mods.validate();
+
+	bool generic = false;
 	.)
 	"Struct" identifier
-	[ TypeParameterList<_Struct> ]
+	[ TypeParameterList<_Struct> (. generic = true; .) ]
 	[ "Is" ValueType ]
-	[ WhereClause<_Class> ]
+	[ WhereClause<_Class, generic> ]
 	SyncNewline<s_name>
-	{ WhereClause<_Class> SyncNewline<s_name> }
+	{ WhereClause<_Class, generic> SyncNewline<s_name> }
 	{ StructState }
 	{ StructProcedure }
 	"End"
@@ -1913,6 +1924,28 @@ StructState (. ID(L"StructState", 3) .)
 	[ DimOrVar ] Declarator<YES_BITS>
 	SyncNewline<s_name>
 .
+SubSignature<bool &generic> (. ID(L"SubSignature", 3) .)
+=
+	"Sub"
+	Name
+	(. bool return_typed = (t->kind == _typed_identifier); .)
+	[ TypeParameterList<_Sub> (. generic = true; .) ]
+	[
+		EnclosedParameterList<_Sub>
+		[ ReturnTypeClause (. return_typed = true; .) ]
+	|
+		UnenclosedParameterList<_Sub>
+	|
+		ReturnTypeClause (. return_typed = true; .)
+	]
+	[
+		"Handles"
+		(. if (return_typed) Err(L"Event handlers cannot have a return type"); .)
+		QualifiedName<_identifier>
+	]
+	[ WhereClause<_Sub, generic> ]
+	SyncNewline<s_name>
+.
 SubStatement<Modif &mods> (. ID(L"SubStatement", 3) .)
 =
 	(.
@@ -1920,25 +1953,15 @@ SubStatement<Modif &mods> (. ID(L"SubStatement", 3) .)
 	bool bIterator = mods.allow(Modif::Iterator);
 	bool bShared   = mods.allow(Modif::Shared);
 	mods.validate();
+
+	bool generic = false;
 	.)
-	SubSignature
-	{ WhereClause<_Sub> SyncNewline<s_name> }
+	SubSignature<generic>
+	{ WhereClause<_Sub, generic> SyncNewline<s_name> }
 	{ Statement }
 	"End"
 	(. Optional(_Sub); .)
 	Newline
-.
-SubSignature (. ID(L"SubSignature", 3) .)
-=
-	"Sub" Name
-	[ TypeParameterList<_Sub> ]
-	[ EnclosedParameterList<_Sub> [ ReturnTypeClause ]
-	| UnenclosedParameterList<_Sub>
-	| ReturnTypeClause
-	]
-	[ "Handles" QualifiedName<_identifier> ]
-	[ WhereClause<_Sub> ]
-	SyncNewline<s_name>
 .
 SyncNewline<const wchar_t *name> (. ID(L"SyncNewline", 3) .)
 =
@@ -1972,13 +1995,15 @@ TraitStatement<Modif &mods> (. ID(L"TraitStatement", 3) .)
 	bool bAbstract = mods.allow(Modif::Abstract);
 	mods.allow(Modif::Deprecated);
 	mods.validate();
+
+	bool generic = false;
 	.)
-	"Trait" Name
-	[ TypeParameterList<_Trait> ]
+	"Trait" identifier
+	[ TypeParameterList<_Trait> (. generic = true; .) ]
 	{ DoesClause }
-	[ WhereClause<_Trait> ]
+	[ WhereClause<_Trait, generic> ]
 	SyncNewline<s_name>
-	{ WhereClause<_Trait> SyncNewline<s_name> }
+	{ WhereClause<_Trait, generic> SyncNewline<s_name> }
 	{ TraitMember }
 	"End"
 	(. Optional(_Trait); .)
@@ -2123,9 +2148,11 @@ WhenStatement<bool isPreconditional, when_type &whens> (. ID(L"WhenStatement", 3
 	) Newline
 	{ Statement }
 .
-WhereClause<int block> (. ID(L"WhereClause", 3) .)
+WhereClause<int block, bool generic> (. ID(L"WhereClause", 3) .)
 =
-	"Where" Constraint<block> { WEAK comma[line_break] Constraint<block> }
+	"Where"
+	(. if (!generic) Err(L"Declared element is missing generic type parameter(s)"); .)
+	Constraint<block> { WEAK comma[line_break] Constraint<block> }
 .
 WhereStatement (. ID(L"WhereStatement", 3) .)
 =
