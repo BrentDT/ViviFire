@@ -20,7 +20,8 @@
 // 'SyncNewline' gets passed 's_name'.
 #define ID(sn, iv) \
 	static const wchar_t *s_name = sn; \
-	if (args.v >= iv) wprintf(L">%ls", s_name);
+	if (args.v >= iv) wprintf(L">%ls", s_name);
+
 extern Args args;
 
 COMPILER ViviFire
@@ -886,11 +887,8 @@ BlockStatement (. ID(L"BlockStatement", 3) .)
 CallOrNew<int which, Modif *mods> (. ID(L"CallOrNew", 3) .)
 =
 	(.
-	bool bShared = false;
-	if (mods) {
-		bShared = mods->allow(Modif::Shared);
-		mods->validate();
-	}
+	bool bShared = mods ? mods->allow(Modif::Shared) : false;
+	if (mods) mods->validate();
 	.)
 	UnenclosedArgumentList
 	[ IF (la->kind == _line_break && scanner->Peek()->kind == _Begin) // FIXME: multiple line breaks?
@@ -1144,11 +1142,8 @@ DimStatement<Modif *mods> (. ID(L"DimStatement", 3) .)
 =
 	(.
 	// Permit @Deprecated?
-	bool bShared = false;
-	if (mods) {
-		bShared = mods->allow(Modif::Shared);
-		mods->validate();
-	}
+	bool bShared = mods ? mods->allow(Modif::Shared) : false;
+	if (mods) mods->validate();
 	.)
 	DimOrVar
 	DeclaratorList<NO_BITS>
@@ -1553,7 +1548,7 @@ ModuleMember (. ID(L"ModuleMember", 3) .)
 	| FunctionStatement<mods>
 	| MethodStatement<mods>
 	| NamespaceStatement<mods>
-	| ObjectStatement<mods>
+	| ObjectStatement<&mods>
 	| PropertyStatement<mods>
 	| StructStatement<mods>
 	| SubStatement<mods>
@@ -1618,7 +1613,10 @@ NewBlockStatement (. ID(L"NewBlockStatement", 3) .)
 .
 NewMember (. ID(L"NewMember", 3) .)
 =
+	[ Newline ]
 	( NewStatement
+	| ObjectStatement<nullptr>
+	| dot IdentifierStatement SyncNewline<s_name>
 	| ArgumentList SyncNewline<s_name>
 	)
 .
@@ -1642,12 +1640,12 @@ ObjectName (. ID(L"ObjectName", 3) .)
 	| nullable_identifier
 	)
 .
-ObjectStatement<Modif &mods> (. ID(L"ObjectStatement", 3) .)
+ObjectStatement<Modif *mods> (. ID(L"ObjectStatement", 3) .)
 =
 	(.
-	mods.allow(Modif::Deprecated);
-	bool bShared = mods.allow(Modif::Shared);
-	mods.validate();
+	mods ? mods->allow(Modif::Deprecated) : false;
+	bool bShared = mods ? mods->allow(Modif::Shared) : false;
+	if (mods) mods->validate();
 	.)
 	"Object" ObjectName
 	[ "Is" UserType ]
