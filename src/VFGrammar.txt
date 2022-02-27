@@ -70,7 +70,7 @@ struct tag_option {
 
 	void Parse() {
 		static const wchar_t *s_block = L"block", *s_equals = L"equals", *s_id = L"id", *s_no = L"no", *s_warning = L"warning";
-		if (last) parser->Err(L"@OPTION not permitted after LAST");
+		if (last) parser->SemErr(L"@OPTION not permitted after LAST");
 		parser->Get();
 		switch (parser->la->kind) {
 		case _Dim:
@@ -173,7 +173,7 @@ struct tag_option {
 		default:
 		bad_option:
 			parser->Get();
-			parser->Err(L"Unknown or missing option");
+			parser->SemErr(L"Unknown or missing option");
 			break;
 		}
 		if (parser->la->kind != _line_break) goto bad_option;
@@ -194,7 +194,7 @@ public:
 			m_byref = false;  // by value
 			break;
 		case _ByRef:
-			if (m_optionals) m_parser->Err(L"Optional parameter cannot be BYREF");
+			if (m_optionals) m_parser->SemErr(L"Optional parameter cannot be BYREF");
 			else m_byref = true;
 			break;
 		case _Optional:
@@ -236,9 +236,9 @@ void Optional(int kind, option_type nOption = OPTION_DEFAULT) {
 	case _Case:  // Select [ Case ]
 		if (la->kind == _Case) {
 			Get();
-			if (option.Select_Case == NO) Err(L"Select cannot have CASE because of @Option");
+			if (option.Select_Case == NO) SemErr(L"SELECT cannot have CASE because of @OPTION");
 		}
-		else if (option.Select_Case == YES) Err(L"SELECT must have CASE because of @Option");
+		else if (option.Select_Case == YES) SemErr(L"SELECT must have CASE because of @OPTION");
 		break;
 	case _Class:        // End [ Class ]
 	case _Constructor:  // End [ Constructor ]
@@ -258,11 +258,11 @@ void Optional(int kind, option_type nOption = OPTION_DEFAULT) {
 	case _Try:          // End [ Try ]
 	case _While:  // End [ While ]
 		if (la->kind == _line_break) { // END without block type.
-			if (option.End_block == YES) Err(L"END must have block type because of @Option");
+			if (option.End_block == YES) SemErr(L"END must have block type because of @OPTION");
 		} else { // END with block type.
 			if (option.End_block == NO) {
 				Get();
-				Err(L"END cannot have block type because of @Option");
+				SemErr(L"END cannot have block type because of @OPTION");
 			} else if (la->kind != kind) { // Incorrect block type.
 				Expect(kind);
 			} else {
@@ -273,12 +273,12 @@ void Optional(int kind, option_type nOption = OPTION_DEFAULT) {
 	case _For:  // End [ For [ name ] ]
 		if (la->kind == _For) {
 			Get();
-			if (option.End_block == NO) Err(L"END cannot have block type because of @Option");
+			if (option.End_block == NO) SemErr(L"END cannot have block type because of @OPTION");
 			if (IsIdentifier(la->kind)) {
 				Name();
-				if (option.End_For_id == NO) Err(L"END FOR cannot have name because of @Option");
+				if (option.End_For_id == NO) SemErr(L"END FOR cannot have name because of @OPTION");
 			}
-			else if (option.End_For_id == YES) Err(L"END FOR must have name because of @Option");
+			else if (option.End_For_id == YES) SemErr(L"END FOR must have name because of @OPTION");
 		}
 		//TODO: else if (end_block)
 		break;
@@ -288,9 +288,9 @@ void Optional(int kind, option_type nOption = OPTION_DEFAULT) {
 			Get();
 		}
 		if (nOption == WITH_THEN && option.If_Then == NO)
-			Err(L"IF cannot have THEN because of @Option");
+			SemErr(L"IF cannot have THEN because of @OPTION");
 		else if (nOption == WITHOUT_THEN && option.If_Then == YES)
-			Err(L"IF must have THEN because of @Option");
+			SemErr(L"IF must have THEN because of @OPTION");
 		break;
 	default:
 		#if defined(DEBUG)
@@ -317,7 +317,7 @@ return false; // FIXME: temporary
 	if (la->kind == _Not) {
 		CCGet();
 	}
-	if (la->kind != _identifier) Err(L"identifier expected");
+	if (la->kind != _identifier) SynErr(_identifier);
 	// test it
 	CCGet();
 }
@@ -336,7 +336,7 @@ void CCEval() {
 				test |= CCTest();
 		}
 		if (la->kind == _Then) CCGet();
-		if (la->kind != _line_break) Err(L"line_break expected");
+		if (la->kind != _line_break) SynErr(_line_break);
 		cc_depth++;
 		if (test) cc_exec = cc_depth;
 		break;
@@ -345,7 +345,7 @@ void CCEval() {
 		if (cc_exec == cc_depth - 1) cc_exec++;
 		break;
 	case _atEnd:
-		if (cc_depth > 0) cc_depth--; else Err(L"@End If without @If");
+		if (cc_depth > 0) cc_depth--; else SemErr(L"@END IF without @IF");
 		if (cc_exec > cc_depth) cc_exec = cc_depth;
 		break;
 	}
@@ -742,12 +742,16 @@ atOption = "@Option". (. option.Parse(); .)
 atError  = "@Error". (.
 	int l = la->line, c = la->col;
 	Get();
-	Expect(_string_literal);
-	errors->Error(l, c, t->val); .)
+	if (la->kind == _string_literal) {
+		Get();
+		Err(l, c, t->val);
+	} else SynErr(_string_literal); .)
 atWarn   = "@Warn". (.
 	Get();
-	Expect(_string_literal);
-	Warn(t->val); .)
+	if (la->kind == _string_literal) {
+		Get();
+		Warn(t->val);
+	} else SynErr(_string_literal); .)
 
 // Conditional compilation
 
@@ -771,20 +775,20 @@ ViviFire (. ID(L"ViviFire", 3) .)
 	Module
 
 	// Catch errors in block statements.
-	[ "Case"         (. Err(L"CASE without SELECT"); .)
-	| "Catch"        (. Err(L"CATCH without TRY"); .)
-	| "Constructor"  (. Err(L"CONSTRUCTOR without CLASS"); .)
-	| "Destructor"   (. Err(L"DESTRUCTOR without CLASS"); .)
-	| "Get"          (. Err(L"GET without PROPERTY"); .)
-	| "Else"         (. Err(L"ELSE without IF"); .)
-	| "End"          (. Err(L"END without start"); .)
-	| "Finally"      (. Err(L"FINALLY without TRY"); .)
-	| "Loop"         (. Err(L"LOOP without DO"); .)
-	| "Rem"          (. Err(L"REM is not a comment. Try ' or //"); .)
-	| "Set"          (. Err(L"SET without PROPERTY"); .)
-	| "Then"         (. Err(L"THEN without IF"); .)
-	| "Until"        (. Err(L"UNTIL without DO or LOOP"); .)
-	| "When"         (. Err(L"WHEN without BEGIN"); .)
+	[ "Case"         (. SemErr(L"CASE without SELECT"); .)
+	| "Catch"        (. SemErr(L"CATCH without TRY"); .)
+	| "Constructor"  (. SemErr(L"CONSTRUCTOR without CLASS"); .)
+	| "Destructor"   (. SemErr(L"DESTRUCTOR without CLASS"); .)
+	| "Get"          (. SemErr(L"GET without PROPERTY"); .)
+	| "Else"         (. SemErr(L"ELSE without IF"); .)
+	| "End"          (. SemErr(L"END without start"); .)
+	| "Finally"      (. SemErr(L"FINALLY without TRY"); .)
+	| "Loop"         (. SemErr(L"LOOP without DO"); .)
+	| "Rem"          (. SemErr(L"REM is not a comment. Try ' or //"); .)
+	| "Set"          (. SemErr(L"SET without PROPERTY"); .)
+	| "Then"         (. SemErr(L"THEN without IF"); .)
+	| "Until"        (. SemErr(L"UNTIL without DO or LOOP"); .)
+	| "When"         (. SemErr(L"WHEN without BEGIN"); .)
 	]
 
 	EOF
@@ -853,7 +857,7 @@ BaseUnitStatement<class Modif &mods> (. ID(L"BaseUnitStatement", 3) .)
 	( "Unit" identifier InUnitClause
 		[ "=" MultiplicativeExpression ]
 		SyncNewline<s_name>
-	| ANY (. Err(L"Object BASE is available only in a child class"); .)
+	| ANY (. SemErr(L"Object BASE is available only in a child class"); .)
 	)
 .
 BitFieldType<int &tkn> (. ID(L"BitFieldType", 3) .)
@@ -908,9 +912,9 @@ CallStatement (. ID(L"CallStatement", 3) .)
 CaseClause<case_type &clause> (. ID(L"CaseClause", 3) .)
 =
 	"Case"
-		(. if (clause == CASE_ELSE) Err(L"CASE cannot follow CASE ELSE in SELECT"); .)
+		(. if (clause == CASE_ELSE) SemErr(L"CASE cannot follow CASE ELSE in SELECT"); .)
 	( "Else"
-		(. if (clause == CASE_ZERO) Err(L"CASE ELSE cannot be first CASE in SELECT"); .)
+		(. if (clause == CASE_ZERO) SemErr(L"CASE ELSE cannot be first CASE in SELECT"); .)
 		(. clause = CASE_ELSE; .)
 	| CaseExpression { WEAK comma[line_break] CaseExpression }
 		(. clause = CASE_EXPR; .)
@@ -934,10 +938,10 @@ ClassOrObjectMember<int kind> (. ID(L"ClassOrObjectMember", 3) .)
 	(. Modif mods(this); .)
 	[ ModifiersClause<mods> ]
 	(
-		 (. if (kind == _Object) errors->Error(la->line, la->col, L"Object cannot have constructor"); .)
+		 (. if (kind == _Object) Err(la->line, la->col, L"OBJECT cannot have CONSTRUCTOR"); .)
 		ConstructorStatement<mods>
 	|
-		(. if (kind == _Object) errors->Error(la->line, la->col, L"Object cannot have destructor"); .)
+		(. if (kind == _Object) Err(la->line, la->col, L"OBJECT cannot have DESTRUCTOR"); .)
 		DestructorStatement<mods>
 	| DimStatement<&mods>
 	| FunctionStatement<mods>
@@ -1033,10 +1037,10 @@ Constraint<int block> (. ID(L"Constraint", 3) .)
 		[ (. c++; .)
 			"Constructor" ( "(" ")" | "?" )
 		]
-		(. if (c == 0) Err(L"Invalid constraint"); .)
+		(. if (c == 0) SemErr(L"invalid Constraint"); .)
 	|
 		"Self"
-		(. if (block != _Trait) Err(L"SELF constraint only available in TRAIT"); .)
+		(. if (block != _Trait) SemErr(L"SELF constraint only available in TRAIT"); .)
 		( "<" | "<=" | "Is" )
 		UserType
 	)
@@ -1134,8 +1138,8 @@ DestructorStatement<Modif &mods> (. ID(L"DestructorStatement", 3) .)
 .
 DimOrVar (. ID(L"DimOrVar", 3) .)
 =
-	( "Dim"  (. if (option.Dim_or_Var == TERNARY2) Err(L"Must use VAR because of @OPTION"); .)
-	| "Var"  (. if (option.Dim_or_Var == TERNARY1) Err(L"Must use DIM because of @OPTION"); .)
+	( "Dim"  (. if (option.Dim_or_Var == TERNARY2) SemErr(L"Must use VAR because of @OPTION"); .)
+	| "Var"  (. if (option.Dim_or_Var == TERNARY1) SemErr(L"Must use DIM because of @OPTION"); .)
 	)
 .
 DimStatement<Modif *mods> (. ID(L"DimStatement", 3) .)
@@ -1194,7 +1198,7 @@ EnumMember (. ID(L"EnumMember", 3) .)
 	[ "@Deprecated" [ string_literal ] [ line_break ] ]
 	identifier
 	( "=" Expression
-	| (. if (option.Enum_equals) Err(L"Enumeration constant must have initializer because of @OPTION"); .)
+	| (. if (option.Enum_equals) SemErr(L"Enumeration constant must have initializer because of @OPTION"); .)
 	)
 	SyncNewline<s_name>
 .
@@ -1251,7 +1255,7 @@ ExitStatement (. ID(L"ExitStatement", 3) .)
 Expression (. ID(L"Expression", 2) .)
 =
 	ConditionalExpression
-	(. if (la->kind == _right_paren) { Get(); Err(L"Mismatched parentheses"); } .)
+	(. if (la->kind == _right_paren) { Get(); SemErr(L"Parentheses do not agree"); } .)
 	[ "Tol" real_literal ]
 .
 /*F*/
@@ -1274,7 +1278,7 @@ FormalParameter<param_type &param> (. ID(L"FormalParameter", 3) .)
 	[ '(' [ Rank ] ')' ]
 	[ TypeClause<NO_BITS> ]
 	( "=" EnclosedExpression
-	| (. if (param.optional() && option.Optional_equals) Err(L"Optional parameter must have initializer because of @OPTION"); .)
+	| (. if (param.optional() && option.Optional_equals) SemErr(L"Optional parameter must have initializer because of @OPTION"); .)
 	)
 .
 FormalParameterList<int parent> (. ID(L"FormalParameterList", 3) .)
@@ -1312,7 +1316,7 @@ FunctionSignature<Modif &mods, bool &bodied, bool &generic> (. ID(L"FunctionSign
 		[ TypeParameterList<_Function> (. generic = true; .) ]
 		[ EnclosedParameterList<_Function> ]
 		( ReturnTypeClause
-		| (. if (!typed_name) Err(L"FUNCTION must have a return type"); .)
+		| (. if (!typed_name) SemErr(L"FUNCTION must have a return type"); .)
 		)
 		[ WhereClause<_Function, generic> ]
 	|
@@ -1375,7 +1379,7 @@ IfBlockStatement<option_type nThen> (. ID(L"IfBlockStatement", 3) .)
 	(. Optional(_Then, nThen); .)
 	SyncNewline<s_name>
 	{ Statement }
-	{	"Else" (. if (bElseSeen) Err(L"ELSE or ELSE IF cannot follow ELSE"); .)
+	{	"Else" (. if (bElseSeen) SemErr(L"ELSE or ELSE IF cannot follow ELSE"); .)
 		( "If" Expression (. Optional(_Then); .)
 		| (. bElseSeen = true; .)
 		)
@@ -1392,7 +1396,7 @@ IfStatement (. ID(L"IfStatement", 3) .)
 		(
 			IfBlockStatement<WITH_THEN>
 		|
-			(. if (option.If_End) Err(L"IF statement must use block construct because of @OPTION"); .)
+			(. if (option.If_End) SemErr(L"IF must use block construct because of @OPTION"); .)
 			( SimpleStatement | SimpleStatementError )
 			[ "Else" ( SimpleStatement | SimpleStatementError ) ]
 		)
@@ -1604,7 +1608,7 @@ NewBlockStatement (. ID(L"NewBlockStatement", 3) .)
 		| UserType
 		]
 		SyncNewline<s_name>
-		[	NewMember (. if (bInitExpr) Err(L"Expected End after initialization expression"); .)
+		[	NewMember (. if (bInitExpr) SemErr(L"Expected END after initialization expression"); .)
 			{ NewMember }
 		]
 		"End"
@@ -1691,11 +1695,11 @@ PrimaryExpression (. ID(L"Primary", 2) .)
 	| "Base"
 	| "Self"
 	| "#Null"
-	| malformed_char_literal     (. Err(L"Malformed character constant"); .)
-	| malformed_fixed_literal    (. Err(L"Malformed fixed constant"); .)
-	| malformed_integer_literal  (. Err(L"Malformed integer constant"); .)
-	| malformed_real_literal     (. Err(L"Malformed real constant"); .)
-	| malformed_string_literal   (. Err(L"Malformed string constant"); .)
+	| malformed_char_literal     (. SemErr(L"Bad character constant"); .)
+	| malformed_fixed_literal    (. SemErr(L"Bad fixed constant"); .)
+	| malformed_integer_literal  (. SemErr(L"Bad integer constant"); .)
+	| malformed_real_literal     (. SemErr(L"Bad real constant"); .)
+	| malformed_string_literal   (. SemErr(L"Bad string constant"); .)
 	)
 .
 PrimitiveType<bool bBits> (. ID(L"PrimitiveType", 3) .)
@@ -1706,7 +1710,7 @@ PrimitiveType<bool bBits> (. ID(L"PrimitiveType", 3) .)
 	| IntegerType<kind>
 	| FloatingPointType<kind>
 	| FixedPointType<kind>
-	| BitFieldType<kind>  (. if (!bBits) Err(L"Bit field not permitted here"); .)
+	| BitFieldType<kind>  (. if (!bBits) SemErr(L"Bit field not permitted here"); .)
 	)
 .
 ///PropertyOrCall (. ID(PropertyOrCall) .)
@@ -1720,7 +1724,7 @@ PropertySignature<Modif &mods> (. ID(L"PropertySignature", 3) .)
 	"Property"
 	[ DimOrVar (. explicit_array = true; .) ]
 	( IF (IsPropertySelf())
-		( typed_identifier | "Self" ) (. if (explicit_array) Err(L"Cannot use DIM or VAR with SELF"); .)
+		( typed_identifier | "Self" ) (. if (explicit_array) SemErr(L"Cannot use DIM or VAR with SELF"); .)
 		EnclosedParameterList<_Property>
 	| IF (!explicit_array && IsPropertyWithParam())
 		Name EnclosedParameterList<_Property>
@@ -1759,11 +1763,11 @@ PropertyStatement<Modif &mods> (. ID(L"PropertyStatement", 3) .)
 /*Q*/
 QualifiedName<int limit> (. ID(L"QualifiedName", 3) .)
 =
-	(. const wchar_t *err_msg = L"Namespace or type name expected"; .)
+	(. const wchar_t *msg = L"Namespace or type name expected"; .)
 	Name
-		(. if ((limit == _identifier || la->kind == _dot) && t->kind != _identifier) Err(err_msg); .)
+		(. if ((limit == _identifier || la->kind == _dot) && t->kind != _identifier) SemErr(msg); .)
 	{ dot Name  
-		(. if (limit == _identifier && t->kind != _identifier) Err(err_msg); .)
+		(. if (limit == _identifier && t->kind != _identifier) SemErr(msg); .)
 	}
 .
 /*R*/
@@ -1833,8 +1837,8 @@ SelectStatement (. ID(L"SelectStatement", 3) .)
 	SyncNewline<s_name>
 	{ CaseClause<clause> }
 	"End"
-		(. if (clause == CASE_ZERO) Err(L"SELECT must have a minimum of one CASE"); .)
-		(. if (option.Select_Else == SELECT_ELSE && clause != CASE_ELSE) Err(L"SELECT must have CASE ELSE because of @OPTION"); .)
+		(. if (clause == CASE_ZERO) SemErr(L"SELECT must have a minimum of one CASE"); .)
+		(. if (option.Select_Else == SELECT_ELSE && clause != CASE_ELSE) SemErr(L"SELECT must have CASE ELSE because of @OPTION"); .)
 	(. Optional(_Select); .)
 	Newline
 .
@@ -1938,7 +1942,7 @@ SubSignature<bool &generic> (. ID(L"SubSignature", 3) .)
 	]
 	[
 		"Handles"
-		(. if (return_typed) Err(L"Event handlers cannot have a return type"); .)
+		(. if (return_typed) SemErr(L"Event handlers cannot have a return type"); .)
 		QualifiedName<_identifier>
 	]
 	[ WhereClause<_Sub, generic> ]
@@ -2043,7 +2047,7 @@ TypeParameter<int parent> (. ID(L"TypeParameter", 3) .)
 =
 	[
 		( "In" | "Out" )
-		(. if (parent != _Event && parent != _Trait) Err(L"IN and OUT are permitted only with EVENT and TRAIT"); .)
+		(. if (parent != _Event && parent != _Trait) SemErr(L"IN and OUT are permitted only with EVENT and TRAIT"); .)
 	]
 	identifier
 .
@@ -2072,14 +2076,14 @@ UnaryOperator (. ID(L"UnaryOperator", 3) .)
 UnenclosedArgumentList (. ID(L"UnenclosedArgumentList", 3) .)
 =
 	( Argument
-	| comma (. Err(L"Argument list cannot start with comma"); .)
+	| comma (. SemErr(L"Argument list cannot start with comma"); .)
 	)
 	{ WEAK comma
 		( [line_break] Argument
 		| (. /* TODO: empty arg */ .)
 		)
 	}
-	(. if (t->kind == _comma) Err(L"Argument list cannot end with comma"); .)
+	(. if (t->kind == _comma) SemErr(L"Argument list cannot end with comma"); .)
 .
 UnenclosedParameterList<int parent> (. ID(L"UnenclosedParameterList", 3) .)
 =
@@ -2138,10 +2142,10 @@ WhenStatement<bool isPreconditional, when_type &whens> (. ID(L"WhenStatement", 3
 	"When"
 	( identifier
 		// TODO: Check for "Done" or "None"
-		(. if (whens == WHEN_ELSE) Err(L"WHEN DONE and WHEN NONE cannot be in the same loop with WHEN ELSE"); .)
+		(. if (whens == WHEN_ELSE) SemErr(L"WHEN DONE and WHEN NONE cannot be in the same loop with WHEN ELSE"); .)
 	| "Else"
-		(. if (whens == WHEN_DONE || whens == WHEN_NONE) Err(L"WHEN ELSE cannot be in the same loop with WHEN DONE or WHEN NONE"); .)
-		(. if (whens == WHEN_ELSE) Err(L"Cannot have more than one WHEN ELSE"); .)
+		(. if (whens == WHEN_DONE || whens == WHEN_NONE) SemErr(L"WHEN ELSE cannot be in the same loop with WHEN DONE or WHEN NONE"); .)
+		(. if (whens == WHEN_ELSE) SemErr(L"Cannot have more than one WHEN ELSE"); .)
 		(. whens = WHEN_ELSE; .)
 	) Newline
 	{ Statement }
@@ -2149,7 +2153,7 @@ WhenStatement<bool isPreconditional, when_type &whens> (. ID(L"WhenStatement", 3
 WhereClause<int block, bool generic> (. ID(L"WhereClause", 3) .)
 =
 	"Where"
-	(. if (!generic) Err(L"Declared element is missing generic type parameter(s)"); .)
+	(. if (!generic) SemErr(L"Declared element is missing generic type parameter(s)"); .)
 	Constraint<block> { WEAK comma[line_break] Constraint<block> }
 .
 WhereStatement (. ID(L"WhereStatement", 3) .)
