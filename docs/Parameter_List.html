@@ -16,7 +16,7 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
-<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a rel="parent" href="Statements_Reference.html">Statements</a></li>
 </ul>
 </nav>
 <main>
@@ -89,7 +89,7 @@ Method GetNumber() As Int
     ' Has one mandatory parameter passed by value.
     ' Does not return a value.
 Method GetPoint(ByRef x As Int, ByRef y As Int)
-    ' Has  two parameters passed by reference.
+    ' Has two parameters passed by reference.
     ' Does not return a value.
     ' The parentheses are optional.
 Method AddStudent(name As String) As Int
@@ -100,7 +100,7 @@ Method AddStudent(name As String) As Int
 </div>
 <h3>One or more optional parameters</h3>
 <div class="language-vivifire listing">
-<pre><code>Method  AddStudent name As String, Optional dob As DateTime
+<pre><code>Method AddStudent name As String, Optional dob As DateTime
     ' Has one mandatory and one optional parameter.
     ' Does not return, thus parentheses are optional.
     ' If dob is not supplied by the caller,
