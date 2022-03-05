@@ -1079,7 +1079,7 @@ Declarator<bool bBits> (. ID(L"Declarator", 3) .)
 .
 DeclaratorList<bool bBits> (. ID(L"DeclaratorList", 3) .)
 =
-	Declarator<bBits> { comma Declarator<bBits> }
+	Declarator<bBits> { WEAK comma[line_break] Declarator<bBits> }
 .
 DeclareParameter<bool &isOptional> (. ID(L"DeclareParameter", 3) .)
 =
@@ -1923,7 +1923,7 @@ StructState (. ID(L"StructState", 3) .)
 		mods.validate();
 		.)
 	]
-	[ DimOrVar ] Declarator<YES_BITS>
+	[ DimOrVar ] DeclaratorList<YES_BITS>
 	SyncNewline<s_name>
 .
 SubSignature<bool &generic> (. ID(L"SubSignature", 3) .)
