@@ -1911,7 +1911,15 @@ StructStatement<Modif &mods> (. ID(L"StructStatement", 3) .)
 StructProcedure (. ID(L"StructProcedure", 3) .)
 =
 	(. Modif mods(this); .)
-	ConstructorStatement<mods>
+	( ConstructorStatement<mods>
+	| FunctionStatement<mods>
+	| MethodStatement<mods>
+	| PropertyStatement<mods>
+	| SubStatement<mods>
+	|
+		(. Err(la->line, la->col, L"STRUCT cannot have DESTRUCTOR"); .)
+		DestructorStatement<mods>
+	)
 .
 StructState (. ID(L"StructState", 3) .)
 =
