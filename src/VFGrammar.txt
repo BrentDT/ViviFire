@@ -1898,6 +1898,7 @@ StructStatement<Modif &mods> (. ID(L"StructStatement", 3) .)
 	"Struct" identifier
 	[ TypeParameterList<_Struct> (. generic = true; .) ]
 	[ "Is" ValueType ]
+	{ DoesClause }
 	[ WhereClause<_Class, generic> ]
 	SyncNewline<s_name>
 	{ WhereClause<_Class, generic> SyncNewline<s_name> }
@@ -1915,16 +1916,20 @@ StructProcedure (. ID(L"StructProcedure", 3) .)
 StructState (. ID(L"StructState", 3) .)
 =
 	(. Modif mods(this); .)
-	[
-		ModifiersClause<mods>
+	[ ModifiersClause<mods> ]
+	(
 		(.
 		mods.allow(Modif::Deprecated);
 		mods.allow(Modif::Shared);
 		mods.validate();
 		.)
-	]
-	[ DimOrVar ] DeclaratorList<YES_BITS>
-	SyncNewline<s_name>
+		[ DimOrVar ] DeclaratorList<YES_BITS>
+		SyncNewline<s_name>
+	| ConstStatement<mods>
+	| EnumStatement<mods>
+	| EventStatement
+	| StructStatement<mods>
+	)
 .
 SubSignature<bool &generic> (. ID(L"SubSignature", 3) .)
 =
