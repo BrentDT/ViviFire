@@ -943,7 +943,10 @@ ClassOrObjectMember<int kind> (. ID(L"ClassOrObjectMember", 3) .)
 	|
 		(. if (kind == _Object) Err(la->line, la->col, L"OBJECT cannot have DESTRUCTOR"); .)
 		DestructorStatement<mods>
+	| ConstStatement<mods>
 	| DimStatement<&mods>
+	| EnumStatement<mods>
+	| EventStatement
 	| FunctionStatement<mods>
 	| MethodStatement<mods>
 	| PropertyStatement<mods>
@@ -1937,6 +1940,9 @@ StructState (. ID(L"StructState", 3) .)
 	| EnumStatement<mods>
 	| EventStatement
 	| StructStatement<mods>
+	|
+		(. Err(la->line, la->col, L"STRUCT cannot have CLASS member"); .)
+		ClassStatement<mods>
 	)
 .
 SubSignature<bool &generic> (. ID(L"SubSignature", 3) .)
