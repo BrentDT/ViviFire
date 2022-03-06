@@ -25,7 +25,7 @@ if (!chm) {
 document.write('<hr><p>'+
 '<div id="poll" role="status" aria-live="polite" aria-relevant="text">' +
 '<div role="form" aria-label="poll">' +
-'This article is ' +
+'<p>What do you think about this article?</p>' +
 '<button onclick="vote(0)">good</button>' +
 '<button onclick="vote(1)">bad</button>' +
 '<button class="touch-only" onclick="vote(2)">bad on mobile</button>' +
