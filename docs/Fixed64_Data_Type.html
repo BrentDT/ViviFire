@@ -16,7 +16,7 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
-<li><a href="Data_Type_Summary.html">Data Type Summary</a></li>
+<li><a rel="parent" href="Data_Type_Summary.html">Data Type Summary</a></li>
 </ul>
 </nav>
 <main>
@@ -25,11 +25,11 @@
 <h2>Instructions</h2>
 <dl>
 <dt>Default value</dt>
-<dd>When you declare a variable of type <code class="kw">Fixed64</code> and do not initialize it,, its default value is zero (&#164;0.0).</dd>
+<dd>When you declare a variable of type <code class="kw">Fixed64</code> and do not initialize it, its default value is zero (&#164;0.0).</dd>
 <dt>Automatic conversions</dt>
 <dd><code class="kw">Fixed64</code> widens to <span class="kws"><code>Real32</code>, <code>Real64</code>, <code>Real</code>, <code>Real128</code>, or <code>Fixed128</code></span> without risk of overflow.</dd>
 <dt>Type characters</dt>
-<dd><code class="kw">Fixed64</code> has no type characters.</dd>
+<dd>If you add the character &laquo;<code class="op">@</code>&raquo; to the end of a variable name, then the variable has the type <code class="kw">Fixed64</code>.</dd>
 </dl>
 <h2>Fixed64 literal</h2>
 <div class="language-literal">
@@ -83,7 +83,8 @@ This is always 8.</dd>
 </dl>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
-<pre><code>Dim price As Fixed64 = @$1_199.99&#10;</code></pre>
+<pre><code>Dim price As Fixed64 = @$1_199.99
+Dim price@ = @$1_199.99&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">

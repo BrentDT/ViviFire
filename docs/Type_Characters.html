@@ -22,16 +22,30 @@
 <main>
 <h1 id="top">Type Characters</h1>
 <h2>Identifier type characters</h2>
+<p>ViviFire supplies a set of identifier type characters that you can use to specify the data type of a variable or constant.
+The table that follows shows the available identifier type characters with code examples.</p>
 <table id="t1" class="language-vivifire">
+<caption>Identifier type characters</caption>
 <thead>
 <tr><th>Type character</th><th>Data type</th><th>Example</th></tr>
 </thead>
 <tbody>
-<tr><td class="char">%</td><td class="kw">Int</td><td><pre><code>Dim a%</code></pre></td></tr>
-<tr><td class="char">!</td><td class="kw">Real</td><td><pre><code>Dim a!</code></pre></td></tr>
-<tr><td class="char">$</td><td class="kw">String</td><td><pre><code>Dim a$</code></pre></td></tr>
+<tr><td class="char"><code>%</code></td>
+<td><code class="kw">Int</code></td>
+<td><pre><code>Dim a%</code></pre></td></tr>
+<tr><td class="char"><code>!</code></td>
+<td><code class="kw">Real</code></td>
+<td><pre><code>Dim a!</code></pre></td></tr>
+<tr><td class="char"><code>@</code></td>
+<td><code class="kw">Fixed64</code></td>
+<td><pre><code>Dim a@</code></pre></td></tr>
+<tr><td class="char"><code>$</code></td>
+<td><code class="kw">String</code></td>
+<td><pre><code>Dim a$</code></pre></td></tr>
 </tbody>
 </table>
+<p>There are no identifier type characters for the data types <span class="kws"><code>Boolean</code>, <code>Char</code>, <code>Fixed128</code>, <code>Int8</code> thru <code>Int128</code>, <code>Real32</code> thru <code>Real128</code>, <code>SafeString</code>, <code>SBits</code>, <code>UBits</code>, <code>UInt</code>, or <code>UInt8</code> thru <code>UInt128</code></span>.
+Also, compound data types, for example, arrays and structures do not have an identifier type character.</p>
 <h2>Default literal types</h2>
 <p>The qualities of a literal usually give it its data type.
 The table that follows gives the defaults.</p>

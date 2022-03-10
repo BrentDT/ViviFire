@@ -139,7 +139,7 @@ But we do not recommend this because it can cause problems for other programmers
 This uses the operator &laquo;<code class="op">!</code>&raquo; between the name of an object and a string.
 You must write the string as a correct name, without quotation marks (<code class="op">&quot; &quot;</code>).
 You give one or more properties a name that starts with <code>Self</code> and has one parameter of type <code class="kw">String</code>.</p>
-<p>There are four different names that you can use:</p>
+<p>There are five (5) different names that you can use:</p>
 <dl>
 <dt><code>Self</code></dt>
 <dd>This is the most usual default property.
@@ -156,6 +156,12 @@ An example is &laquo;<code>MyObject!Capacity!</code>&raquo;.
 The property declaration must have only one parameter of the type <code class="kw">String</code>.
 The argument passed is the name between the two &laquo;<code class="op">!</code>&raquo;
 (<code>&quot;Capacity&quot;</code> in this example).</dd>
+<dt><code>Self@</code></dt>
+<dd>You use this property to return the fixed-point type <code class="kw">Fixed64</code> from a dictionary access.
+An example is &laquo;<code>MyObject!Balance@</code>&raquo;.
+The property declaration must have only one parameter of the type <code class="kw">String</code>.
+The argument passed is the name after &laquo;<code class="op">!</code>&raquo; and without &laquo;<code class="op">@</code>&raquo;
+(<code>&quot;Balance&quot;</code> in this example).</dd>
 <dt><code>Self$</code></dt>
 <dd>You use this property to return a string from a dictionary access.
 An example is &laquo;<code>MyObject!Name$</code>&raquo;.
