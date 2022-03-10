@@ -354,6 +354,8 @@ void CCEval() {
 	}
 }
 
+const wchar_t *SIGILS = L"%!$@";
+
 // Resolvers
 
 bool IsAssignmentOp() {
@@ -409,9 +411,9 @@ bool IsNamedArgument() {
 ///}
 
 bool IsPropertySelf() {
-	// "Self", "Self%", "Self!", or "Self$"
+	// "Self", "Self%", "Self!", "Self$", or "Self@".
 	if (la->kind == _Self) return true;
-	if (la->kind == _typed_identifier && _wcsnicmp(L"self", la->val, 4) == 0 && wcschr(L"%!$", la->val[4])) {
+	if (la->kind == _typed_identifier && _wcsnicmp(L"self", la->val, 4) == 0 && wcschr(SIGILS, la->val[4])) {
 		return true;
 	}
 	return false;
@@ -466,7 +468,7 @@ notEOL = ANY - ctrl - eol.
 
 alpha = 'A' .. 'Z'.
 alnum = alpha + '0' .. '9'.
-sigil = "!$%".
+sigil = "!$%@".
 
 bin = "01".
 dec = '0' .. '9'.
