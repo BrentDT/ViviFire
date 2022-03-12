@@ -17,7 +17,7 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Statements_Reference.html">Statements</a></li>
-<li><a href="Statements_2.html">F&ndash;P Statements</a></li>
+<li><a rel="parent" href="Statements_2.html">F&ndash;P Statements</a></li>
 </ul>
 </nav>
 <main>
@@ -25,25 +25,26 @@
 <p>Executes a sequence of statements for each item in a data structure.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<pre><code >For Each variable [ As type ] In object_expression
+<pre><code >For Each element [ As type ] In group
     [ statements ]
 End [ For ]&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
-<dt><code class="id">variable</code></dt>
-<dd>Mandatory name of a variable.</dd>
+<dt><code class="id">element</code></dt>
+<dd>Mandatory variable name.</dd>
 <dt><code class="id">type</code></dt>
-<dd>Optional data type of <code class="id">variable</code>.</dd>
-<dt><code class="id">object_expression</code></dt>
-<dd>Mandatory collection object, string expression, or array.</dd>
+<dd>Usually optional data type of <code class="id">element</code>.</dd>
+<dd>Mandatory if <code class="id">group</code> is an array literal between braces (<code class="op">{ }</code>) and <code class="id">element</code> is without a type character.</dd>
+<dt><code class="id">group</code></dt>
+<dd>Mandatory collection object, string expression, or array literal.</dd>
 <dt><code class="id">statements</code></dt>
 <dd>Optional One or more statements between the lines that start with <code class="kw">For Each</code> and <code class="kw">End</code>.
 These execute one time for each item in a collection.</dd>
 <dd>The alternative is two or more groups of statements.
 The first group starts with <code class="kw">Begin</code>, and executes the same as specified above.
 The subsequent groups start with <code class="kw">When</code>, and execute (1) when the group <code class="kw">Begin</code> cannot start, or (2) after it completes.
-See the <a href="#When_statements">When statements section</a> for more information.</dd>
+See the section <a href="#When_statements">When statements</a> for more information.</dd>
 <dt><code class="kw">End</code></dt>
 <dd>Completes the statement.
 You can also use <code class="kw">End For</code>.</dd>
@@ -58,8 +59,8 @@ See <a href="Option_Directive.html">@Option Directive</a> for more information.<
 <p>The statement <code class="kw">Exit For</code> can stop a loop of type <code class="kw">For Each</code>.
 <code class="kw">Exit For</code> immediately moves control to the statement after <code class="kw">End For</code>.</p>
 <h3 id="When_statements">When statements</h3>
-<p>To find if a loop of type <code class="kw">For Each</code> completed because it went through all of the items, use <code>When Done</code>.</p>
-<p>To find if a loop of type <code class="kw">For Each</code> was not executed because <code class="id">object_expression</code> is empty, use <code>When None</code>.</p>
+<p>To find if a loop of type <code class="kw">For Each</code> completed because it went through all of the items, use <code>When DONE</code>.</p>
+<p>To find if a loop of type <code class="kw">For Each</code> was not executed because <code class="id">group</code> is empty, use <code>When NONE</code>.</p>
 <p>See <a href="Begin_When_Statements.html">Begin&hellip;When Statements</a> for more information.</p>
 <h2>Examples</h2>
 <h3>Elements in an array literal</h3>
