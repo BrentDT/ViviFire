@@ -35,9 +35,38 @@
 <dt><code class="at">@SI</code></dt>
 <dd>Optional indication of an SI (metric) unit.</dd>
 <dt><code class="id">unit_names</code></dt>
-<dd>Mandatory one or more names with a space between each.
+<dd>Mandatory one or more names with spaces between each.
 All names identify the same unit.
-You can give the plurals of names with a plus sign, for example, &ldquo;<code>meter+s</code>&rdquo;.</dd>
+	<div class="language-vivifire syntax">
+	<h3>Unit name</h3>
+	<pre><code>[ number ] { name | name + suffix | prefix - name }&#10;</code></pre>
+	</div>
+	<dl class="parts">
+	<dt><code class="id">name</code></dt>
+	<dd>Mandatory basic name for a unit of measure.</dd>
+	<dt><code class="id">number</code></dt>
+	<dd>One of the integer literals that follow:
+	<ul>
+	<li><code>1</code> &ndash; <code class="id">name</code> is irregular and grammatically singular.
+	For example, &laquo;<code>1 foot</code>&raquo;.</li>
+	<li><code>2</code> &ndash; <code class="id">name</code> is irregular and grammatically plural.
+	For example, &laquo;<code>2 feet</code>&raquo;.</li>
+	<li><code>0</code> &ndash; <code class="id">name</code> is grammatically singular for zero and one.
+	This occurs in some languages, for example, French.
+	You can use <code>0</code> (and no others) with <code class="id">suffix</code> or <code class="id">prefix</code>.</li>
+	</ul>
+	</dd>
+	<dt><code class="id">suffix</code></dt>
+	<dd>Mandatory after <code class="op">+</code>.
+	Identifies the regular plural suffix for <code class="id">name</code>.
+	For example, &laquo;<code>metre+s</code>&raquo; or &laquo;<code>inch+es</code>&raquo;.</dd>
+	<dt><code class="id">prefix</code></dt>
+	<dd>Mandatory before a hyphen (<code class="op">-</code>).
+	Identifies the regular plural prefix for <code class="id">name</code>.
+	This occurs in some languages, most frequently in Africa.
+	For example, in Swahili, &laquo;<code lang="sw">ma-debe</code>&raquo;.</dd>
+	</dl>
+</dd>
 <dt><code class="id">expression</code></dt>
 <dd>A conversion factor.</dd>
 <dd>Optional in the usual construct.</dd>
@@ -55,7 +84,7 @@ You use it with <code class="id">expression</code> for a unit with an interval s
 <pre><code>@SI Unit meter+s metre+s m
 Unit light_year+s ly = 9.4605284 petameters
 Unit Kelvin K
-Unit Celsius degree_C degrees_C (k In Kelvin) = k + 273.15&#10;</code></pre>
+Unit Celsius 1 degree_C 2 degrees_C (k In Kelvin) = k + 273.15&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
