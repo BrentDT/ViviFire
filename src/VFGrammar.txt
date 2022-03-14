@@ -2113,7 +2113,17 @@ UnenclosedParameterList<int parent> (. ID(L"UnenclosedParameterList", 3) .)
 .
 UnitAlias (. ID(L"UnitAlias", 3) .)
 =
-	identifier [ ( "-" | "+" ) identifier ] // Plurals by "prefix-unit" or "unit+suffix"
+	(. int number = -1; .)
+	[
+		integer_literal  // Grammatical number: 1 = singular, 2 = plural, 0 = zero & singular.
+		(. if (t->val[0] >= L'0' && t->val[0] <= L'2' && t->val[1] == L'\0') number = t->val[0] - L'0';
+		else SemErr(L"number must be 0, 1, or 2"); .)
+	]
+	identifier 
+	[
+		( "-" | "+" ) // Plurals by "prefix-unit" or "unit+suffix".
+		(. if (number != -1) SemErr(L"Name cannot have a plural part after a number"); .)
+		identifier ]
 .
 UnitExpression (. ID(L"Unit", 2) .)
 =
