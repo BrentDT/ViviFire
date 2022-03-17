@@ -16,7 +16,6 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
-<li><a href="Programming_Guide.html">Programming Guide</a></li>
 <li><a rel="parent" href="Programming_Concepts.html">Programming Concepts</a></li>
 </ul>
 </nav>
@@ -24,6 +23,23 @@
 <h1 id="top">Iterators</h1>
 <p>You use an <dfn>iterator</dfn> to go through a collection one element at a time.
 Examples of collections are lists and arrays.</p>
+<H2>Small example iterator</h2>
+<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>For Each number In EvenSequence(6, 19)
+    Print number & $S
+End
+PrintLine
+
+@Iterator Function EvenSequence(first, last As Int) As Int
+    For number = first To last
+        If number Mod 2 = 0 Then
+            Yield number
+        End
+    End
+End&#10;</code></pre>
+</div>
+<h2>Making a collection class</h2>
 <p>TODO</p>
 <h2>See also</h2>
 <ul class="articles">
