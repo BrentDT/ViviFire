@@ -17,7 +17,7 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Statements_Reference.html">Statements</a></li>
-<li><a href="Statements_3.html">Q&ndash;Z Statements</a></li>
+<li><a rel="parent" href="Statements_3.html">Q&ndash;Z Statements</a></li>
 </ul>
 </nav>
 <main>
@@ -26,20 +26,27 @@
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <h3>Usual construct</h3>
-<pre><code>[ @Shared ] Sub procedure_name [ type_list ] [ parameter_list ] [ return_type ]
+<pre><code>[ modifiers ] Sub procedure_name [ type_list ] [ parameter_list ] [ return_type ]
     [ Where generic_constraints ]
     [ statements ]
 End [ Sub ]&#10;</code></pre>
 <h3>Event-handler construct</h3>
-<pre><code>[ @Shared ] Sub procedure_name [ type_list ] [ parameter_list ] Handles event_name
+<pre><code>[ modifiers ] Sub procedure_name [ type_list ] [ parameter_list ] Handles event_name
     [ Where generic_constraints ]
     [ statements ]
 End [ Sub ]&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
-<dt><code class="at">@Shared</code></dt>
-<dd>Optional modifier specifies that the procedure is a member of its container, and not an instance of that container.</dd>
+<dt><code class="id">modifiers</code></dt>
+<dd>Optional
+	<ul>
+	<li><code class="at">@Iterator</code> &ndash; Specifies that the procedure implements the iterator pattern.
+	The procedure must have a return type.
+	See <a href="Iterator.html">@Iterator</a>.</li>
+	<li><code class="at">@Shared</code> &ndash; Specifies that the procedure is a member of its container, and not an instance of that container.</li>
+	</ul>
+</dd>
 <dt><code class="id">procedure_name</code></dt>
 <dd>Mandatory name for the procedure.</dd>
 <dt><code class="id">type_list</code></dt>
