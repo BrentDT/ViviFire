@@ -83,7 +83,8 @@ Base Unit luminous_intensity In candelas&#10;</code></pre>
 <p>Units can have many interchangable names.
 For example, &ldquo;km&rdquo; is short for &ldquo;kilometer&rdquo; or &ldquo;kilometre&rdquo;.</p>
 <p>To make alternative names, write each name with spaces between them.
-To make the plural of a name, write the plural suffix after a plus sign.</p>
+To make a regular plural of a name, write the plural suffix after a plus symbol (<code class="op">+</code>).
+To make an irregular plural, write the number <code>1</code> before the singular and <code>2</code> before the plural.</p>
 <p>To specify that a unit is an SI unit, put the modifier <code class="at">@SI</code> before the keyword <code class="kw">Unit</code>.
 This automatically makes all names with the SI prefixes of magnitude.
 For a one-letter name, it adds the short prefixes, for example, &ldquo;k&rdquo;.
@@ -91,7 +92,11 @@ For longer names, it uses the full prefixes, for example, &ldquo;kilo&rdquo;.</p
 <p>Different units can have the same name if each unit has a different base unit.
 But when this occurs, you cannot use these units to make a variable or parameter to a procedure with the keyword <code class="kw">In</code>.
 You can try to make units that do not have the same name, or use a different alternative name.</p>
-<h3>Example</h3>
+<h3>Example: irregular plural</h3>
+<div class="language-vivifire listing">
+<pre><code>Unit 1 foot 2 feet ft = 12 inches&#10;</code></pre>
+</div>
+<h3>Example: SI unit</h3>
 <div class="language-vivifire listing">
 <pre><code>@SI Unit meter+s metre+s m&#10;</code></pre>
 </div>
