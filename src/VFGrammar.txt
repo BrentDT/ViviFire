@@ -323,6 +323,8 @@ return false; // FIXME: temporary
 }
 
 void CCEval() {
+	if (t->kind != _line_break) SemErr(L"Compiler directive must start a line");
+
 	switch (la->kind) {
 	case _atIf: {
 		bool test = false;
@@ -349,6 +351,7 @@ void CCEval() {
 		if (cc_exec > cc_depth) cc_exec = cc_depth;
 		break;
 	}
+
 	if (cc_exec == cc_depth) {
 		while (la->kind < _atError) CCGet();
 	}
@@ -759,7 +762,7 @@ atWarn   = "@Warn". (.
 
 atIf   = "@If".    (. CCEval(); .)
 atElse = "@Else".  (. CCEval(); .)
-atEnd  = "@End"{notEOL}.   (. CCEval(); .)
+atEnd  = "@End".   (. CCEval(); .)
 
 // Comments
 
