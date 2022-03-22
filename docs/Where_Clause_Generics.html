@@ -31,23 +31,31 @@
 <dl class="parts">
 <dt><code class="id">constraint</code></dt>
 <dd>One or more constraints to put on a generic parameter, with a comma between each.
-	<style media="all and (max-width: 40em)">
-		#t1 td:nth-of-type(1):before { content: "Long construct"; }
-		#t1 td:nth-of-type(2):before { content: "Short construct"; }
+	<h3>Constraint</h3>
+	<style>
+	@media all and (min-width: 40em) {
+		/* Wide-screen */
+		#t1 td:nth-of-type(2) { border-style: none; }
+		#t2 { display: none; }
+	}
+	@media all and (max-width: 40em) {
+		/* Narrow-screen */
+		#t1 td:nth-of-type(2), #t1 th:nth-of-type(2) { display: none; }
+		#t2 { display: table; }
+	}
 	</style>
-	<table id="t1" class="wide language-vivifire syntax">
-	<caption><h3>Constraint</h3></caption>
+	<table id="t1" class="language-vivifire syntax">
 	<thead>
 	<tr><th>Long construct</th><th>Short construct</th></tr>
 	</thead>
 	<tbody>
 	<tr>
-	<td><pre><code>[ min_limit { &lt; | &lt;= } ] type_parameter { &lt; | &lt;= } max_limit&#10;</code></pre></td>
-	<td><pre><code>[ min_limit { &lt; | &lt;= } ] type_parameter [ { &lt; | &lt;= } max_limit ]&#10;</code></pre></td>
+	<td><pre><code>[ min_type { &lt; | &lt;= } ] type_parameter { &lt; | &lt;= } max_type&#10;</code></pre></td>
+	<td><pre><code>[ min_type { &lt; | &lt;= } ] type_parameter [ { &lt; | &lt;= } max_type ]&#10;</code></pre></td>
 	</tr>
 	<tr>
-	<td><pre><code>type_parameter Is { Class | Struct }&#10;</code></pre></td>
-	<td><pre><code>[ Is { Class | Struct } ]&#10;</code></pre></td>
+	<td><pre><code>type_parameter Is { Class | Struct | Unit }&#10;</code></pre></td>
+	<td><pre><code>[ Is { Class | Struct | Unit } ]&#10;</code></pre></td>
 	</tr>
 	<tr>
 	<td><pre><code>type_parameter Does bounding_trait&#10;</code></pre></td>
@@ -57,21 +65,47 @@
 	<td><pre><code>type_parameter Constructor ( )&#10;</code></pre></td>
 	<td><pre><code>[ Constructor ( ) ]&#10;</code></pre></td>
 	</tr>
+	<tr>
+	<td><pre><code>Self { &lt; | &lt;= | Is } self_type&#10;</code></pre></td>
+	<td><em>(Not available)</em></td>
+	</tr>
+	</tbody>
+	</table>
+	<table id="t2" class="language-vivifire syntax">
+	<thead>
+	<tr><th>Short construct</th></tr>
+	</thead>
+	<tbody>
+	<tr>
+	<td><pre><code>[ min_type { &lt; | &lt;= } ] type_parameter [ { &lt; | &lt;= } max_type ]
+    [ Is { Class | Struct | Unit } ]
+    [ Does bounding_trait ]&hellip;
+    [ Constructor ( ) ]&#10;</code></pre></td>
+	</tr>
 	</tbody>
 	</table>
 	<dl class="parts">
 	<dt><code class="id">type_parameter</code></dt>
 	<dd>One of the generic parameters given in a <a href="Type_List.html">Type List</a>.</dd>
-	<dt><code class="id">max_limit</code></dt>
+	<dt><code class="id">max_type</code></dt>
 	<dd>The most basic class from which <code class="id">type_parameter</code> can inherit.</dd>
-	<dt><code class="id">min_limit</code></dt>
+	<dt><code class="id">min_type</code></dt>
 		<dd>The most specialized class from which <code class="id">type_parameter</code> can inherit.</dd>
 		<dt><code class="id">bounding_trait</code></dt>
 		<dd>A trait that <code class="id">type_parameter</code> must implement.</dd>
 		<dt><code class="kw">Is</code></dt>
-		<dd>Specifies if <code class="id">type_parameter</code> must be a reference type (<code class="kw">Is Class</code>) or a value type (<code class="kw">Is Struct</code>).</dd>
+		<dd>Specifies that <code class="id">type_parameter</code> must be one of these:
+		<ul>
+		<li>A reference type (<code class="kw">Is Class</code>)</li>
+		<li>A value type (<code class="kw">Is Struct</code>)</li>
+		<li>A unit of measure (<code class="kw">Is Unit</code>)</li>
+		</ul>
+		</dd>
 		<dt><code class="kw">Constructor</code></dt>
 		<dd>Specifies that <code class="id">type_parameter</code> must supply a default constructor.</dd>
+		<dt><code class="id">self_type</code></dt>
+		<dd>A class from which the applicable class must inherit.
+		This constraint is available to classes and traits only.</dd>
 		</dl>
 </dd>
 </dl>
