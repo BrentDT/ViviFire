@@ -1037,7 +1037,7 @@ Constraint<int block> (. ID(L"Constraint", 3) .)
 			( "<" | "<=" ) identifier [ ( "<" | "<=" ) identifier ]
 		]
 		[ (. c++; .)
-			"Is" ( "Class" | "Struct" )
+			"Is" ( "Class" | "Struct" | "Unit" )
 		]
 		{ (. c++; .)
 			"Does" UserType
@@ -1048,7 +1048,7 @@ Constraint<int block> (. ID(L"Constraint", 3) .)
 		(. if (c == 0) SemErr(L"invalid Constraint"); .)
 	|
 		"Self"
-		(. if (block != _Trait) SemErr(L"SELF constraint only available in TRAIT"); .)
+		(. if (block != _Class && block != _Trait) SemErr(L"SELF constraint only available in CLASS and TRAIT"); .)
 		( "<" | "<=" | "Is" )
 		UserType
 	)
@@ -1908,9 +1908,9 @@ StructStatement<Modif &mods> (. ID(L"StructStatement", 3) .)
 	[ TypeParameterList<_Struct> (. generic = true; .) ]
 	[ "Is" ValueType ]
 	{ DoesClause }
-	[ WhereClause<_Class, generic> ]
+	[ WhereClause<_Struct, generic> ]
 	SyncNewline<s_name>
-	{ WhereClause<_Class, generic> SyncNewline<s_name> }
+	{ WhereClause<_Struct, generic> SyncNewline<s_name> }
 	{ StructState }
 	{ StructProcedure }
 	"End"
