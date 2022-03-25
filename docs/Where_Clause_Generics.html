@@ -58,8 +58,8 @@
 	<td><pre><code>[ Is { Class | Struct | Unit } ]&#10;</code></pre></td>
 	</tr>
 	<tr>
-	<td><pre><code>type_parameter Does bounding_trait&#10;</code></pre></td>
-	<td><pre><code>[ Does bounding_trait ]&hellip;&#10;</code></pre></td>
+	<td><pre><code>type_parameter Does mandatory_trait&#10;</code></pre></td>
+	<td><pre><code>[ Does mandatory_trait ]&hellip;&#10;</code></pre></td>
 	</tr>
 	<tr>
 	<td><pre><code>type_parameter Constructor ( )&#10;</code></pre></td>
@@ -79,7 +79,7 @@
 	<tr>
 	<td><pre><code>[ min_type { &lt; | &lt;= } ] type_parameter [ { &lt; | &lt;= } max_type ]
     [ Is { Class | Struct | Unit } ]
-    [ Does bounding_trait ]&hellip;
+    [ Does mandatory_trait ]&hellip;
     [ Constructor ( ) ]&#10;</code></pre></td>
 	</tr>
 	</tbody>
@@ -88,10 +88,12 @@
 	<dt><code class="id">type_parameter</code></dt>
 	<dd>One of the generic parameters given in a <a href="Type_List.html">Type List</a>.</dd>
 	<dt><code class="id">max_type</code></dt>
-	<dd>The most basic class from which <code class="id">type_parameter</code> can inherit.</dd>
+	<dd>The most basic class from which <code class="id">type_parameter</code> can inherit.
+	Use <code class="op">&lt;</code> if <code class="id">type_parameter</code> must be a child of <code class="id">max_type</code>, or <code class="op">&lt;=</code> to include <code class="id">max_type</code> also.</dd>
 	<dt><code class="id">min_type</code></dt>
-		<dd>The most specialized class from which <code class="id">type_parameter</code> can inherit.</dd>
-		<dt><code class="id">bounding_trait</code></dt>
+		<dd>The most specialized class from which <code class="id">type_parameter</code> can inherit.
+	Use <code class="op">&lt;</code> if <code class="id">type_parameter</code> must be a child of <code class="id">min_type</code>, or <code class="op">&lt;=</code> to include <code class="id">min_type</code> also.</dd>
+		<dt><code class="id">mandatory_trait</code></dt>
 		<dd>A trait that <code class="id">type_parameter</code> must implement.</dd>
 		<dt><code class="kw">Is</code></dt>
 		<dd>Specifies that <code class="id">type_parameter</code> must be one of these:
