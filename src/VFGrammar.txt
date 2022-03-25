@@ -882,7 +882,7 @@ Block<int &tkn> (. ID(L"Block", 3) .)
 BlockStatement (. ID(L"BlockStatement", 3) .)
 =
 	( DimStatement<nullptr>
-	| NewStatement
+	| NewStatement<nullptr>
 	| EventStatement
 	| DoStatement
 	| ForStatement
@@ -954,6 +954,7 @@ ClassOrObjectMember<int kind> (. ID(L"ClassOrObjectMember", 3) .)
 	| EventStatement
 	| FunctionStatement<mods>
 	| MethodStatement<mods>
+	| NewStatement<&mods>
 	| PropertyStatement<mods>
 	| StructStatement<mods>
 	| SubStatement<mods>
@@ -1627,15 +1628,15 @@ NewBlockStatement (. ID(L"NewBlockStatement", 3) .)
 NewMember (. ID(L"NewMember", 3) .)
 =
 	[ Newline ]
-	( NewStatement
+	( NewStatement<nullptr>
 	| ObjectStatement<nullptr>
 	| dot IdentifierStatement SyncNewline<s_name>
 	| ArgumentList SyncNewline<s_name>
 	)
 .
-NewStatement (. ID(L"NewStatement", 3) .)
+NewStatement<Modif *mods> (. ID(L"NewStatement", 3) .)
 =
-	"New" UserType CallOrNew<0, nullptr>
+	"New" UserType CallOrNew<_New, mods>
 	SyncNewline<s_name>
 .
 Newline (. ID(L"Newline", 3) .)
