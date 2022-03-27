@@ -17,37 +17,58 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
 <li><a href="Language_Features.html">Language Features</a></li>
-<li><a href="Declared_Elements.html">Declared Elements</a></li>
+<li><a rel="parent" href="Declared_Elements.html">Declared Elements</a></li>
 </ul>
 </nav>
 <main>
 <h1 id="top">Declared Element Qualities</h1>
-<p>TODO</p>
+<p>There are four possible qualities of a declared element that have an effect on how code interacts with it.
+All declared elements have at least one of these qualities.</p>
 <ul>
-<li><dfn>Data type</dfn> &ndash; TODO. For more information, see <a href="Data_Type_Summary.html">Data Type Summary</a>.</li>
-<li><dfn>Lifetime</dfn> &ndash; TODO. For more information, see <a href="Lifetime.html">Lifetime</a>.</li>
-<li><dfn>Scope</dfn> &ndash; TODO. For more information, see <a href="How_Control_Scope_Variable.html">How to Control the Scope of a Variable</a>.</li>
-<li><dfn>Access level</dfn> &ndash; TODO</li>
+<li><dfn>Data type</dfn> &ndash;
+The values that the element can hold and how it stores those values.
+See <a href="Data_Type_Summary.html">Data Type Summary</a> for more information.</li>
+<li><dfn>Lifetime</dfn> &ndash;
+The period of execution time during which the element is available to use.
+See <a href="Lifetime.html">Lifetime</a> for more information.</li>
+<li><dfn>Scope</dfn> &ndash;
+The set of all code that can refer to the element without a qualified name.
+See <a href="How_Control_Scope_Variable.html">How to Control the Scope of a Variable</a> for more information.</li>
+<li><dfn>Access level</dfn> &ndash;
+The set of all code that is permitted to use an element.</li>
 </ul>
 <h2>Qualities by element</h2>
 <p>The table that follows shows the declared elements and if a quality is applicable.</p>
 <table>
 <thead>
-<tr><th>Element</th><th>Data type</th><th>Lifetime</th><th>Scope</th><th>Access level</th></tr>
+<tr><th>Element</th>
+<th>Data type</th><th>Lifetime</th><th>Scope</th><th>Access level</th></tr>
 </thead>
 <tbody>
-<tr><th>Variable</th><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
-<tr><th>Constant</th><td>Yes</td><td>No</td><td>Yes</td><td>Yes</td></tr>
-<tr><th>Enumeration</th><td>Yes</td><td>No</td><td>Yes</td><td>Yes</td></tr>
-<tr><th>Struct</th><td>No</td><td>No</td><td>Yes</td><td>Yes</td></tr>
-<tr><th>Property</th><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
-<tr><th>Method</th><td>No</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
-<tr><th>Sub/Function</th><td>No</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
-<tr><th>Procedure parameter</th><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td></tr>
-<tr><th>Function/Method return</th><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td></tr>
-<tr><th>Trait</th><td>No</td><td>No</td><td>Yes</td><td>Yes</td></tr>
-<tr><th>Class</th><td>No</td><td>No</td><td>Yes</td><td>Yes</td></tr>
-<tr><th>Event</th><td>No</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+<tr><th>Variable</th>
+<td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><th>Constant</th>
+<td>Yes</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+<tr><th>Enumeration</th>
+<td>Yes</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+<tr><th>Struct</th>
+<td>No</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+<tr><th>Property</th>
+<td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><th>Method</th>
+<td>No</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><th>Sub/Function</th>
+<td>No</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><th>Procedure parameter</th>
+<td>Yes</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+<tr><th>Function/Method return</th>
+<td>Yes</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+<tr><th>Trait</th>
+<td>No</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+<tr><th>Class</th>
+<td>No</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+<tr><th>Event</th>
+<td>No</td><td>No</td><td>Yes</td><td>Yes</td></tr>
 </tbody>
 </table>
 <h2>See also</h2>
