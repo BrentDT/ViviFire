@@ -103,14 +103,13 @@ int main (int argc, char *argv[]) {
 	}
 	
 	wchar_t *fileName = coco_string_create(args.file);
-	Scanner *s = new Scanner(fileName);
-	Parser *p = new Parser(s);
+	Parser *p = new Parser(new Scanner(fileName));
 	
 	p->Parse();
 	
 	coco_string_delete(fileName);
+	delete p->scanner;
 	delete p;
-	delete s;
 
 #if defined(_WIN32)
 	if (args.m) {
