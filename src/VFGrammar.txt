@@ -9,9 +9,13 @@
  * found in the LICENSE file.
  */
 
+#include <algorithm>
 #include <assert.h>
+#include <cstdio>
+#include <cwctype>
 #include <memory>
-#include <stdio.h>
+#include <set>
+#include <string>
 #include "Args.h"
 #include "AST.h"
 #include "Modifier.h"
@@ -30,9 +34,10 @@ enum case_type { CASE_ZERO, CASE_EXPR, CASE_ELSE };
 enum option_type { OPTION_DEFAULT, WITH_THEN, WITHOUT_THEN };
 enum select_type { SELECT_DEFAULT, SELECT_ELSE, SELECT_ELSE_STRING };
 enum ternary { TERNARY0, TERNARY1, TERNARY2, YES = TERNARY1, NO = TERNARY2 };
-enum when_type { WHEN_ZERO, WHEN_DONE, WHEN_NONE, WHEN_ELSE };
 enum { NO_BITS, YES_BITS };
 enum { POSTCONDITIONAL, PRECONDITIONAL };
+
+typedef std::set<std::wstring> string_set;
 
 struct tag_option {
 	Parser *parser;
@@ -1474,8 +1479,10 @@ LoopControlVariable (. ID(L"LoopControlVariable", 3) .)
 .
 LoopBody<bool isPreconditional> (. ID(L"LoopBody", 3) .)
 =
-	( Statement { Statement }
-	| (. when_type whens = WHEN_ZERO; .)
+	(
+		Statement { Statement }
+	|
+		(. string_set whens; .)
 		"Begin" [ identifier { WEAK comma identifier } ] SyncNewline<s_name>
 		{ Statement }
 		WhenStatement<isPreconditional, whens>
@@ -2174,17 +2181,24 @@ ValueType (. ID(L"ValueType", 3) .)
 	( PrimitiveType<NO_BITS> | UserType )
 .
 /*W*/
-WhenStatement<bool isPreconditional, when_type &whens> (. ID(L"WhenStatement", 3) .)
+WhenStatement<bool isPreconditional, string_set &whens> (. ID(L"WhenStatement", 3) .)
 =
 	"When"
 	( identifier
-		// TODO: Check for "Done" or "None"
-		(. if (whens == WHEN_ELSE) SemErr(L"WHEN DONE and WHEN NONE cannot be in the same loop with WHEN ELSE"); .)
-	| "Else"
-		(. if (whens == WHEN_DONE || whens == WHEN_NONE) SemErr(L"WHEN ELSE cannot be in the same loop with WHEN DONE or WHEN NONE"); .)
-		(. if (whens == WHEN_ELSE) SemErr(L"Cannot have more than one WHEN ELSE"); .)
-		(. whens = WHEN_ELSE; .)
-	) Newline
+	| "Each"
+	| "Else" // Same as "Each".
+	)
+	(.
+	// Change label to upper case.
+	wchar_t *val = (t->kind != _Else) ? t->val : L"EACH";
+	std::wstring id(val);
+	std::transform(id.begin(), id.end(), id.begin(), std::towupper);
+	// Make sure this is the only one.
+	if (whens.count(id) == 0) whens.insert(id);
+	else if (t->kind == _identifier) SemErr(L"Loop cannot have more than one WHEN with the same label");
+	else SemErr(L"Loop cannot have more than one WHEN EACH or WHEN ELSE");
+	.)
+	Newline
 	{ Statement }
 .
 WhereClause<int block, bool generic> (. ID(L"WhereClause", 3) .)
