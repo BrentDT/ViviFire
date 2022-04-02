@@ -58,6 +58,8 @@ struct tag_option {
 	bool    unit_full      = false;
 	short   warning        = 4;
 	short   warning_error  = 0;
+	ternary When_Each_Else = TERNARY0;
+	bool    When_Begin_id  = false;
 
 	bool match(const wchar_t *s) const {
 		// Returns true if next token is the same as s, then consumes it.
@@ -72,9 +74,23 @@ struct tag_option {
 		parser->Get();
 		return true;
 	}
+	void option_error() const {
+		parser->SemErr(L"Unknown or missing option");
+	}
+	void optional_no(int kind, const wchar_t *id = nullptr) const {
+		// Test for optional "No" plus token.
+		if (match(L"no")) {
+			if (parser->la->kind == kind) {
+				if (_identifier == kind) match(id);
+				else parser->Get();
+				return;
+			}
+			option_error();
+		}
+	}
 
 	void Parse() {
-		static const wchar_t *s_block = L"block", *s_equals = L"equals", *s_id = L"id", *s_no = L"no", *s_warning = L"warning";
+		static const wchar_t *s_block = L"block", *s_equals = L"equals", *s_id = L"id", *s_warning = L"warning";
 		if (last) parser->SemErr(L"@OPTION not permitted after LAST");
 		parser->Get();
 		switch (parser->la->kind) {
@@ -88,14 +104,14 @@ struct tag_option {
 			break;
 		case _End:
 			parser->Get();
-			if (parser->la->kind == _For) { // End For
+			if (_For == parser->la->kind) { // End For
 				parser->Get();
-				if (match(s_no) && !match(s_id)) goto bad_option;
+				optional_no(_identifier, s_id);
 				End_For_id = NO; // @Option End For [ no id ]
 			} else if (match(s_block)) {
 				End_block = YES; // @Option End Block
 			} else {
-				if (match(s_no) && !match(s_block)) goto bad_option;
+				optional_no(_identifier, s_block);
 				End_block = NO; // @Option End [ No Block ]
 			}
 			break;
@@ -108,18 +124,18 @@ struct tag_option {
 				Enum_Is = true;  // @Option Enum Is
 			} else if (match(s_equals)) {
 				Enum_equals = true; // @Option Enum Equals
-			} else goto bad_option;
+			}
 			break;
 		case _If:
 			parser->Get();
-			if (parser->la->kind == _End) {
+			if (_End == parser->la->kind) {
 				parser->Get();
 				If_End = true; // @Option If End
-			} else if (parser->la->kind == _Then) {
+			} else if (_Then == parser->la->kind) {
 				parser->Get();
 				If_Then = YES;                    // @Option If Then
 			} else {
-				if (match(s_no) && parser->la->kind != _Then) goto bad_option;
+				optional_no(_Then);
 				If_Then = NO; // @Option If [ No Then ]
 			}
 			break;
@@ -129,31 +145,48 @@ struct tag_option {
 			break;
 		case _Optional:
 			parser->Get();
-			if (!match(s_equals)) goto bad_option;
-			Optional_equals = true; // @Option Optional Equals
+			if (match(s_equals)) {
+				Optional_equals = true; // @Option Optional Equals
+			}
 			break;
 		case _Select:
 			parser->Get();
-			if (parser->la->kind == _Else) {
+			if (_Else == parser->la->kind) {
 				parser->Get();
-				if (parser->la->kind == _String) {
+				if (_String == parser->la->kind) {
 					parser->Get();
 					Select_Else = SELECT_ELSE_STRING; // @Option SELECT ELSE STRING
 				} else {
 					Select_Else = SELECT_ELSE; // @Option SELECT ELSE
 				}
-			} else if (parser->la->kind == _Case) {
+			} else if (_Case == parser->la->kind) {
 				parser->Get();
 				Select_Case = YES;                      // @Option SELECT CASE
 			} else {
-				if (match(s_no) && parser->la->kind != _Case) goto bad_option;
+				optional_no(_Case);
 				Select_Case = NO; // @Option Select [ No Case ]
 			}
 			break;
 		case _Unit:
 			parser->Get();
-			if (!match(L"full")) goto bad_option;
-			unit_full = true; // @Option Unit Full
+			if (match(L"full")) {
+				unit_full = true; // @Option Unit Full
+			}
+			break;
+		case _When:
+			parser->Get();
+			if (_Each == parser->la->kind) {
+				parser->Get();
+				When_Each_Else = TERNARY1; // @Option When Each
+			} else if (_Else == parser->la->kind) {
+				parser->Get();
+				When_Each_Else = TERNARY2; // @Option When Else
+			} else if (match(s_id) && _Begin == parser->la->kind) {
+				parser->Get();
+				if (match(s_id)) {
+					When_Begin_id = true; // @Option When ID Begin ID
+				}
+			}
 			break;
 		case _identifier:
 			// For each addition, remember to "break" when correct.
@@ -178,10 +211,10 @@ struct tag_option {
 		default:
 		bad_option:
 			parser->Get();
-			parser->SemErr(L"Unknown or missing option");
+			option_error();
 			break;
 		}
-		if (parser->la->kind != _line_break) goto bad_option;
+		if (parser->la->kind != _line_break && parser->la->kind != _EOF) goto bad_option;
 	}
 
 } option = { /* parser */ this };
