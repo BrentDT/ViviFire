@@ -75,7 +75,7 @@ ul.six-cols {
 	font-size: 85%;
 	font-style: italic;
 }
-#breadcrumbs {
+nav p:first-child, #strings {
 	display: none;
 }
 .breadcrumb ul, .breadcrumb ul li {

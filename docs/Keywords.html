@@ -21,9 +21,9 @@
 <main>
 <h1 id="top">Keywords</h1>
 <p>Select the links below for information on statements and expressions that use the keyword.</p>
-<section aria-labelledby="alpha">
-<h2 id="alpha">Alphabetical list</h2>
-<nav class="screen-reader">
+<h2>Alphabetical list</h2>
+<nav class="screen-reader" aria-labelledby="letter">
+<p id="letter">Skip to letter</p>
 <ul>
 <li><a href="#A">A</a></li>
 <li><a href="#B">B</a></li>
@@ -78,7 +78,7 @@ We do not recommend that you use such escaped keywords, because they can make co
 <li><a href="#Dim" class="hash">Dim</a></li>
 <li><a href="#Do" class="hash">Do</a></li>
 <li><a href="#Does" class="hash">Does</a></li>
-<li id="E"><a href="For_Each_In_Statement.html">Each</a></li>
+<li id="E"><a href="#Each" class="hash">Each</a></li>
 <li><a href="#Else" class="hash">Else</a></li>
 <li><a href="#End" class="hash">End</a></li>
 <li><a href="Enum_Statement.html">Enum</a></li>
@@ -101,8 +101,7 @@ We do not recommend that you use such escaped keywords, because they can make co
 <li><a href="Int64_Data_Type.html">Int64</a></li>
 <li><a href="Int128_Data_Type.html">Int128</a></li>
 <li><a href="#Is" class="hash">Is</a></li>
-<li id="L"><!a href="Let_Statement.html">Let<!/a></li>
-<li><a href="Modules.html">Library</a></li>
+<li id="L"><a href="Modules.html">Library</a></li>
 <li><a href="Do_Loop_Statement.html">Loop</a></li>
 <li id="M"><a href="#Method" class="hash">Method</a></li>
 <li><a href="Mod_Operator.html">Mod</a></li>
@@ -150,8 +149,7 @@ We do not recommend that you use such escaped keywords, because they can make co
 <li><a href="#Unit" class="hash">Unit</a></li>
 <li><a href="Do_Loop_Statement.html">Until</a></li>
 <li id="V"><a href="#Dim" class="hash">Var</a></li>
-<li id="W"><!a href="Wait_Statement.html">Wait<!/a></li>
-<li><a href="Begin_When_Statements.html">When</a></li>
+<li id="W"><a href="Begin_When_Statements.html">When</a></li>
 <li><a href="#Where" class="hash">Where</a></li>
 <li><a href="#While" class="hash">While</a></li>
 <li id="X"><a href="Xor_Operator.html">Xor</a></li>
@@ -176,13 +174,16 @@ But we do not recommend this, because they can make code less easy to read and t
 <h3 id="future">Possible future keywords</h3>
 <ul class="six-cols">
 <li>Await</li>
+<li>ByVal</li>
 <li>Continue</li>
 <li>Defer</li>
 <li>Ensure</li>
+<li>Let</li>
 <li>Operator</li>
 <li>Ptr</li>
+<li>Union</li>
+<li>Wait</li>
 </ul>
-</section>
 </section>
 <section aria-labelledby="elements">
 <h2 id="elements">Elements that use a given keyword</h2>
@@ -255,6 +256,11 @@ But we do not recommend this, because they can make code less easy to read and t
 <li><a href="Method_Statement.html">Method Statement</a></li>
 <li><a href="Property_Statement.html">Property Statement</a></li>
 <li><a href="Where_Clause_Generics.html">Where Clause (Generics)</a></li>
+</ul>
+<h3 id="Each">Each</h3>
+<ul class="articles">
+<li><a href="Begin_When_Statements.html">Begin&hellip;When Statements</a></li>
+<li><a href="For_Each_In_Statement.html">For Each Statement</a></li>
 </ul>
 <h3 id="Else">Else</h3>
 <ul class="articles">
@@ -411,12 +417,13 @@ But we do not recommend this, because they can make code less easy to read and t
 </section>
 </main>
 <script src="common.js"></script>
-<div style="display: none">
+<div id="strings">
 <p id="elem">Used by many elements</p>
 </div>
 <script>
+var elem = document.getElementById('elem').textContent;
 for (var h of document.getElementsByClassName('hash')) {
-	h.setAttribute('aria-describedby', 'elem')
+	h.title = elem;
 }
 </script>
 </body>
