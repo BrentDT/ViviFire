@@ -14,7 +14,7 @@
 #include <cstdio>
 #include <cwctype>
 #include <memory>
-#include <set>
+#include <map>
 #include <string>
 #include "Args.h"
 #include "AST.h"
@@ -37,7 +37,7 @@ enum ternary { TERNARY0, TERNARY1, TERNARY2, YES = TERNARY1, NO = TERNARY2 };
 enum { NO_BITS, YES_BITS };
 enum { POSTCONDITIONAL, PRECONDITIONAL };
 
-typedef std::set<std::wstring> string_set;
+typedef std::map<std::wstring, int> when_map;
 
 struct tag_option {
 	Parser *parser;
@@ -1515,7 +1515,7 @@ LoopBody<bool isPreconditional> (. ID(L"LoopBody", 3) .)
 	(
 		Statement { Statement }
 	|
-		(. string_set labels, whens; .)
+		(. when_map whens; .)
 		"Begin"
 		(. int begin_l = t->line, begin_c = t->col; .)
 		[
@@ -1523,21 +1523,24 @@ LoopBody<bool isPreconditional> (. ID(L"LoopBody", 3) .)
 			(.
 			std::wstring id(t->val);
 			std::transform(id.begin(), id.end(), id.begin(), std::towupper);
-			labels.insert(id);
+			whens[id]++;
 			.)
 			{ WEAK comma
 				identifier
 				(.
 				std::wstring id(t->val);
 				std::transform(id.begin(), id.end(), id.begin(), std::towupper);
-				labels.insert(id);
+				if (++whens[id] == 2) {
+					SemErr(L"BEGIN cannot have two of the same label");
+					whens[id] = 1;
+				}
 				.)
 			}
 		]
 		SyncNewline<s_name>
 		{ Statement }
-		WhenStatement<isPreconditional, labels, whens>
-		{ WhenStatement<isPreconditional, labels, whens> }
+		WhenStatement<isPreconditional, whens>
+		{ WhenStatement<isPreconditional, whens> }
 		// TODO: if @Option When id Begin id, make sure labels agree with whens.
 	)
 .
@@ -2233,7 +2236,7 @@ ValueType (. ID(L"ValueType", 3) .)
 	( PrimitiveType<NO_BITS> | UserType )
 .
 /*W*/
-WhenStatement<bool isPreconditional, const string_set &labels, string_set &whens> (. ID(L"WhenStatement", 3) .)
+WhenStatement<bool isPreconditional, when_map &whens> (. ID(L"WhenStatement", 3) .)
 =
 	"When"
 	( identifier
@@ -2243,20 +2246,23 @@ WhenStatement<bool isPreconditional, const string_set &labels, string_set &whens
 		(. if (option.When_Each_Else == TERNARY1) SemErr(L"Must use EACH because of @OPTION"); .)
 	)
 	(.
+	int kind = t->kind;
 	// Change label to upper case.
 	wchar_t *val = (t->kind != _Else) ? t->val : L"EACH";
 	std::wstring id(val);
 	std::transform(id.begin(), id.end(), id.begin(), std::towupper);
-	// Make sure this is the only one with this name.
-	if (whens.insert(id).second) {
-		// Added it.
-		if (option.When_Begin_id && t->kind == _identifier && labels.count(id) == 0) {
+	switch ((whens[id] += 2)) {
+	case 2: // Label not in Begin.
+		if (option.When_Begin_id && kind == _identifier) {
 			SemErr(L"WHEN label must be declared with BEGIN because of @OPTION");
 		}
-	} else {
-		// Duplicate.
-		if (t->kind == _identifier) SemErr(L"Loop cannot have more than one WHEN with the same label");
+		break;
+	case 3: // Label in Begin and When.
+		break;
+	default: // Duplicate.
+		if (kind == _identifier) SemErr(L"Loop cannot have more than one WHEN with the same label");
 		else SemErr(L"Loop cannot have more than one WHEN EACH or WHEN ELSE");
+		break;
 	}
 	.)
 	Newline
