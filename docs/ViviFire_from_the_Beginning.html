@@ -15,7 +15,7 @@
 <ul>
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
-<li><a rel="section" href="Getting_Started_with_ViviFire.html">Getting Started with ViviFire</a></li>
+<li><a rel="parent section" href="Getting_Started_with_ViviFire.html">Getting Started with ViviFire</a></li>
 </ul>
 </nav>
 <main>
@@ -67,7 +67,7 @@ C++
 Microsoft Windows; plans for Linux and Apple Mac OS
 </td></tr>
 <tr><th scope="row">License</th><td>
-<a href="https://en.wikipedia.org/wiki/MIT_License" aria-describedby="external" target="_blank" rel="noreferrer noopener">MIT</a>
+<a href="https://en.wikipedia.org/wiki/MIT_License" target="_blank" rel="noreferrer noopener">MIT</a>
 </td></tr>
 <tr><th scope="row">Filename extensions</th><td>
 <code>.vfprog</code>, <code>.vflib</code>
@@ -75,7 +75,15 @@ Microsoft Windows; plans for Linux and Apple Mac OS
 </tbody>
 </table>
 </main>
-<p id="external" style="display: none;">(Opens in new tab)</p>
+<div id="strings">
+<p id="extern">Opens in new tab</p>
+</div>
+<script>
+var extern = document.getElementById('extern').textContent;
+for (var a of document.querySelectorAll('a[target="_blank"]')) {
+	a.title = extern;
+}
+</script>
 <script src="common.js"></script>
 </body>
 </html>
