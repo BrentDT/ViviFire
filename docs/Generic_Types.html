@@ -17,7 +17,7 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
 <li><a href="Language_Features.html">Language Features</a></li>
-<li><a href="Data_Types.html">Data Types</a></li>
+<li><a rel="parent" href="Data_Types.html">Data Types</a></li>
 </ul>
 </nav>
 <main>
@@ -64,44 +64,75 @@ But generic types automatically make implementations for each data type.</li>
 <li>Generic algorithms &ndash; TODO</li>
 </ul>
 <h2>Constraints</h2>
+<p>You must try to write The code for a generic construct as disconnected from types as possible.
+But some functions can be necessary to have for data types supplied to your generic construct.
+For example, to compare two items to sort them, their data type must implement the trait <code>Compare</code>.
+To do this, you can add a constraint for the type parameter.</p>
 <h3>Example of a constraint</h3>
-<p>TODO</p>
+<p>The example that follows shows a skeleton of a generic class with a constraint.
+The constraint makes it necessary for the type argument to implement <code>Compare</code>.</p>
+<div class="language-vivifire listing">
+<pre><code>Class GenericClass[T] Where T Does Compare
+    ' ...
+End Class&#10;</code></pre>
+</div>
+<p>If you try to use <code>GenericClass</code> with a type that does not implement <code>Compare</code>, then the compiler gives an error.</p>
 <h3>Types of constraints</h3>
-<p>There are five types of constraints.</p>
+<p>Your constraint can specify the requirements that follow:</p>
 <ul>
 <li>The type argument must be one in a given branch of inheritance.</li>
-<li>The type argument must be one of a reference type or a value type.</li>
+<li>The type argument must be one of a reference type, a value type, or a unit of measure.</li>
 <li>The type argument must implement one or more traits.</li>
-<li>The type argument must implement a parameterless constructor.</li>
-<li>Two or more of the above in the shown sequence.</li>
+<li>The type argument must have a constructor without parameters.</li>
+<li>The class that uses a trait must inherit from a given class.</li>
 </ul>
 <p>If you must specify more than one requirement, then you can put a comma between each one.
-Or you can use <code class="kw">Where</code> again and again, each on a different line.</p>
+But if a constraint makes a line of code too long, then you can divide it into many constraints.
+you can use <code class="kw">Where</code> again and again, each on a different line.</p>
+<p>But the shortest constraint can use a type parameter a minimum of one time.
+Then you must put the requirements in the sequence given above.</p>
 <ul>
 <li>If a sub-type is necessary, then use one of the operators <code class="op">&lt;</code> or <code class="op">&lt;=</code>.</li>
-<li>If a reference type is necessary, then use &ldquo;<code class="kw">Is Class</code>&rdquo;.</li>
-<li>If a value type is necessary, then use &ldquo;<code class="kw">Is Struct</code>&rdquo;.</li>
-<li>If a trait is necessary, then use &ldquo;<code class="kw">Does</code>&rdquo;.</li>
-<li>If a constructor is necessary, then use &ldquo;<code class="kw">Constructor()</code>&rdquo;.
+<li>If a reference type is necessary, then use &laquo;<code class="kw">Is Class</code>&raquo;.</li>
+<li>If a value type is necessary, then use &laquo;<code class="kw">Is Struct</code>&raquo;.</li>
+<li>If a unit of measure is necessary, then use &laquo;<code class="kw">Is Unit</code>&raquo;.</li>
+<li>If a trait is necessary, then use &laquo;<code class="kw">Does</code>&raquo;.</li>
+<li>If a constructor is necessary, then use &laquo;<code class="kw">Constructor()</code>&raquo;.
 The parentheses are mandatory.</li>
 </ul>
 <p>See <a href="Where_Clause_Generics.html">Where Clause (Generics)</a> for more information.</p>
 <h3>Examples of many constraints</h3>
+<p>The examples that follow show a skeleton of a generic class with three constraints on the type parameter.
+The type argument must (1) be a reference type, (2) implement <code>Compare</code>, and (3) have a constructor without parameters.
+All three examples are equivalent.</p>
+<p>Example 1 uses the shortest construct with <code class="kw">Where</code> on the same line as the start of the class.</p>
 <div class="language-vivifire listing">
 <pre><code>Class MyClass[T] Where T Is Class Does Compare Constructor()
     ' ...
 End Class&#10;</code></pre>
+</div>
+<p>Example 2 uses the construct with commas between requirements all on one line in the class body.</p>
+<div class="language-vivifire listing">
 <pre><code>Class MyClass[T]
     Where T Is Class, T Does Compare, T Constructor()
     ' ...
 End Class&#10;</code></pre>
+</div>
+<p>Example 3 uses three different lines that start with <code class="kw">Where</code> in the class body.
+We wrote the requirements in a sequence different from the other examples.</p>
+<div class="language-vivifire listing">
 <pre><code>Class MyClass[T]
-    Where T Is Class
-    Where T Does Compare
     Where T Constructor()
+    Where T Does Compare
+    Where T Is Class
     ' ...
 End Class&#10;</code></pre>
 </div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Type_List.html">Type List</a></li>
+<li><a href="Value_Types_and_Reference_Types.html">Value Types and Reference Types</a></li>
+</ul>
 </main>
 <script src="common.js"></script>
 <script src="prism.js"></script>
