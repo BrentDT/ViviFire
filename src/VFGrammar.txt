@@ -1600,16 +1600,21 @@ Module (. ID(L"Module", 3) .)
 =
 	(. bool bProcEntry = false; .)
 	[ Newline ]
-	( "Program"
+	(
+		"Program"
 		[ "=" (. bProcEntry = true; .) ]
-	| "Library"
+		identifier
+	|
+		"Library"
+		QualifiedName<_identifier>
 	)
-	identifier
 	SyncNewline<s_name>
 	{ WhereStatement }
 	{ RequireStatement }
-	{ ModuleMember
-	| ModuleStatement<bProcEntry>
+	{
+		ModuleMember
+	|
+		ModuleStatement<bProcEntry>
 	}
 .
 ModuleMember (. ID(L"ModuleMember", 3) .)
