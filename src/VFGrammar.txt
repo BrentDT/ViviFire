@@ -401,10 +401,10 @@ const wchar_t *SIGILS = L"%!$@";
 
 bool IsAssignmentOp() {
 	switch (la->kind) {
-	case _concatenation: case _plus: case _minus: case _multiplication: case _division:
+	case _concatenation: case _plus: case _minus: case _asterisk: case _slash:
 	case _Mod: case _Rem: case _SHL: case _SHR: case _And: case _Or: case _Xor:
-		if (scanner->Peek()->kind != _equals_operator) return false;
-	case _equals_operator: case _colon_equals:
+		if (scanner->Peek()->kind != _equals) return false;
+	case _equals: case _colon_equals:
 		return true;
 	}
 	return false;
@@ -414,7 +414,7 @@ bool IsAssignmentOp() {
 ///	// Disambiguate "("[args]")" from "("["Is"]("<"|"<="|">"|">="|"<>"|"=")")".
 ///	if (la->kind == _left_paren) {
 ///		int first = scanner->Peek()->kind;
-///		if (first == _Is || (first >= _less_than && first <= _equals_operator)) return false;
+///		if (first == _Is || (first >= _less_than && first <= _equals)) return false;
 ///		return true;
 ///	}
 ///	return false;
@@ -548,9 +548,9 @@ plus  = "+".
 minus = "-".
 
 // Arithmetic
-power          = "^".
-multiplication = "*".
-division       = "/".
+caret    = "^".
+asterisk = "*".
+slash    = "/".
 
 // Concatenation
 concatenation =
@@ -563,14 +563,13 @@ concatenation =
 null_coalescing = "|?".
 
 // Comparison
-tolerant           = "~".
-less_than          = "<".
-less_or_equal      = "<=".
-greater_than       = ">".
-greater_or_equal   = ">=".
-inequality         = "<>".
-equals_operator    = "=".
-///spaceship_operator = "<=>".
+tilde            = "~".
+less_than        = "<".
+less_or_equal    = "<=".
+greater_than     = ">".
+greater_or_equal = ">=".
+not_equal        = "<>".
+equals           = "=".
 
 // Assignment
 colon_equals = ":=".
@@ -1959,7 +1958,7 @@ Statement (. ID(L"Statement", 3) .)
 StringExpression (. ID(L"String", 2) .)
 =
 	( string_literal | string_constant )
-	{ IF (la->kind == _string_constant || la->kind == _string_literal || la->kind == _division || la->kind == _backslash)
+	{ IF (la->kind == _string_constant || la->kind == _string_literal || la->kind == _slash || la->kind == _backslash)
 		[ "/" | "\\" ]
 		( string_literal | string_constant )
 	}
