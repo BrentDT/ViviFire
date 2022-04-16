@@ -40,26 +40,27 @@ enum { POSTCONDITIONAL, PRECONDITIONAL };
 typedef std::map<std::wstring, int> when_map;
 
 struct tag_option {
-	Parser *parser;
-	bool    charset_latin  = false;
-	ternary Dim_or_Var     = TERNARY0;
-	ternary End_block      = TERNARY0;
-	ternary End_For_id     = TERNARY0;
-	bool    Enum_id        = false;
-	bool    Enum_Is        = false;
-	bool    Enum_equals    = false;
-	ternary If_Then        = TERNARY0;
-	bool    If_End         = false;
-	bool    last           = false;
-	bool    New            = false;
-	bool    Optional_equals= false;
-	ternary     Select_Case    = TERNARY0;
-	select_type Select_Else    = SELECT_DEFAULT;
-	bool    unit_full      = false;
-	short   warning        = 4;
-	short   warning_error  = 0;
-	ternary When_Each_Else = TERNARY0;
-	bool    When_Begin_id  = false;
+	Parser*     parser;
+	bool        charset_latin   = false;
+	ternary     Dim_or_Var      = TERNARY0;
+	ternary     End_block       = TERNARY0;
+	ternary     End_For_id      = TERNARY0;
+	bool        Enum_id         = false;
+	bool        Enum_Is         = false;
+	bool        Enum_equals     = false;
+	ternary     If_Then         = TERNARY0;
+	bool        If_End          = false;
+	bool        last            = false;
+	bool        New             = false;
+	bool        Optional_equals = false;
+	ternary     Select_Case     = TERNARY0;
+	select_type Select_Else     = SELECT_DEFAULT;
+	ternary     String_bk_slash = TERNARY0;
+	bool        unit_full       = false;
+	short       warning         = 4;
+	short       warning_error   = 0;
+	ternary     When_Each_Else  = TERNARY0;
+	bool        When_id_Begin_id = false;
 
 	bool match(const wchar_t *s) const {
 		// Returns true if next token is the same as s, then consumes it.
@@ -124,7 +125,7 @@ struct tag_option {
 				Enum_Is = true;  // @Option Enum Is
 			} else if (match(s_equals)) {
 				Enum_equals = true; // @Option Enum Equals
-			}
+			} else goto bad_option;
 			break;
 		case _If:
 			parser->Get();
@@ -147,7 +148,7 @@ struct tag_option {
 			parser->Get();
 			if (match(s_equals)) {
 				Optional_equals = true; // @Option Optional Equals
-			}
+			} else goto bad_option;
 			break;
 		case _Select:
 			parser->Get();
@@ -167,11 +168,19 @@ struct tag_option {
 				Select_Case = NO; // @Option Select [ No Case ]
 			}
 			break;
+		case _String:
+			parser->Get();
+			if (match(L"backslash")) {
+				String_bk_slash = TERNARY1; // @Option String Backslash
+			}else if (match(L"slash")) {
+				String_bk_slash = TERNARY2; // @Option String Slash
+			} else goto bad_option;
+			break;
 		case _Unit:
 			parser->Get();
 			if (match(L"full")) {
 				unit_full = true; // @Option Unit Full
-			}
+			} else goto bad_option;
 			break;
 		case _When:
 			parser->Get();
@@ -184,9 +193,9 @@ struct tag_option {
 			} else if (match(s_id) && _Begin == parser->la->kind) {
 				parser->Get();
 				if (match(s_id)) {
-					When_Begin_id = true; // @Option When ID Begin ID
-				}
-			}
+					When_id_Begin_id = true; // @Option When ID Begin ID
+				} else goto bad_option;
+			} else goto bad_option;
 			break;
 		case _identifier:
 			// For each addition, remember to "break" when correct.
@@ -1959,7 +1968,13 @@ StringExpression (. ID(L"String", 2) .)
 =
 	( string_literal | string_constant )
 	{ IF (la->kind == _string_constant || la->kind == _string_literal || la->kind == _slash || la->kind == _backslash)
-		[ "/" | "\\" ]
+		[
+			"/"
+			(. if (option.String_bk_slash == TERNARY1) SemErr(L"Must use backslash because of @OPTION"); .)
+		|
+			"\\"
+			(. if (option.String_bk_slash == TERNARY2) SemErr(L"Must use slash because of @OPTION"); .)
+		]
 		( string_literal | string_constant )
 	}
 .
@@ -2257,7 +2272,7 @@ WhenStatement<bool isPreconditional, when_map &whens> (. ID(L"WhenStatement", 3)
 	std::transform(id.begin(), id.end(), id.begin(), std::towupper);
 	switch ((whens[id] += 2)) {
 	case 2: // Label not in Begin.
-		if (option.When_Begin_id && kind == _identifier) {
+		if (option.When_id_Begin_id && kind == _identifier) {
 			SemErr(L"WHEN label must be declared with BEGIN because of @OPTION");
 		}
 		break;
