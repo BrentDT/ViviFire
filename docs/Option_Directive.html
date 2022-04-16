@@ -188,6 +188,19 @@ End&#10;</code></pre>
 <h4><code>@Option Select Else String</code></h4>
 <p>You must write the clause &ldquo;<code class="kw">Case Else</code>&rdquo; for all statements of the type <code class="kw">Select&hellip;Case</code> that compare strings.
 But <code class="kw">Case Else</code> will not be mandatory for other data types.</p>
+<h3 id="String" class="notranslate">String</h3>
+<h4><code>@Option String Backslash</code></h4>
+<p>You must write a path string with backslashes, not slashes.
+For example:</p>
+<div class="language-vivifire listing">
+<pre><code>Const BITMAP_DIR = &quot;media&quot;\&quot;bmp&quot;&#10;</code></pre>
+</div>
+<h4><code>@Option String Slash</code></h4>
+<p>You must write a path string with slashes, not backslashes.
+For example:</p>
+<div class="language-vivifire listing">
+<pre><code>Const BITMAP_DIR = &quot;media&quot;/&quot;bmp&quot;&#10;</code></pre>
+</div>
 <h3 id="Unit" class="notranslate">Unit</h3>
 <h4><code>@Option Unit Full</code></h4>
 <p>You must write the full names of units of measure.
@@ -267,6 +280,7 @@ End&#10;</code></pre>
 <li><a href="New_Statement.html">New Statement</a></li>
 <li><a href="Optional.html">Optional</a></li>
 <li><a href="Select_Case_Statement.html">Select&hellip;Case Statement</a></li>
+<li><a href="String_Data_Type.html">String Data Type</a></li>
 <li><a href="Error_and_Warn_Directives.html">@Error and @Warn Directives</a></li>
 </ul>
 </main>

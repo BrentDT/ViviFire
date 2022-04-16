@@ -75,8 +75,15 @@ Because of this, ViviFire has two special operators.</p>
 <p>The operators <code class="op">/</code> and <code class="op">\</code> give the path separator when put between string literals and/or constants.
 They are an alternative to the constants <code>$PATHSEP</code> and <code>$PS</code>.
 All of these give <code>&quot;/&quot;</code> on Linux and <code>&quot;\&quot;</code> on Windows.
-Although the two operators are interchangeable, we recommend that you select one for all code in a project.</p>
-<p>For example, <code>&quot;resources&quot; / &quot;graphics&quot;</code> gives <code>&quot;resources\graphics&quot;</code> on Windows.</p>
+For example, <code>&quot;resources&quot; / &quot;graphics&quot;</code> gives <code>&quot;resources\graphics&quot;</code> on Windows.</p>
+<p>Although the two operators are interchangeable, we recommend that you select one for all code in a project.
+You can use the directive <code class="at">@Option</code> to cause an error if you try to use the one not selected.
+The applicable directives are:</p>
+<ul>
+<li><code>@Option String Backslash</code></li>
+<li><code>@Option String Slash</code></li>
+</ul>
+<p>See <a href="Option_Directive.html#String">@Option Directive</a> for more information.</p>
 <h2>Shared methods and properties</h2>
 <dl class="language-vivifire listing">
 <dt><pre><code>String.CharAt(str As String, pos As Int) As Char</code></pre></dt>
