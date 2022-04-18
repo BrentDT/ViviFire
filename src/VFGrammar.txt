@@ -840,6 +840,7 @@ ViviFire (. ID(L"ViviFire", 3) .)
 	| "Then"         (. SemErr(L"THEN without IF"); .)
 	| "Until"        (. SemErr(L"UNTIL without DO or LOOP"); .)
 	| "When"         (. SemErr(L"WHEN without BEGIN"); .)
+	| ConstantValueError
 	]
 
 	EOF
@@ -1064,6 +1065,13 @@ ConditionalExpression (. ID(L"Conditional", 2) .)
 ConstantDeclarator (. ID(L"ConstantDeclarator", 3) .)
 =
 	identifier [ TypeClause<NO_BITS> ] "=" Expression
+.
+ConstantValueError (. ID(L"ConstantValueError", 3) .)
+=
+	( char_literal | date_literal | fixed_literal | integer_constant | integer_literal | null_literal
+	| real_literal | string_constant | string_literal | time_literal | version_literal
+	)
+	(. SemErr(L"Cannot use a constant value here"); .)
 .
 ConstStatement<Modif &mods> (. ID(L"ConstStatement", 3) .)
 =
