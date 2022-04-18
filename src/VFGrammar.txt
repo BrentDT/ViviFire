@@ -56,6 +56,7 @@ struct tag_option {
 	ternary     Select_Case     = TERNARY0;
 	select_type Select_Else     = SELECT_DEFAULT;
 	ternary     String_bk_slash = TERNARY0;
+	bool        test            = false;
 	bool        unit_full       = false;
 	short       warning         = 4;
 	short       warning_error   = 0;
@@ -201,6 +202,9 @@ struct tag_option {
 			// For each addition, remember to "break" when correct.
 			if (match(L"last")) {
 				last = true; // @Option Last
+				break;
+			} else if (match(L"test")) {
+				test = true; // @Option Test
 				break;
 			} else if (left_match(s_warning)) {
 				short level = (short)parser->t->val[coco_string_length(s_warning)]; // Valid: '\0', '1', '2', '3', '4', & '5'.
@@ -401,6 +405,43 @@ void CCEval() {
 
 	if (cc_exec == cc_depth) {
 		while (la->kind < _atError) CCGet();
+	}
+}
+
+void ParseInlineComment() {
+	// Parse out "expect-error {{msg}}" or "expect-warning {{msg}}".
+	wchar_t *p = la->val;
+
+		// Move past "'" or "//", and whitespace.
+	while (*p == L'/' || *p == L'\'' || *p == 32 || *p == 9 || *p == 160) p++;
+
+	// Find "expect-".
+	if (wcsncmp(p, L"expect-", 7)) return;
+	p += 7;
+
+	// Find "error" or "warning".
+	bool bError = true;
+	if (wcsncmp(p, L"error", 5) == 0) {
+		p += 5;
+	} else if (wcsncmp(p, L"warning", 7) == 0) {
+		p += 7; bError = false;
+	} else return;
+
+	// Whitespace again.
+	while (*p == 32 || *p == 9 || *p == 160) p++;
+
+	// Find "{{".
+	if (p[0] != L'{' && p[1] != L'{') return; // FIXME: Should this be an error?
+	p += 2;
+
+	// Find "}}".
+	wchar_t *pRight = wcsstr(p, L"}}");
+	if (pRight == nullptr) return; // FIXME: Should this be an error?
+
+	if (bError) {
+		Warn(L"Expecting an error"); // TEMP
+	} else {
+		Warn(L"Expecting a warning"); // TEMP
 	}
 }
 
@@ -812,7 +853,8 @@ atEnd  = "@End".   (. CCEval(); .)
 
 // Comments
 
-InlineComment = ("'"|"//"){notEOL}.
+InlineComment = ("'"|"//"){notEOL}. (.
+	if (option.test) ParseInlineComment(); .)
 
 COMMENTS FROM "/*" TO "*/" NESTED  // C-style
 COMMENTS FROM "/'" TO "'/" NESTED
