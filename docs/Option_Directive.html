@@ -201,6 +201,25 @@ For example:</p>
 <div class="language-vivifire listing">
 <pre><code>Const BITMAP_DIR = &quot;media&quot;/&quot;bmp&quot;&#10;</code></pre>
 </div>
+<h3 id="Test" class="notranslate">Test</h3>
+<h4><code>@Option Test</code></h4>
+<p>Causes ViviFire to parse inline comments to find commands used in tests of the compiler.
+You must not use this directive unless you do work on the compiler.
+Block comments are ignored as usual.</p>
+<p>These commands (<code>expect-error</code> and <code>expect-warning</code>) cause the compiler to ignore errors and warnings before the applicable command.
+The comment must be on the same line as the statement, or the line immediately after the statement.</p>
+<p>Then you must write the error or warning message between a pair of two braces (<code class="op">{{ }}</code>).
+The compiler ignores the remaining comment until the end of the line.</p>
+<p>An example follows.</p>
+<div class="language-vivifire listing">
+<pre><code>@Option Test
+Program MyProgram
+
+x = 1 // expect-error {{Variable was not declared}} TBD
+
+Const _BAD_NAME = "The user name is not valid."
+    ' expect-error {{Invalid Name}}&#10;</code></pre>
+</div>
 <h3 id="Unit" class="notranslate">Unit</h3>
 <h4><code>@Option Unit Full</code></h4>
 <p>You must write the full names of units of measure.
