@@ -1106,7 +1106,7 @@ ConditionalExpression (. ID(L"Conditional", 2) .)
 .
 ConstantDeclarator (. ID(L"ConstantDeclarator", 3) .)
 =
-	identifier [ TypeClause<NO_BITS> ] "=" Expression
+	Name [ TypeClause<NO_BITS> ] "=" Expression
 .
 ConstantValueError (. ID(L"ConstantValueError", 3) .)
 =
