@@ -109,6 +109,7 @@ int main (int argc, char *argv[]) {
 	
 	coco_string_delete(fileName);
 	delete p->scanner;
+	delete p->module;
 	delete p;
 
 #if defined(_WIN32)

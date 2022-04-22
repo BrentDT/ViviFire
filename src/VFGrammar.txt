@@ -30,18 +30,26 @@ extern Args args;
 
 COMPILER ViviFire
 
+// The root of the AST. Memory is not freed automatically.
+AST::Block *module = nullptr;
+
+// Some enumeration types.
 enum case_type { CASE_ZERO, CASE_EXPR, CASE_ELSE };
 enum option_type { OPTION_DEFAULT, WITH_THEN, WITHOUT_THEN };
 enum select_type { SELECT_DEFAULT, SELECT_ELSE, SELECT_ELSE_STRING };
 enum ternary { TERNARY0, TERNARY1, TERNARY2, YES = TERNARY1, NO = TERNARY2 };
+
+// Aliases for 'true' and 'false'.
 enum { NO_BITS, YES_BITS };
 enum { POSTCONDITIONAL, PRECONDITIONAL };
 
+// Type aliases.
 typedef std::map<std::wstring, int> when_map;
 
+// Hold options for the directive '@OPTION'.
 struct tag_option {
 	Parser*     parser;
-	bool        charset_latin   = false;
+	bool        charset_latin   = false; // TODO: swap in a different scanner.
 	ternary     Dim_or_Var      = TERNARY0;
 	ternary     End_block       = TERNARY0;
 	ternary     End_For_id      = TERNARY0;
@@ -232,56 +240,8 @@ struct tag_option {
 
 } option = { /* parser */ this };
 
-class param_type {
-	Parser *m_parser;
-	int m_parent;
-	bool m_byref = false;
-	int m_optionals = 0;
-public:
-	param_type(Parser *parser, int parent): m_parser(parser), m_parent(parent) {}
-	void modifier(int kind = -1) {
-		switch (kind) {
-		case -1:
-			m_byref = false;  // by value
-			break;
-		case _ByRef:
-			if (m_optionals) m_parser->SemErr(L"Optional parameter cannot be BYREF");
-			else m_byref = true;
-			break;
-		case _Optional:
-			if (m_optionals == 1) m_parser->Warn(L"OPTIONAL is not necessary again");
-			else m_optionals++;
-			break;
-		default:
-			#if defined(DEBUG)
-			m_parser->errors->Exception(L"Bad kind in param_type::modifier");
-			#endif
-			break;
-		}
-	}
-	bool optional() const { return (m_optionals != 0); }
-};
-
-void Err(const wchar_t *msg) {
-	errors->Error(t->line, t->col, msg);
-}
-
-void Err(int line, int col, const wchar_t *msg) {
-	errors->Error(line, col, msg);
-}
-
-void Warn(const wchar_t *msg) {
-	// TODO: warning levels.
-	if (option.warning_error) Err(msg);
-	else errors->Warning(msg);
-}
-
-void Warn(int line, int col, const wchar_t *msg) {
-	// TODO: warning levels.
-	if (option.warning_error) Err(line, col, msg);
-	else errors->Warning(line, col, msg);
-}
-
+// Parse elements that are usually optional, but can become mandatory by '@OPTION'.
+// Param 'nOption' can give more context.
 void Optional(int kind, option_type nOption = OPTION_DEFAULT) {
 	switch (kind) {
 	case _Case:  // Select [ Case ]
@@ -351,6 +311,58 @@ void Optional(int kind, option_type nOption = OPTION_DEFAULT) {
 	}
 }
 
+class param_type {
+	Parser *m_parser;
+	int m_parent;
+	bool m_byref = false;
+	int m_optionals = 0;
+public:
+	param_type(Parser *parser, int parent): m_parser(parser), m_parent(parent) {}
+	void modifier(int kind = -1) {
+		switch (kind) {
+		case -1:
+			m_byref = false;  // by value
+			break;
+		case _ByRef:
+			if (m_optionals) m_parser->SemErr(L"Optional parameter cannot be BYREF");
+			else m_byref = true;
+			break;
+		case _Optional:
+			if (m_optionals == 1) m_parser->Warn(L"OPTIONAL is not necessary again");
+			else m_optionals++;
+			break;
+		default:
+			#if defined(DEBUG)
+			m_parser->errors->Exception(L"Bad kind in param_type::modifier");
+			#endif
+			break;
+		}
+	}
+	bool optional() const { return (m_optionals != 0); }
+};
+
+void Err(const wchar_t *msg) {
+	errors->Error(t->line, t->col, msg);
+}
+
+void Err(int line, int col, const wchar_t *msg) {
+	errors->Error(line, col, msg);
+}
+
+void Warn(const wchar_t *msg) {
+	// TODO: warning levels.
+	if (option.warning_error) Err(msg);
+	else errors->Warning(msg);
+}
+
+void Warn(int line, int col, const wchar_t *msg) {
+	// TODO: warning levels.
+	if (option.warning_error) Err(line, col, msg);
+	else errors->Warning(line, col, msg);
+}
+
+// Conditional compilation: '@IF...@ELSE...@END'.
+// FIXME: Does not work at all.
 int cc_depth, cc_exec;
 
 void CCInit() {
@@ -1659,9 +1671,10 @@ Module (. ID(L"Module", 3) .)
 	(. bool bProcEntry = false; .)
 	[ Newline ]
 	(
-		"Program"
+		"Program" (. int line = t->line, col = t->col; .)
 		[ "=" (. bProcEntry = true; .) ]
 		identifier
+		(. module = new AST::Program(new AST::Ident(t->val, t->line, t->col), bProcEntry, line, col); .)
 	|
 		"Library"
 		QualifiedName<_identifier>
