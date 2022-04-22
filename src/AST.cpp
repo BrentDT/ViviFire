@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2021 Brent D. Thorn
+ * Copyright 2022 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.com/.
  *
@@ -27,6 +27,11 @@ void removeChar(wchar_t *str, wchar_t garbage) {
 // Pure virtual destructor requires implementation.
 Expr::~Expr() {}
 Node::~Node() {}
+Statement::~Statement() {}
+
+Block::~Block() {
+	delete_list(stms);
+}
 
 IntConst::IntConst(wchar_t *s, int line, int col): Constant(line , col) {
 	int base = 10;

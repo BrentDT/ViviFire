@@ -12,19 +12,20 @@
 #if !defined(_AST_H_)
 #define _AST_H_
 
+#include <assert.h>
 #include <cstdint>
 #include <inttypes.h>
 #include <list>
-#include "Parser.h"
+///#include "Parser.h"
 #include "Scanner.h"
 #include "Type.h"
 
-template<typename T>
+namespace AST {
+
+	template<typename T>
 inline void delete_list(std::list<T> &list) {
 	for(auto &it: list) delete it; list.clear();
 }
-
-namespace AST {
 
 enum op_type {
 	PLUS, MINUS, NOT,
@@ -157,8 +158,8 @@ struct Ident : public Node {
 	wchar_t *id;
 
 	Ident(wchar_t *id, int line, int col): Node(line, col), id(id) {}
-	~Ident() {
-		coco_string_delete(id);
+	virtual ~Ident() {
+		delete id;
 	}
 
 	virtual void Accept(Visitor *);
@@ -422,11 +423,11 @@ struct Call : public Statement {
 };
 
 struct Enum : public Statement {
-	bool flags;
+	bool flags, unique;
 	Symbol *sym;
 	FieldList flds;
 	
-	Enum(bool flags, Symbol *sym, int line, int col): Statement(line, col), flags(flags), sym(sym) {}
+	Enum(bool flags, bool unique, Symbol *sym, int line, int col): Statement(line, col), flags(flags), unique(unique), sym(sym) {}
 	virtual ~Enum() {
 		delete sym;
 		delete_list(flds);
@@ -497,7 +498,7 @@ struct Require : public Statement {
 	IdentList lib;
 	
 	Require(int line, int col): Statement(line, col) {}
-	~Require() {
+	virtual ~Require() {
 		delete_list(lib);
 	}
 	
@@ -515,9 +516,7 @@ struct Block : public Statement {
 	Block *parent;
 	
 	Block(Block *parent, int line, int col): Statement(line, col), parent(parent) {}
-	virtual ~Block() {
-		delete_list(stms);
-	}
+	virtual ~Block();
 	
 	void Add(Statement *stm) {
 		stms.push_back(stm);

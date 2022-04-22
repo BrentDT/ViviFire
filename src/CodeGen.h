@@ -14,36 +14,34 @@
 
 #include "AST.h"
 
-using namespace AST;
-
-class CodeGen : public Visitor {
+class CodeGen : public AST::Visitor {
 public:
-	virtual void Visit(Assignment *);
-	virtual void Visit(BinaryOp *);
-	virtual void Visit(Block *);
-	virtual void Visit(BooleanConditional *);
-	virtual void Visit(Call *);
-	virtual void Visit(Case *);
-	virtual void Visit(CaseExpr *);
-	virtual void Visit(Catch *);
-	virtual void Visit(ComparisonChain *);
-	virtual void Visit(ComparisonOp *);
-	virtual void Visit(Do *);
-	virtual void Visit(DTConst *);
-	virtual void Visit(For *);
-	virtual void Visit(ForEach *);
-	virtual void Visit(GotoCase *);
-	virtual void Visit(Exit *);
-	virtual void Visit(IntConst *);
-	virtual void Visit(Library *);
-	virtual void Visit(Program *);
-	virtual void Visit(Raise *);
-	virtual void Visit(RealConst *);
-	virtual void Visit(Return *);
-	virtual void Visit(Select *);
-	virtual void Visit(Try *);
-	virtual void Visit(UnaryOp *);
-	virtual void Visit(While *);
+	virtual void Visit(AST::Assignment *);
+	virtual void Visit(AST::BinaryOp *);
+	virtual void Visit(AST::Block *);
+	virtual void Visit(AST::BooleanConditional *);
+	virtual void Visit(AST::Call *);
+	virtual void Visit(AST::Case *);
+	virtual void Visit(AST::CaseExpr *);
+	virtual void Visit(AST::Catch *);
+	virtual void Visit(AST::ComparisonChain *);
+	virtual void Visit(AST::ComparisonOp *);
+	virtual void Visit(AST::Do *);
+	virtual void Visit(AST::DTConst *);
+	virtual void Visit(AST::For *);
+	virtual void Visit(AST::ForEach *);
+	virtual void Visit(AST::GotoCase *);
+	virtual void Visit(AST::Exit *);
+	virtual void Visit(AST::IntConst *);
+	virtual void Visit(AST::Library *);
+	virtual void Visit(AST::Program *);
+	virtual void Visit(AST::Raise *);
+	virtual void Visit(AST::RealConst *);
+	virtual void Visit(AST::Return *);
+	virtual void Visit(AST::Select *);
+	virtual void Visit(AST::Try *);
+	virtual void Visit(AST::UnaryOp *);
+	virtual void Visit(AST::While *);
 };
 
 #endif // _CODEGEN_H_
