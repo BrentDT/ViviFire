@@ -71,12 +71,10 @@ struct tag_option {
 	ternary     When_Each_Else  = TERNARY0;
 	bool        When_id_Begin_id = false;
 
-	bool match(const wchar_t *s) const {
-		// Returns true if next token is the same as s, then consumes it.
-		if (parser->la->kind != _identifier || _wcsicmp(s, parser->la->val) != 0) return false;
-		parser->Get();
-		return true;
+	bool match(const wchar_t *s) {
+		return parser->Match(s);
 	}
+
 	bool left_match(const wchar_t *s) const {
 		// Returns true if next token starts with s, then consumes it.
 		std::unique_ptr<wchar_t> lcval(coco_string_create_lower(parser->la->val));
@@ -84,14 +82,16 @@ struct tag_option {
 		parser->Get();
 		return true;
 	}
+
 	void option_error() const {
 		parser->SemErr(L"Unknown or missing option");
 	}
+
 	void optional_no(int kind, const wchar_t *id = nullptr) const {
 		// Test for optional "No" plus token.
-		if (match(L"no")) {
+		if (parser->Match(L"no")) {
 			if (parser->la->kind == kind) {
-				if (_identifier == kind) match(id);
+				if (_identifier == kind) parser->Match(id);
 				else parser->Get();
 				return;
 			}
@@ -340,6 +340,20 @@ public:
 	}
 	bool optional() const { return (m_optionals != 0); }
 };
+
+bool Match(const wchar_t *s) {
+	// Returns true if the next token is the same as s, then consumes it.
+	assert(s != nullptr);
+	if (la->kind != _identifier || _wcsicmp(s, la->val) != 0) return false;
+	Get();
+	return true;
+}
+
+bool Matches(const wchar_t *s) {
+	// Returns true if the current token is the same as s.
+	assert(s != nullptr);
+	return (_wcsicmp(s, t->val) == 0);
+}
 
 void Err(const wchar_t *msg) {
 	errors->Error(t->line, t->col, msg);
@@ -1226,11 +1240,35 @@ DeclareStatement<Modif &mods> (. ID(L"DeclareStatement", 3) .)
 	(.
 	mods.allow(Modif::Deprecated);
 	mods.validate();
+
+	bool bAnsi = false, bCdecl = false, bUtf16 = false;
 	.)
 	(. bool isAlias = true; .)
 	"Declare"
-	[ string_literal
-		{ [ comma ] identifier  // TODO: "ANSI" or "CDECL" or "UTF16".
+	[
+		(
+			string_literal
+		|
+			identifier
+			(. SemErr(L"external library must be a string constant"); .)
+		)
+		{
+			[ comma ]
+			identifier
+			(.
+			if (Matches(L"ANSI")) {
+				if (bUtf16) SemErr(L"ANSI is not compatible with UTF16");
+				if (!bAnsi) bAnsi = true;
+				else Warn(t->line, t->col, L"ANSI given more than one time");
+			} else if (Matches(L"CDECL")) {
+				if (!bCdecl) bCdecl = true;
+				else Warn(t->line, t->col, L"CDECL given more than one time");
+			} else if (Matches(L"UTF16")) {
+				if (bAnsi) SemErr(L"UTF16 is not compatible with ANSI");
+				if (!bUtf16) bUtf16 = true;
+				else Warn(t->line, t->col, L"UTF16 given more than one time");
+			} else SemErr(L"invalid DECLARE flag. ANSI, CDECL, and UTF16 are permitted.");
+			.)
 		}
 		(. isAlias = false; .)
 	]
@@ -1745,22 +1783,34 @@ NewBlockStatement (. ID(L"NewBlockStatement", 3) .)
 =
 	(.
 	bool bInitExpr = false;
-	wchar_t *type_name = nullptr;
+	wchar_t *type_name = nullptr; // TODO: make this a parameter
 	.)
-///	( "New" (. bNew = true; .)
-///	| (. if (option.New) Err(L"NEW is mandatory  because of @OPTION"); .)
-///	)
 	"Begin"
-		[ "Call" QualifiedName<0>
-			[ InitializationExpression (. bInitExpr = true; .) ]
-		| UserType
+	[
+		"Call" QualifiedName<0>
+		[
+			InitializationExpression (. bInitExpr = true; .)
 		]
-		SyncNewline<s_name>
-		[	NewMember (. if (bInitExpr) SemErr(L"Expected END after initialization expression"); .)
-			{ NewMember }
-		]
-		"End"
-	[ "New" | identifier ] // TODO: test type_name
+	|
+		UserType
+	]
+	SyncNewline<s_name>
+	[
+		NewMember
+		(. if (bInitExpr) SemErr(L"Expected END after initialization expression"); .)
+		{ NewMember }
+	]
+	"End"
+	(
+		"New"
+		(. if (option.End_block == NO) SemErr(L"END cannot have  block type because of @OPTION"); .)
+	|
+		identifier
+		(. if (option.End_block == NO) SemErr(L"END cannot have  type name because of @OPTION"); .)
+		(. if (!type_name || !Matches(type_name)) SemErr(L"END type name must be the same as NEW type name"); .)
+	|
+		(. if (option.End_block == YES) SemErr(L"END must have block type because of @OPTION"); .)
+	)
 	(. coco_string_delete(type_name); .)
 .
 NewMember (. ID(L"NewMember", 3) .)
