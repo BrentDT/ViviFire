@@ -27,7 +27,7 @@ document.write('<hr><p>'+
 '<div role="form" aria-label="poll">' +
 '<p>What do you think about this article?</p>' +
 '<button onclick="vote(0)">good</button>' +
-'<button onclick="vote(1)">bad</button>' +
+'<button onclick="vote(1)">could be better</button>' +
 '<button class="touch-only" onclick="vote(2)">bad on mobile</button>' +
 '</div>' +
 '</div></p>');
