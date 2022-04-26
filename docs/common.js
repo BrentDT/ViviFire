@@ -38,7 +38,7 @@ document.write('<footer aria-label="footer">'+
 '<img src="cc0-80x15.png" style="border-style:none" alt="Public Domain Mark" />'+
 '</a> This work is free of known copyright restrictions.'+
 '</p>');
-if (!chm && document.lastModified) document.write('<p>Last modified '+document.lastModified+'.</p>');
+if (!chm && document.lastModified) document.write(lastModifiedOrReviewed()); //'<p>Last modified '+document.lastModified+'.</p>');
 document.write('</footer>');
 
 function getFileName(uri) {
@@ -78,4 +78,12 @@ function showSearch(elem) {
 		'<button>Search</button>'+
 		'</form>';
 	document.getElementById('q').focus();
+}
+
+function lastModifiedOrReviewed() {
+	var metaContent = document.getElementsByTagName('meta')['DC.date.reviewed']?.content || '1970';
+	var lastReviewed = new Date(metaContent);
+	var lastModified = new Date(document.lastModified);
+	var verb = (Math.abs(lastModified - lastReviewed) < 86400000) ? 'reviewd ' : 'modified ';
+	return '<p>Last '+verb+lastModified.toLocaleDateString()+'.</p>';
 }
