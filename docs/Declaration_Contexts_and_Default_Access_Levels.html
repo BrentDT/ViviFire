@@ -16,12 +16,110 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
-<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a rel="parent" href="Statements_Reference.html">Statements</a></li>
 </ul>
 </nav>
 <main id="stub">
 <h1 id="top">Declaration Contexts and Default Access Levels</h1>
-<p>TODO</p>
+<p>This article tells which declared elements you can use in other declared elements, and their access levels.</p>
+<h2>Declaration contexts</h2>
+<p>The <dfn>declaration context</dfn> of a programming element is the part of the code in which it is declared.
+Frequently this is a different programming element, which is also known as the <dfn>container</dfn> element.</p>
+<p>The levels of declaration contexts follow:</p>
+<ul>
+<li><dfn>Namespace level</dfn> &ndash; in a namespace
+(but not in a module, class, structure, or trait)</li>
+<li><dfn>Module level</dfn> &ndash; in a module, class, structure, or trait
+(but not in a procedure or block)</li>
+<li><dfn>Procedure level</dfn> &ndash; in a procedure or block
+(for example, <code class="kw">If</code> or <code class="kw">While</code>)</li>
+</ul>
+<h2>Access levels</h2>
+<p>The table that follows shows the default access levels for many declared elements, given their declaration contexts.</p>
+<style media="all and (max-width: 65ch)">
+#tal tbody th:before { content: "Declared element"; }
+#tal td:nth-of-type(1):before { content: "Statements"; }
+#tal td:nth-of-type(2):before { content: "Namespace level"; }
+#tal td:nth-of-type(3):before { content: "Module level"; }
+#tal td:nth-of-type(4):before { content: "Procedure level"; }
+</style>
+<table id="tal" class="wide">
+<thead>
+<tr><th>Declared element</th>
+	<th>Statements</th>
+	<th>Namespace level</th>
+	<th>Module level</th>
+	<th>Procedure level</th></tr>
+</thead>
+<tbody>
+<tr><th>Variable</th>
+	<td><a href="Dim_Statement.html"><code>Dim</code>/<code>Var</code></a>,
+	<a href="New_Statement.html"><code>New</code></a>,
+	<a href="Object_Statement.html"><code>Object</code></a></td>
+	<td>Not permitted</td>
+	<td>TBD</td>
+	<td>TBD</td></tr>
+<tr><th>Constant</th>
+	<td><a href="Const_Statement.html"><code>Const</code></a></td>
+	<td>Not permitted</td>
+	<td>TBD</td>
+	<td>TBD</td></tr>
+<tr><th>Enumeration</th>
+	<td><a href="Enum_Statement.html"><code>Enum</code></a></td>
+	<td>TBD</td>
+	<td>TBD</td>
+	<td>TBD</td></tr>
+<tr><th>Class</th>
+	<td><a href="Class_Statement.html"><code>Class</code></a></td>
+	<td>TBD</td>
+	<td>TBD</td>
+	<td>TBD</td></tr>
+<tr><th>Structure</th>
+	<td><a href="Struct_Statement.html"><code>Struct</code></a></td>
+	<td>TBD</td>
+	<td>TBD</td>
+	<td>TBD</td></tr>
+<tr><th>Trait</th>
+	<td><a href="Trait_Statement.html"><code>Trait</code></a></td>
+	<td>TBD</td>
+	<td>TBD</td>
+	<td>TBD</td></tr>
+<tr><th>Method</th>
+	<td><a href="Method_Statement.html"><code>Method</code></a></td>
+	<td>TBD</td>
+	<td>TBD</td>
+	<td>TBD</td></tr>
+<tr><th>Property</th>
+	<td><a href="Property_Statement.html"><code>Property</code></a></td>
+	<td>TBD</td>
+	<td>TBD</td>
+	<td>TBD</td></tr>
+<tr><th>Declare</th>
+	<td><a href="Declare_Statement.html"><code>Declare</code></a></td>
+	<td>TBD</td>
+	<td>TBD</td>
+	<td>TBD</td></tr>
+<tr><th>Function</th>
+	<td><a href="Function_Statement.html"><code>Function</code></a></td>
+	<td>TBD</td>
+	<td>TBD</td>
+	<td>TBD</td></tr>
+<tr><th>Sub</th>
+	<td><a href="Sub_Statement.html"><code>Sub</code></a></td>
+	<td>TBD</td>
+	<td>TBD</td>
+	<td>TBD</td></tr>
+<tr><th>Event</th>
+	<td><a href="Event_Statement.html"><code>Event</code></a></td>
+	<td>TBD</td>
+	<td>TBD</td>
+	<td>TBD</td></tr>
+</tbody>
+</table>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Access_Levels.html">Access Levels</a></li>
+</ul>
 </main>
 <script src="common.js"></script>
 </body>
