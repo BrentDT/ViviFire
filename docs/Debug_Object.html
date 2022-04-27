@@ -16,7 +16,7 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
-<li><a href="Objects.html">Objects</a></li>
+<li><a rel="parent" href="Objects.html">Objects</a></li>
 </ul>
 </nav>
 <main>
@@ -24,20 +24,22 @@
 <p>Lets you more easily debug your programs.</p>
 <h2 id="Methods">Methods</h2>
 <dl class="language-vivifire listing">
+<dt><pre><code>Method Assert ( test As Boolean, Optional message As String )</code></pre></dt>
+<dd>Causes the debugger to stop execution, only if <code>test</code> is false.
+If <code>test</code> is false and <code>message</code> is not supplied, then the output includes the supplied expression code.
+But, if you supply <code>message</code>, then that shows when <code>test</code> is false.</dd>
+<dt><pre><code>Method Log ( message As String, Optional level As LogLevels = ALL )</code></pre></dt>
+<dd>Writes information to the log file.
+But it is ignored if <code>level</code> is below the level set with <code>LogLevel</code>.
+The information includes the supplied message, the source file name, the line number, and the nearest named scope.</dd>
+<dt><pre><code>Method LogLevel ( level As LogLevels )</code></pre></dt>
+<dd>Sets the minimum risk level to record information to the log.
+Values for <code>level</code> include <code>ALL</code> (default), <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, and <code>FATAL</code>.
+Calls to the method <code>Log</code> that are below the given level do not record information to the log.</dd>
 <dt><pre><code>Method Print ( message As String )
 Method PrintLine ( message As String )</code></pre></dt>
 <dd>Shows some text in the debugger.
 Typically this is the value of a variable, to make sure it is correct.</dd>
-<dt><pre><code>Method Assert ( test As Boolean, Optional message As String )</code></pre></dt>
-<dd>TBD</dd>
-<dt><pre><code>Method Log ( message As String )
-Method LogInfo ( message As String )
-Method LogWarning ( message As String )
-Method LogError ( message As String )
-Method LogFatal ( message As String )</code></pre></dt>
-<dd>Writes information to the log file.</dd>
-<dt><pre><code>Method Run</code></pre></dt>
-<dd>Causes the debugger to start executing the code at full speed.</dd>
 <dt><pre><code>Method Stop&#10;</code></pre></dt>
 <dd>Causes the debugger to stop execution, almost the same as a breakpoint.</dd>
 </dl>
@@ -45,7 +47,7 @@ Method LogFatal ( message As String )</code></pre></dt>
 <p>Only debug builds cause <code>#Debug</code> to operate fully.
 Release builds ignore <code>#Debug</code>, the same as a comment.</p>
 <h2>Examples</h2>
-<p>TODO2</p>
+<p>TODO</p>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Log_Object.html">#Log Object</a></li>
