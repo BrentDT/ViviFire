@@ -17,7 +17,7 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Statements_Reference.html">Statements</a></li>
-<li><a href="Statements_1.html">A&ndash;E Statements</a></li>
+<li><a rel="parent" href="Statements_1.html">A&ndash;E Statements</a></li>
 </ul>
 </nav>
 <main>
@@ -49,6 +49,20 @@
 </dl>
 <h2>Instructions</h2>
 <p><code class="kw">Const</code> is short for &ldquo;constant&rdquo;.</p>
+<p>If a value in your program does not change, then you can use a named constant as an alternative to a literal value.
+It is easier to think about a name than a value.
+You can define a constant one time and use it in many parts of your code.
+If subsequently you must change the value, then there is only one change to make.</p>
+<p>You can use <code class="kw">Const</code> only at module level or procedure level.
+It must be in one of these:
+a class, a structure, a module, a procedure, or a block.
+It cannot be in a namespace or trait.
+See <a href="Declaration_Contexts_and_Default_Access_Levels.html">Declaration Contexts and Default Access Levels</a> for more information.</p>
+<p>Constants declared in a class or module (but not in a procedure) have private access.
+While those declared in a structure have public access.</p>
+<p>The only permitted modifier for a constant is <code class="at">@Deprecated</code> to give a warning not to use it.
+Constants operate the same as properties declared with all three modifiers <span class="at"><code>@Backed</code>, <code>@Shared</code>, and <code>@ReadOnly</code></span>.</p>
+<h2>Rules</h2>
 <p>TODO</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
@@ -60,6 +74,7 @@ Const ScalingFactor = 5.0 / 3.0&#10;</code></pre>
 <ul class="articles">
 <li><a href="Dim_Statement.html">Dim Statement</a></li>
 <li><a href="Enum_Statement.html">Enum Statement</a></li>
+<li><a href="Property_Statement.html">Property Statement</a></li>
 <li><a href="Const_Directive.html">@Const Directive</a></li>
 <li><a href="Constants_and_Enumerations.html">Constants and Enumerations</a></li>
 </ul>
