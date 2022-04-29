@@ -16,38 +16,68 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
-<li><a href="Language_Features.html">Language Features</a></li>
+<li><a rel="parent" href="Language_Features.html">Language Features</a></li>
 </ul>
 </nav>
 <main>
 <h1 id="top">Data Types</h1>
-<p>TODO</p>
+<p>The <dfn>data type</dfn> of a programming element is related to what type of data it can hold and how it stores that data.
+Data types are applicable to all values stored in computer memory or used in an expression.
+Programming elements with a data type include:</p>
+<ul>
+<li>Variables</li>
+<li>Literals</li>
+<li>Constants</li>
+<li>Enumerations</li>
+<li>Properties</li>
+<li>Procedure parameters</li>
+<li>Procedure arguments</li>
+<li>Procedure return values</li>
+</ul>
 <h2>Declared data types</h2>
 <p>TODO</p>
-<table class="language-vivifire listing">
+<style media="all and (max-width: 65ch)">
+#tddt td:nth-of-type(1) { content: "Programming element"; }
+#tddt td:nth-of-type(2) { content: "data type declaration"; }
+</style>
+<table id="tddt" class="language-vivifire listing wide">
 <thead>
-<tr><th>Program Element</th><th>Data Type Declaration</th></tr>
+<tr><th>Programming element</th>
+<th>Data type declaration</th></tr>
 </thead>
 <tbody>
-<tr><td>Variable</td><td>In a <a href="Dim_Statement.html">Dim Statement</a>
-<pre><code>Dim count As UInt
-</code></pre>
-</td></tr>
-<tr><td>Literal</td><td>See <a href="Type_Characters.html">Type Characters</a></td></tr>
-<tr><td>Constant</td><td>In a <a href="Const_Statement.html">Const Statement</a>
-<pre><code>Const MAX_COUNT As UInt = 100
-</code></pre>
-</td></tr>
-<tr><td>Enumeration</td><td>In an <a href="Enum_Statement.html">Enum Statement</a>
-</td></tr>
-<tr><td>Property</td><td>In a <a href="Property_Statement.html">Property Statement</a>
-</td></tr>
-<tr><td>Procedure parameter</td><td>In a <a href="Sub_Statement.html">Sub Statement</a>, <a href="Function_Statement.html">Function Statement</a>, or <a href="Method_Statement.html">Method Statement</a>
-</td></tr>
-<tr><td>Procedure argument</td><td>
-</td></tr>
-<tr><td>Procedure return value</td><td>In a <a href="Function_Statement.html">Function Statement</a> or <a href="Method_Statement.html">Method Statement</a>
-</td></tr>
+<tr><th>Variable</th>
+	<td><p>In a <a href="Dim_Statement.html">Dim Statement</a>, <a href="New_Statement.html">New Statement</a>, or <a href="Object_Statement.html">Object Statement</a></p>
+	<pre><code>Dim count As Int&#10;</code></pre>
+	</td></tr>
+<tr><th>Literal</th>
+	<td><p>See the section of <a href="Type_Characters.html#default_literal_types">Type Characters &sect;&nbsp;Default literal types</a></p>
+	<pre><code>Var dateSeparator As Char = <mark>`-`</mark>&#10;</code></pre>
+	</td></tr>
+<tr><th>Constant</th>
+	<td><p>In a <a href="Const_Statement.html">Const Statement</a></p>
+	<pre><code>Const MAX_COUNT As Int = 100&#10;</code></pre>
+	</td></tr>
+<tr><th>Enumeration</th>
+	<td><p>In an <a href="Enum_Statement.html">Enum Statement</a></p>
+	<pre><code>Enum DaysOfTheWeek&#10;</code></pre>
+	</td></tr>
+<tr><th>Property</th>
+	<td><p>In a <a href="Property_Statement.html">Property Statement</a></p>
+	<pre><code>Property Name As String&#10;</code></pre>
+	</td></tr>
+<tr><th>Procedure parameter</th>
+	<td><p>In a <a href="Function_Statement.html">Function Statement</a>, <a href="Method_Statement.html">Method Statement</a>, or <a href="Sub_Statement.html">Sub Statement</a></p>
+	<pre><code>Sub AddItem ( <mark>item</mark> As String )&#10;</code></pre>
+	</td></tr>
+<tr><th>Procedure argument</th>
+	<td><p>In the call to a procedure, each argument is a programming element that was declared before, or an expression that contains declared elements</p>
+	<pre><code>stringArray = Split( <mark>inputString</mark> , &quot;,&quot;)&#10;</code></pre>
+	</td></tr>
+<tr><th>Procedure return value</th>
+	<td><p>In a <a href="Function_Statement.html">Function Statement</a> <a href="Method_Statement.html">Method Statement</a>, or <a href="Sub_Statement.html">Sub Statement</a></p>
+	<pre><code>Method ToString <mark>As String</mark>&#10;</code></pre>
+	</td></tr>
 </tbody>
 </table>
 <h2>See also</h2>
