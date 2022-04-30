@@ -1098,6 +1098,20 @@ ClassStatement<Modif &mods> (. ID(L"ClassStatement", 3) .)
 	(. Optional(_Class); .)
 	Newline
 .
+CollectionInitializer (. ID(L"CollectionInitializer") .)
+=
+	"{"[line_break]
+	InitializationElement
+	{
+		WEAK comma[line_break]
+		InitializationElement
+	}
+	"}"
+	// Permit isolated right brace.
+	[ IF (la->kind == _line_break && scanner->Peek()->kind == _right_brace)
+		line_break
+	]
+.
 ComparisonExpression (. ID(L"Comparison", 2) .)
 =
 	NullCoalescingExpression { ComparisonOperator NullCoalescingExpression }
@@ -1568,10 +1582,10 @@ InitializationElement (. ID(L"InitializationElement", 3) .)
 .
 InitializationExpression (. ID(L"InitializationExpression", 3) .)
 =
-	( Expression
-	| "{"[line_break] InitializationElement { WEAK comma[line_break] InitializationElement } "}"
-	  // Permit isolated right brace.
-	  [ IF (la->kind == _line_break && scanner->Peek()->kind == _right_brace) line_break ]
+	(
+		Expression
+	|
+		CollectionInitializer
 	)
 .
 IntegerConstant (. ID(L"IntegerConstant", 3) .)
@@ -1787,9 +1801,13 @@ NewBlockStatement (. ID(L"NewBlockStatement", 3) .)
 	.)
 	"Begin"
 	[
-		"Call" QualifiedName<0>
+		"Call"
 		[
-			InitializationExpression (. bInitExpr = true; .)
+			QualifiedName<0> // Default is "Add".
+		]
+		[
+			CollectionInitializer
+			(. bInitExpr = true; .)
 		]
 	|
 		UserType
