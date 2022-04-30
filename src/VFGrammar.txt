@@ -1098,7 +1098,7 @@ ClassStatement<Modif &mods> (. ID(L"ClassStatement", 3) .)
 	(. Optional(_Class); .)
 	Newline
 .
-CollectionInitializer (. ID(L"CollectionInitializer") .)
+CollectionInitializer (. ID(L"CollectionInitializer", 3) .)
 =
 	"{"[line_break]
 	InitializationElement
@@ -1338,7 +1338,9 @@ DoStatement (. ID(L"DoStatement", 3) .)
 		WhileOrUntil Expression
 		SyncNewline<s_name>
 		[ LoopBody<PRECONDITIONAL> ]
-		"Loop" Newline
+		"Loop"
+		[ WhileOrUntil (. SemErr(L"DO WHILE or DO UNTIL cannot have LOOP WHILE or LOOP UNTIL"); .) ]
+		Newline
 	)
 .
 /*E*/
