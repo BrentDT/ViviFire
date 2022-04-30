@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Collection_Initializers.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -17,17 +17,60 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
 <li><a href="Language_Features.html">Language Features</a></li>
-<li><a href="Arrays.html">Arrays</a></li>
+<li><a rel="parent" href="Arrays.html">Arrays</a></li>
 </ul>
 </nav>
 <main id="stub">
 <h1 id="top">Collection Initializers</h1>
-<p>TODO</p>
+<p>A <dfn>collection initializer</dfn> uses a shorter syntax to let you make a collection and fill it with an initial set of values.
+Collection initializers are typically used to make a collection from a set of known values.
+Examples include the names of months and a list of locations that you can use to validate user input.</p>
+<p>The statement <code class="kw">New</code> becomes a collection initializer when you start the second line with <code class="kw">Begin Call</code>.
+Then you can supply an optional method name that each initializer calls, which the default is <code>Add</code>.
+Then you can supply the data.</p>
+<p>You write the data items with one of two available constructs.
+The difference is which separator they use.</p>
+<p>The first construct lets you put only one call on a line.
+Between each argument you put a comma.
+But the only difference between this and the usual method call is that the method name is missing.
+Thus, we recommend this construct if the method name or the values are long and/or the method has several parameters.</p>
+<div class="language-vivifire listing">
+<pre><code>New SiteList sites
+Begin Call
+    "Google Search", "https://google.com/"
+    "YouTube", "https://youtube.com/"
+    "Facebook", "https://facebook.com/"
+    "Wikipedia", "https://www.wikipedia.org/"
+End&#10;</code></pre>
+</div>
+<p>The second construct lets you put many calls on the same line.
+You write a comma between each value, with all values between braces (<code class="op">{ }</code>).
+The furst brace must be on the same line after <code class="kw">Begin Call</code> and the optional method name.
+Each value causes a method call with the value as an argument.
+If the method has more than one parameter, then you must use nested braces.
+Thus, we recommend this construct if the method has a small number of parameters.</p>
+<div class="language-vivifire listing">
+<pre><code>New List[String] months
+Begin Call {
+    "Jan", "Feb", "Mar", "Apr",
+    "May", "Jun", "Jul", "Aug",
+    "Sep", "Oct", "Nov", "Dec" }
+End
+
+New Map[String, String] states
+Begin Call {
+    {"AK", "Alaska"}, {"AL", "Alabama"},
+    {"AR", "Arkansas"}, {"AZ", "Arizona"},
+    {"CA", "California"} /*, ... */ }
+End&#10;</code></pre>
+</div>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="New_Statement.html">New Statement</a></li>
+<li><a href="Arrays.html">Arrays</a></li>
 </ul>
 </main>
 <script src="common.js"></script>
+<script src="prism.js"></script>
 </body>
 </html>
