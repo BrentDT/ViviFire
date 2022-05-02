@@ -17,7 +17,7 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Operators.html">Operators</a></li>
-<li><a href="Assignment_Operators.html">Assignment Operators</a></li>
+<li><a rel="parent" href="Assignment_Operators.html">Assignment Operators</a></li>
 </ul>
 </nav>
 <main>
@@ -40,6 +40,10 @@
 <pre><code>variable *= expression
 variable = variable * expression&#10;</code></pre>
 </div>
+<p>The element on the left side of <code class="op">*=</code> can be a scalar variable, a property, or an element of an array.
+A property cannot have the modifier <code class="at">@ReadOnly</code>.</p>
+<p><code class="op">*=</code> multiplies the value on its right side by the variable or property on its left side.
+Then it changes the variable or property on its left side to the result.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
 <pre><code>x = 21
