@@ -18,7 +18,7 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Operators.html">Operators</a></li>
-<li><a href="Assignment_Operators.html">Assignment Operators</a></li>
+<li><a rel="parent" href="Assignment_Operators.html">Assignment Operators</a></li>
 </ul>
 </nav>
 <main>
@@ -31,9 +31,9 @@
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="id">variable</code></dt>
-<dd>A numeric variable</dd>
+<dd>A Boolean or integer variable or property.</dd>
 <dt><code class="id">expression</code></dt>
-<dd>A numeric expression</dd>
+<dd>A Boolean or integer expression.</dd>
 </dl>
 <h2>Instructions</h2>
 <p>The two statements that follow operate the same.</p>
@@ -41,6 +41,10 @@
 <pre><code>variable And= expression
 variable = variable And expression&#10;</code></pre>
 </div>
+<p>The element on the left side of <code class="op">And=</code> can be a scalar variable, a property, or an element of an array.
+A property cannot have the modifier <code class="at">@ReadOnly</code>.</p>
+<p><code class="op">And=</code> does the logical-AND operation to the value on its right side and the variable or property on its left side.
+Then it changes the variable or property on its left side to the result.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
 <pre><code>x = &amp;HAA
@@ -52,7 +56,7 @@ x And= &amp;H3F&#10;</code></pre>
 <tr><th>variable</th><th>value</th></tr>
 </thead>
 <tbody>
-<tr><td>x</td><td>42</td></tr>
+<tr><td><code>x</code></td><td><samp>42</samp></td></tr>
 </tbody>
 </table>
 <h2>See also</h2>
