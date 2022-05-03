@@ -16,7 +16,7 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
-<li><a href="Objects.html">Objects</a></li>
+<li><a rel="parent" href="Objects.html">Objects</a></li>
 </ul>
 </nav>
 <main>
@@ -24,21 +24,14 @@
 <p>Does operations on the log file.</p>
 <h2>Methods and properties</h2>
 <dl class="language-vivifire listing">
-<dt><pre><code>Method Debug ( message As String )</code></pre></dt>
-<dd>Writes information to the log file that can help a user with a problem.</dd>
-<dt><pre><code>Method Info ( message As String )</code></pre></dt>
-<dd>Writes information to the log file.</dd>
-<dt><pre><code>Method Special ( message As String, Optional level As UInt )</code></pre></dt>
-<dd>Writes information special to the program to the log file.</dd>
-<dt><pre><code>Method Warning ( message As String )</code></pre></dt>
-<dd>Writes information about a warning to the log file.</dd>
-<dt><pre><code>Method Error ( message As String )</code></pre></dt>
-<dd>Writes information about a non-fatel error to the log file.</dd>
-<dt><pre><code>Method Fatal ( message As String )</code></pre></dt>
-<dd>Writes information about a fatel error to the log file.</dd>
+<dt><pre><code>Method Log ( message As String, Optional level As LogLevels = ALL )</code></pre></dt>
+<dd>Writes information to the log file.
+But it is ignored if <code>level</code> is below the level set with <code>LogLevel</code>.
+The information includes the supplied message, the source file name, the line number, and the nearest named scope.</dd>
 <dt><pre><code>Property Level As LogLevels</code></pre></dt>
-<dd>Gets or sets the minimum level of information to write to the log file.
-Values include: <code>LogNone</code>, <code>LogErrors</code>, <code>LogWarnings</code>, <code>LogInfo</code> (default), <code>LogSpecial</code>, and <code>LogAll</code>.</dd>
+<dd>Gets or sets the minimum risk level to record information to the log.
+Values for level include <code>ALL</code> (default), <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, and <code>FATAL</code>.
+Calls to the method <code>Log</code> that are below the given level do not record information to the log.</dd>
 </dl>
 <h2>Instructions</h2>
 <p>The object <code>#Log</code> is always available to use in your programs.
@@ -46,9 +39,9 @@ This is different from the log file methods supplied by <code>#Debug</code>.
 <code>#Debug</code> is ignored by the compiler unless you make a debug build.</p>
 <h3>Special levels</h3>
 <p>You can make a maximum of five levels to log special conditions.
-<code>LogLevels</code> gives you <code>LogSpecial</code>, <code>LogSpecial2</code>, <code>LogSpecial3</code>, <code>LogSpecial4</code>, and <code>LogSpecial5</code>.</p>
+<code>LogLevels</code> lets you use <code>SPECIAL</code>, <code>SPECIAL2</code>, <code>SPECIAL3</code>, <code>SPECIAL4</code>, and <code>SPECIAL5</code>.</p>
 <h2>Examples</h2>
-<p>TODO2</p>
+<p>TODO</p>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Debug_Object.html">#Debug Object</a></li>
