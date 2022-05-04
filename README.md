@@ -9,7 +9,7 @@ evolving, and may change dramatically before it's complete.  If you are
 interested in how a language is created, join us and help make it great!
 
 The source code for ViviFire is released under the MIT license.
-The documentation is released under Creative Commons CC0, public domain.
+The documentation is released under Creative Commons CC0 (public domain).
 
 To learn more about the language, [visit the home page](http://vivifire.com).
 
@@ -31,12 +31,12 @@ Begin
     .Height = 120
     .Width = 300
 
-    New Static text,
-        Caption := "There have been no clicks yet.",
+    New Static text, _
+        Caption := "There have been no clicks yet.", _
         Left := 30, Top := 20
 
-    New Button button1,
-        Caption := "Click me",
+    New Button button1, _
+        Caption := "Click me", _
         Left := 100, Top := 50, Height := 25, Width := 100
     Begin
         .OnClick = buttonClick
