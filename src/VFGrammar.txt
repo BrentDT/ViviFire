@@ -954,8 +954,12 @@ AssignmentOperator (. ID(L"AssignmentOperator", 3) .)
 .
 AssignmentStatement (. ID(L"AssignmentStatement", 3) .)
 =
-	( AssignmentOperator[line_break] Expression
-	| ":=" Expression { ":=" Expression }
+	(
+		AssignmentOperator [OptionalNewline]
+		Expression
+	|
+		":=" Expression
+		{ ":=" Expression }
 	)
 .
 AsTypeClause<bool bBits> (. ID(L"AsTypeClause", 3) .)
@@ -1033,10 +1037,16 @@ CaseClause<case_type &clause> (. ID(L"CaseClause", 3) .)
 =
 	"Case"
 		(. if (clause == CASE_ELSE) SemErr(L"CASE cannot follow CASE ELSE in SELECT"); .)
-	( "Else"
+	(
+		"Else"
 		(. if (clause == CASE_ZERO) SemErr(L"CASE ELSE cannot be first CASE in SELECT"); .)
 		(. clause = CASE_ELSE; .)
-	| CaseExpression { WEAK comma[line_break] CaseExpression }
+	|
+		CaseExpression
+		{
+			WEAK comma [ OptionalNewline ]
+			CaseExpression
+		}
 		(. clause = CASE_EXPR; .)
 	)
 	SyncNewline<s_name>
@@ -1100,10 +1110,10 @@ ClassStatement<Modif &mods> (. ID(L"ClassStatement", 3) .)
 .
 CollectionInitializer (. ID(L"CollectionInitializer", 3) .)
 =
-	"{"[line_break]
+	"{" [ OptionalNewline ]
 	InitializationElement
 	{
-		WEAK comma[line_break]
+		WEAK comma [ OptionalNewline ]
 		InitializationElement
 	}
 	"}"
@@ -1224,7 +1234,11 @@ Declarator<bool bBits> (. ID(L"Declarator", 3) .)
 .
 DeclaratorList<bool bBits> (. ID(L"DeclaratorList", 3) .)
 =
-	Declarator<bBits> { WEAK comma[line_break] Declarator<bBits> }
+	Declarator<bBits>
+	{
+		WEAK comma [ OptionalNewline ]
+		Declarator<bBits>
+	}
 .
 DeclareParameter<bool &isOptional> (. ID(L"DeclareParameter", 3) .)
 =
@@ -1236,10 +1250,18 @@ DeclareParameterList (. ID(L"DeclareParameterList", 3) .)
 =
 	(. bool isOptional; .)
 	( IF (IsDeclareParameterList())
-		"("[line_break]
-		[ DeclareParameter<isOptional> { WEAK comma[line_break] DeclareParameter<isOptional> } ]
+		"(" [ OptionalNewline ]
+		[
+			DeclareParameter<isOptional>
+			{
+				WEAK comma [ OptionalNewline ]
+				DeclareParameter<isOptional>
+			}
+		]
 		")"
-	| EnclosedParameterList<_Declare> [ TypeClause<NO_BITS> ]
+	|
+		EnclosedParameterList<_Declare>
+		[ TypeClause<NO_BITS> ]
 	)
 .
 DeclareSignature<bool isAlias> (. ID(L"DeclareSignature", 3) .)
@@ -1346,10 +1368,14 @@ DoStatement (. ID(L"DoStatement", 3) .)
 /*E*/
 EnclosedArgumentList (. ID(L"EnclosedArgumentList", 3) .)
 =
-	"("[line_break]
+	"(" [ OptionalNewline ]
 	[ Argument ]
-	{ WEAK comma
-		[ [line_break] Argument ]
+	{
+		WEAK comma
+		[
+			[ OptionalNewline ]
+			Argument
+		]
 	}
 	")"
 .
@@ -1360,8 +1386,14 @@ EnclosedExpression (. ID(L"Enclosed", 2) .)
 EnclosedParameterList<int parent> (. ID(L"EnclosedParameterList", 3) .)
 =
 	(. param_type param(this, parent); .)
-	"("[line_break]
-	[ FormalParameter<param> { WEAK comma[line_break] FormalParameter<param> } ]
+	"(" [ OptionalNewline ]
+	[
+		FormalParameter<param>
+		{
+			WEAK comma [ OptionalNewline ]
+			FormalParameter<param>
+		}
+	]
 	")"
 .
 EnumMember (. ID(L"EnumMember", 3) .)
@@ -1878,6 +1910,15 @@ ObjectStatement<Modif *mods> (. ID(L"ObjectStatement", 3) .)
 	(. Optional(_Object); .)
 	Newline
 .
+OptionalNewline (. ID(L"OptionalNewline", 3) .)
+=
+	// TODO: Think about heuristics to warn about possible missing elements, for example:
+	//     foo =
+	//     bar = 1
+	// which is correct code at this time.
+
+	line_break
+.
 /*P*/
 PassableType (. ID(L"PassableType", 3) .)
 =
@@ -2315,12 +2356,17 @@ UnaryOperator (. ID(L"UnaryOperator", 3) .)
 ///.
 UnenclosedArgumentList (. ID(L"UnenclosedArgumentList", 3) .)
 =
-	( Argument
-	| comma (. SemErr(L"Argument list cannot start with comma"); .)
+	(
+		Argument
+	|
+		comma (. SemErr(L"Argument list cannot start with comma"); .)
 	)
-	{ WEAK comma
-		( [line_break] Argument
-		| (. /* TODO: empty arg */ .)
+	{
+		WEAK comma
+		(
+			Argument
+		|
+			(. /* TODO: empty arg */ .)
 		)
 	}
 	(. if (t->kind == _comma) SemErr(L"Argument list cannot end with comma"); .)
@@ -2328,7 +2374,11 @@ UnenclosedArgumentList (. ID(L"UnenclosedArgumentList", 3) .)
 UnenclosedParameterList<int parent> (. ID(L"UnenclosedParameterList", 3) .)
 =
 	(. param_type param(this, parent); .)
-	FormalParameter<param> { WEAK comma[line_break] FormalParameter<param> }
+	FormalParameter<param>
+	{
+		WEAK comma [ OptionalNewline ]
+		FormalParameter<param>
+	}
 .
 UnitAlias (. ID(L"UnitAlias", 3) .)
 =
@@ -2424,7 +2474,11 @@ WhereClause<int block, bool generic> (. ID(L"WhereClause", 3) .)
 =
 	"Where"
 	(. if (!generic) SemErr(L"Declared element is missing generic type parameter(s)"); .)
-	Constraint<block> { WEAK comma[line_break] Constraint<block> }
+	Constraint<block>
+	{
+		WEAK comma [ OptionalNewline ]
+		Constraint<block>
+	}
 .
 WhereStatement (. ID(L"WhereStatement", 3) .)
 =
