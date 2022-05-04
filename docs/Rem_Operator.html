@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Rem_Operator.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -17,33 +17,54 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Operators.html">Operators</a></li>
-<li><a href="Arithmetic_Operators.html">Arithmetic Operators</a></li>
+<li><a rel="parent" href="Arithmetic_Operators.html">Arithmetic Operators</a></li>
 </ul>
 </nav>
 <main>
 <h1 id="top">Rem Operator</h1>
-<p>Divides two numbers and returns the remainder.</p>
+<p>Divides two numbers and returns only the remainder.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<pre><code>expression_1 Rem expression_2&#10;</code></pre>
+<pre><code>number_1 Rem number_2&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
-<dt><code class="id">expression_1</code></dt>
+<dt><code class="id">number_1</code></dt>
 <dd>A numeric expression.</dd>
-<dt><code class="id">expression_2</code></dt>
+<dt><code class="id">number_2</code></dt>
 <dd>A numeric expression.</dd>
 </dl>
 <h2>Instructions</h2>
-<p>The result has the same sign as the second expression.
-Compared to <code class="kw">Rem</code>, the result of the related operator <code class="kw">Mod</code> has the sign of the first expression.
-It is easy to select the correct operator if you see that the letter &ldquo;M&rdquo; is nearer the expression that supplies the sign.</p>
+<p>The result is the remainder after <code class="id">number_1</code> is divided by <code class="id">number_2</code>.
+For example, the expression <code>42 Rem 5</code> gives a result of 2.</p>
+<p>The result has the same sign as <code class="id">number_2</code>.
+Compared to <code class="kw">Rem</code>, the result of the related operator <code class="kw">Mod</code> gets the sign of its first number.
+But it can be easy to select the correct operator for the given conditions.
+The letter &ldquo;M&rdquo; is nearer to the number that gives the result its sign.</p>
 <h3>Data types</h3>
 <p>TODO</p>
 <h3>Division by zero</h3>
 <p>TODO</p>
 <h2>Examples</h2>
 <p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>Program Example
+#Debug.PrintLine "42 Rem 5 = " &amp; 42 Rem 5
+#Debug.PrintLine "-42 Rem 5 = " &amp; -42 Rem 5
+#Debug.PrintLine "42 Rem -5 = " &amp; 42 Rem -5
+#Debug.PrintLine "-42 Rem -5 = " &amp; -42 Rem -5&#10;</code></pre>
+</div>
+<table class="results">
+<caption>After execution</caption>
+<tbody>
+<tr><td>
+<pre><samp>42 Rem 5 = 2
+-42 Rem 5 = 2
+42 Rem -5 = -2
+-42 Rem -5 = -2</samp></pre>
+</td></tr>
+</tbody>
+</table>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Mod_Operator.html">Mod Operator</a></li>
