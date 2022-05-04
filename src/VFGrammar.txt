@@ -1000,9 +1000,7 @@ Block<int &tkn> (. ID(L"Block", 3) .)
 .
 BlockStatement (. ID(L"BlockStatement", 3) .)
 =
-	( DimStatement<nullptr>
-	| NewStatement<nullptr>
-	| EventStatement
+	( EventStatement
 	| DoStatement
 	| ForStatement
 	| IfStatement
@@ -1074,7 +1072,7 @@ ClassOrObjectMember<int kind> (. ID(L"ClassOrObjectMember", 3) .)
 		(. if (kind == _Object) Err(la->line, la->col, L"OBJECT cannot have DESTRUCTOR"); .)
 		DestructorStatement<mods>
 	| ConstStatement<mods>
-	| DimStatement<&mods>
+	| DimStatement<mods>
 	| EnumStatement<mods>
 	| EventStatement
 	| FunctionStatement<mods>
@@ -1225,6 +1223,15 @@ DateTimeExpression (. ID(L"DateTime", 2) .)
 	| time_literal
 	)
 .
+DeclarationStatement (. ID(L"DeclarationStatement", 3) .)
+=
+	(. Modif mods(this); .)
+	[ ModifiersClause<mods> ]
+	( ConstStatement<mods>
+	| DimStatement<mods>
+	| NewStatement<&mods>
+	)
+.
 Declarator<bool bBits> (. ID(L"Declarator", 3) .)
 =
 	Name
@@ -1333,12 +1340,12 @@ DimOrVar (. ID(L"DimOrVar", 3) .)
 	| "Var"  (. if (option.Dim_or_Var == TERNARY1) SemErr(L"Must use DIM because of @OPTION"); .)
 	)
 .
-DimStatement<Modif *mods> (. ID(L"DimStatement", 3) .)
+DimStatement<Modif &mods> (. ID(L"DimStatement", 3) .)
 =
 	(.
 	// Permit @Deprecated?
-	bool bShared = mods ? mods->allow(Modif::Shared) : false;
-	if (mods) mods->validate();
+	bool bShared = mods.allow(Modif::Shared);
+	mods.validate();
 	.)
 	DimOrVar
 	DeclaratorList<NO_BITS>
@@ -1780,7 +1787,6 @@ ModuleMember (. ID(L"ModuleMember", 3) .)
 	[ ModifiersClause<mods> ]
 	( BaseUnitStatement<mods>
 	| ClassStatement<mods>
-	| ConstStatement<mods>
 	| DeclareStatement<mods>
 	| EnumStatement<mods>
 	| FunctionStatement<mods>
@@ -1797,7 +1803,9 @@ ModuleMember (. ID(L"ModuleMember", 3) .)
 ModuleStatement<bool bProcEntry> (. ID(L"ModuleStatement", 3) .)
 =
 	(. if (bProcEntry) Warn(L"Executable statements at module level ignored when entry point is a procedure"); .)
-	Statement
+	( BlockStatement
+	| SimpleStatement SyncNewline<s_name>
+	)
 .
 MultiplicativeExpression (. ID(L"Multiplicative", 2) .)
 =
@@ -2135,6 +2143,7 @@ SimpleStatementError (. ID(L"SimpleStatementError", 3) .)
 Statement (. ID(L"Statement", 3) .)
 =
 	( BlockStatement
+	| DeclarationStatement
 	| SimpleStatement SyncNewline<s_name>
 	)
 .
@@ -2264,7 +2273,7 @@ TraitMember (. ID(L"TraitMember", 3) .)
 =
 	(. Modif mods(this); .)
 	[ ModifiersClause<mods> ]
-	( DimStatement<&mods>
+	( DimStatement<mods>
 	| FunctionStatement<mods>
 	| MethodStatement<mods>
 	| PropertyStatement<mods>
