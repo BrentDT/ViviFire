@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2021 Brent D. Thorn
+ * Copyright 2022 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.com/.
  *
@@ -26,7 +26,7 @@ class Modif {
 public:
 	enum {
 		Abstract, Backed, Deprecated, Flags,
-		Iterator, Open, Override, ReadOnly,
+		Iterator, MustUse, Open, Override, ReadOnly,
 		Shared, SI, Unique, WriteOnly,
 		LAST
 	};
@@ -34,7 +34,7 @@ public:
 private:
 	const wchar_t *m_name[LAST] = {
 		L"@Abstract", L"@Backed", L"@Deprecated", L"@Flags",
-		L"@Iterator", L"@Open", L"@Override", L"@ReadOnly",
+		L"@Iterator", L"MustUse", L"@Open", L"@Override", L"@ReadOnly",
 		L"@Shared", L"@SI", L"@Unique", L"@WriteOnly"
 	};
 

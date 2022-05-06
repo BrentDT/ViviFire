@@ -1088,7 +1088,7 @@ ClassStatement<Modif &mods> (. ID(L"ClassStatement", 3) .)
 	(.
 	bool bAbstract = mods.allow(Modif::Abstract);
 	mods.allow(Modif::Deprecated);
-	bool bOpen = mods.allow(Modif::Open);
+	bool bOpen     = mods.allow(Modif::Open);
 	mods.validate();
 
 	bool generic = false;
@@ -1416,9 +1416,10 @@ EnumStatement<Modif &mods> (. ID(L"EnumStatement", 3) .)
 =
 	(.
 	mods.allow(Modif::Deprecated);
-	bool bFlags = mods.allow(Modif::Flags);
-	bool bOpen = mods.allow(Modif::Open);
-	bool bUnique = mods.allow(Modif::Unique);
+	bool bFlags    = mods.allow(Modif::Flags);
+	bool bMustUse  = mods.allow(Modif::MustUse);
+	bool bOpen     = mods.allow(Modif::Open);
+	bool bUnique   = mods.allow(Modif::Unique);
 	mods.validate();
 	.)
 	"Enum"
@@ -1540,7 +1541,7 @@ FunctionStatement<Modif &mods> (. ID(L"FunctionStatement", 3) .)
 	(.
 	mods.allow(Modif::Deprecated);
 	bool bIterator = mods.allow(Modif::Iterator);
-	bool bShared = mods.allow(Modif::Shared);
+	bool bShared   = mods.allow(Modif::Shared);
 	mods.validate();
 
 	bool bodied = true;
@@ -1714,6 +1715,7 @@ MethodStatement<Modif &mods> (. ID(L"MethodStatement", 3) .)
 	bool bAbstract = mods.allow(Modif::Abstract);
 	mods.allow(Modif::Deprecated);
 	bool bIterator = mods.allow(Modif::Iterator);
+	bool bMustUse  = mods.allow(Modif::MustUse);
 	bool bOpen     = mods.allow(Modif::Open);
 	bool bOverride = mods.allow(Modif::Override);
 	bool bShared   = mods.allow(Modif::Shared);
@@ -1742,6 +1744,7 @@ Modifier<int &m> (. ID(L"Modifier", 3) .)
 	                 (. m = Modif::Deprecated; .)
 	| "@Flags"       (. m = Modif::Flags; .)
 	| "@Iterator"    (. m = Modif::Iterator; .)
+	| "@MustUse"     (. m = Modif::MustUse; .)
 	| "@Open"        (. m = Modif::Open; .)
 	| "@Override"    (. m = Modif::Override; .)
 	| "@ReadOnly"    (. m = Modif::ReadOnly; .)
@@ -1750,7 +1753,7 @@ Modifier<int &m> (. ID(L"Modifier", 3) .)
 	| "@Unique"      (. m = Modif::Unique; .)
 	| "@WriteOnly"   (. m = Modif::WriteOnly; .)
 	)
-	[ line_break ]
+	[ OptionalNewline ]
 .
 ModifiersClause<Modif &mods> (. ID(L"ModifiersClause", 3) .)
 =
@@ -2165,6 +2168,7 @@ StructStatement<Modif &mods> (. ID(L"StructStatement", 3) .)
 =
 	(.
 	mods.allow(Modif::Deprecated);
+	bool bMustUse  = mods.allow(Modif::MustUse);
 	mods.validate();
 
 	bool generic = false;
@@ -2243,6 +2247,7 @@ SubStatement<Modif &mods> (. ID(L"SubStatement", 3) .)
 	(.
 	mods.allow(Modif::Deprecated);
 	bool bIterator = mods.allow(Modif::Iterator);
+	bool bMustUse  = mods.allow(Modif::MustUse);
 	bool bShared   = mods.allow(Modif::Shared);
 	mods.validate();
 
@@ -2283,7 +2288,7 @@ TraitMember (. ID(L"TraitMember", 3) .)
 .
 TraitStatement<Modif &mods> (. ID(L"TraitStatement", 3) .)
 =
-	(.
+	(. // Permit @MustUse?
 	bool bAbstract = mods.allow(Modif::Abstract);
 	mods.allow(Modif::Deprecated);
 	mods.validate();
@@ -2422,7 +2427,7 @@ UnitStatement<Modif &mods> (. ID(L"UnitStatement", 3) .)
 =
 	(.
 	mods.allow(Modif::Deprecated);
-	bool bSI = mods.allow(Modif::SI);
+	bool bSI       = mods.allow(Modif::SI);
 	mods.validate();
 	.)
 	"Unit"
