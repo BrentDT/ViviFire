@@ -1323,6 +1323,10 @@ DeclareStatement<Modif &mods> (. ID(L"DeclareStatement", 3) .)
 	)
 	SyncNewline<s_name>
 .
+Deprecated (. ID(L"Deprecated", 3) .)
+=
+	"@Deprecated" [ string_literal ]
+.
 DestructorStatement<Modif &mods> (. ID(L"DestructorStatement", 3) .)
 =
 	(.
@@ -1405,7 +1409,7 @@ EnclosedParameterList<int parent> (. ID(L"EnclosedParameterList", 3) .)
 .
 EnumMember (. ID(L"EnumMember", 3) .)
 =
-	[ "@Deprecated" [ string_literal ] [ line_break ] ]
+	[ Deprecated [ OptionalNewline ] ]
 	identifier
 	( "=" Expression
 	| (. if (option.Enum_equals) SemErr(L"Enumeration constant must have initializer because of @OPTION"); .)
@@ -1740,8 +1744,7 @@ Modifier<int &m> (. ID(L"Modifier", 3) .)
 =
 	( "@Abstract"    (. m = Modif::Abstract; .)
 	| "@Backed"      (. m = Modif::Backed; .)
-	| "@Deprecated" [ string_literal ]
-	                 (. m = Modif::Deprecated; .)
+	| Deprecated     (. m = Modif::Deprecated; .)
 	| "@Flags"       (. m = Modif::Flags; .)
 	| "@Iterator"    (. m = Modif::Iterator; .)
 	| "@MustUse"     (. m = Modif::MustUse; .)
