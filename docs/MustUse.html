@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>@MustUse - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/MustUse.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a rel="parent" href="Modifiers.html">Modifiers</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top"><code>@MustUse</code></h1>
+<p>Specifies that you must use a return value.</p>
+<h2>Instructions</h2>
+<p>When you call a procedure that returns a value, you can usually ignore the value if it is not necessary for subsequent calculations.
+For example, a procedure can return an integer error code, but it has almost no risk of errors.
+If you made the procedure, then you can know the risks.</p>
+<p>Other programmers that use your code possibly do not have the time to think about the risks.
+If a return value is important, then it is necessary to tell the user.
+You can tell the user when a return value is necessary with the modifier <code class="at">@MustUse</code>.</p>
+<p>You can add <code class="at">@MustUse</code> to procedures of the types <code class="kw">Method</code> and <code class="kw">Sub</code>.
+If you subsequently call such a procedure and ignore the return value, then the compiler shows a warning.</p>
+<p>The warning caused by <code class="at">@MustUse</code> is Level 1.
+You can increase this warning to an error if you think it is necessary.
+See the section &ldquo;Warning&rdquo; of <a href="Option_Directive.html">@Option Directive</a> for more information.</p>
+<p class="note">Note:
+Procedures of the type <code class="kw">Function</code> also cause this same warning by default.
+But you cannot use the modifier <code class="at">@MustUse</code> with functions.</p>
+<p>You can also add @MustUse to enumerations and structures.
+When you do, all procedures that return these data types have the same effect as <code class="at">@MustUse</code> on the procedure.</p>
+<p>For a return value to be &ldquo;used&rdquo;, it can:</p>
+<ul>
+<li>Assign the value to a variable.</li>
+<li>Make the call part of an expression.</li>
+<li>Do a test with a statement, for example, <code class="kw">If&hellip;Else</code>.
+</ul>
+<h2>Applies to</h2>
+<ul class="articles">
+<li><a href="Enum_Statement.html">Enum Statement</a></li>
+<li><a href="Method_Statement.html">Method Statement</a></li>
+<li><a href="Struct_Statement.html">Struct Statement</a></li>
+<li><a href="Sub_Statement.html">Sub Statement</a></li>
+</ul>
+<h2>Examples</h2>
+<p>TODO</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Assignment_Operators.html">Assignment Operators</a></li>
+<li><a href="Function_Statement.html">Function Statement</a></li>
+<li><a href="Decision_Constructs.html">Decision Constructs</a></li>
+<li><a href="Loop_Constructs.html">Loop Constructs</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+</body>
+</html>
