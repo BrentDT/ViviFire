@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Rem_Equals_Operator.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -17,7 +17,7 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Operators.html">Operators</a></li>
-<li><a href="Assignment_Operators.html">Assignment Operators</a></li>
+<li><a rel="parent" href="Assignment_Operators.html">Assignment Operators</a></li>
 </ul>
 </nav>
 <main>
@@ -30,9 +30,9 @@
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="id">variable</code></dt>
-<dd>A variable with a numeric type.</dd>
+<dd>A numeric variable or property.</dd>
 <dt><code class="id">expression</code></dt>
-<dd>An expression with a numeric type.</dd>
+<dd>A numeric expression.</dd>
 </dl>
 <h2>Instructions</h2>
 <p>The two statements that follow operate the same.</p>
@@ -40,7 +40,15 @@
 <pre><code>variable Rem= expression
 variable = variable Rem expression&#10;</code></pre>
 </div>
-<p>Because <code class="op">Rem= </code> comes from <code class="op">Rem</code>, the sign of the variable (positive or negative) changes to the sign of the expression.</p>
+<p>The element on the left side of <code class="op">Rem=</code> can be a scalar variable, a property, or an element of an array.
+If it is a property, then it cannot have the modifier <code class="at">@ReadOnly</code>.</p>
+<p>
+Rem= divides the variable or property on its left side by the value on its right side to get a quotient and a remainder.
+Then it changes the variable or property on its left side to the remainder.</p>
+<p><code class="op">Rem</code> does some of the same operations as <code class="op">Rem=</code>.
+Thus, the sign of the variable or property (positive or negative) becomes the sign of the expression.
+This is also where <code class="op">Rem=</code> is different from <code class="op">Mod=</code>.
+<code class="op">Mod=</code> takes its sign from the variable or property.</p>
 <h3>Data types</h3>
 <p>TODO</p>
 <h3>Division by zero</h3>
@@ -50,7 +58,7 @@ variable = variable Rem expression&#10;</code></pre>
 <pre><code>x = -42
 x Rem= 10&#10;</code></pre>
 </div>
-<table class="results">
+<table class="result">
 <caption>After execution</caption>
 <thead>
 <tr><th>Variable</th><th>Value</th></tr>
