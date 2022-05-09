@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Minus_Equals_Operator.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -17,12 +17,12 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Operators.html">Operators</a></li>
-<li><a href="Assignment_Operators.html">Assignment Operators</a></li>
+<li><a rel="parent" href="Assignment_Operators.html">Assignment Operators</a></li>
 </ul>
 </nav>
 <main>
-<h1 id="top">-= Operator</h1>
-<p>Subtracts a number from a variable, then changes the variable to the result.</p>
+<h1 id="top"><code>-=</code> Operator</h1>
+<p>Subtracts the value of an expression from the value of a variable, then changes the variable to the result.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <pre><code>variable -= expression&#10;</code></pre>
@@ -30,7 +30,7 @@
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="id">variable</code></dt>
-<dd>A numeric variable</dd>
+<dd>A numeric variable or property.</dd>
 <dt><code class="id">expression</code></dt>
 <dd>A numeric expression</dd>
 </dl>
@@ -40,8 +40,11 @@
 <pre><code>variable -= expression
 variable = variable - expression&#10;</code></pre>
 </div>
+<p>The element on the left side of <code class="op">-=</code> can be a scalar variable, a property, or an element of an array.
+If it is a property, then it cannot have the modifier <code class="at">@ReadOnly</code>.</p>
+<p>The operator <code class="op">-=</code> subtracts the value on its right side from the variable or property on its left side.
+Then it changes the variable or property on its left side to the result of that operation.</p>
 <h2>Examples</h2>
-<h3>Example 1</h3>
 <div class="language-vivifire listing">
 <pre><code>x = 50
 x -= 8&#10;</code></pre>
