@@ -20,8 +20,8 @@
 </ul>
 </nav>
 <main>
-<h1 id="top">Fixed128 Data Type</h1>
-<p>Holds signed 128-bit (16-byte) fixed-point values with a default range &minus;17,0141,1834,6046,923,173,168,730,371.5884105728 &ndash; +17,0141,1834,6046,923,173,168,730,371.5884105727.</p>
+<h1 id="top"><code>Fixed128</code> Data Type</h1>
+<p>Holds signed 128-bit (16-byte) fixed-point values with a default range &minus;17,014,118,346,046,923,173,168,730,371.5884105728 &ndash; +17,014,118,346,046,923,173,168,730,371.5884105727.</p>
 <h2>Instructions</h2>
 <dl>
 <dt>Default value</dt>
@@ -69,10 +69,10 @@ The default is 10.</dd>
 If <code>x</code> is not given, then it returns &#164;0.0000000001.</dd>
 <dt><pre><code>Fixed128.Max(Optional x As Fixed128) As Fixed128</code></pre></dt>
 <dd>Returns the largest positive value for <code>x</code>.
-If <code>x</code> is not given, then it returns &#164;17_0141_1834_6046_923_173_168_730_371.5884105727.</dd>
+If <code>x</code> is not given, then it returns <code>&#164;17_014_118_346_046_923_173_168_730_371.5884105727</code>.</dd>
 <dt><pre><code>Fixed128.Min(Optional x As Fixed128) As Fixed128</code></pre></dt>
 <dd>Returns the smallest negative value for <code>x</code>.
-If <code>x</code> is not given, then it returns &minus;&#164;17_0141_1834_6046_923_173_168_730_371.5884105728.</dd>
+If <code>x</code> is not given, then it returns <code>-&#164;17_014_118_346_046_923_173_168_730_371.5884105728</code>.</dd>
 <dt><pre><code>Fixed128.Parse(str As String, Optional #format As Format) As Fixed128</code></pre></dt>
 <dd>Tries to parse a string that shows as a number.</dd>
 <dd>If <code>#format</code> is not given or is <code class="kw">#Null</code>, then it uses the format of the local culture.
