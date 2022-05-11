@@ -108,7 +108,7 @@ int main (int argc, char *argv[]) {
 	p->Parse();
 	
 	coco_string_delete(fileName);
-	delete p->scanner;
+	delete p	->scanner;
 	delete p->module;
 	delete p;
 

@@ -31,7 +31,7 @@ extern Args args;
 COMPILER ViviFire
 
 // The root of the AST. Memory is not freed automatically.
-AST::Block *module = nullptr;
+AST::Module *module = nullptr;
 
 // Some enumeration types.
 enum case_type { CASE_ZERO, CASE_EXPR, CASE_ELSE };
@@ -1770,12 +1770,11 @@ Module (. ID(L"Module", 3) .)
 	(. bool bProcEntry = false; .)
 	[ Newline ]
 	(
-		"Program" (. int line = t->line, col = t->col; .)
-		[ "=" (. bProcEntry = true; .) ]
-		identifier
-		(. module = new AST::Program(new AST::Ident(t->val, t->line, t->col), bProcEntry, line, col); .)
+		"Program" (. module = new AST::Module(AST::Module::Program, t->line, t->col); .)
+		[ "=" (. bProcEntry = module->procStart = true; .) ]
+		identifier (. module->Name(t->val); .)
 	|
-		"Library"
+		"Library" (. module = new AST::Module(AST::Module::Library, t->line, t->col); .)
 		QualifiedName<_identifier>
 	)
 	SyncNewline<s_name>

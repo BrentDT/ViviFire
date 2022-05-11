@@ -29,10 +29,6 @@ Expr::~Expr() {}
 Node::~Node() {}
 Statement::~Statement() {}
 
-Block::~Block() {
-	delete_list(stms);
-}
-
 IntConst::IntConst(wchar_t *s, int line, int col): Constant(line , col) {
 	int base = 10;
 	if (s[0] == L'&') {
@@ -148,12 +144,11 @@ GENERATE_ACCEPT(GotoCase)
 GENERATE_ACCEPT(Ident)
 GENERATE_ACCEPT(If)
 GENERATE_ACCEPT(IntConst)
-GENERATE_ACCEPT(Library)
+GENERATE_ACCEPT(Module)
 GENERATE_ACCEPT(ModuleWhere)
 GENERATE_ACCEPT(New)
 GENERATE_ACCEPT(Parameter)
 GENERATE_ACCEPT(Procedure)
-GENERATE_ACCEPT(Program)
 GENERATE_ACCEPT(Raise)
 GENERATE_ACCEPT(RealConst)
 GENERATE_ACCEPT(Require)

@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2021 Brent D. Thorn
+ * Copyright 2022 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.com/.
  *
@@ -79,15 +79,14 @@ struct GotoCase;
 struct Ident;
 struct If;
 struct IntConst;
-struct Library;
 struct Loop;
+struct Module;
 struct ModuleWhere;
 //struct Namespace;
 struct New;
 //struct Object;
 struct Parameter;
 struct Procedure;
-struct Program;
 //struct Property;
 struct Raise;
 //struct RaiseEvent;
@@ -512,11 +511,13 @@ struct Require : public Statement {
 /*---------------------------------------------------------------------------*/
 
 struct Block : public Statement {
-	StatementList stms;
 	Block *parent;
+	StatementList stms;
 	
 	Block(Block *parent, int line, int col): Statement(line, col), parent(parent) {}
-	virtual ~Block();
+	virtual ~Block() {
+		delete_list(stms);
+	}
 	
 	void Add(Statement *stm) {
 		stms.push_back(stm);
@@ -543,42 +544,24 @@ struct ModuleWhere: public Statement {
 	virtual void Accept(Visitor *);
 };
 
-struct Program : public Block {
-	Ident *id;
-	bool procStart;
+struct Module : public Block {
+	enum module_type { Program, Library } type;
+	wchar_t *name = nullptr;
+	bool procStart = false;
 	ModuleWhereList wheres;
 	RequireList reqs;
 
-	Program(Ident *id, bool procStart, int line, int col):
-		Block(nullptr, line, col), id(id), procStart(procStart) {}
-	virtual ~Program() {
-		delete id;
+	Module(module_type type, int line, int col): Block(nullptr, line, col), type(type) {}
+	virtual ~Module() {
+		delete name;
 		delete_list(wheres);
 		delete_list(reqs);
 	}
 
-	void Add(ModuleWhere *where) {
-		wheres.push_back(where);
-	}
-	void Add(Require *req) {
-		reqs.push_back(req);
+	void Name(wchar_t *s) {
+		name = coco_string_create(s);
 	}
 	
-	virtual void Accept(Visitor *);
-};
-
-struct Library : public Block {
-	Ident *id;
-	ModuleWhereList wheres;
-	RequireList reqs;
-	
-	Library(Ident *id, int line, int col): Block(nullptr, line, col), id(id) {}
-	virtual ~Library() {
-		delete id;
-		delete_list(wheres);
-		delete_list(reqs);
-	}
-
 	void Add(ModuleWhere *where) {
 		wheres.push_back(where);
 	}
@@ -877,12 +860,11 @@ struct Visitor {
 	virtual void Visit(CompareConditional *) = 0;
 	virtual void Visit(Ident *) = 0;
 	virtual void Visit(IntConst *) = 0;
-	virtual void Visit(Library *) = 0;
+	virtual void Visit(Module*) = 0;
 	virtual void Visit(ModuleWhere *) = 0;
 	virtual void Visit(New *) = 0;
 	virtual void Visit(Parameter *) = 0;
 	virtual void Visit(Procedure *) = 0;
-	virtual void Visit(Program *) = 0;
 	virtual void Visit(Raise *) = 0;
 	virtual void Visit(RealConst *) = 0;
 	virtual void Visit(Require *) = 0;
