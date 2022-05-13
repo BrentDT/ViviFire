@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Property_Procedures.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -17,12 +17,31 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
 <li><a href="Language_Features.html">Language Features</a></li>
-<li><a href="Procedures.html">Procedures</a></li>
+<li><a rel="parent" href="Procedures.html">Procedures</a></li>
 </ul>
 </nav>
 <main id="stub">
 <h1 id="top">Property Procedures</h1>
-<p>TODO</p>
+<p>A <dfn>property procedure</dfn> is a sequence of statements that control a specially-made property on a module, class, or structure.
+Property procedures are also known as <dfn>property accessors</dfn>.</p>
+<p>There are two types of property procedures.</p>
+<ul>
+<li><code class="kw">Get</code> returns the value of a property.
+It is called when you use the property in an expression.</li>
+<li><code class="kw">Set</code> sets the value of a property.
+It is called when you use the property on the left side of an assignment.</li>
+</ul>
+<p>You usually define property procedures as a pair with the statements <code class="kw">Get</code> and <code class="kw">Set</code>.
+But, you can define a property with only one procedure.
+If it is read-only, then you must supply only <code class="kw">Get</code>.
+But, if it is write-only, then you must supply only <code class="kw">Set</code>.</p>
+<p>You do not have to use the procedures <code class="kw">Get</code> and <code class="kw">Set</code> if the property is automatically backed.
+A property is automatically backed if you do not define property procedures.
+But, if you supply the modifier <code class="at">@Backed</code>, then the property must have the procedure <code class="kw">Set</code>.</p>
+<p>You can define properties  in classes, structures, and modules.
+Properties have public access.
+Thus, you can call them from all parts of your program that have access to the container of the property.</p>
+<p>See also <a href="Differences_Between_Properties_and_Variables.html">Differences Between Properties and Variables</a>.</p>
 <h2>Declaration syntax</h2>
 <p>TODO</p>
 <div class="language-vivifire syntax">
