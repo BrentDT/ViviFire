@@ -170,7 +170,7 @@ struct Symbol : public Node {
 	
 	Symbol(wchar_t *id, Type::Type *type, int line, int col): Node(line, col), id(id), type(type) {}
 	virtual ~Symbol() {
-		coco_string_delete(id);
+		delete id;
 		delete type;
 	}
 	
@@ -249,7 +249,7 @@ struct RealConst : public Constant<long double> {
 struct StringConst : public Constant<wchar_t *> {
 	StringConst(wchar_t *val, int line, int col): Constant<wchar_t *>(val, line, col) {}
 	virtual ~StringConst() {
-		coco_string_delete(val);
+		delete val;
 	}
 
 	virtual void Accept(Visitor *);
@@ -535,8 +535,8 @@ struct ModuleWhere: public Statement {
 		if (type== VERSION) normalize();
 	}
 	virtual ~ModuleWhere() {
-		coco_string_delete(id);
-		coco_string_delete(val);
+		delete id;
+		delete val;
 	}
 
 	void normalize(); // Removes unnecessary 0s.
