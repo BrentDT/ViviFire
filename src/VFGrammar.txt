@@ -13,9 +13,14 @@
 #include <assert.h>
 #include <cstdio>
 #include <cwctype>
-#include <memory>
 #include <map>
+#include <memory>
 #include <string>
+#include <time.h>
+#include <vector>
+#if defined(_WIN32)
+#include <windows.h>
+#endif
 #include "Args.h"
 #include "AST.h"
 #include "Modifier.h"
@@ -353,6 +358,193 @@ bool Matches(const wchar_t *s) {
 	// Returns true if the current token is the same as s.
 	assert(s != nullptr);
 	return (_wcsicmp(s, t->val) == 0);
+}
+
+std::wstring StringValue(wchar_t *s) {
+	// Returns the string value of a string literal or constant.
+	assert(s != nullptr);
+	assert(s[0] == L'"' || s[0] == L'_' || s[0] == L'$');
+
+	if (s[0] == L'_') s++; // Ignore leading underscore.
+
+	if (s[0] == L'"') { // Quoted string literal.
+		// Remove unnecessary quotes.
+		std::wstring res;
+		for (wchar_t *p = s + 1; *p; p++) {
+			if (*p != L'"') res += *p;
+			else if (p[1] == L'"') res += *p++; // Two quotes become one.
+			// End quote is skipped automatically.
+		}
+		return res;
+	} else if (s[0] == L'$') { // String constant.
+		// Handle character codes. Make sure to return if valid.
+		// Named constants are handled after these.
+		switch (s[1]) {
+		case L'B': case L'b': { // Binary $B...
+			std::wstring ws;
+			for (wchar_t *p = s + 2; *p; p++) {
+				if (*p == L'0' || *p == L'1') ws += *p;
+				else if (*p == L'_'); // Ignore underscore.
+				else goto named_constant;
+			}
+			try {
+				std::wstring res(1, (wchar_t)std::stoi(ws, nullptr, 2));
+				return res;
+			} catch (...) {
+				//TODO: out of range
+			}
+		}
+		case L'H': case L'h': case L'U': case L'u': { // Hexadecimal $H... or $U...
+			std::wstring ws;
+			for (wchar_t *p = s + 2; *p; p++) {
+				if (*p >= L'0' && *p <= L'9' || *p >= L'A' && *p <= L'F' || *p >= L'a' && *p <= L'f') ws += *p;
+				else if (*p == L'_'); // Ignore underscore.
+				else goto named_constant;
+			}
+			try {
+				std::wstring res(1, (wchar_t)std::stoi(ws, nullptr, 16));
+				return res;
+			} catch (...) {
+				//TODO: out of range
+			}
+		}
+		case L'O': case L'o': { // Octal $O...
+			std::wstring ws;
+			for (wchar_t *p = s + 2; *p; p++) {
+				if (*p >= L'0' && *p <= L'7') ws += *p;
+				else if (*p == L'_'); // Ignore underscore.
+				else goto named_constant;
+			}
+			try {
+				std::wstring res(1, (wchar_t)std::stoi(ws, nullptr, 8));
+				return res;
+			} catch (...) {
+				//TODO: out of range
+			}
+		}
+		default:
+		named_constant:
+			return NamedString(s);
+		}
+	}
+	return std::wstring(L"ERR"); // TEMP
+}
+
+enum datetime_fmt {
+	INVALID_FMT,
+	DATE, DATE_DMY, DATE_MDY, DATE_YMD,
+	TIME, TIME_12, TIME_12_SEC, TIME_24, TIME_24_SEC
+};
+
+std::wstring NamedString(wchar_t *s) {
+	assert(s != nullptr);
+	assert(s[0] == L'$' && s[1] != L'\0');
+
+	s++; // Skip '$'.
+
+	switch (s[0]) {
+	case L'C': case L'c':
+		if (!_wcsicmp(L"CR", s))
+			return std::wstring(L"\r");
+		break;
+	case L'D': case L'd':
+		if (!_wcsnicmp(L"DATE", s, 4)) {
+			s += 4;
+			if (s[0] != L'\0' && s[0] != L'_') goto bad_name;
+
+			//TODO: $DATE $DATE_DMY $DATE_MDY $DATE_YMD
+		}
+		break;
+	case L'E': case L'e':
+		if (s[1] == L'\0' || !_wcsicmp(L"ESC", s) || !_wcsicmp(L"ESCAPE", s))
+			return std::wstring(L"\033");
+		break;
+	case L'F': case L'f':
+		if (!_wcsicmp(L"FF", s) || !_wcsicmp(L"FORMFEED", s))
+			return std::wstring(L"\f");
+		else if (!_wcsicmp(L"FILE", s)) {
+			//FIXME: does not work for libraries
+			wchar_t *ws = coco_string_create(args.file);
+			std::wstring res(ws);
+			delete ws;
+			return res;
+		}
+		break;
+	case L'L': case L'l':
+		if (!_wcsicmp(L"LF", s) || !_wcsicmp(L"LINEFEED", s))
+			return std::wstring(L"\013");
+		else if (!_wcsicmp(L"LINE", s))
+			return std::to_wstring(t->line);
+		break;
+	case L'N': case L'n':
+		if (s[1] == L'\0' || !_wcsicmp(L"NL", s) || !_wcsicmp(L"NEWLINE", s))
+			#if defined(_WIN32)
+			return std::wstring(L"\r\n");
+			#else
+			return std::wstring(L"\015");
+			#endif
+		break;
+	case L'P': case L'p':
+		if (!_wcsicmp(L"PD", s) || !_wcsicmp(L"PARENTDIR", s))
+			return std::wstring(L"..");
+		else if (!_wcsicmp(L"PS", s) || !_wcsicmp(L"PATHSEP", s))
+			#if defined(_WIN32)
+			return std::wstring(L"\\");
+			#else
+			return std::wstring(L"/");
+			#endif
+		break;
+	case L'R': case L'r':
+		if (s[1] == L'\0' || !_wcsicmp(L"RETURN", s))
+			return std::wstring(L"\r");
+		//TODO: RD/ROOTDIR
+		break;
+	case L'S': case L's':
+		if (s[1] == L'\0' || !_wcsicmp(L"SPC", s) || !_wcsicmp(L"SPACE", s))
+			return std::wstring(L" ");
+		break;
+	case L'T': case L't':
+		if (s[1] == L'\0' || !_wcsicmp(L"TAB", s))
+			return std::wstring(L"\t");
+		else if (!_wcsnicmp(L"TIME", s, 4)) {
+			s += 4;
+			if (s[0] != L'\0' && s[0] != L'_') goto bad_name;
+
+			time_t now;
+			time(&now);
+			auto utc = gmtime(&now);
+
+			std::wstring secs;
+
+			if (s[0] == L'\0') { // $TIME
+				//TODO
+			} else if (!wcscmp(L"_12", s)) { // $TIME_12
+				secs += (utc->tm_hour < 12) ? L" AM": L" PM";
+				if (utc->tm_hour > 12) utc->tm_hour -= 12;
+				else if (utc->tm_hour == 0) utc->tm_hour = 12;
+			} else if (!_wcsicmp(L"_12_SEC", s)) { // $TIME_12_SEC
+				secs += L':';
+				if (utc->tm_sec < 10) secs += L'0';
+				secs += std::to_wstring(utc->tm_sec);
+				secs += (utc->tm_hour < 12) ? L" AM": L" PM";
+				if (utc->tm_hour > 12) utc->tm_hour -= 12;
+				else if (utc->tm_hour == 0) utc->tm_hour = 12;
+			} else if (!wcscmp(L"_24", s)) { // $TIME_24
+				// Nothing to do.
+			} else if (!_wcsicmp(L"_24_SEC", s)) { // $TIME_24_SEC
+				secs += L':';
+				if (utc->tm_sec < 10) secs += L'0';
+				secs += std::to_wstring(utc->sec);
+			} else goto bad_name;
+
+			wchar_t ws[16];
+			swprintf_s(ws, 15, L"%02d:%02d%ls", utc->tm_hour, utc->tm_min, secs.c_str());
+			std::wstring res(ws);
+			return res;
+		}
+	}
+	bad_name:
+	return std::wstring(L"ERR"); //TEMP
 }
 
 void Err(const wchar_t *msg) {
@@ -1949,7 +2141,9 @@ PrimaryExpression (. ID(L"Primary", 2) .)
 	| ( integer_literal | real_literal ) [ IF (IsUnit()) UnitExpression ]
 	| fixed_literal
 	| DateTimeExpression
-	| StringExpression
+	|
+		(. std::wstring s; .)
+		StringExpression<s>
 	| [ "Class" | "Trait" | "Sub" ]
 		Name [ TypeArgumentList ]
 		{
@@ -2152,19 +2346,25 @@ Statement (. ID(L"Statement", 3) .)
 	| SimpleStatement SyncNewline<s_name>
 	)
 .
-StringExpression (. ID(L"String", 2) .)
+StringExpression<std::wstring &res> (. ID(L"String", 2) .)
 =
-	( string_literal | string_constant )
+	(. const std::wstring fslash(L"/"), bslash(L"\\"); .)
+	(. std::vector<std::wstring> v; .)
+	( string_literal | string_constant ) (. v.push_back(StringValue(t->val)); .)
 	{ IF (la->kind == _string_constant || la->kind == _string_literal || la->kind == _slash || la->kind == _backslash)
 		[
 			"/"
 			(. if (option.String_bk_slash == TERNARY1) SemErr(L"Must use backslash because of @OPTION"); .)
+			(. v.push_back(fslash); .)
 		|
 			"\\"
 			(. if (option.String_bk_slash == TERNARY2) SemErr(L"Must use slash because of @OPTION"); .)
+			(. v.push_back(bslash); .)
 		]
-		( string_literal | string_constant )
+		( string_literal | string_constant ) (. v.push_back(StringValue(t->val)); .)
 	}
+	(. for (const auto &substr : v) res += substr; .)
+	(. wprintf(L"\n[%ls]", res.c_str()); .) //TEMP
 .
 StructStatement<Modif &mods> (. ID(L"StructStatement", 3) .)
 =
@@ -2498,9 +2698,19 @@ WhereClause<int block, bool generic> (. ID(L"WhereClause", 3) .)
 .
 WhereStatement (. ID(L"WhereStatement", 3) .)
 =
-	"Where"
-	identifier '='
-	( DateTimeExpression | string_literal | version_literal )
+	"Where" (. int line = t->line, col = t->col; .)
+	identifier  (. wchar_t *id = coco_string_create(t->val); .)
+	"="
+	(
+		DateTimeExpression
+	|
+		(. std::wstring s; .)
+		StringExpression<s>
+		(. module->Add(new AST::ModuleWhere(id, _wcsdup(s.c_str()), AST::STRING, line, col)); .)
+	|
+		version_literal 
+		(. module->Add(new AST::ModuleWhere(id, coco_string_create(t->val), AST::VERSION, line, col)); .)
+	)
 	SyncNewline<s_name>
 .
 WhileOrUntil (. ID(L"WhileOrUntil", 3) .)
