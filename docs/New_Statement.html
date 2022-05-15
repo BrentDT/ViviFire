@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/New_Statement.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -26,7 +26,7 @@
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <pre><code>[ @Shared ] [ New ] class_name object_name [ , argument_list ]
-[ Begin [ default_type  |  Call method_name [ initializer ] ]
+[ Begin [ default_type  |  Call [ method_name ] [ initializer ] ]
     [ statements ]
 End [ New | class_name ] ]&#10;</code></pre>
 </div>
@@ -44,13 +44,14 @@ End [ New | class_name ] ]&#10;</code></pre>
 <dt><code class="id">argument_list</code></dt>
 <dd>Optional &ndash; One or more expressions with a comma between each.</dd>
 <dt><code class="kw">Begin</code></dt>
-<dd>Optional &ndash; Starts the block construct.</dd>
+<dd>Optional keyword that Starts the block construct.</dd>
 <dt><code class="id">default_type</code></dt>
 <dd>Optional data type that the compiler will use for the subsequent statements, if the data type is not specified.
 The data type must be related to the type specified in a constructor of <code class="id">class_name</code>.</dd>
 <dt><code class="id">method_name</code></dt>
-<dd>Optional name of the method to call for each <code class="id">initializer</code> or <code class="id">statement</code>.
-It must come after the keyword <code class="kw">Call</code>.</dd>
+<dd>Optional name of the method of <code class="id">class_name</code> to call for each <code class="id">initializer</code> or <code class="id">statement</code>.
+It must come after the keyword <code class="kw">Call</code>.
+If you supply <code class="kw">Call</code> without <code class="id">method_name</code>, then the default is <code>Add</code>.</dd>
 <dt><code class="id">initializer</code></dt>
 <dd>Optional on the same line after <code class="id">method_name</code>.
 It must be a list of values with a comma between each, all between braces (<code class="op">{ }</code>).</dd>
@@ -104,8 +105,8 @@ You can use a vertical bar (<code class="op">|</code>) with optional hyphens (<c
 There is no limit on the number of hyphens, but this manual usually uses 4 hyphens (<code>|----</code>).</p>
 <h4><code>Object</code> members</h4>
 <p>A statement of the type <code class="kw">Object</code> makes an instance of a child class.
-If you do not give the parent of the object, then the default is the type of the array argument (or <code class="id">default_type</code>, if given).
-But if you do give the parent, then it must be a child of the default class.</p>
+If you do not supply a parent class for the object, then the default is the type of the array argument (or <code class="id">default_type</code>, if given).
+But if you do supply the parent, then it must be a child of the default class.</p>
 <h4>Procedure-call members</h4>
 <p>Procedure calls in the block construct can only be methods and properties of the class <code class="id">class_name</code>.
 They must start with a dot (<code class="op">.</code>) before the procedure name.</p>
@@ -174,6 +175,7 @@ End Menu&#10;</code></pre>
 <p>In this example, we declare a list of strings and add some items.
 The class <code>List</code> has a method (<code>Add</code>) to add one item at a time.
 We write <code>Add</code> after <code class="kw">Begin Call</code> to give the method to call for each item in an array.
+(Although we give it here, this name is not necessary because <code>Add</code> is the default.)
 We supply the items in an array initializer.
 The initializer must be on the same line that starts with Begin.
 We can use the automatic line continuation of braces and commas to make the code easier to read.</p>
@@ -181,14 +183,14 @@ We can use the automatic line continuation of braces and commas to make the code
 <pre><code>List[String] fruits
 Begin Call Add {
     "apple", "banana", "cherry",
-    "peach", "pear", "pineapple"
-}
+    "peach", "pear", "pineapple" }
 End&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Dim_Statement.html">Dim Statement</a></li>
 <li><a href="Object_Statement.html">Object Statement</a></li>
+<li><a href="Collection_Initializers.html">Collection Initializers</a></li>
 <li><a href="Default_Values.html">Default Values</a></li>
 <li><a href="Option_Directive.html">@Option Directive</a></li>
 </ul>
