@@ -24,8 +24,8 @@ struct mod_type {
 
 class Modif {
 public:
-	enum {
-		Abstract, Backed, Deprecated, Flags,
+	enum mods {
+		Abstract, Backed, Const, Deprecated, Flags,
 		Iterator, MustUse, Open, Override, ReadOnly,
 		Shared, SI, Unique, WriteOnly,
 		LAST
@@ -33,26 +33,22 @@ public:
 
 private:
 	const wchar_t *m_name[LAST] = {
-		L"@Abstract", L"@Backed", L"@Deprecated", L"@Flags",
+		L"@Abstract", L"@Backed", L"@Const", L"@Deprecated", L"@Flags",
 		L"@Iterator", L"MustUse", L"@Open", L"@Override", L"@ReadOnly",
 		L"@Shared", L"@SI", L"@Unique", L"@WriteOnly"
 	};
 
 	mod_type m_mods[LAST];
-
 	int m_count;
-
 	class Parser *m_parser;
 
 public:
 	Modif(Parser *p) : m_parser(p), m_count(0) {}
 
-	int count() const { return m_count; }
-
 	void add(int m);
-
 	bool allow(int m);
-
+	int count() const { return m_count; }
+	bool has(int m) const;
 	void validate() const;
 
 };

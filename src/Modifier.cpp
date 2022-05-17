@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2021 Brent D. Thorn
+ * Copyright 2022 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.com/.
  *
@@ -15,7 +15,7 @@
 #include "Scanner.h"
 
 void Modif::add(int m) {
-	assert(m < LAST);
+	assert(m >= 0 && m < LAST);
 	if (m_mods[m].present) {
 		m_parser->errors->Error(m_parser->t->line, m_parser->t->col, L"Same modifier again");
 	}
@@ -34,6 +34,11 @@ bool Modif::allow(int m) {
 		m_mods[m].allowed = true;
 	}
 	return m_mods[m].present;
+}
+
+bool Modif::has(int m) const {
+	assert(m >= 0 && m < LAST);
+	return m_mods[m].present; 
 }
 
 void Modif::validate() const {
