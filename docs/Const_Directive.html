@@ -2,7 +2,7 @@
 <html lang="en-US" dir="ltr">
 <head>
 <meta charset="utf-8">
-<title>@Const Directive - The ViviFire Programming Language</title>
+<title>@Const - The ViviFire Programming Language</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Const_Directive.html">
@@ -17,31 +17,45 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
-<li><a rel="parent" href="Directives.html">Directives</a></li>
+<li><a rel="parent" href="Modifiers.html">Modifiers</a></li>
 </ul>
 </nav>
 <main>
-<h1 id="top">@Const Directive</h1>
-<p>Makes constants for conditional compilation.</p>
-<h2>Syntax</h2>
-<div class="language-vivifire syntax">
-<pre><code>@Const constant_name = expression&#10;</code></pre>
-</div>
-<h2>Parts</h2>
-<dl class="parts">
-<dt><code class="id">constant_name</code></dt>
-<dd>A name.</dd>
-<dt><code class="id">expression</code></dt>
-<dd>A constant expression.</dd>
-</dl>
+<h1 id="top"><code>@Const</code></h1>
+<p>Specifies that a procedure can (and must) calculate a result at compile-time.</p>
 <h2>Instructions</h2>
-<p>TODO</p>
+<p>
+You can use the modifier @Const with some procedures.
+Typically, you use it with methods of a module of the type <code class="kw">Library</code>.
+But, you can also use it with procedures of the type <code class="kw">Sub</code>.</p>
+<p class="note">Note:
+Although you cannot use <code class="at">@Const</code> with procedures of the type <code class="kw">Function</code>, such procedures can operate almost the same.</p>
+<p>You call a procedure with <code class="at">@Const</code> with the statement <code class="kw">Const</code>.
+<code class="kw">Const</code> makes a named constant, which has a value that you cannot change after it is set.
+The expression after the operator <code class="op">=</code> must be a constant expression.
+A <dfn>constant expression</dfn> calculates a result only from values known at compile-time.</p>
+<h2>Rules</h2>
+<dl>
+<dt>Data types</dt>
+<dd>The procedure must return a value of an elementary data type.
+Also, the procedure can have parameters only of an elementary data type.
+Typically, these data types have values that you can write as a literal.</dd>
+<dt>Mixed modifiers</dt>
+<dd>You cannot use @Const with @Abstract or @Open because which procedure to call is not known at compile-time.</dd>
+<dd>You cannot use @Const with @Iterator because an iterator procedure wraps its return type in an object.</dd>
+<dd>You can use @Const with @MustUse.
+But, @Const has the same effect as @MustUse to cause you to use the return value.</dd>
+</dl>
+<h2>Applies to</h2>
+<ul class="articles">
+<li><a href="Method_Statement.html">Method Statement</a></li>
+<li><a href="Sub_Statement.html">Sub Statement</a></li>
+</ul>
 <h2>Examples</h2>
 <p>TODO</p>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Const_Statement.html">Const Statement</a></li>
-<li><a href="Conditional_Compilation.html">Conditional Compilation</a></li>
 </ul>
 </main>
 <script src="common.js"></script>
