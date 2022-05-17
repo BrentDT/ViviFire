@@ -788,7 +788,7 @@ nonbin = alnum - bin.
 nonhex = alnum - hex.
 nonoct = alnum - oct.
 
-currency = ANY - dec - "_" - ctrl.
+currency = ANY - alnum - "_" - ctrl.
 
 str = ANY - ctrl - eol - '"'.
 char = ANY - ctrl - eol.
@@ -1100,6 +1100,7 @@ ViviFire (. ID(L"ViviFire", 3) .)
 	| "Then"         (. SemErr(L"THEN without IF"); .)
 	| "Until"        (. SemErr(L"UNTIL without DO or LOOP"); .)
 	| "When"         (. SemErr(L"WHEN without BEGIN"); .)
+	| "@"            (. SemErr(L"Invalid directive or modifier"); .)
 	| ConstantValueError
 	]
 
