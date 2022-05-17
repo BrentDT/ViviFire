@@ -534,7 +534,7 @@ std::wstring NamedString(wchar_t *s) {
 			} else if (!_wcsicmp(L"_24_SEC", s)) { // $TIME_24_SEC
 				secs += L':';
 				if (utc->tm_sec < 10) secs += L'0';
-				secs += std::to_wstring(utc->sec);
+				secs += std::to_wstring(utc->tm_sec);
 			} else goto bad_name;
 
 			wchar_t ws[16];
@@ -1909,6 +1909,7 @@ MethodStatement<Modif &mods> (. ID(L"MethodStatement", 3) .)
 =
 	(.
 	bool bAbstract = mods.allow(Modif::Abstract);
+	bool bConst    = mods.allow(Modif::Const);
 	mods.allow(Modif::Deprecated);
 	bool bIterator = mods.allow(Modif::Iterator);
 	bool bMustUse  = mods.allow(Modif::MustUse);
@@ -1925,17 +1926,32 @@ MethodStatement<Modif &mods> (. ID(L"MethodStatement", 3) .)
 .
 MethodSignature<Modif &mods> (. ID(L"MethodSignature", 3) .)
 =
-	"Method" Name
-	[ EnclosedParameterList<_Method> [ ReturnTypeClause ]
-	| UnenclosedParameterList<_Method>
-	| ReturnTypeClause
+	"Method"
+	Name
+	(. bool bReturns = (t->kind == _typed_identifier); .)
+	[
+		EnclosedParameterList<_Method>
+		[
+			ReturnTypeClause
+			(. bReturns = true; .)
+		]
+	|
+		UnenclosedParameterList<_Method>
+	|
+		ReturnTypeClause
+		(. bReturns = true; .)
 	]
+	(.
+	if (!bReturns && mods.has(Modif::Const) || mods.has(Modif::MustUse))
+		SemErr(L"Method must have return type because of modifier(s)");
+	.)
 	SyncNewline<s_name>
 .
 Modifier<int &m> (. ID(L"Modifier", 3) .)
 =
 	( "@Abstract"    (. m = Modif::Abstract; .)
 	| "@Backed"      (. m = Modif::Backed; .)
+	| "@Const"       (. m = Modif::Const; .)
 	| Deprecated     (. m = Modif::Deprecated; .)
 	| "@Flags"       (. m = Modif::Flags; .)
 	| "@Iterator"    (. m = Modif::Iterator; .)
@@ -2422,41 +2438,58 @@ StructState (. ID(L"StructState", 3) .)
 		ClassStatement<mods>
 	)
 .
-SubSignature<bool &generic> (. ID(L"SubSignature", 3) .)
+SubSignature<Modif &mods, bool &bGeneric> (. ID(L"SubSignature", 3) .)
 =
 	"Sub"
 	Name
-	(. bool return_typed = (t->kind == _typed_identifier); .)
-	[ TypeParameterList<_Sub> (. generic = true; .) ]
+	(. bool bReturns = (t->kind == _typed_identifier); .)
+	[
+		TypeParameterList<_Sub>
+		(. bGeneric = true; .)
+	]
 	[
 		EnclosedParameterList<_Sub>
-		[ ReturnTypeClause (. return_typed = true; .) ]
+		[
+			ReturnTypeClause
+			(. bReturns = true; .)
+		]
 	|
 		UnenclosedParameterList<_Sub>
 	|
-		ReturnTypeClause (. return_typed = true; .)
+		ReturnTypeClause
+		(. bReturns = true; .)
 	]
 	[
 		"Handles"
-		(. if (return_typed) SemErr(L"Event handlers cannot have a return type"); .)
+		(. if (bReturns) SemErr(L"Event handlers cannot have a return type"); .)
 		QualifiedName<_identifier>
 	]
-	[ WhereClause<_Sub, generic> ]
+	[
+		WhereClause<_Sub, bGeneric>
+	]
+	(.
+	if (!bReturns && mods.has(Modif::Const) || mods.has(Modif::MustUse))
+		SemErr(L"SUB must have return type because of modifier(s)");
+	.)
 	SyncNewline<s_name>
 .
 SubStatement<Modif &mods> (. ID(L"SubStatement", 3) .)
 =
 	(.
+	bool bConst    = mods.allow(Modif::Const);
 	mods.allow(Modif::Deprecated);
 	bool bIterator = mods.allow(Modif::Iterator);
 	bool bMustUse  = mods.allow(Modif::MustUse);
 	bool bShared   = mods.allow(Modif::Shared);
 	mods.validate();
 
-	bool generic = false;
+	bool bGeneric = false;
 	.)
-	SubSignature<generic>
-	{ WhereClause<_Sub, generic> SyncNewline<s_name> }
+	SubSignature<mods, bGeneric>
+	{
+		WhereClause<_Sub, bGeneric>
+		SyncNewline<s_name>
+	}
 	{ Statement }
 	"End"
 	(. Optional(_Sub); .)
