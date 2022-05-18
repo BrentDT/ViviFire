@@ -1265,6 +1265,7 @@ ClassOrObjectMember<int kind> (. ID(L"ClassOrObjectMember", 3) .)
 		(. if (kind == _Object) Err(la->line, la->col, L"OBJECT cannot have DESTRUCTOR"); .)
 		DestructorStatement<mods>
 	| ConstStatement<mods>
+	| DeclareStatement<mods>
 	| DimStatement<mods>
 	| EnumStatement<mods>
 	| EventStatement
@@ -1421,6 +1422,7 @@ DeclarationStatement (. ID(L"DeclarationStatement", 3) .)
 	(. Modif mods(this); .)
 	[ ModifiersClause<mods> ]
 	( ConstStatement<mods>
+	| DeclareStatement<mods>
 	| DimStatement<mods>
 	| NewStatement<&mods>
 	)
