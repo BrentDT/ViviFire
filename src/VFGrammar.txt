@@ -1116,7 +1116,6 @@ ViviFire (. ID(L"ViviFire", 3) .)
 	| "Then"         (. SemErr(L"THEN without IF"); .)
 	| "Until"        (. SemErr(L"UNTIL without DO or LOOP"); .)
 	| "When"         (. SemErr(L"WHEN without BEGIN"); .)
-	| "@"            (. SemErr(L"Invalid directive or modifier"); .)
 	| ConstantValueError
 	]
 
@@ -1968,20 +1967,52 @@ MethodSignature<Modif &mods> (. ID(L"MethodSignature", 3) .)
 .
 Modifier<int &m> (. ID(L"Modifier", 3) .)
 =
-	( "@Abstract"    (. m = Modif::Abstract; .)
-	| "@Backed"      (. m = Modif::Backed; .)
-	| "@Const"       (. m = Modif::Const; .)
-	| Deprecated     (. m = Modif::Deprecated; .)
-	| "@Flags"       (. m = Modif::Flags; .)
-	| "@Iterator"    (. m = Modif::Iterator; .)
-	| "@MustUse"     (. m = Modif::MustUse; .)
-	| "@Open"        (. m = Modif::Open; .)
-	| "@Override"    (. m = Modif::Override; .)
-	| "@ReadOnly"    (. m = Modif::ReadOnly; .)
-	| "@Shared"      (. m = Modif::Shared; .)
-	| "@SI"          (. m = Modif::SI; .)
-	| "@Unique"      (. m = Modif::Unique; .)
-	| "@WriteOnly"   (. m = Modif::WriteOnly; .)
+	(. m = Modif::LAST; .) // Sentinal.
+	"@"
+	(
+		"Const" (. m = Modif::Const; .)
+	|
+		identifier
+		(.
+		switch (t->val[0]) {
+		case L'A': case L'a':
+			if (Matches(L"Abstract")) m = Modif::Abstract;
+			break;
+		case L'B': case L'b':
+			if (Matches(L"Backed")) m = Modif::Backed;
+			break;
+		case L'D': case L'd':
+			if (Matches(L"Deprecated")) m = Modif::Deprecated; //TODO: string_literal
+			break;
+		case L'F': case L'f':
+			if (Matches(L"Flags")) m = Modif::Flags;
+			break;
+		case L'I': case L'i':
+			if (Matches(L"Iterator")) m = Modif::Iterator;
+			break;
+		case L'M': case L'm':
+			if (Matches(L"MustUse")) m = Modif::MustUse;
+			break;
+		case L'O': case 'o':
+			if (Matches(L"Open")) m = Modif::Open; else
+			if (Matches(L"Override")) m = Modif::Override;
+			break;
+		case L'R': case L'r':
+			if (Matches(L"ReadOnly")) m = Modif::ReadOnly;
+			break;
+		case L'S': case L's':
+			if (Matches(L"Shared")) m = Modif::Shared; else
+			if (Matches(L"SI")) m = Modif::SI;
+			break;
+		case L'U': case L'u':
+			if (Matches(L"Unique")) m = Modif::Unique;
+			break;
+		case L'W': case L'w':
+			if (Matches(L"WriteOnly")) m = Modif::WriteOnly;
+			break;
+		}
+		if (Modif::LAST == m) SemErr(L"Invalid directive or modifier");
+		.)
 	)
 	[ OptionalNewline ]
 .
