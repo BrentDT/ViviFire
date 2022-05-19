@@ -423,6 +423,20 @@ std::wstring StringValue(wchar_t *s) {
 			}
 		}
 		default:
+		if (s[1] >= L'0' && s[1] <= L'9') {
+			std::wstring ws;
+			for (wchar_t *p = s + 1; *p; p++) {
+				if (*p >= L'0' && *p <= L'9') ws += *p;
+				else if (*p == L'_'); // Ignore underscore.
+				else goto named_constant;
+			}
+			try {
+				std::wstring res(1, (wchar_t)std::stoi(ws, nullptr, 10));
+				return res;
+			} catch (...) {
+				//TODO: out of range
+			}
+		}
 		named_constant:
 			return NamedString(s);
 		}
