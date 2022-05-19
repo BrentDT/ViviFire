@@ -1074,8 +1074,10 @@ atEnd  = "@End".   (. CCEval(); .)
 InlineComment = ("'"|"//"){notEOL}. (.
 	if (option.test) ParseInlineComment(); .)
 
-COMMENTS FROM "/*" TO "*/" NESTED  // C-style
-COMMENTS FROM "/'" TO "'/" NESTED
+MidlineComment = "/'"{"#"|alnum|"_"|"."|"-"|"/"|sigil}"'/".
+
+///COMMENTS FROM "/*" TO "*/" NESTED  // C-style
+///COMMENTS FROM "/'" TO "'/" NESTED
 
 IGNORE t + '\u00a0' // non-breaking space
 
