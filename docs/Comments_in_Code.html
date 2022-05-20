@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Comments_in_Code.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -16,7 +16,7 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
-<li><a href="Program_Structure_and_Code_Conventions.html">Program Structure and Code Conventions</a></li>
+<li><a rel="parent" href="Program_Structure_and_Code_Conventions.html">Program Structure and Code Conventions</a></li>
 </ul>
 </nav>
 <main>
@@ -27,42 +27,43 @@ You can also use two slashes (<code class="op">//</code>) as an alternative.
 The ViviFire compiler ignores all Comments.</p>
 <p>You put comments in your code to tell what other code does.
 And frequently they give other information.</p>
-<p>There are two types of comments: the inline comment (given above) and the block comment.
-A <dfn>block comment</dfn> has two symbols that identify the start and end of a comment.
-Block comments can contain two or more lines.
-Although you can put block comments between elements in one line, it can make code not as easy to read.</p>
-<p>There are two types of block comment.
-The first starts with <code class="op">/*</code> and stops after <code class="op">*/</code>.
-The second starts with <code class="op">/&#39;</code> and stops after <code class="op">&#39;/</code>.</p>
+<p>There are two types of comments:
+(1) the in-line comment, shown above, and (2) the mid-line comment.</p>
+<p>A <dfn>mid-line comment</dfn> uses a pair of symbols to identify the start and end, and has one symbol between them.
+The start is a slash-apostrophe (<code class="op">/'</code>) and the end is an apostrophe-slash (<code class="op">'/</code>).
+The inner part can be a name, a number or date literal, or some sequence of characters that are a part of these symbols.</p>
+<p>Permitted punctuation characters include <code>! # $ % - . / @ _</code>.
+But, you cannot use other punctuation or whitespace characters.</p>
+<p>You can write mid-line comments at several positions in a line of code.
+But, you cannot write two adjacent comments on one line.</p>
+</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
-<pre><code>' This is a full-line comment
-PrintLine "Test" ' This comment is inline with code
-PrintLine "Hi " &amp; name _  ' This comment
-    &amp; " how are you?" ' is divided in two
-/' This is a short block comment '/
-/* This is a long block comment
-    that is divided across more
-    than one line.
-*/
+<pre><code>// This is a full-line comment.
+PrintLine "Test" ' This comment is in-line with code.
+PrintLine "Hi " &amp; name _  ' This comment ...
+    &amp; " how are you?" ' is divided in two.
 Call Test 1 /'one'/, 2 /'two'/, 3 /'three'/&#10;</code></pre>
 </div>
-<h2>Recommended procedures for comments</h2>
+<h2>Conventions for comments</h2>
 <p>The list that follows gives some general instructions about what type of comment can come before a section of code.
 These are only recommended procedures.
-Do what you think is necessary for you and all persons who will read your code.</p>
+Do what you think is best for you and all the persons who will read your code.</p>
 <ul>
 <li>Tell what a procedure does, not how it does it.</li>
 <li>Make a list of each external variable, control, file, or other element to which a procedure must have access.</li>
-<li>Make a list of each changed external variable, control, or file, and the effect that it has (only if it is not clear).</li>
-<li>Tell what each argument gives to a procedure.</li>
+<li>Make a list of each external variable, control, or file that your code can change.
+Tell what effect a change has, if it is not easily known.</li>
+<li>Tell what each argument supplies to a procedure.</li>
 <li>Tell what a procedure returns.</li>
 </ul>
 <p>Some more to think about:</p>
 <ul>
 <li>Try to write a comment before each important variable declaration that tells how you use it.</li>
 <li>Try to give good names to variables, controls, and procedures.
-Good names can make some comments shorter or not necessary.</li>
+Good names can make some comments shorter or not as necessary.</li>
+<li>Write comments the same as sentences.
+start with an upper-case letter, and put a period (or other applicable punctuation) at the end.</li>
 </ul>
 </main>
 <script src="prism.js"></script>
