@@ -1132,8 +1132,11 @@ AdditiveExpression (. ID(L"Additive", 2) .)
 Argument (. ID(L"Argument", 3) .)
 =
 	( null_literal
-	| [ IF (IsNamedArgument()) Name ":=" ]
-	  EnclosedExpression
+	|
+		[ IF (IsNamedArgument())
+			Name ":="
+		]
+		( EnclosedExpression | LambdaExpression )
 	)
 	// If non-decimal integer ("&b...", "&h...", or "&o...")
 	(. if (la->kind == _integer_literal && la->val[0] == L'&') {
@@ -1164,10 +1167,10 @@ AssignmentStatement (. ID(L"AssignmentStatement", 3) .)
 =
 	(
 		AssignmentOperator [OptionalNewline]
-		Expression
+		( Expression | LambdaExpression )
 	|
 		":=" Expression
-		{ ":=" Expression }
+		{ ":=" Expression } //FIXME: Allow lambda here?
 	)
 .
 AsTypeClause<bool bBits> (. ID(L"AsTypeClause", 3) .)
@@ -1871,6 +1874,36 @@ IsExpression (. ID(L"IsExpression", 2) .)
 /*J*/
 /*K*/
 /*L*/
+LambdaExpression (. ID(L"Lambda", 2) .)
+=
+	(
+		"Function"
+		[ IF (la->kind == _left_paren)
+			EnclosedParameterList<_Event>
+		]
+		(
+			EnclosedExpression
+		|
+			SyncNewline<s_name>
+			{ Statement }
+			"End"
+			(. Optional(_Function); .)
+		)
+	|
+		"Sub"
+		[ IF (la->kind == _left_paren)
+			EnclosedParameterList<_Event>
+		]
+		(
+			EnclosedExpression
+		|
+			SyncNewline<s_name>
+			{ Statement }
+			"End"
+			(. Optional(_Sub); .)
+		)
+	)
+.
 LogicalExpression (. ID(L"Logical", 2) .)
 =
 	ComparisonExpression { LogicalOperator ComparisonExpression }
@@ -2050,7 +2083,6 @@ ModuleMember (. ID(L"ModuleMember", 3) .)
 	[ ModifiersClause<mods> ]
 	( BaseUnitStatement<mods>
 	| ClassStatement<mods>
-	| DeclareStatement<mods>
 	| EnumStatement<mods>
 	| FunctionStatement<mods>
 	| MethodStatement<mods>
@@ -2067,6 +2099,7 @@ ModuleStatement<bool bProcEntry> (. ID(L"ModuleStatement", 3) .)
 =
 	(. if (bProcEntry) Warn(L"Executable statements at module level ignored when entry point is a procedure"); .)
 	( BlockStatement
+	| DeclarationStatement //FIXME: Conflict with "@"
 	| SimpleStatement SyncNewline<s_name>
 	)
 .
@@ -2210,7 +2243,7 @@ PrimaryExpression (. ID(L"Primary", 2) .)
 	|
 		(. std::wstring s; .)
 		StringExpression<s>
-	| [ "Class" | "Trait" | "Sub" ]
+	| [ "Class" | "Trait" ]
 		Name [ TypeArgumentList ]
 		{
 			// Syntactic sugar for argumentless proc call.
