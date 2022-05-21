@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Lambda Expressions - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Lambda_Expressions.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Features.html">Language Features</a></li>
+<li><a rel="parent" href="Procedures.html">Procedures</a></li>
+</ul>
+</nav>
+<main id="stub">
+<h1 id="top">Lambda Expressions</h1>
+<p>A <dfn>lambda expression</dfn> is a procedure without a name that you can use as an alternative to a named event handler.
+You can write a lambda expression on one line or as a block of statements.
+Lambda expressions can use the semantics of one of the statements <code class="kw">Function</code> or <code class="kw">Sub</code>.
+A lambda expression with the semantics of <code class="kw">Sub</code> has access to the local scope.</p>
+<p>You make a lambda expression with one of the keywords Function or Sub, almost the same as the statements that use these keywords.
+The difference is that lambda expressions are a part of a statement.</p>
+<p>In the example that follows, lambda expressions add to a value.
+The example shows the one-line and block constructs for a function.</p>
+<div class="language-vivifire listing">
+<pre><code>Var add1 = Function(x) x + 1
+Var add2 = Function(x)
+        Return x + 2
+    End Function
+
+Print add1(1)
+Print add2(2)&#10;</code></pre>
+</div>
+<table class="result">
+<caption>After execution</caption>
+<tbody>
+<tr><td>
+<pre><samp>2
+4</samp></pre>
+</td></tr>
+</tbody>
+</table>
+<h2>Lambda expression syntax</h2>
+<p>The syntax of a lambda expression is almost the same as a typical procedure.
+The differences are as follows:</p>
+<ul>
+<li>A lambda expression does not have a name.</li>
+<li>Lambda expressions cannot have modifiers, for example, <code class="at">@Abstract</code> or <code class="at">@MustUse</code>.</li>
+<li>The body of the one-line construct must be an expression that returns a value, not a statement.</li>
+<li>The one-line construct is not completed with one of the clauses <span class="kws"><code>End</code>, <code>End Function</code>, or <code>End Sub</code></span>.</li>
+<li>Optional parameters are not permitted.</li>
+<li>Generic parameters are not permitted.</li>
+</ul>
+<h2>Context</h2>
+<p>TODO</p>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Events.html">Events</a></li>
+<li><a href="Function_Statement.html">Function Statement</a></li>
+<li><a href="Sub_Statement.html">sub Statement</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>
