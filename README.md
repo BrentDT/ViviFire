@@ -39,14 +39,12 @@ Begin
         Caption := "Click me", _
         Left := 100, Top := 50, Height := 25, Width := 100
     Begin
-        .OnClick = buttonClick
+        .OnClick = Sub
+            @Shared Var count As Int
+            count += 1
+            text.Caption = "Clicked " & count & " times."
+        End
     End
-End
-
-Sub buttonClick Handles Button.ClickEvent
-    @Shared Var count As Int
-    count += 1
-    text.Caption = "Clicked " & count & " times."
 End
 ```
 
