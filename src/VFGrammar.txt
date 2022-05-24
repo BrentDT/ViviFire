@@ -2083,10 +2083,14 @@ ModuleMember (. ID(L"ModuleMember", 3) .)
 	[ ModifiersClause<mods> ]
 	( BaseUnitStatement<mods>
 	| ClassStatement<mods>
+	| ConstStatement<mods>
+	| DeclareStatement<mods>
+	| DimStatement<mods>
 	| EnumStatement<mods>
 	| FunctionStatement<mods>
 	| MethodStatement<mods>
 	| NamespaceStatement<mods>
+	| NewStatement<&mods>
 	| ObjectStatement<&mods>
 	| PropertyStatement<mods>
 	| StructStatement<mods>
@@ -2099,7 +2103,6 @@ ModuleStatement<bool bProcEntry> (. ID(L"ModuleStatement", 3) .)
 =
 	(. if (bProcEntry) Warn(L"Executable statements at module level ignored when entry point is a procedure"); .)
 	( BlockStatement
-	| DeclarationStatement //FIXME: Conflict with "@"
 	| SimpleStatement SyncNewline<s_name>
 	)
 .
