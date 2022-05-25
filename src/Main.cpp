@@ -30,12 +30,6 @@ Args args;
 bool separate_console () {
 // Returns true if app was started from the desktop.
 #if defined(_WIN32)
-	return !_isatty(fileno(stdin));
-#else
-	return !isatty(fileno(stdin));
-#endif
-
-#if 0
 // Checks if the console cursor is at 0,0.
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	
@@ -45,6 +39,8 @@ bool separate_console () {
 	}
 	
 	return ((!csbi.dwCursorPosition.X) && (!csbi.dwCursorPosition.Y));
+#else
+	return !isatty(fileno(stdin));
 #endif
 }
 
