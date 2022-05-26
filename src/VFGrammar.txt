@@ -25,6 +25,15 @@
 #include "AST.h"
 #include "Modifier.h"
 
+#if __cplusplus >= 201703L // C++17
+#include <filesystem>
+#define S_PATH_SEP std::filesystem::path::preferred_separator
+#elif defined(_WIN32)
+#define S_PATH_SEP L"\\"
+#else
+#define S_PATH_SEP L"/"
+#endif
+
 // IMPORTANT: Use this macro with all productions.
 // 'SyncNewline' gets passed 's_name'.
 #define ID(sn, iv) \
@@ -502,11 +511,7 @@ std::wstring NamedString(wchar_t *s) {
 		if (!_wcsicmp(L"PD", s) || !_wcsicmp(L"PARENTDIR", s))
 			return std::wstring(L"..");
 		else if (!_wcsicmp(L"PS", s) || !_wcsicmp(L"PATHSEP", s))
-			#if defined(_WIN32)
-			return std::wstring(L"\\");
-			#else
-			return std::wstring(L"/");
-			#endif
+			return std::wstring(S_PATH_SEP);
 		break;
 	case L'R': case L'r':
 		if (s[1] == L'\0' || !_wcsicmp(L"RETURN", s))
@@ -2450,18 +2455,20 @@ Statement (. ID(L"Statement", 3) .)
 .
 StringExpression<std::wstring &res> (. ID(L"String", 2) .)
 =
-	(. const std::wstring fslash(L"/"), bslash(L"\\"); .)
-	(. std::vector<std::wstring> v; .)
+	(.
+	const std::wstring sep(S_PATH_SEP);
+	std::vector<std::wstring> v;
+	.)
 	( string_literal | string_constant ) (. v.push_back(StringValue(t->val)); .)
 	{ IF (la->kind == _string_constant || la->kind == _string_literal || la->kind == _slash || la->kind == _backslash)
 		[
 			"/"
 			(. if (option.String_bk_slash == TERNARY1) SemErr(L"Must use backslash because of @OPTION"); .)
-			(. v.push_back(fslash); .)
+			(. v.push_back(sep); .)
 		|
 			"\\"
 			(. if (option.String_bk_slash == TERNARY2) SemErr(L"Must use slash because of @OPTION"); .)
-			(. v.push_back(bslash); .)
+			(. v.push_back(sep); .)
 		]
 		( string_literal | string_constant ) (. v.push_back(StringValue(t->val)); .)
 	}
