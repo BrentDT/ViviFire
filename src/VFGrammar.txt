@@ -1883,31 +1883,47 @@ LambdaExpression (. ID(L"Lambda", 2) .)
 =
 	(
 		"Function"
-		[ IF (la->kind == _left_paren)
-			EnclosedParameterList<_Event>
-		]
 		(
-			EnclosedExpression
+			Name // Operator to get address.
 		|
-			SyncNewline<s_name>
-			{ Statement }
-			"End"
-			(. Optional(_Function); .)
+			EnclosedParameterList<_Event>
+			(
+				EnclosedExpression
+			|
+				LambdaFunction
+			)
+		|
+			LambdaFunction
 		)
 	|
 		"Sub"
-		[ IF (la->kind == _left_paren)
-			EnclosedParameterList<_Event>
-		]
 		(
-			EnclosedExpression
+			Name // Operator to get address.
 		|
-			SyncNewline<s_name>
-			{ Statement }
-			"End"
-			(. Optional(_Sub); .)
+			EnclosedParameterList<_Event>
+			(
+				EnclosedExpression
+			|
+				LambdaSub
+			)
+		|
+			LambdaSub
 		)
 	)
+.
+LambdaFunction (. ID(L"LambdaFunction", 3) .)
+=
+	SyncNewline<s_name>
+	{ Statement }
+	"End"
+	(. Optional(_Function); .)
+.
+LambdaSub (. ID(L"LambdaSub", 3) .)
+=
+	SyncNewline<s_name>
+	{ Statement }
+	"End"
+	(. Optional(_Sub); .)
 .
 LogicalExpression (. ID(L"Logical", 2) .)
 =
