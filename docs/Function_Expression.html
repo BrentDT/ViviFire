@@ -2,10 +2,10 @@
 <html lang="en-US" dir="ltr">
 <head>
 <meta charset="utf-8">
-<title>Sub Expression - The ViviFire Programming Language</title>
+<title>Function Expression - The ViviFire Programming Language</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="common.css" type="text/css">
-<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Sub_Operator.html">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Function_Expression.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
 <meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
@@ -17,22 +17,22 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Statements_Reference.html">Statements</a></li>
-<li><a rel="parent" href="Statements_3.html">Q&ndash;Z Statements</a></li>
+<li><a rel="parent" href="Statements_2.html">F&ndash;P Statements</a></li>
 </ul>
 </nav>
 <main>
-<h1 id="top"><code>Sub</code> Expression</h1>
+<h1 id="top"><code>Function</code> Expression</h1>
 <p>Returns the address of the given event handler, or defines a lambda expression.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <h3>Operator construct</h3>
-<pre><code>Sub procedure_name&#10;</code></pre>
+<pre><code>Function procedure_name&#10;</code></pre>
 <h3>Expression construct</h3>
-<pre><code>Sub ( [ parameter_list ] ) expression&#10;</code></pre>
+<pre><code>Function ( [ parameter_list ] ) expression&#10;</code></pre>
 <h3>Block construct</h3>
-<pre><code>Sub [ ( [ parameter_list ] ) ]
-    [ statements ]
-End [ Sub ]&#10;</code></pre>
+<pre><code>Function [ ( [ parameter_list ] ) ]
+    statements
+End [ Function ]&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
@@ -46,36 +46,28 @@ End [ Sub ]&#10;</code></pre>
 <dd>Mandatory expression.
 The type of the expression is the return type of the procedure.</dd>
 <dt><code class="id">statements</code></dt>
-<dd>Optional one or more executable statements.</dd>
+<dd>Mandatory one or more executable statements.
+One of the statements must be <code class="kw">Return</code>.</dd>
 <dt><code class="kw">End</code></dt>
 <dd>Completes the expression.
-You can also use <code class="kw">End Sub</code>.
+You can also use <code class="kw">End Function</code>.
 You can make one of these mandatory with the directive <code class="at">@Option End</code>.
 See <a href="Option_Directive.html">@Option Directive</a> for more information
 </dl>
 <h2>Instructions</h2>
 <h3>Operator construct</h3>
 <p>The procedure <code class="id">procedure_name</code> must have the clause <code class="kw">Handles</code>.
-You use an element of the event type to store the address returned by Sub.
+You use an element of the event type to store the address returned by <code class="kw">Function</code>.
 The element can be a variable or procedure parameter, or a value returned by a function or property.</p>
 <h3>Lambda constructs</h3>
 <p>TODO</p>
 <h2>Examples</h2>
-<h3>Operator construct</h3>
-<div class="language-vivifire listing">
-<pre><code>Event MouseEvent(x As Int, y As Int, btn As MouseButtons)
-
-win.OnClick = Sub ClickHandler
-
-Sub ClickHandler Handles MouseEvent
-    ' ...
-End Sub&#10;</code></pre>
-</div>
+<p>TODO</p>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Event_Statement.html">Event Statement</a></li>
-<li><a href="Sub_Statement.html">Sub Statement</a></li>
-<li><a href="Function_Expression.html">Function Expression</a></li>
+<li><a href="Function_Statement.html">Function Statement</a></li>
+<li><a href="Sub_Expression.html">Sub Expression</a></li>
 <li><a href="Events.html">Events</a></li>
 <li><a href="Lambda_Expressions.html">Lambda Expressions</a></li>
 </ul>
