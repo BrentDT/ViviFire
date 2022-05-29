@@ -840,11 +840,7 @@ asterisk = "*".
 slash    = "/".
 
 // Concatenation
-concatenation =
-	( "&"
-	// Prevent misparsing as binary, hexadecimal, or octal integer.
-	| "&" CONTEXT ( ("B"{bin}nonbin) | ("H"{hex}nonhex) | ("O"{oct}nonoct) )
-	).
+concatenation = "&".
 
 // Null coalescing
 null_coalescing = "|?".
@@ -887,22 +883,23 @@ malformed_fixed_literal =
 	).
 
 integer_constant =
-	'%'alpha{['_']alnum}.
+	"%"alpha alpha{["_"]alnum}.
 
 integer_literal =
-	( "&B"bin{['_']bin}
-	| "&O"oct{['_']oct}
-	| "&H"hex{['_']hex}
+	( "%B"["_"]bin{["_"]bin}
+	| "%O"["_"]oct{["_"]oct}
+	| "%X"(dec|"_")hex{["_"]hex}
 	| dec{['_']dec}
 	// Prevent misparsing units (eg "312electronvolts") as real_literal.
 	| dec{['_']dec} CONTEXT ("E"alpha)
 	).
 
 malformed_integer_literal =
-	( "&B"bin{bin|'_'}"__"{bin|'_'}
-	| "&O"oct{oct|'_'}"__"{oct|'_'}
-	| "&H"hex{hex|'_'}"__"{hex|'_'}
-	| dec{dec|'_'}"__"{dec|'_'}
+	( "%"
+	| "%B"[(bin|"_"){bin|"_"}(nonbin|"_"){nonbin|"_"}]
+	| "%O"[(oct|"_"){oct|"_"}(nonoct|"_"){nonoct|"_"}]
+	| "%X"[(hex|"_"){hex|"_"}"_"]
+	| dec{dec|"_"}"_"
 	).
 
 null_literal =
