@@ -403,20 +403,6 @@ std::wstring StringValue(wchar_t *s) {
 				//TODO: out of range
 			}
 		}
-		case L'H': case L'h': case L'U': case L'u': { // Hexadecimal $H... or $U...
-			std::wstring ws;
-			for (wchar_t *p = s + 2; *p; p++) {
-				if (*p >= L'0' && *p <= L'9' || *p >= L'A' && *p <= L'F' || *p >= L'a' && *p <= L'f') ws += *p;
-				else if (*p == L'_'); // Ignore underscore.
-				else goto named_constant;
-			}
-			try {
-				std::wstring res(1, (wchar_t)std::stoi(ws, nullptr, 16));
-				return res;
-			} catch (...) {
-				//TODO: out of range
-			}
-		}
 		case L'O': case L'o': { // Octal $O...
 			std::wstring ws;
 			for (wchar_t *p = s + 2; *p; p++) {
@@ -426,6 +412,20 @@ std::wstring StringValue(wchar_t *s) {
 			}
 			try {
 				std::wstring res(1, (wchar_t)std::stoi(ws, nullptr, 8));
+				return res;
+			} catch (...) {
+				//TODO: out of range
+			}
+		}
+		case L'U': case L'u': case L'X': case L'x': { // Hexadecimal $U... or $X...
+			std::wstring ws;
+			for (wchar_t *p = s + 2; *p; p++) {
+				if (*p >= L'0' && *p <= L'9' || *p >= L'A' && *p <= L'F' || *p >= L'a' && *p <= L'f') ws += *p;
+				else if (*p == L'_'); // Ignore underscore.
+				else goto named_constant;
+			}
+			try {
+				std::wstring res(1, (wchar_t)std::stoi(ws, nullptr, 16));
 				return res;
 			} catch (...) {
 				//TODO: out of range
