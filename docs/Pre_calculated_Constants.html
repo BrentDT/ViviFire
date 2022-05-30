@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Pre_calculated_Constants.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -48,31 +48,31 @@ These constants can have one of two data types&mdash;integer or string.</p>
 <tr><th><code>%NUL, %NULL</code></th>
 	<td>0 (&amp;H0000)</td>
 	<td>Null</td></tr>
-<tr><th><code>%A, %BEL, %BELL</code></th>
+<tr><th><code>%BEL, %BELL</code></th>
 	<td>7 (&amp;H0007)</td>
 	<td>Audible bell</td></tr>
-<tr><th><code>%B, %BS, %BACKSPC</code></th>
+<tr><th><code>%BS, %BACKSPC</code></th>
 	<td>8 (&amp;H0008)</td>
 	<td>Backspace</td></tr>
-<tr><th><code>%T, %TAB</code></th>
+<tr><th><code>%HT, %TAB</code></th>
 	<td>9 (&amp;H0009)</td>
 	<td>Horizontal tab</td></tr>
 <tr><th><code>%LF, %LINEFEED</code></th>
 	<td>10 (&amp;H000A)</td>
 	<td>Line feed</td></tr>
-<tr><th><code>%V, %VT, %VTAB</code></th>
+<tr><th><code>%VT, %VTAB</code></th>
 	<td>11 (&amp;H000B)</td>
 	<td>Vertical tab</td></tr>
 <tr><th><code>%FF, %FORMFEED</code></th>
 	<td>12 (&amp;H000C)</td>
 	<td>Form feed</td></tr>
-<tr><th><code>%R, %CR, %RETURN</code></th>
+<tr><th><code>%CR, %RETURN</code></th>
 	<td>13 (&amp;H000D)</td>
 	<td>Carriage return</td></tr>
-<tr><th><code>%E, %ESC, %ESCAPE</code></th>
+<tr><th><code>%ESC, %ESCAPE</code></th>
 	<td>27 (&amp;H001B)</td>
 	<td>Escape</td></tr>
-<tr><th><code>%S, %SPC, %SPACE</code></th>
+<tr><th><code>%SPC, %SPACE</code></th>
 	<td>32 (&amp;H0020)</td>
 	<td>Space</td></tr>
 </tbody>
@@ -88,21 +88,21 @@ For the syntax of string constants, see <a href="String_Basics.html">String Basi
 <tbody>
 <tr><th><code>$T, $TAB</code></th>
 	<td>Horizontal tab</td>
-	<td><code>$9, $H9, $O11, $B1001</code></td></tr>
+	<td><code>$9, $U9, $O11, $B1001</code></td></tr>
 <tr><th><code>$LF, $LINEFEED</code></th>
 	<td>Line feed</td>
-	<td><code>$10, $HA, $O12, $B1010</code></td></tr>
+	<td><code>$10, $U0A, $O12, $B1010</code></td></tr>
 <tr><th><code>$FF, $FORMFEED</code></th>
-	<td>Form feed</td>	<td><code>$12, $HC, $O14, $B1100</code></td></tr>
+	<td>Form feed</td>	<td><code>$12, $U0C, $O14, $B1100</code></td></tr>
 <tr><th><code>$R, $CR, $RETURN</code></th>
 	<td>Carriage return</td>
-	<td><code>$13, $HD, $O15, $B1101</code></td></tr>
+	<td><code>$13, $U0D, $O15, $B1101</code></td></tr>
 <tr><th><code>$E, $ESC, $ESCAPE</code></th>
 	<td>Escape</td>
-	<td><code>$27, $H1B, $O33, $B11011</code></td></tr>
+	<td><code>$27, $U1B, $O33, $B11011</code></td></tr>
 <tr><th><code>$S, $SPC, $SPACE</code></th>
 	<td>Space</td>
-	<td><code>$32, $H20, $O40, $B100000</code></td></tr>
+	<td><code>$32, $U20, $O40, $B100000</code></td></tr>
 <tr><th><code>$N, $NL, $NEWLINE</code></th>
 	<td>Newline</td>
 	<td>(Platform-controlled)</td></tr>

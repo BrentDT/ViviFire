@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/String_Data_Type.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -20,7 +20,7 @@
 </ul>
 </nav>
 <main>
-<h1 id="top">String Data Type</h1>
+<h1 id="top"><code>String</code> Data Type</h1>
 <p>Holds a sequence of 8-bit Unicode (UTF-8) characters.
 A string can contain from zero to TBD characters.</p>
 <h2>Instructions</h2>
@@ -45,8 +45,8 @@ For example, <code class="op">&quot;&quot;&quot;&quot;</code> is a string that c
 <div>Syntax</div>
 <pre><code>{ <kbd>$</kbd> <var>name</var>
 | <kbd>$</kbd> <var>decimal</var>
-| <kbd>$H</kbd> <var>hexadecimal</var>
 | <kbd>$U</kbd> <var>hexadecimal</var>
+| <kbd>$X</kbd> <var>hexadecimal</var>
 | <kbd>$O</kbd> <var>octal</var>
 | <kbd>$B</kbd> <var>binary</var> }</code></pre>
 </div>
@@ -55,8 +55,8 @@ The remaining part can be a name or a number.
 Most string constants hold a string value of one character.
 But some named constants can hold longer strings.</p>
 <p>The numbers can be in one of four bases:
-decimal (not marked), hexadecimal (starts with <code class="op">$H</code> or <code class="op">$U</code>), octal (starts with <code class="op">$O</code>), or binary (starts with <code class="op">$B</code>).</p>
-<p>For example, the space character can be <code>$32</code>, <code>$H20</code>, <code>$U20</code>, <code>$O40</code>, or <code>$B100000</code>.</p>
+decimal (not marked), hexadecimal (starts with <code class="op">$U</code> or <code class="op">$X</code>), octal (starts with <code class="op">$O</code>), or binary (starts with <code class="op">$B</code>).</p>
+<p>For example, the space character can be <code>$32</code>, <code>$U20</code>, <code>$X20</code>, <code>$O40</code>, or <code>$B100000</code>.</p>
 <p>You can use an underscore (<code class="op">_</code>) to divide long numbers into groups.
 For example, you can write the space character in binary as <code>$B0010_0000</code>.</p>
 <p>Several non-printable characters have names.

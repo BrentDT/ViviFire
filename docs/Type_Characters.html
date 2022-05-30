@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Type_Characters.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -49,7 +49,7 @@ Also, compound data types, for example, arrays and structures do not have an ide
 <h2>Default literal types</h2>
 <p>The qualities of a literal usually give it its data type.
 The table that follows gives the defaults.</p>
-<style media="all and (max-width: 40em)">
+<style media="all and (max-width: 65ch)">
 	#t2 td:nth-of-type(1):before { content: "Qualities of a literal"; }
 	#t2 td:nth-of-type(2):before { content: "Default data type"; }
 	#t2 td:nth-of-type(3):before { content: "Examples"; }
@@ -70,7 +70,7 @@ The table that follows gives the defaults.</p>
 <tr><td>Between two backtick symbols</td>
 <td><a href="Char_Data_Type.html#Char_literal"><code>Char</code></a></td>
 <td><pre><code>`A` `@`</code></pre></td></tr>
-<tr><td>Starts with a percent symbol</td>
+<tr><td>Starts with a percent symbol and a minimum of two letters</td>
 <td><code class="kw">Int</code></td>
 <td><pre><code>%CR %RETURN</code></pre></td></tr>
 <tr><td>Between two quotation symbols</td>
@@ -102,14 +102,29 @@ The table that follows gives the defaults.</p>
 </style>
 <table id="t3" class="wide language-vivifire">
 <thead>
-<tr><th>Number base</th><th>Prefix</th><th>Applicable digits</th><th>Examples</th></tr>
+<tr><th>Number base</th>
+	<th>Prefix</th>
+	<th>Applicable digits</th>
+	<th>Examples</th></tr>
 </thead>
 <tbody>
-<tr><td>Hexadecimal (base 16)</td><td class="char">&amp;H</td><td>0&ndash;9 A&ndash;F</td><td><pre><code>&amp;HFFF &amp;HFF_00_2A</code></pre></td></tr>
-<tr><td>Octal (base 8)</td><td class="char">&amp;O</td><td>0&ndash;7</td><td><pre><code>&amp;O777 &amp;O377_777</code></pre></td></tr>
-<tr><td>Binary (base 2)</td><td class="char">&amp;B</td><td>0 1</td><td><pre><code>&amp;B101010 &amp;B11111111_11111111</code></pre></td></tr>
+<tr><td>Hexadecimal (base 16)</td>
+	<td><code>%X</code> or <code>%x</code></td>
+	<td>0&ndash;9 A&ndash;F</td>
+	<td><pre><code>%X0FFF %x0ff_00_2a</code></pre></td></tr>
+<tr><td>Octal (base 8)</td>
+	<td><code>%O</code> or <code>%o</code></td>
+	<td>0&ndash;7</td>
+	<td><pre><code>%O777 %o377_777</code></pre></td></tr>
+<tr><td>Binary (base 2)</td>
+	<td><code>%B</code> or <code>%b</code></td>
+	<td>0 1</td>
+	<td><pre><code>%B101010 %b11111111_11111111</code></pre></td></tr>
 </tbody>
 </table>
+<p class="note">Note:
+Hexadecimal literals must have a number (0&ndash;9) or underscore (<code>_</code>) immediately after X.
+If you put a letter after X, then it will be seen as a named constant.</p>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Data_Type_Summary.html">Data Type Summary</a></li>

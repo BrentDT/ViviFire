@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/String_Basics.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -18,7 +18,7 @@
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
 <li><a href="Language_Features.html">Language Features</a></li>
 <li><a href="Strings.html">Strings</a></li>
-<li><a href="Introduction_to_Strings.html">Introduction to Strings</a></li>
+<li><a rel="parent" href="Introduction_to_Strings.html">Introduction to Strings</a></li>
 </ul>
 </nav>
 <main>
@@ -52,23 +52,24 @@ An example follows.</p>
     _"-- Larry Wall"&#10;</code></pre>
 </div>
 <h2>String constants</h2>
-<div class="language-vivifire syntax">
+<div class="language-literal">
 <div>One of these</div>
-<pre><code>$ decimal
-$B binary
-$H hexadecimal
-$O octal
-$ name&#10;</code></pre>
+<pre><code><kbd>$</kbd> <var>decimal</var>
+<kbd>$B</kbd> <var>binary</var>
+<kbd>$O</kbd> <var>octal</var>
+<kbd>$U</kbd> <var>hexadecimal</var>
+<kbd>$X</kbd> <var>hexadecimal</var>
+<kbd>$</kbd> <var>name</var>&#10;</code></pre>
 </div>
 <dl class="parts">
 <dt><code class="id">decimal</code></dt>
 <dd>A decimal (base-10) integer.</dd>
 <dt><code class="id">binary</code></dt>
 <dd>A binary (base-2) integer.</dd>
-<dt><code class="id">hexadecimal</code></dt>
-<dd>A hexadecimal (base-16) integer.</dd>
 <dt><code class="id">octal</code></dt>
 <dd>An octal (base-8) integer.</dd>
+<dt><code class="id">hexadecimal</code></dt>
+<dd>A hexadecimal (base-16) integer.</dd>
 <dt><code class="id">name</code></dt>
 <dd>An abbreviation for a frequently used string.</dd>
 </dl>
