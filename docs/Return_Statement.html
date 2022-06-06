@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Return_Statement.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -17,7 +17,7 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Statements_Reference.html">Statements</a></li>
-<li><a href="Statements_3.html">Q&ndash;Z Statements</a></li>
+<li><a rel="parent" href="Statements_3.html">Q&ndash;Z Statements</a></li>
 </ul>
 </nav>
 <main>
@@ -46,7 +46,17 @@ As an alternative, you can assign <code class="id">expression</code> to the name
 And if <code class="kw">Return</code> includes <code class="id">expression</code>, then it gets calculated after <code class="kw">End Try</code>.
 <code class="kw">Return</code> is not permitted in blocks of the type <code class="kw">Finally</code>.</p>
 <h2>Examples</h2>
-<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>Method RelativeTime(sec As Int) As String
+    If sec < 2*60 Return "seconds"
+    If sec < 2*60*60 Return "minutes"
+    If sec < 2*24*60*60 Return "hours"
+    If sec < 2*7*24*60*60 Return "days"
+    If sec < 2*30*24*60*60 Return "weeks"
+    If sec < 2*365*24*60*60 Return "months"
+    Return "years"
+End Method&#10;</code></pre>
+</div>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Exit_Statement.html">Exit Statement</a></li>
