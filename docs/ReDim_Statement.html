@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/ReDim_Statement.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -17,12 +17,12 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Statements_Reference.html">Statements</a></li>
-<li><a href="Statements_3.html">Q&ndash;Z Statements</a></li>
+<li><a rel="parent" href="Statements_3.html">Q&ndash;Z Statements</a></li>
 </ul>
 </nav>
 <main>
-<h1 id="top">ReDim Statement</h1>
-<p>Allocates memory for an array variable.</p>
+<h1 id="top"><code>ReDim</code> Statement</h1>
+<p>Allocates new memory for an array variable.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <pre><code>ReDim name ( dimensions ) [ , name ( dimensions ) ]&hellip;&#10;</code></pre>
@@ -35,12 +35,37 @@
 <dd>One or more integer expressions, with a comma between each, all between parentheses.</dd>
 </dl>
 <h2>Instructions</h2>
-<p>TODO</p>
+<p>You can use the statement <code class="kw">ReDim</code> to change the size of one or more dimensions of an array variable.
+If you make a large array and several elements are not used, then <code class="kw">ReDim</code> can release memory with a smaller array.
+But, if your array is too small, then <code class="kw">ReDim</code> can add elements.</p>
+<p>You use <code class="kw">ReDim</code> only with arrays.
+You cannot use <code class="kw">ReDim</code> with scalars (variables that contain only one value) or structures.</p>
+<h2>Rules</h2>
+<dl>
+<dt>Array bounds</dt>
+<dd>Each dimension has a minimum index of zero and a maximum index that you supply.
+The supplied number is not the size of the dimension.
+The size of the dimension is the maximum index plus one.</dd>
+<dd>The number of dimensions (rank) must be the same as those in the array declaration.</dd>
+<dt>Data type</dt>
+<dd><code class="kw">ReDim</code> cannot change the data type of the elements of an array.</dd>
+<dt>Rank</dt>
+<dd><code class="kw">ReDim</code> cannot change the number of dimensions (rank) of the array.</dd>
+</dl>
+<h2>Behavior</h2>
+<dl>
+<dt>Replacement array</dt>
+<dd><code class="kw">ReDim</code> releases the memory used by the array, then makes a new array with the same rank.
+The new array replaces the released array in the array variable.</dd>
+<dt>Initialization</dt>
+<dd><code class="kw">ReDim</code> initializes the elements of the new array with the default value for the data type.</dd>
+</dl>
 <h2>Examples</h2>
 <p>TODO</p>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Dim_Statement.html">Dim Statement</a></li>
+<li><a href="Default_Values.html">Default Values</a></li>
 </ul>
 </main>
 <script src="common.js"></script>
