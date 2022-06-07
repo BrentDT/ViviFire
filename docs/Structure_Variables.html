@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Structure_Variables.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -17,7 +17,7 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
 <li><a href="Language_Features.html">Language Features</a></li>
-<li><a href="Data_Types.html">Data Types</a></li>
+<li><a rel="parent" href="Data_Types.html">Data Types</a></li>
 </ul>
 </nav>
 <main id="stub">
@@ -31,8 +31,12 @@ You write the member access operator (<code class="op">.</code>) between the str
 <pre><code>structure.member = 42
 Print structure.member&#10;</code></pre>
 </div>
-<h2>Assignment of structure values</h2>
-<p>TODO</p>
+<h2>Assignment to structure variables</h2>
+<p>You can do assignment with structure variables, but only if they are the same structure type.
+This copies all the elements of one structure to the same elements of the other.</p>
+<!-- TODO code -->
+<p>If a structure element is a reference type (these include objects, strings, and arrays), then the pointer to the data is copied.
+Thus, a change to an object element through one structure then shows the same change when you go through the other structure.</p>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Composite_Data_Types.html">Composite Data Types</a></li>
