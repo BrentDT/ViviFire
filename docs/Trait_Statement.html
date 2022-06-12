@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Trait_Statement.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -17,12 +17,12 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Statements_Reference.html">Statements</a></li>
-<li><a href="Statements_3.html">Q&ndash;Z Statements</a></li>
+<li><a rel="parent" href="Statements_3.html">Q&ndash;Z Statements</a></li>
 </ul>
 </nav>
 <main>
-<h1 id="top">Trait Statement</h1>
-<p>Makes a trait, a construct that changes how a class behaves.</p>
+<h1 id="top"><code>Trait</code> Statement</h1>
+<p>Makes a trait, a construct that changes how a class or structure behaves.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <pre><code>[ @Abstract ] Trait trait_name [ type_list ] [ Does parent_trait ]&hellip;
@@ -56,6 +56,17 @@ You can also use <code class="kw">End Trait</code>.</dd>
 See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
 </dl>
 <h2>Instructions</h2>
+<p>A trait defines a set of members that can become a part of the interface of classes and structures.
+If the trait does not implement a method or property, then the class or structure must implement it.
+A trait that supplies only an interface, and does not implement its methods or properties, is known as an <dfn>abstract trait</dfn>.</p>
+<p>When you make a class or structure that uses a trait, the code supplied by the trait becomes part of your class or structure.
+If a trait member is not implemented, then you must implement that member in your class or structure.</p>
+<p>You can use Trait only at module level.
+The declaration context can be a class, structure, module, or trait, and cannot be a procedure or block.
+See <a href="Declaration_Contexts_and_Default_Access_Levels.html">Declaration Contexts and Default Access Levels</a> for more information.</p>
+<h2>Rules</h2>
+<p>TODO</p>
+<h2>Behavior</h2>
 <p>TODO</p>
 <h2>Examples</h2>
 <p>TODO</p>
@@ -63,6 +74,8 @@ See <a href="Option_Directive.html">@Option Directive</a> for more information.<
 <ul class="articles">
 <li><a href="Class_Statement.html">Class Statement</a></li>
 <li><a href="Method_Statement.html">Method Statement</a></li>
+<li><a href="Property_Statement.html">Property Statement</a></li>
+<li><a href="Struct_Statement.html">Struct Statement</a></li>
 <li><a href="Traits.html">Traits</a></li>
 </ul>
 </main>
