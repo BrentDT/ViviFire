@@ -23,8 +23,6 @@
 #endif
 #include "Args.h"
 #include "AST.h"
-#include "DirectiveParser.h"
-#include "DirectiveScanner.h"
 #include "Modifier.h"
 
 #if __cplusplus >= 201703L // C++17
@@ -1191,7 +1189,9 @@ BaseUnitStatement<class Modif &mods> (. ID(L"BaseUnitStatement", 3) .)
 BitFieldType<int &tkn> (. ID(L"BitFieldType", 3) .)
 =
 	(. tkn = la->kind; .)
-	( "SBits" | "UBits" ) "(" integer_literal ")"
+	( "SBits" | "UBits" )
+	[ "[" PassableType "]" ]
+	"(" integer_literal ")"
 .
 BitShiftExpression (. ID(L"BitShift", 2) .)
 =
