@@ -1296,9 +1296,11 @@ ClassStatement<Modif &mods> (. ID(L"ClassStatement", 3) .)
 	bool bOpen     = mods.allow(Modif::Open);
 	mods.validate();
 
+	int line, col;
 	bool generic = false;
 	.)
-	"Class" identifier
+	"Class" (. line = t->line; col = t->col; .)
+	identifier
 	[ TypeParameterList<_Class> (. generic = true; .) ]
 	[ "Is" UserType ]
 	{ DoesClause }
@@ -1307,6 +1309,7 @@ ClassStatement<Modif &mods> (. ID(L"ClassStatement", 3) .)
 	{ WhereClause<_Class, generic> SyncNewline<s_name> }
 //	{ Statement } // Conflict: assignment vs var decl
 	{ ClassOrObjectMember<_Class> }
+	(. if (la->kind != _End) Err(line, col, L"CLASS without END"); .)
 	"End"
 	(. Optional(_Class); .)
 	Newline
@@ -1408,11 +1411,14 @@ ConstructorStatement<Modif &mods> (. ID(L"ConstructorStatement", 3) .)
 	(.
 	mods.allow(Modif::Deprecated);
 	mods.validate();
+
+	int line, col;
 	.)
-	"Constructor"
+	"Constructor" (. line = t->line; col = t->col; .)
 	[ FormalParameterList<_Constructor> | DimOrVar ]
 	SyncNewline<s_name>
 	{ Statement }
+	(. if (la->kind != _End) Err(line, col, L"CONSTRUCTOR without END"); .)
 	"End"
 	(. Optional(_Constructor); .)
 	Newline
@@ -1490,10 +1496,11 @@ DeclareStatement<Modif &mods> (. ID(L"DeclareStatement", 3) .)
 	mods.allow(Modif::Deprecated);
 	mods.validate();
 
+	int line, col;
 	bool bAnsi = false, bCdecl = false, bUtf16 = false;
 	.)
 	(. bool isAlias = true; .)
-	"Declare"
+	"Declare" (. line = t->line; col = t->col; .)
 	[
 		(
 			string_literal
@@ -1524,6 +1531,7 @@ DeclareStatement<Modif &mods> (. ID(L"DeclareStatement", 3) .)
 	( DeclareSignature<isAlias>
 	| SyncNewline<s_name>
 		{ DeclareSignature<isAlias> Newline }
+	(. if (la->kind != _End) Err(line, col, L"DECLARE without END"); .)
 		"End"
 		(. Optional(_Declare); .)
 	)
@@ -1537,9 +1545,13 @@ DestructorStatement<Modif &mods> (. ID(L"DestructorStatement", 3) .)
 =
 	(.
 	mods.validate();
+
+	int line, col;
 	.)
-	"Destructor" Newline
+	"Destructor" (. line = t->line; col = t->col; .)
+	Newline
 	{ Statement }
+	(. if (la->kind != _End) Err(line, col, L"DESTRUCTOR without END"); .)
 	"End"
 	(. Optional(_Destructor); .)
 	Newline
@@ -1567,10 +1579,12 @@ DoesClause (. ID(L"DoesClause", 3) .)
 .
 DoStatement (. ID(L"DoStatement", 3) .)
 =
-	"Do"
+	(. int line, col; .)
+	"Do" (. line = t->line; col = t->col; .)
 	(	// Do...Loop While/Until
 		Newline
 		[ LoopBody<POSTCONDITIONAL> ]
+	(. if (la->kind != _Loop) Err(line, col, L"DO without LOOP"); .)
 		"Loop" WhileOrUntil Expression
 		SyncNewline<s_name>
 	|	// Do While/Until...Loop
@@ -1631,8 +1645,10 @@ EnumStatement<Modif &mods> (. ID(L"EnumStatement", 3) .)
 	bool bOpen     = mods.allow(Modif::Open);
 	bool bUnique   = mods.allow(Modif::Unique);
 	mods.validate();
+
+	int line, col;
 	.)
-	"Enum"
+	"Enum" (. line = t->line; col = t->col; .)
 	( identifier
 	| (. if (bFlags || bOpen || option.Enum_id) {
 		const wchar_t *reason = (bFlags) ? L"@FLAGS" : (bOpen) ? L"@OPEN" : L"@OPTION";
@@ -1651,6 +1667,7 @@ EnumStatement<Modif &mods> (. ID(L"EnumStatement", 3) .)
 	)
 	SyncNewline<s_name>
 	{ EnumMember }
+	(. if (la->kind != _End) Err(line, col, L"ENUM without END"); .)
 	"End"
 	(. Optional(_Enum); .)
 	Newline
@@ -1714,7 +1731,8 @@ FormalParameterModifier<param_type &param> (. ID(L"FormalParameterModifier", 3) 
 .
 ForStatement (. ID(L"ForStatement", 3) .)
 =
-	"For"
+	(. int line, col; .)
+	"For" (. line = t->line; col = t->col; .)
 	( "Each" LoopControlVariable
 		"In" InitializationExpression
 	| LoopControlVariable
@@ -1724,13 +1742,14 @@ ForStatement (. ID(L"ForStatement", 3) .)
 	)
 	SyncNewline<s_name>
 	[ LoopBody<PRECONDITIONAL> ]
+	(. if (la->kind != _End) Err(line, col, L"FOR without END"); .)
 	"End"
 	(. Optional(_For); .)
 	Newline
 .
-FunctionSignature<Modif &mods, bool &bodied, bool &generic> (. ID(L"FunctionSignature", 3) .)
+FunctionSignature<Modif &mods, int &line, int &col, bool &bodied, bool &generic> (. ID(L"FunctionSignature", 3) .)
 =
-	"Function"
+	"Function" (. line = t->line; col = t->col; .)
 	Name
 	(. bool typed_name = (t->kind == _typed_identifier); .)
 	(
@@ -1754,13 +1773,15 @@ FunctionStatement<Modif &mods> (. ID(L"FunctionStatement", 3) .)
 	bool bShared   = mods.allow(Modif::Shared);
 	mods.validate();
 
+	int line, col;
 	bool bodied = true;
 	bool generic = false;
 	.)
-	FunctionSignature<mods, bodied, generic>
+	FunctionSignature<mods, line, col, bodied, generic>
 	[ IF (bodied)
 		{ WhereClause<_Function, generic> SyncNewline<s_name> }
 		{ Statement }
+	(. if (la->kind != _End) Err(line, col, L"FUNCTION without END"); .)
 	"End"
 	(. Optional(_Function); .)
 		Newline
@@ -1795,7 +1816,7 @@ IdentifierStatement (. ID(L"IdentifierStatement", 3) .)
 		CallOrNew<0, nullptr>
 	]
 .
-IfBlockStatement<option_type nThen> (. ID(L"IfBlockStatement", 3) .)
+IfBlockStatement<int line, int col, option_type nThen> (. ID(L"IfBlockStatement", 3) .)
 =
 	(. bool bElseSeen = false; .)
 	(. Optional(_Then, nThen); .)
@@ -1808,22 +1829,25 @@ IfBlockStatement<option_type nThen> (. ID(L"IfBlockStatement", 3) .)
 		SyncNewline<s_name>
 		{ Statement }
 	}
+	(. if (la->kind != _End) Err(line, col, L"IF without END"); .)
 	"End"
 	(. Optional(_If); .)
 .
 IfStatement (. ID(L"IfStatement", 3) .)
 =
-	"If" Expression
+	(. int line, col; .)
+	"If" (. line = t->line; col = t->col; .)
+	Expression
 	(	"Then"
 		(
-			IfBlockStatement<WITH_THEN>
+			IfBlockStatement<line, col, WITH_THEN>
 		|
 			(. if (option.If_End) SemErr(L"IF must use block construct because of @OPTION"); .)
 			( SimpleStatement | SimpleStatementError )
 			[ "Else" ( SimpleStatement | SimpleStatementError ) ]
 		)
 	|
-		IfBlockStatement<WITHOUT_THEN>
+		IfBlockStatement<line, col, WITHOUT_THEN>
 	)
 	SyncNewline<s_name>
 .
@@ -1869,8 +1893,9 @@ IsExpression (. ID(L"IsExpression", 2) .)
 /*L*/
 LambdaExpression (. ID(L"Lambda", 2) .)
 =
+	(. int line, col; .)
 	(
-		"Function"
+		"Function" (. line = t->line; col = t->col; .)
 		(
 			Name // Operator to get address.
 		|
@@ -1878,13 +1903,13 @@ LambdaExpression (. ID(L"Lambda", 2) .)
 			(
 				EnclosedExpression
 			|
-				LambdaFunction
+				LambdaFunction<line, col>
 			)
 		|
-			LambdaFunction
+			LambdaFunction<line, col>
 		)
 	|
-		"Sub"
+		"Sub" (. line = t->line; col = t->col; .)
 		(
 			Name // Operator to get address.
 		|
@@ -1892,24 +1917,26 @@ LambdaExpression (. ID(L"Lambda", 2) .)
 			(
 				EnclosedExpression
 			|
-				LambdaSub
+				LambdaSub<line, col>
 			)
 		|
-			LambdaSub
+			LambdaSub<line, col>
 		)
 	)
 .
-LambdaFunction (. ID(L"LambdaFunction", 3) .)
+LambdaFunction<int line, int col> (. ID(L"LambdaFunction", 3) .)
 =
 	SyncNewline<s_name>
 	{ Statement }
+	(. if (la->kind != _End) Err(line, col, L"FUNCTION without END"); .)
 	"End"
 	(. Optional(_Function); .)
 .
-LambdaSub (. ID(L"LambdaSub", 3) .)
+LambdaSub<int line, int col> (. ID(L"LambdaSub", 3) .)
 =
 	SyncNewline<s_name>
 	{ Statement }
+	(. if (la->kind != _End) Err(line, col, L"ESUB without END"); .)
 	"End"
 	(. Optional(_Sub); .)
 .
@@ -1977,16 +2004,19 @@ MethodStatement<Modif &mods> (. ID(L"MethodStatement", 3) .)
 	bool bOverride = mods.allow(Modif::Override);
 	bool bShared   = mods.allow(Modif::Shared);
 	mods.validate();
+
+	int line, col;
 	.)
-	MethodSignature<mods>
+	MethodSignature<mods, line, col>
 	{ Statement }
+	(. if (la->kind != _End) Err(line, col, L"METHOD without END"); .)
 	"End"
 	(. Optional(_Method); .)
 	Newline
 .
-MethodSignature<Modif &mods> (. ID(L"MethodSignature", 3) .)
+MethodSignature<Modif &mods, int &line, int &col> (. ID(L"MethodSignature", 3) .)
 =
-	"Method"
+	"Method" (. line = t->line; col = t->col; .)
 	Name
 	(. bool bReturns = (t->kind == _typed_identifier); .)
 	[
@@ -2132,6 +2162,7 @@ Name (. ID(L"Name", 3) .)
 	)
 .
 NamespaceStatement<Modif &mods> (. ID(L"NamespaceStatement", 3) .)
+//TODO: remove
 =
 	(.
 	mods.allow(Modif::Deprecated);
@@ -2146,10 +2177,11 @@ NamespaceStatement<Modif &mods> (. ID(L"NamespaceStatement", 3) .)
 NewBlockStatement (. ID(L"NewBlockStatement", 3) .)
 =
 	(.
+	int line, col;
 	bool bInitExpr = false;
 	wchar_t *type_name = nullptr; // TODO: make this a parameter
 	.)
-	"Begin"
+	"Begin" (. line = t->line; col = t->col; .)
 	[
 		"Call"
 		[
@@ -2168,6 +2200,7 @@ NewBlockStatement (. ID(L"NewBlockStatement", 3) .)
 		(. if (bInitExpr) SemErr(L"Expected END after initialization expression"); .)
 		{ NewMember }
 	]
+	(. if (la->kind != _End) Err(line, col, L"NEW...BEGIN without END"); .)
 	"End"
 	(
 		"New"
@@ -2216,12 +2249,16 @@ ObjectStatement<Modif *mods> (. ID(L"ObjectStatement", 3) .)
 	mods ? mods->allow(Modif::Deprecated) : false;
 	bool bShared = mods ? mods->allow(Modif::Shared) : false;
 	if (mods) mods->validate();
+
+	int line, col;
 	.)
-	"Object" ObjectName
+	"Object" (. line = t->line; col = t->col; .)
+	ObjectName
 	[ "Is" UserType ]
 	{ DoesClause }
 	SyncNewline<s_name>
 	{ ClassOrObjectMember<_Object> }
+	(. if (la->kind != _End) Err(line, col, L"OBJECT without END"); .)
 	"End"
 	(. Optional(_Object); .)
 	Newline
@@ -2295,10 +2332,10 @@ PrimitiveType<bool bBits> (. ID(L"PrimitiveType", 3) .)
 ///	Name
 ///	[ IF (IsCall()) EnclosedArgumentList ]
 ///.
-PropertySignature<Modif &mods> (. ID(L"PropertySignature", 3) .)
+PropertySignature<Modif &mods, int &line, int &col> (. ID(L"PropertySignature", 3) .)
 =
 	(. bool explicit_array = false; .)
-	"Property"
+	"Property" (. line = t->line; col = t->col; .)
 	[ DimOrVar (. explicit_array = true; .) ]
 	( IF (IsPropertySelf())
 		( typed_identifier | "Self" ) (. if (explicit_array) SemErr(L"Cannot use DIM or VAR with SELF"); .)
@@ -2323,8 +2360,10 @@ PropertyStatement<Modif &mods> (. ID(L"PropertyStatement", 3) .)
 	bool bShared    = mods.allow(Modif::Shared);
 	bool bWriteOnly = mods.allow(Modif::WriteOnly);
 	mods.validate();
+
+	int line, col;
 	.)
-	PropertySignature<mods>
+	PropertySignature<mods, line, col>
 	[ IF (la->kind == _Get || la->kind == _Set)
 		[	"Get" Newline
 			{ Statement }
@@ -2332,6 +2371,7 @@ PropertyStatement<Modif &mods> (. ID(L"PropertyStatement", 3) .)
 		[	"Set" [ FormalParameterList<_Set> ] SyncNewline<s_name>  //TODO: only one param
 			{ Statement }
 		]
+	(. if (la->kind != _End) Err(line, col, L"PROPERTY without END"); .)
 		"End"
 	(. Optional(_Property); .)
 		Newline
@@ -2407,12 +2447,16 @@ ReturnTypeClause (. ID(L"ReturnTypeClause", 3) .)
 /*S*/
 SelectStatement (. ID(L"SelectStatement", 3) .)
 =
-	(. case_type clause = CASE_ZERO; .)
-	"Select"
+	(.
+	int line, col;
+	case_type clause = CASE_ZERO;
+	.)
+	"Select" (. line = t->line; col = t->col; .)
 	(. Optional(_Case); .)
 	Expression
 	SyncNewline<s_name>
 	{ CaseClause<clause> }
+	(. if (la->kind != _End) Err(line, col, L"SELECT without END"); .)
 	"End"
 		(. if (clause == CASE_ZERO) SemErr(L"SELECT must have a minimum of one CASE"); .)
 		(. if (option.Select_Else == SELECT_ELSE && clause != CASE_ELSE) SemErr(L"SELECT must have CASE ELSE because of @OPTION"); .)
@@ -2486,9 +2530,11 @@ StructStatement<Modif &mods> (. ID(L"StructStatement", 3) .)
 	bool bMustUse  = mods.allow(Modif::MustUse);
 	mods.validate();
 
+	int line, col;
 	bool generic = false;
 	.)
-	"Struct" identifier
+	"Struct" (. line = t->line; col = t->col; .)
+	identifier
 	[ TypeParameterList<_Struct> (. generic = true; .) ]
 	[ "Is" ValueType ]
 	{ DoesClause }
@@ -2497,6 +2543,7 @@ StructStatement<Modif &mods> (. ID(L"StructStatement", 3) .)
 	{ WhereClause<_Struct, generic> SyncNewline<s_name> }
 	{ StructState }
 	{ StructProcedure }
+	(. if (la->kind != _End) Err(line, col, L"STRUCT without END"); .)
 	"End"
 	(. Optional(_Struct); .)
 	Newline
@@ -2535,9 +2582,9 @@ StructState (. ID(L"StructState", 3) .)
 		ClassStatement<mods>
 	)
 .
-SubSignature<Modif &mods, bool &bGeneric> (. ID(L"SubSignature", 3) .)
+SubSignature<Modif &mods, int &line, int &col, bool &bGeneric> (. ID(L"SubSignature", 3) .)
 =
-	"Sub"
+	"Sub" (. line = t->line; col = t->col; .)
 	Name
 	(. bool bReturns = (t->kind == _typed_identifier); .)
 	[
@@ -2580,14 +2627,16 @@ SubStatement<Modif &mods> (. ID(L"SubStatement", 3) .)
 	bool bShared   = mods.allow(Modif::Shared);
 	mods.validate();
 
+	int line, col;
 	bool bGeneric = false;
 	.)
-	SubSignature<mods, bGeneric>
+	SubSignature<mods, line, col, bGeneric>
 	{
 		WhereClause<_Sub, bGeneric>
 		SyncNewline<s_name>
 	}
 	{ Statement }
+	(. if (la->kind != _End) Err(line, col, L"SUB without END"); .)
 	"End"
 	(. Optional(_Sub); .)
 	Newline
@@ -2625,27 +2674,33 @@ TraitStatement<Modif &mods> (. ID(L"TraitStatement", 3) .)
 	mods.allow(Modif::Deprecated);
 	mods.validate();
 
+	int line, col;
 	bool generic = false;
 	.)
-	"Trait" identifier
+	"Trait" (. line = t->line; col = t->col; .)
+	identifier
 	[ TypeParameterList<_Trait> (. generic = true; .) ]
 	{ DoesClause }
 	[ WhereClause<_Trait, generic> ]
 	SyncNewline<s_name>
 	{ WhereClause<_Trait, generic> SyncNewline<s_name> }
 	{ TraitMember }
+	(. if (la->kind != _End) Err(line, col, L"TRAIT without END"); .)
 	"End"
 	(. Optional(_Trait); .)
 	Newline
 .
 TryStatement (. ID(L"TryStatement", 3) .)
 =
-	"Try" Newline
+	(. int line, col; .)
+	"Try" (. line = t->line; col = t->col; .)
+	Newline
 	{ Statement }
 	{ CatchClause }
 	[	"Finally" Newline
 		{ Statement }
 	]
+	(. if (la->kind != _End) Err(line, col, L"TRY without END"); .)
 	"End"
 	(. Optional(_Try); .)
 	Newline
@@ -2851,8 +2906,12 @@ WhileOrUntil (. ID(L"WhileOrUntil", 3) .)
 .
 WhileStatement (. ID(L"WhileStatement", 3) .)
 =
-	"While" Expression SyncNewline<s_name>
+	(. int line, col; .)
+	"While" (. line = t->line; col = t->col; .)
+	Expression
+	SyncNewline<s_name>
 	[ LoopBody<PRECONDITIONAL> ]
+	(. if (la->kind != _End) Err(line, col, L"WHILE without END"); .)
 	"End"
 	(. Optional(_While); .)
 	Newline
