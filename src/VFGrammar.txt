@@ -23,6 +23,8 @@
 #endif
 #include "Args.h"
 #include "AST.h"
+#include "DirectiveParser.h"
+#include "DirectiveScanner.h"
 #include "Modifier.h"
 
 #if __cplusplus >= 201703L // C++17
@@ -1064,33 +1066,22 @@ LineContinuation = '_'{notEOL}eol[n].
 
 // Directives
 
-atOption = "@Option". (. option.Parse(); .)
-atError  = "@Error". (.
-	int l = la->line, c = la->col;
-	Get();
-	if (la->kind == _string_literal) {
-		Get();
-		Err(l, c, t->val);
-	} else SynErr(_string_literal); .)
-atWarn   = "@Warn". (.
-	Get();
-	if (la->kind == _string_literal) {
-		Get();
-		Warn(t->val);
-	} else SynErr(_string_literal); .)
+atOption = "@Option"{notEOL}. //TODO
+atError  = "@Error"{notEOL}. //TODO
+atWarn   = "@Warn"{notEOL}. //TODO
 
 // Conditional compilation
 
-atIf   = "@If".    (. CCEval(); .)
-atElse = "@Else".  (. CCEval(); .)
-atEnd  = "@End".   (. CCEval(); .)
+atIf   = "@If"{notEOL}.    //TODO
+atElse = "@Else"{notEOL}.  //TODO
+atEnd  = "@End"{notEOL}.   //TODO
 
 // Comments
 
 InlineComment = ("'"|"//"){notEOL}. (.
 	if (option.test) ParseInlineComment(); .)
 
-MidlineComment = "/'"{"#"|alnum|"_"|"."|"-"|"/"|sigil}"'/".
+MidlineComment = "/'"{"#"|alnum|"_"|"."|"-"|"/"|":"|sigil}"'/".
 
 ///COMMENTS FROM "/*" TO "*/" NESTED  // C-style
 ///COMMENTS FROM "/'" TO "'/" NESTED
