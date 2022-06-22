@@ -796,6 +796,8 @@ notEOL = ANY - ctrl - eol.
 
 alpha = 'A' .. 'Z'.
 alnum = alpha + '0' .. '9'.
+alNotX = alpha - 'X'.
+alNotHex = alpha - "ABCDEF".
 sigil = "!$%@".
 
 bin = "01".
@@ -883,12 +885,14 @@ malformed_fixed_literal =
 	).
 
 integer_constant =
-	"%"alpha alpha{["_"]alnum}.
+	( "%"alNotX alpha{["_"]alnum}
+	| "%X"alNotHex{["_"]alnum}
+	).
 
 integer_literal =
 	( "%B"["_"]bin{["_"]bin}
 	| "%O"["_"]oct{["_"]oct}
-	| "%X"(dec|"_")hex{["_"]hex}
+	| "%X"["_"]hex{["_"]hex}
 	| dec{['_']dec}
 	// Prevent misparsing units (eg "312electronvolts") as real_literal.
 	| dec{['_']dec} CONTEXT ("E"alpha)
