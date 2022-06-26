@@ -31,8 +31,8 @@ Begin
     .Height = 120
     .Width = 300
 
-    New Static text, _
-        Caption := "There have been no clicks yet.", _
+    New Static text,
+        Caption := "There have been no clicks yet.",
         Left := 30, Top := 20
 
     New Button button1,
