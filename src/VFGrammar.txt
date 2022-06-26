@@ -2753,18 +2753,12 @@ UnaryOperator (. ID(L"UnaryOperator", 3) .)
 =
 	( '+' | '-' | "Not" )
 .
-///UnenclosedArgument (. ID(L"UnenclosedArgument", 3) .)
-///=
-///	( line_break Argument
-///	| Argument
-///	)
-///.
 UnenclosedArgumentList (. ID(L"UnenclosedArgumentList", 3) .)
 =
 	(
 		Argument
 	|
-		comma (. SemErr(L"Argument list cannot start with comma"); .)
+		comma (. SemErr(L"First argument is missing"); .)
 	)
 	{
 		WEAK comma
@@ -2774,7 +2768,7 @@ UnenclosedArgumentList (. ID(L"UnenclosedArgumentList", 3) .)
 			(. /* TODO: empty arg */ .)
 		)
 	}
-	(. if (t->kind == _comma) SemErr(L"Argument list cannot end with comma"); .)
+	(. if (t->kind == _comma) SemErr(L"Last argument is missing"); .)
 .
 UnenclosedParameterList<int parent> (. ID(L"UnenclosedParameterList", 3) .)
 =
