@@ -2762,10 +2762,12 @@ UnenclosedArgumentList (. ID(L"UnenclosedArgumentList", 3) .)
 	)
 	{
 		WEAK comma
-		(
+		( IF (la->kind == _line_break)
+			Newline
 			Argument
 		|
-			(. /* TODO: empty arg */ .)
+			Argument
+		|
 		)
 	}
 	(. if (t->kind == _comma) SemErr(L"Last argument is missing"); .)
