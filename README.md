@@ -35,8 +35,8 @@ Begin
         Caption := "There have been no clicks yet.", _
         Left := 30, Top := 20
 
-    New Button button1, _
-        Caption := "Click me", _
+    New Button button1,
+        Caption := "Click me",
         Left := 100, Top := 50, Height := 25, Width := 100
     Begin
         .OnClick = Sub
