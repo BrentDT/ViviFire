@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Call_Statement.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -17,7 +17,7 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Statements_Reference.html">Statements</a></li>
-<li><a href="Statements_1.html">A&ndash;E Statements</a></li>
+<li><a rel="parent" href="Statements_1.html">A&ndash;E Statements</a></li>
 </ul>
 </nav>
 <main>
@@ -43,13 +43,13 @@ You can also use <code class="kw">Call</code> when you discard a returned value.
 <h2>Examples</h2>
 <div class="language-vivifire listing">
 <pre><code>' The next three lines are equivalent.
-Call MyProc
 Call MyProc()
+Call MyProc
 MyProc
 
 ' The next three lines are equivalent.
-Call MyProc 1, 2, 3
 Call MyProc(1, 2, 3)
+Call MyProc 1, 2, 3
 MyProc(1, 2, 3)
 
 Sub MyProc(Optional a As Int, b As Int, c As Int)
@@ -59,6 +59,7 @@ End Sub&#10;</code></pre>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Call_Base_Statement.html">Call Base Statement</a></li>
+<li><a href="Call_Constructor_Statement.html">Call Constructor Statement</a></li>
 <li><a href="Declare_Statement.html">Declare Statement</a></li>
 <li><a href="Function_Statement.html">Function Statement</a></li>
 <li><a href="Method_Statement.html">Method Statement</a></li>
