@@ -1097,7 +1097,8 @@ ViviFire (. ID(L"ViviFire", 3) .)
 	Module
 
 	// Catch errors in block statements.
-	[ "Case"         (. SemErr(L"CASE without SELECT"); .)
+	[ "Begin"        (. SemErr(L"BEGIN without NEW or loop"); .)
+	| "Case"         (. SemErr(L"CASE without SELECT"); .)
 	| "Catch"        (. SemErr(L"CATCH without TRY"); .)
 	| "Constructor"  (. SemErr(L"CONSTRUCTOR without CLASS"); .)
 	| "Destructor"   (. SemErr(L"DESTRUCTOR without CLASS"); .)
