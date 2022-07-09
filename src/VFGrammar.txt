@@ -273,7 +273,7 @@ void Optional(int kind, option_type nOption = OPTION_DEFAULT) {
 	case _Function:     // End [ Function ]
 	case _If:           // End [ If ]
 	case _Method:       // End [ Method ]
-	case _Namespace:    // End [ Namespace ]
+///	case _Namespace:    // End [ Namespace ]
 	case _Object:       // End [ Object ]
 	case _Property:     // End [ Property ]
 	case _Select:       // End [ Select ]
@@ -1012,7 +1012,7 @@ Library     = "Library".
 Loop        = "Loop".
 Method      = "Method".
 Mod         = "Mod".
-Namespace   = "Namespace".
+///Namespace   = "Namespace".
 New         = "New".
 Not         = "Not".
 Object      = "Object".
@@ -2135,7 +2135,7 @@ ModuleMember (. ID(L"ModuleMember", 3) .)
 	| EnumStatement<mods>
 	| FunctionStatement<mods>
 	| MethodStatement<mods>
-	| NamespaceStatement<mods>
+///	| NamespaceStatement<mods>
 	| NewStatement<&mods>
 	| ObjectStatement<&mods>
 	| PropertyStatement<mods>
@@ -2168,19 +2168,18 @@ Name (. ID(L"Name", 3) .)
 	| typed_identifier
 	)
 .
-NamespaceStatement<Modif &mods> (. ID(L"NamespaceStatement", 3) .)
-//TODO: remove
-=
-	(.
-	mods.allow(Modif::Deprecated);
-	mods.validate();
-	.)
-	"Namespace" QualifiedName<_identifier> SyncNewline<s_name>
-	{ ModuleMember }
-	"End"
-	(. Optional(_Namespace); .)
-	Newline
-.
+///NamespaceStatement<Modif &mods> (. ID(L"NamespaceStatement", 3) .)
+///=
+///	(.
+///	mods.allow(Modif::Deprecated);
+///	mods.validate();
+///	.)
+///	"Namespace" QualifiedName<_identifier> SyncNewline<s_name>
+///	{ ModuleMember }
+///	"End"
+///	(. Optional(_Namespace); .)
+///	Newline
+///.
 NewBlockStatement (. ID(L"NewBlockStatement", 3) .)
 =
 	(.
