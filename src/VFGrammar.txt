@@ -689,7 +689,7 @@ const wchar_t *SIGILS = L"%!$@";
 bool IsAssignmentOp() {
 	switch (la->kind) {
 	case _concatenation: case _plus: case _minus: case _asterisk: case _slash:
-	case _Mod: case _Rem: case _SHL: case _SHR: case _And: case _Or: case _Xor:
+	case _Div: case _Mod: case _Rem: case _SHL: case _SHR: case _And: case _Or: case _Xor:
 		if (scanner->Peek()->kind != _equals) return false;
 	case _equals: case _colon_equals:
 		return true;
@@ -982,6 +982,7 @@ DateTime        = "DateTime".
 Declare     = "Declare".
 Destructor  = "Destructor".
 Dim         = "Dim".
+Div         = "Div".
 Do          = "Do".
 Does        = "Does".
 Each        = "Each".
@@ -1158,7 +1159,7 @@ ArrayDimensionList (. ID(L"ArrayDimensionList", 3) .)
 .
 AssignmentOperator (. ID(L"AssignmentOperator", 3) .)
 =
-	[ concatenation | "+" | "-" | "*" | "/" | "Mod" | "Rem" | "SHL" | "SHR" | "And" | "Or" | "Xor" ]
+	[ concatenation | "+" | "-" | "*" | "/" | "Div" | "Mod" | "Rem" | "SHL" | "SHR" | "And" | "Or" | "Xor" ]
 	"="
 .
 AssignmentStatement (. ID(L"AssignmentStatement", 3) .)
@@ -1579,6 +1580,14 @@ DimStatement<Modif &mods> (. ID(L"DimStatement", 3) .)
 	DimOrVar
 	DeclaratorList<NO_BITS>
 	SyncNewline<s_name>
+.
+DivFunction (. ID(L"Div", 2) .)
+=
+	"Div"
+	"(" Expression
+	comma Expression
+	[ comma Expression ]
+	")"
 .
 DoesClause (. ID(L"DoesClause", 3) .)
 =
@@ -2158,7 +2167,7 @@ MultiplicativeExpression (. ID(L"Multiplicative", 2) .)
 .
 MultiplicativeOperator (. ID(L"MultiplicativeOperator", 3) .)
 =
-	( '*' | '/' | "Mod" | "Rem" )
+	( '*' | '/' | "Div" | "Mod" | "Rem" )
 .
 /*N*/
 Name (. ID(L"Name", 3) .)
@@ -2312,6 +2321,7 @@ PrimaryExpression (. ID(L"Primary", 2) .)
 		}
 	| PrimitiveType<YES_BITS>
 	| "(" EnclosedExpression ")"
+	| DivFunction
 	| "Base"
 	| "Self"
 	| "#Null"
