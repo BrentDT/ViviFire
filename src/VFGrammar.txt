@@ -1584,9 +1584,9 @@ DimStatement<Modif &mods> (. ID(L"DimStatement", 3) .)
 DivFunction (. ID(L"Div", 2) .)
 =
 	"Div"
-	"(" Expression
-	comma Expression
-	[ comma Expression ]
+	"(" EnclosedExpression
+	comma EnclosedExpression
+	[ comma EnclosedExpression ]
 	")"
 .
 DoesClause (. ID(L"DoesClause", 3) .)
