@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Div= Operator - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Div_Equals_Operator.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a href="Operators.html">Operators</a></li>
+<li><a rel="parent" href="Assignment_Operators.html">Assignment Operators</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top"><code>Div=</code> Operator</h1>
+<p>Divides the value of a variable by the value of an expression, then changes the variable to the result, if the expression is not zero.
+If the expression is zero, then the variable becomes zero.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>variable Div= expression&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="id">variable</code></dt>
+<dd>A numeric variable or property.</dd>
+<dt><code class="id">expression</code></dt>
+<dd>A numeric expression.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>The two statements that follow operate the same.</p>
+<div class="language-vivifire listing">
+<pre><code>variable Div= expression
+variable = variable Div expression&#10;</code></pre>
+</div>
+<p>The element on the left side of <code class="op">Div=</code> can be a scalar variable, a property, or an element of an array.
+If it is a property, then it cannot have the modifier <code class="at">@ReadOnly</code>.</p>
+<p><code class="op">Div=</code> divides the variable or property on its left side by the value on its right side to get a quotient.
+If the value of the right side is not zero, then it changes the variable or property on its left side to the quotient.
+But if the value on the right side is zero, then it changes the variable to zero.</p>
+<p><code class="op">Div=</code> is an alternative to <code class="op">/=</code>.
+<code class="op">/=</code> can cause an exception for some values.
+But you can use <code class="op">Div=</code> where you can safely ignore the result of division by zero.</p>
+<h3>Data types</h3>
+<p>TODO</p>
+<h2>Examples</h2>
+<div class="language-vivifire listing">
+<pre><code>x = 84
+x Div= 2
+y = x
+y Div= 0&#10;</code></pre>
+</div>
+<table class="result">
+<caption>After execution</caption>
+<thead>
+<tr><th>variable</th><th>value</th></tr>
+</thead>
+<tbody>
+<tr><td><code>x</code></td><td><samp>42</samp></td></tr>
+<tr><td><code>y</code></td><td><samp>0</samp></td></tr>
+</tbody>
+</table>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Div_Operator.html">Div Operator</a></li>
+<li><a href="Slash_Equals_Operator.html">/= Operator</a></li>
+<li><a href="Mod_Equals_Operator.html">Mod= Operator</a></li>
+<li><a href="Rem_Equals_Operator.html">Rem= Operator</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>
