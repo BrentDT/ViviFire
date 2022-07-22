@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Ampersand_Operator.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -38,11 +38,9 @@
 <h2>Result</h2>
 <p>The result is a new value of <code class="kw">String</code>.</p>
 <h2>Instructions</h2>
-<p>If <code class="id">expression_1</code> or <code class="id">expression_2</code> is not of type <code class="kw">String</code>, but can become a string, then the expression changes automatically.
-If an expression cannot become a string, then ViviFire gives an error.
-A null reference (<code class="kw">#Null</code>) becomes the string <code>&quot;NULL&quot;</code>.</p>
-<p>We recommend that you put spaces before and after &ldquo;<code class="op">&amp;</code>&rdquo;.
-It is possible that ViviFire could incorrectly read &ldquo;<code class="op">&amp;</code>&rdquo; as part of an integer literal.</p>
+<p>If <code class="id">expression_1</code> or <code class="id">expression_2</code> is not of type <code class="kw">String</code>, but can widen to a string, then the expression converts them automatically.
+If an expression cannot widen to a string, then ViviFire gives an error.
+A null reference (<code class="kw">#Null</code>) becomes the empty string (<code>&quot;&quot;</code>).</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
 <pre><code>greeting$ = &quot;Hello,&quot; &amp; &quot; world!&quot;
@@ -55,21 +53,15 @@ number$ = 4 &amp; 2&#10;</code></pre>
 </thead>
 <tbody>
 <tr><th><code>greeting$</code></th>
-<td><code>&quot;Hello, world!&quot;</code></td></tr>
+<td><samp>&quot;Hello, world!&quot;</samp></td></tr>
 <tr><th><code>number$</code></th>
-<td><code>&quot;42&quot;</code></td></tr>
+<td><samp>&quot;42&quot;</samp></td></tr>
 </tbody>
 </table>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Ampersand_Equals_Operator.html">&amp;= Operator</a></li>
 <li><a href="Plus_Operator.html">+ Operator</a></li>
-<li><a href="Type_Characters.html">Type Characters</a></li>
-</ul>
-<h3>Other elements that use this symbol</h3>
-<ul>
-<li>Non-decimal integer literals (for example, <code>&amp;H3D</code>).
-See <a href="Int_Data_Type.html">Int Data Type</a>.</li>
 </ul>
 </main>
 <script src="common.js"></script>

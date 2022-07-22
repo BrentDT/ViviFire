@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/UInt128_Data_Type.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -37,7 +37,7 @@
 </dl>
 <h2>Shared methods and properties</h2>
 <dl class="language-vivifire listing">
-<dt><pre><code>uInt128.Default As UInt128</code></pre></dt>
+<dt><pre><code>UInt128.Default As UInt128</code></pre></dt>
 <dd>Returns the default value, <code>0</code>.</dd>
 <dt><pre><code>UInt128.Max As UInt128</code></pre></dt>
 <dd>Returns the maximum positive value.</dd>
@@ -68,9 +68,9 @@ Dim result As UInt64 = low - high&#10;</code></pre>
 <tr><th>Variable</th><th>Value</th></tr>
 </thead>
 <tbody>
-<tr><td><code>low</code></td><td><samp>0 (&amp;H00000000000000000000000000000000)</samp></td></tr>
-<tr><td><code>high</code></td><td><samp>100 (&amp;H00000000000000000000000000000064)</samp></td></tr>
-<tr><td><code>result</code></td><td><samp>340282366920938463463374607431768211356 (&amp;HFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF9C)</samp></td></tr>
+<tr><td><code>low</code></td><td><samp>0 (%X00000000000000000000000000000000)</samp></td></tr>
+<tr><td><code>high</code></td><td><samp>100 (%X00000000000000000000000000000064)</samp></td></tr>
+<tr><td><code>result</code></td><td><samp>340282366920938463463374607431768211356 (%XFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF9C)</samp></td></tr>
 </tbody>
 </table>
 <h2>See also</h2>
