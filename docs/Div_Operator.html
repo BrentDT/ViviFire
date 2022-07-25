@@ -26,7 +26,7 @@
 But if division is not possible, then the result is zero (default) or a value that you supply.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<h3>Binary operator</h3>
+<h3>Operator construct</h3>
 <pre><code>expression_1 Div expression_2&#10;</code></pre>
 <h3>Function construct</h3>
 <pre><code>Div ( expression_1, expression_2 [ , expression_3 ] )&#10;</code></pre>
@@ -34,13 +34,16 @@ But if division is not possible, then the result is zero (default) or a value th
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="id">expression_1</code></dt>
-<dd>A numeric expression, also known as the <dfn>numerator</dfn>.</dd>
+<dd>Mandatory numeric expression, also known as the <dfn>numerator</dfn>.</dd>
 <dt><code class="id">expression_2</code></dt>
-<dd>A numeric expression, also known as the <dfn>denominator</dfn>.</dd>
+<dd>Mandatory numeric expression, also known as the <dfn>denominator</dfn>.</dd>
 <dt><code class="id">expression_3</code></dt>
-<dd>A numeric expression that becomes the result if division is not possible.</dd>
+<dd>Optional numeric expression that becomes the result if division is not possible.
+It is available only in the function construct.
+If not supplied, then the default is zero.</dd>
 </dl>
 <h2>Instructions</h2>
+<p>TODO</p>
 <h3>Data types</h3>
 <p>If the two expressions are integers, then they automatically change to <code class="kw">Real</code>, and the result is <code class="kw">Real</code>.</p>
 <h2>Examples</h2>
