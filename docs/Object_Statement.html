@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Object_Statement.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -17,11 +17,11 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Statements_Reference.html">Statements</a></li>
-<li><a href="Statements_2.html">F&ndash;P Statements</a></li>
+<li><a rel="parent" href="Statements_2.html">F&ndash;P Statements</a></li>
 </ul>
 </nav>
 <main>
-<h1 id="top">Object Statement</h1>
+<h1 id="top"><code>Object</code> Statement</h1>
 <p>Makes a singleton object.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
@@ -76,7 +76,16 @@ A list of permitted members follows.</p>
 <li><a href="Sub_Statement.html">Sub</a></li>
 </ul>
 <h2>Examples</h2>
-<p>TODO</p>
+<h3>Object without state</h3>
+<div class="language-vivifire listing">
+<pre><code>Object Singleton
+    Method Speak
+        PrintLine "I'm a singleton"
+    End Method
+End Object
+
+Singleton.speak&#10;</code></pre>
+</div>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Class_Statement.html">Class Statement</a></li>
