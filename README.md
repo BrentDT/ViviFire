@@ -2,7 +2,7 @@
 
 ViviFire is a brand new open-source programming language with modern features
 and a familiar syntax.  It offers object-oriented programming with genericity
-and traits, modularity, structured exception handling, and more.
+and traits, modularity, units of measure, and more.
 
 Currently, ViviFire is at an alpha stage of development.  The language is still
 evolving, and may change dramatically before it's complete.  If you are
