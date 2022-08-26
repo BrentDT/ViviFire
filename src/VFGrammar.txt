@@ -63,6 +63,8 @@ typedef std::map<std::wstring, int> when_map;
 // Hold options for the directive '@OPTION'.
 struct tag_option {
 	Parser*     parser;
+	bool        arg_by_name_bool = false;
+	bool        arg_by_name_lit = false;
 	bool        charset_latin   = false; // TODO: swap in a different scanner.
 	ternary     Dim_or_Var      = TERNARY0;
 	ternary     End_block       = TERNARY0;
@@ -220,15 +222,25 @@ struct tag_option {
 				} else goto bad_option;
 			} else goto bad_option;
 			break;
-		case _identifier:
+		case _identifier: {
 			// For each addition, remember to "break" when correct.
-			if (match(L"last")) {
+			int len = coco_string_length(parser->la->val);
+			if (9 == len && match(L"argbyname")) {
+				if (_Boolean == parser->la->kind) {
+					parser->Get();
+					arg_by_name_bool = true; // @Option ArgByName Boolean
+					break;
+				} else if (match(L"literal")) {
+					arg_by_name_lit = true; // @Option ArgByName Literal
+					break;
+				}
+			}else if (4 == len && match(L"last")) {
 				last = true; // @Option Last
 				break;
-			} else if (match(L"test")) {
+			} else if (4 == len && match(L"test")) {
 				test = true; // @Option Test
 				break;
-			} else if (left_match(s_warning)) {
+			} else if (len >= 7 && left_match(s_warning)) {
 				short level = (short)parser->t->val[coco_string_length(s_warning)]; // Valid: '\0', '1', '2', '3', '4', & '5'.
 				if (level == 0) {
 					level = L'4'; // Default is 4.
@@ -243,6 +255,7 @@ struct tag_option {
 				}
 			}
 			// Fall through for error
+		}
 		default:
 		bad_option:
 			parser->Get();
@@ -1069,7 +1082,7 @@ LineContinuation = '_'{notEOL}eol[n].
 
 // Directives
 
-atOption = "@Option"{notEOL}. //TODO
+atOption = "@Option". (. option.Parse(); .) //{notEOL}. //TODO
 atError  = "@Error"{notEOL}. //TODO
 atWarn   = "@Warn"{notEOL}. //TODO
 
