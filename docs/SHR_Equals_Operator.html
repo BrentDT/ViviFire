@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/SHR_Equals_Operator.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -18,12 +18,12 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
 <li><a href="Operators.html">Operators</a></li>
-<li><a href="Assignment_Operators.html">Assignment Operators</a></li>
+<li><a rel="parent" href="Assignment_Operators.html">Assignment Operators</a></li>
 </ul>
 </nav>
 <main>
-<h1 id="top">SHR= Operator</h1>
-<p>Does a right-shift on the bits of a variable and assigns the result to the same variable.</p>
+<h1 id="top"><code>SHR=</code> Operator</h1>
+<p>Does a right-shift operation on the bits of a variable, then changes the variable to the result.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <pre><code>variable SHR= number&#10;</code></pre>
@@ -31,7 +31,7 @@
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="id">variable</code></dt>
-<dd>A numeric variable.</dd>
+<dd>An integer variable.</dd>
 <dt><code class="id">number</code></dt>
 <dd>An integer expression that specifies the number of bits to shift.</dd>
 </dl>
@@ -41,6 +41,14 @@
 <pre><code>variable SHR= number
 variable = variable SHR number&#10;</code></pre>
 </div>
+<p>The element on the left side of <code class="op">SHR=</code> can be a scalar variable, a property, or an element of an array.
+A property cannot have the modifier <code class="at">@ReadOnly</code>.</p>
+<p>SHR= does a right-shift operation on the value of the variable or property on its left side.
+The bits move right by the number given on the right side expression.
+Then it changes the variable or property on its left side to the result.</p>
+<p>If the variable or property has an unsigned type, then SHR= does a logical right shift.
+The bits on the left side become zeroes.
+The bits on the right side are discarded.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
 <pre><code>a = &amp;B1010_1000
