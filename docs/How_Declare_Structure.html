@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/How_Declare_Structure.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -17,12 +17,12 @@
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
 <li><a href="Language_Features.html">Language Features</a></li>
-<li><a href="Data_Types.html">Data Types</a></li>
+<li><a rel="parent" href="Data_Types.html">Data Types</a></li>
 </ul>
 </nav>
 <main id="stub">
 <h1 id="top">How to Declare a Structure</h1>
-<p>You start a structure declaration with <code class="kw">Struct</code>, and you complete it with <code class="kw">End</code>.
+<p>You start a structure declaration with <code class="kw">Struct</code>, and you complete it with <code class="kw">End</code> or <code class="kw">End Struct</code>.
 You must write each of these on different lines.
 Between these lines you must declare one or more elements.
 All data types are permitted, but not all can have <code class="at">@Shared</code> for a modifier.</p>
@@ -30,8 +30,28 @@ All data types are permitted, but not all can have <code class="at">@Shared</cod
 <p>When you declare a variable with a structure type, you get access to the elements through the variable.</p>
 <p>To compare structures with classes, see <a href="Structures_and_Classes.html">Structures and Classes</a>.</p>
 <h2>Steps</h2>
-<p>TODO</p>
+<ol>
+<li>
+<p>Write the start and end lines for the structure.</p>
+<div class="language-vivifire listing">
+<pre><code>Struct Employee
+End Struct&#10;</code></pre>
+</div>
+</li>
+<li>
+<p>Add elements to the body of the structure.</p>
+<p>A structure must have a minimum of one element.</p>
+<div class="language-vivifire listing">
+<pre><code>Struct Employee
+    name As String
+    startDate As DateTime
+    salary As Fixed64
+End Struct&#10;</code></pre>
+</div>
+</li>
+</ol>
 </main>
 <script src="common.js"></script>
+<script src="prism.js"></script>
 </body>
 </html>
