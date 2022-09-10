@@ -13,6 +13,7 @@
 #define UNICODE
 #define _UNICODE
 
+#include <chrono>
 #include <cstdio>
 #include <io.h>
 #if defined(_WIN32)
@@ -100,10 +101,17 @@ int main (int argc, char *argv[]) {
 		return 1;
 	}
 	
+	// Record start time.
+	auto start = std::chrono::steady_clock::now();
+	
 	wchar_t *fileName = coco_string_create(args.file);
 	Parser *p = new Parser(new Scanner(fileName));
 	
 	p->Parse();
+	
+	// Calculate the duration.
+	std::chrono::duration<double> timer = std::chrono::steady_clock::now() - start;
+	wprintf(L"Time: %.3f sec\n", timer.count());
 	
 	coco_string_delete(fileName);
 	delete p	->scanner;
