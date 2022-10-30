@@ -25,17 +25,20 @@
 <p>Causes a run-time error known as an exception.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<pre><code>Raise expression&#10;</code></pre>
+<pre><code>Raise [ expression ]&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="id">expression</code></dt>
-<dd>The name of a class or an object reference.</dd>
+<dd>Usually mandatory name of a class or an object reference.</dd>
+<dd>Optional when put in one of the blocks <code class="kw">Catch</code> of the statement <code class="kw">Try&hellip;Catch&hellip;Finally</code>.</dd>
 </dl>
 <h2>Instructions</h2>
 <p>TODO</p>
 <h2>Examples</h2>
-<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>Raise Exception("An exception occured")&#10;</code></pre>
+</div>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Try_Catch_Finally_Statement.html">Try&hellip;Catch&hellip;Finally Statement</a></li>
