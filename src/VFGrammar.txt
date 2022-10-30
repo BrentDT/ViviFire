@@ -47,6 +47,9 @@ COMPILER ViviFire
 // The root of the AST. Memory is not freed automatically.
 AST::Module *module = nullptr;
 
+// Something to keep track of nested blocks.
+std::vector<int> context;
+
 // Some enumeration types.
 enum case_type { CASE_ZERO, CASE_EXPR, CASE_ELSE };
 enum option_type { OPTION_DEFAULT, WITH_THEN, WITHOUT_THEN };
@@ -597,6 +600,27 @@ void Warn(int line, int col, const wchar_t *msg) {
 	// TODO: warning levels.
 	if (option.warning_error) Err(line, col, msg);
 	else errors->Warning(line, col, msg);
+}
+
+const wchar_t * Exit_block_without_block(int kind) {
+	switch (kind) {
+	case _Do:
+		return L"EXIT DO without DO";
+	case _For:
+		return L"EXIT FOR without FOR";
+	case _Function:
+		return L"EXIT FUNCTION without FUNCTION";
+	case _Method:
+		return L"EXIT METHOD without METHOD";
+	case _Property:
+		return L"EXIT PROPERTY without PROPERTY";
+	case _Sub:
+		return L"EXIT SUB without SUB";
+	case _While:
+		return L"EXIT WHILE without WHILE";
+	default:
+		return L"EXIT block without block";
+	}
 }
 
 // Conditional compilation: '@IF...@ELSE...@END'.
@@ -1284,7 +1308,9 @@ CaseExpression (. ID(L"CaseExpression", 3) .)
 CatchClause (. ID(L"CatchClause", 3) .)
 =
 	"Catch" [ Name [ AsTypeClause<NO_BITS> ] ] SyncNewline<s_name>
+	(. context.push_back(_Catch); .)
 	{ Statement }
+	(. context.pop_back(); .)
 .
 ClassOrObjectMember<int kind> (. ID(L"ClassOrObjectMember", 3) .)
 =
@@ -1612,14 +1638,18 @@ DoStatement (. ID(L"DoStatement", 3) .)
 	"Do" (. line = t->line; col = t->col; .)
 	(	// Do...Loop While/Until
 		Newline
+		(. context.push_back(_Do); .)
 		[ LoopBody<POSTCONDITIONAL> ]
+		(. context.pop_back(); .)
 	(. if (la->kind != _Loop) Err(line, col, L"DO without LOOP"); .)
 		"Loop" WhileOrUntil Expression
 		SyncNewline<s_name>
 	|	// Do While/Until...Loop
 		WhileOrUntil Expression
 		SyncNewline<s_name>
+		(. context.push_back(_Do); .)
 		[ LoopBody<PRECONDITIONAL> ]
+		(. context.pop_back(); .)
 		"Loop"
 		[ WhileOrUntil (. SemErr(L"DO WHILE or DO UNTIL cannot have LOOP WHILE or LOOP UNTIL"); .) ]
 		Newline
@@ -1714,9 +1744,41 @@ ExitStatement (. ID(L"ExitStatement", 3) .)
 =
 	(. int kind = 0; .)
 	"Exit"
-	( identifier
-	| Block<kind> { WEAK comma Block<kind> }
-	| "Program" [ EnclosedExpression ]
+	(
+		identifier
+		(.
+		if (std::find(context.rbegin(), context.rend(), _Begin) == context.rend())
+		    SemErr(L"EXIT label without BEGIN...WHEN");
+		.)
+	|
+		Block<kind>
+		(.
+		auto it = std::find(context.rbegin(), context.rend(), kind);
+		if (it == context.rend())
+		    SemErr(Exit_block_without_block(kind));
+
+		if (la->kind == _comma && kind != _Do && kind != _For && kind != _While)
+		    SemErr(L"EXIT list can use only DO or FOR or WHILE");
+		.)
+		{
+			WEAK comma
+			Block<kind>
+			(.
+			it = std::find(++it, context.rend(), kind);
+			if (it == context.rend())
+			    SemErr(Exit_block_without_block(kind));
+
+			if (la->kind == _comma && kind != _Do && kind != _For && kind != _While)
+			    SemErr(L"EXIT list can use only DO or FOR or WHILE");
+			.)
+		}
+	|
+		"Program"
+		(.
+		if (context[0] != _Program)
+		    SemErr(L"Cannot use EXIT PROGRAM in LIBRARY");
+		.)
+		[ EnclosedExpression ]
 	)
 .
 Expression (. ID(L"Expression", 2) .)
@@ -1770,7 +1832,9 @@ ForStatement (. ID(L"ForStatement", 3) .)
 		[ "Step" Expression ]
 	)
 	SyncNewline<s_name>
+	(. context.push_back(_For); .)
 	[ LoopBody<PRECONDITIONAL> ]
+	(. context.pop_back(); .)
 	(. if (la->kind != _End) Err(line, col, L"FOR without END"); .)
 	"End"
 	(. Optional(_For); .)
@@ -1809,7 +1873,15 @@ FunctionStatement<Modif &mods> (. ID(L"FunctionStatement", 3) .)
 	FunctionSignature<mods, line, col, bodied, generic>
 	[ IF (bodied)
 		{ WhereClause<_Function, generic> SyncNewline<s_name> }
+		(.
+		if (bIterator) context.push_back(_Yield);
+		context.push_back(_Function);
+		.)
 		{ Statement }
+		(.
+		context.pop_back();
+		if (bIterator) context.pop_back();
+		.)
 	(. if (la->kind != _End) Err(line, col, L"FUNCTION without END"); .)
 	"End"
 	(. Optional(_Function); .)
@@ -1819,7 +1891,12 @@ FunctionStatement<Modif &mods> (. ID(L"FunctionStatement", 3) .)
 /*G*/
 GotoStatement (. ID(L"GotoStatement", 3) .)
 =
-	"Goto" "Case" ( "Else" | Expression )
+	"Goto"
+	(.
+	if (std::find(context.begin(), context.end(), _Select) == context.end())
+	    SemErr(L"GOTO without SELECT");
+	.)
+	"Case" ( "Else" | Expression )
 .
 /*H*/
 /*I*/
@@ -2014,7 +2091,9 @@ LoopBody<bool isPreconditional> (. ID(L"LoopBody", 3) .)
 			}
 		]
 		SyncNewline<s_name>
+		(. context.push_back(_Begin); .)
 		{ Statement }
+		(. context.pop_back(); .)
 		WhenStatement<isPreconditional, whens>
 		{ WhenStatement<isPreconditional, whens> }
 		// TODO: if @Option When id Begin id, make sure labels agree with whens.
@@ -2037,7 +2116,15 @@ MethodStatement<Modif &mods> (. ID(L"MethodStatement", 3) .)
 	int line, col;
 	.)
 	MethodSignature<mods, line, col>
+	(.
+	if (bIterator) context.push_back(_Yield);
+	context.push_back(_Method);
+	.)
 	{ Statement }
+	(.
+	context.pop_back();
+	if (bIterator) context.pop_back();
+	.)
 	(. if (la->kind != _End) Err(line, col, L"METHOD without END"); .)
 	"End"
 	(. Optional(_Method); .)
@@ -2129,11 +2216,19 @@ Module (. ID(L"Module", 3) .)
 	(. bool bProcEntry = false; .)
 	[ Newline ]
 	(
-		"Program" (. module = new AST::Module(AST::Module::Program, t->line, t->col); .)
+		"Program"
+		(.
+			module = new AST::Module(AST::Module::Program, t->line, t->col);
+			context.push_back(_Program);
+		.)
 		[ "=" (. bProcEntry = module->procStart = true; .) ]
 		identifier (. module->Name(t->val); .)
 	|
-		"Library" (. module = new AST::Module(AST::Module::Library, t->line, t->col); .)
+		"Library"
+		(.
+			module = new AST::Module(AST::Module::Library, t->line, t->col);
+			context.push_back(_Library);
+		.)
 		QualifiedName<_identifier>
 	)
 	SyncNewline<s_name>
@@ -2394,11 +2489,29 @@ PropertyStatement<Modif &mods> (. ID(L"PropertyStatement", 3) .)
 	.)
 	PropertySignature<mods, line, col>
 	[ IF (la->kind == _Get || la->kind == _Set)
-		[	"Get" Newline
+		[
+			"Get" Newline
+			(.
+			if (bIterator) context.push_back(_Yield);
+			context.push_back(_Property);
+			.)
 			{ Statement }
+			(.
+			context.pop_back();
+			if (bIterator) context.pop_back();
+			.)
 		]
-		[	"Set" [ FormalParameterList<_Set> ] SyncNewline<s_name>  //TODO: only one param
+		[
+			"Set" [ FormalParameterList<_Set> ] SyncNewline<s_name>  //TODO: only one param
+			(.
+			if (bIterator) context.push_back(_Yield);
+			context.push_back(_Property);
+			.)
 			{ Statement }
+			(.
+			context.pop_back();
+			if (bIterator) context.pop_back();
+			.)
 		]
 	(. if (la->kind != _End) Err(line, col, L"PROPERTY without END"); .)
 		"End"
@@ -2420,8 +2533,18 @@ QualifiedName<int limit> (. ID(L"QualifiedName", 3) .)
 RaiseStatement (. ID(L"RaiseStatement", 3) .)
 =
 	"Raise"
-	( "Event" Name [ ArgumentList ]
-	| Expression
+	(
+		// Raise event.
+		"Event" Name [ ArgumentList ]
+	|
+		// Raise exception.
+		Expression
+	|
+		// Re-raise exception.
+		(.
+		if (std::find(context.begin(), context.end(), _Catch) == context.end())
+		    SemErr(L"RAISE expression is mandatory here");
+		.)
 	)
 .
 Rank (. ID(L"Rank", 3) .)
@@ -2485,7 +2608,9 @@ SelectStatement (. ID(L"SelectStatement", 3) .)
 	(. Optional(_Case); .)
 	Expression
 	SyncNewline<s_name>
+	(. context.push_back(_Select); .)
 	{ CaseClause<clause> }
+	(. context.pop_back(); .)
 	(. if (la->kind != _End) Err(line, col, L"SELECT without END"); .)
 	"End"
 		(. if (clause == CASE_ZERO) SemErr(L"SELECT must have a minimum of one CASE"); .)
@@ -2665,7 +2790,15 @@ SubStatement<Modif &mods> (. ID(L"SubStatement", 3) .)
 		WhereClause<_Sub, bGeneric>
 		SyncNewline<s_name>
 	}
+	(.
+	if (bIterator) context.push_back(_Yield);
+	context.push_back(_Sub);
+	.)
 	{ Statement }
+	(.
+	context.pop_back();
+	if (bIterator) context.pop_back();
+	.)
 	(. if (la->kind != _End) Err(line, col, L"SUB without END"); .)
 	"End"
 	(. Optional(_Sub); .)
@@ -2727,8 +2860,11 @@ TryStatement (. ID(L"TryStatement", 3) .)
 	Newline
 	{ Statement }
 	{ CatchClause }
-	[	"Finally" Newline
+	[
+		"Finally" Newline
+		(. context.push_back(_Finally); .)
 		{ Statement }
+		(. context.pop_back(); .)
 	]
 	(. if (la->kind != _End) Err(line, col, L"TRY without END"); .)
 	"End"
@@ -2936,7 +3072,9 @@ WhileStatement (. ID(L"WhileStatement", 3) .)
 	"While" (. line = t->line; col = t->col; .)
 	Expression
 	SyncNewline<s_name>
+	(. context.push_back(_While); .)
 	[ LoopBody<PRECONDITIONAL> ]
+	(. context.pop_back(); .)
 	(. if (la->kind != _End) Err(line, col, L"WHILE without END"); .)
 	"End"
 	(. Optional(_While); .)
@@ -2946,7 +3084,15 @@ WhileStatement (. ID(L"WhileStatement", 3) .)
 /*Y*/
 YieldStatement (. ID(L"YieldStatement", 3) .)
 =
-	"Yield" Expression
+	"Yield"
+	(.
+	if (std::find(context.rbegin(), context.rend(), _Yield) == context.rend())
+	    SemErr(L"Cannot use YIELD without @ITERATOR on procedure");
+	if (std::find_if(context.rbegin(), context.rend(),
+	    [](int i) { return (_Catch == i || _Finally == i); }) != context.rend())
+	    SemErr(L"Cannot use YIELD in CATCH or FINALLY");
+	.)
+	Expression
 .
 /*Z*/
 
