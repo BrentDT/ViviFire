@@ -1785,7 +1785,14 @@ Expression (. ID(L"Expression", 2) .)
 =
 	ConditionalExpression
 	(. if (la->kind == _right_paren) { Get(); SemErr(L"Parentheses do not agree"); } .)
-	[ "Tol" real_literal ]
+	[
+		"Tol" real_literal
+		[
+			LogicalOperator
+			(. SemErr(L"Cannot have expression after TOL clause"); .)
+			Expression
+		]
+	]
 .
 /*F*/
 FixedPointType<int &tkn> (. ID(L"FixedPointType", 3) .)
