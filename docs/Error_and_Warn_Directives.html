@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Error_and_Warn_Directives.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-<meta name="author" content="Brent Thorn">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -16,7 +16,7 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
-<li><a href="Directives.html">Directives</a></li>
+<li><a rel="parent" href="Directives.html">Directives</a></li>
 </ul>
 </nav>
 <main>
@@ -46,11 +46,11 @@ But we do not recommend it.</p>
 <div class="language-vivifire listing">
 <pre><code>@If Win32
   ' Windows-only code goes here.
-@ElseIf Linux Or MacOS
+@Else If Linux Or MacOS
   ' Unix-like code goes here.
 @Else
 @Error "Platform not supported"
-@EndIf&#10;</code></pre>
+@End If&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
