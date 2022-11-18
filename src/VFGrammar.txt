@@ -1102,7 +1102,10 @@ Yield       = "Yield".
 
 PRAGMAS
 
-LineContinuation = '_'{notEOL}eol[n].
+LineContinuation = "_". (.
+	int next = scanner->Peek()->kind;
+	if (next != _line_break && next != _InlineComment)
+	    Err(la->line, la->col, L"Newline or inline comment must come after line continuation"); .)
 
 // Directives
 
