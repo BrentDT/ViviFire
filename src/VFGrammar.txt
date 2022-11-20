@@ -1105,7 +1105,7 @@ PRAGMAS
 LineContinuation = "_". (.
 	int next = scanner->Peek()->kind;
 	if (next != _line_break && next != _InlineComment)
-	    Err(la->line, la->col, L"Newline or inline comment must come after line continuation"); .)
+	    Err(la->line, la->col, L"Newline or inline comment must follow line continuation"); .)
 
 // Directives
 
