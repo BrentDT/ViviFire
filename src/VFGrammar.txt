@@ -1965,7 +1965,7 @@ IfStatement (. ID(L"IfStatement", 3) .)
 	|
 		IfBlockStatement<line, col, WITHOUT_THEN>
 	)
-	SyncNewline<s_name>
+	Newline
 .
 InitializationElement (. ID(L"InitializationElement", 3) .)
 =
