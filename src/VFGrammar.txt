@@ -1357,8 +1357,10 @@ ClassStatement<Modif &mods> (. ID(L"ClassStatement", 3) .)
 	[ WhereClause<_Class, generic> ]
 	SyncNewline<s_name>
 	{ WhereClause<_Class, generic> SyncNewline<s_name> }
+	(. context.push_back(_Class); .)
 //	{ Statement } // Conflict: assignment vs var decl
 	{ ClassOrObjectMember<_Class> }
+	(. context.pop_back(); .)
 	(. if (la->kind != _End) Err(line, col, L"CLASS without END"); .)
 	"End"
 	(. Optional(_Class); .)
@@ -2142,7 +2144,13 @@ MethodStatement<Modif &mods> (. ID(L"MethodStatement", 3) .)
 .
 MethodSignature<Modif &mods, int &line, int &col> (. ID(L"MethodSignature", 3) .)
 =
-	"Method" (. line = t->line; col = t->col; .)
+	"Method"
+	(.
+	line = t->line; col = t->col;
+	// If in a program module
+	if (context.back() == _Program)
+	    SemErr(L"Cannot use METHOD in PROGRAM module");
+	.)
 	Name
 	(. bool bReturns = (t->kind == _typed_identifier); .)
 	[
@@ -2706,8 +2714,10 @@ StructStatement<Modif &mods> (. ID(L"StructStatement", 3) .)
 	[ WhereClause<_Struct, generic> ]
 	SyncNewline<s_name>
 	{ WhereClause<_Struct, generic> SyncNewline<s_name> }
+	(. context.push_back(_Struct); .)
 	{ StructState }
 	{ StructProcedure }
+	(. context.pop_back(); .)
 	(. if (la->kind != _End) Err(line, col, L"STRUCT without END"); .)
 	"End"
 	(. Optional(_Struct); .)
