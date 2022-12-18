@@ -7,8 +7,7 @@ var warning = document.createElement('p');
 warning.className = 'nav';
 warning.innerHTML = 'This document '+(stub?'is a stub':'may be incomplete')+'.'
 	+' You can <a href="https://www.b6sw.com/ViviFire/docs/">see the recent changes here</a>.'
-	+' You can also give anonymous feedback. See the poll below the article.'
-	+' NOTE: We are in the middle of a change to <a href="https://en.wikipedia.org/wiki/Simplified_Technical_English" target="_blank">Simplified Technical English</a>.';
+	+' You can also give anonymous feedback. See the poll below the article.';
 document.body.insertBefore(warning, document.body.firstChild);
 
 if (!chm) {
@@ -26,9 +25,9 @@ document.write('<hr><p>'+
 '<div id="poll" role="status" aria-live="polite" aria-relevant="text">' +
 '<div role="form" aria-label="poll">' +
 '<p>What do you think about this article?</p>' +
-'<button onclick="vote(0)">good</button>' +
-'<button onclick="vote(1)">could be better</button>' +
-'<button class="touch-only" onclick="vote(2)">bad on mobile</button>' +
+'<button onclick="vote(0)">Good</button>' +
+'<button onclick="vote(1)">Bad</button>' +
+'<button class="touch-only" onclick="vote(2)">Bad on mobile</button>' +
 '</div>' +
 '</div></p>');
 
