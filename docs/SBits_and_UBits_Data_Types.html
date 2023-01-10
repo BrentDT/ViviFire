@@ -33,7 +33,7 @@
 <dt><code class="id">value_type</code></dt>
 <dd>Optional value type between brackets (<code class="op">[ ]</code>).
 Examples include <span class="kws"><code>Int8</code>, <code>UInt16</code>, <code>Int32</code>, <code>UInt64</code>, and <code>Int128</code></span>.
-If supplied, then <code class="id">width</code> cannot be more than the size of <code class="id">value_type</code> in bits.</dd>
+If supplied, <code class="id">width</code> cannot be more than the size of <code class="id">value_type</code> in bits.</dd>
 <dt><code class="id">width</code></dt>
 <dd>An integer literal for the number of bits.</dd>
 </dl>
@@ -43,10 +43,10 @@ If supplied, then <code class="id">width</code> cannot be more than the size of 
 <dt>Contexts</dt>
 <dd>You can declare elements of <code class="kw">SBits</code> and <code class="kw">UBits</code> only in a structure (<code class="kw">Struct</code>).</dd>
 <dt>Default value</dt>
-<dd>If you declare an element with <code class="kw">SBits</code> or <code class="kw">UBits</code> and do not initialize it, then its default value is zero (0).</dd>
+<dd>If you declare an element with <code class="kw">SBits</code> or <code class="kw">UBits</code> and do not initialize it, its default value is zero (0).</dd>
 <dt>Negation</dt>
-<dd><p>If you use the negation operator (<code class="op">-</code>) on an unsigned type, then ViviFire gives a warning that this operation is usually an error.</p>
-<p>If you subtract a larger number from a smaller number, then you find the result as follows:</p>
+<dd><p>If you use the negation operator (<code class="op">-</code>) on an unsigned type, ViviFire gives a warning that this operation is usually an error.</p>
+<p>If you subtract a larger number from a smaller number, you find the result as follows:</p>
 <pre class="language-vivifire"><code>number Mod UBits(width).Max + 1</code></pre></dd>
 <dt>Automatic conversions</dt>
 <dd><code class="kw">SBits</code> and <code class="kw">UBits</code> widen to <span class="kws"><code>UInt64</code>, <code>UInt128</code>, <code>Real32</code>, <code>Real64</code>, <code>Real</code>, or <code>Real128</code></span> without risk of overflow.</dd>

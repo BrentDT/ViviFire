@@ -37,7 +37,7 @@ A string can contain from zero to TBD characters.</p>
 <pre><code>{ <kbd>&quot;</kbd> [ <var>char</var>&hellip; ] <kbd>&quot;</kbd> ]}&hellip;</code></pre>
 </div>
 <p>A typical string literal starts and ends with double quotation symbols (<code class="op">&quot;</code>).
-If you write only two such symbols (<code class="op">&quot;&quot;</code>), then this is known as an <dfn>empty string</dfn>.</p>
+If you write only two such symbols (<code class="op">&quot;&quot;</code>), this is known as an <dfn>empty string</dfn>.</p>
 <p>A string can include a quotation symbol if you write two of them together.
 For example, <code class="op">&quot;&quot;&quot;&quot;</code> is a string that contains one quotation symbol.</p>
 <h3>String constant</h3>
@@ -67,9 +67,9 @@ For example, you can write the end-of-line character sequence as <code>$N</code>
 Thus, we recommend that you use named constants to make your code easier to port.</p>
 <h3>Automatic string concatenation</h3>
 <p>You can write string literals and constants without operators between them.
-When you do, then all such strings become concatenated at compile-time.</p>
+When you do, all such strings become concatenated at compile-time.</p>
 <h3>File path string</h3>
-<p>If you must write a file path in code, then you must use the correct path separator.
+<p>If you must write a file path in code, you must use the correct path separator.
 The problem is that this can be different on different platforms.
 Because of this, ViviFire has two special operators.</p>
 <p>The operators <code class="op">/</code> and <code class="op">\</code> give the path separator when put between string literals and/or constants.
@@ -88,14 +88,14 @@ The applicable directives are:</p>
 <dl class="language-vivifire listing">
 <dt><pre><code>String.CharAt(str As String, pos As Int) As Char</code></pre></dt>
 <dd>Returns the character at the given position in a string.
-If <code class="id">pos</code> is larger than the end of the string, then the method raises <code>RangeError</code>.
-If you must do an operation for each character in a string, then &ldquo;<code>For Each chr As Char In str</code>&rdquo; could give better results.</dd>
+If <code class="id">pos</code> is larger than the end of the string, the method raises <code>RangeError</code>.
+If you must do an operation for each character in a string, &ldquo;<code>For Each chr As Char In str</code>&rdquo; could give better results.</dd>
 <dt><pre><code>String.Default As String</code></pre></dt>
 <dd>Returns the default value, <code>&quot;&quot;</code>.</dd>
 <dt><pre><code>String.Find(str As String, what As String, Optional start As Int, length As Int, flags As FindFlags) As Int
 String.Find(str As String, what As Char, Optional start As Int, length As Int, flags As FindFlags) As Int</code></pre></dt>
 <dd>Returns the position of a substring or character (<code class="id">what</code>) in a given string.
-If it cannot find the supplied argument, then the value returned is &laquo;<code>String.NotFound</code>&raquo;.
+If it cannot find the supplied argument, the value returned is &laquo;<code>String.NotFound</code>&raquo;.
 You can optionally supply where to start (<code class="id">start</code>), how many characters (<code class="id">length</code>), and how to find the next index (<code class="id">flags</code>).
 Values of <code>FindFlags</code> are: <code>IgnoreCase</code> and <code>FromEnd</code>.</dd>
 <dt><pre><code>String.Length(str As String) As Int</code></pre></dt>
@@ -104,8 +104,8 @@ Values of <code>FindFlags</code> are: <code>IgnoreCase</code> and <code>FromEnd<
 <dd>Returns a string with upper-case letters changed to lower-case.</dd>
 <dt><pre><code>String.Part(str As String, start As Int, Optional length As Int) As String</code></pre></dt>
 <dd>Returns part of a string at a given position (<code class="id">start</code>), and with a optional given length.
-If <code class="id">length</code> is not given, then the returned string is from <code class="id">start</code> thru the end of the given string.
-If <code class="id">start</code> is larger than the end of the given string, then the method raises <code>RangeError</code>.</dd>
+If <code class="id">length</code> is not given, the returned string is from <code class="id">start</code> thru the end of the given string.
+If <code class="id">start</code> is larger than the end of the given string, the method raises <code>RangeError</code>.</dd>
 <dt><pre><code>String.Reverse(s As String) As String</code></pre></dt>
 <dd>Returns a string with the characters written in the opposite sequence to those in the argument.</dd>
 <dt><pre><code>String.Upper(s As String) As String</code></pre></dt>

@@ -27,8 +27,8 @@
 <dt>Default value</dt>
 <dd>When you declare a variable of type <code class="kw">UInt64</code> and do not initialize it, its default value is zero (0).</dd>
 <dt>Negation</dt>
-<dd><p>If you use the negation operator (<code class="op">-</code>) on an unsigned type, then ViviFire gives a warning that this operation is usually an error.</p>
-<p>If you subtract a larger number from a smaller number, then you find the result as follows:</p>
+<dd><p>If you use the negation operator (<code class="op">-</code>) on an unsigned type, ViviFire gives a warning that this operation is usually an error.</p>
+<p>If you subtract a larger number from a smaller number, you find the result as follows:</p>
 <pre class="language-vivifire"><code>number Mod UInt64.Max + 1</code></pre></dd>
 <dt>Automatic conversions</dt>
 <dd><code class="kw">UInt64</code> widens to <span class="kws"><code>Int128</code>, <code>UInt128</code>, <code>Real32</code>, <code>Real64</code>, <code>Real</code>, or <code>Real128</code></span> without risk of overflow.</dd>
@@ -46,7 +46,7 @@
 This is always zero (0)</dd>
 <dt><pre><code>UInt64.Parse(str As String, Optional #format As Format) As UInt64</code></pre></dt>
 <dd>Tries to parse a string that shows as an integer.</dd>
-<dd>If <code>#format</code> is not given or is <code class="kw">#Null</code>, then it tries to parse <code>str</code> as a decimal (base-10) integer.
+<dd>If <code>#format</code> is not given or is <code class="kw">#Null</code>, it tries to parse <code>str</code> as a decimal (base-10) integer.
 Or you can make it clear with <code>Format.Base10</code>.</dd>
 <dt><pre><code>UInt64.Size As Int</code></pre></dt>
 <dd>Returns the number of available bytes.

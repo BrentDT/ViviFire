@@ -33,7 +33,7 @@ The difference is which separator they use.</p>
 <p>The first construct lets you put only one call on a line.
 Between each argument you put a comma.
 But the only difference between this and the usual method call is that the method name is missing.
-Thus, we recommend this construct if the method name or the values are long and/or the method has several parameters.</p>
+Thus, we recommend this construct if the method name or the values are long and/or the method has many parameters.</p>
 <div class="language-vivifire listing">
 <pre><code>New SiteList sites
 Begin Call
@@ -47,7 +47,7 @@ End&#10;</code></pre>
 You write a comma between each value, with all values between braces (<code class="op">{ }</code>).
 The furst brace must be on the same line after <code class="kw">Begin Call</code> and the optional method name.
 Each value causes a method call with the value as an argument.
-If the method has more than one parameter, then you must use nested braces.
+If the method has more than one parameter, you must use nested braces.
 Thus, we recommend this construct if the method has a small number of parameters.</p>
 <div class="language-vivifire listing">
 <pre><code>New List[String] months

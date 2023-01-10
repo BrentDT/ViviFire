@@ -67,7 +67,7 @@ Digits after that are ignored.</dd>
 <dd>Returns the current month.</dd>
 <dt><pre><code>DateTime.Parse(str As String, Optional #format As Format) As DateTime</code></pre></dt>
 <dd>Tries to parse a string that shows as a date or time.</dd>
-<dd>If <code>#format</code> is not given or is <code class="kw">#Null</code>, then it uses the format of the local culture.
+<dd>If <code>#format</code> is not given or is <code class="kw">#Null</code>, it uses the format of the local culture.
 Or you can make it clear with <code>Format.UserLocale</code>.</dd>
 <dt><pre><code>DateTime.Second As Int</code></pre></dt>
 <dd>Returns the current second.</dd>
@@ -90,7 +90,7 @@ Some conversions can be in one direction only.</p>
 </thead>
 <tbody>
 <tr><td>Integer types</td>
-<td>If you add the integer <code>1</code> to a DateTime, then the value increases 100 nanoseconds (<code>0:0:0.0000001</code>).
+<td>If you add the integer <code>1</code> to a DateTime, the value increases 100 nanoseconds (<code>0:0:0.0000001</code>).
 Other values are a multiple of this.</td></tr>
 </tbody>
 </table>
@@ -103,7 +103,7 @@ Other values are a multiple of this.</td></tr>
 <tbody>
 <tr><td><code class="kw">String</code></td>
 <td>The short date format specified by the user's locale and the time as a 12- or 24-hour format.
-If you try to change the default value to String, then the result is TBD.</td></tr>
+If you try to convert the default value to String, the result is TBD.</td></tr>
 </tbody>
 </table>
 <h3>Symmetrical conversions</h3>

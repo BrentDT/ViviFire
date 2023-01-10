@@ -43,7 +43,7 @@
 <dd>Optional one character.
 Some permitted symbols are: <span class="ops"><code>$</code>, <code>&euro;</code>, <code>&pound;</code>, and <code>&yen;</code></span>.</dd>
 <dd>these symbols are ignored by the compiler.
-If you use a symbol, then use the same one in all of your code.</dd>
+If you use a symbol, use the same one in all of your code.</dd>
 <dt><code class="id">integer_part</code></dt>
 <dd>One to 38 decimal digits.
 For the default number of decimal digits, the maximum is 29 digits.
@@ -66,16 +66,16 @@ The default is 10.</dd>
 <dd>Returns the default value, <code>&#164;0.0</code>.</dd>
 <dt><pre><code>Fixed128.Epsilon(Optional x As Fixed128) As Fixed128</code></pre></dt>
 <dd>Returns the smallest value more than &#164;0.0.
-If <code>x</code> is not given, then it returns &#164;0.0000000001.</dd>
+If <code>x</code> is not given, it returns &#164;0.0000000001.</dd>
 <dt><pre><code>Fixed128.Max(Optional x As Fixed128) As Fixed128</code></pre></dt>
 <dd>Returns the largest positive value for <code>x</code>.
-If <code>x</code> is not given, then it returns <code>&#164;17_014_118_346_046_923_173_168_730_371.5884105727</code>.</dd>
+If <code>x</code> is not given, it returns <code>&#164;17_014_118_346_046_923_173_168_730_371.5884105727</code>.</dd>
 <dt><pre><code>Fixed128.Min(Optional x As Fixed128) As Fixed128</code></pre></dt>
 <dd>Returns the smallest negative value for <code>x</code>.
-If <code>x</code> is not given, then it returns <code>-&#164;17_014_118_346_046_923_173_168_730_371.5884105728</code>.</dd>
+If <code>x</code> is not given, it returns <code>-&#164;17_014_118_346_046_923_173_168_730_371.5884105728</code>.</dd>
 <dt><pre><code>Fixed128.Parse(str As String, Optional #format As Format) As Fixed128</code></pre></dt>
 <dd>Tries to parse a string that shows as a number.</dd>
-<dd>If <code>#format</code> is not given or is <code class="kw">#Null</code>, then it uses the format of the local culture.
+<dd>If <code>#format</code> is not given or is <code class="kw">#Null</code>, it uses the format of the local culture.
 Or you can make it clear with <code>Format.UserLocale</code>.</dd>
 <dt><pre><code>Fixed128.Size As Int</code></pre></dt>
 <dd>Returns the number of available bytes.

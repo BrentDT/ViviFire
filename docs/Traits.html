@@ -37,13 +37,13 @@ Between these two lines you can put one or more permitted statements:
 These also become part of the interface of the class .
 The class cannot directly get access to the other members of the trait.</p>
 <p>A method or property is usually made with a body of statements.
-But if you use the modifier <code class="at">@Abstract</code>, then the method or property cannot have a body.
+But if you use the modifier <code class="at">@Abstract</code>, the method or property cannot have a body.
 A class that uses the trait must declare the method or property again, and supply a body of statements.</p>
 <h3>Multiple traits</h3>
 <p>TODO</p>
 <h3>When different methods have the same signature</h3>
 <p>You have an example class that applies one or more traits.
-If that class has several methods with the same signature, then the result is a compiler error.
+If that class has two or more methods with the same signature, the result is a compiler error.
 You can change the names of the methods to correct this error.</p>
 <div class="language-vivifire listing">
 <pre><code>Trait A
@@ -97,7 +97,7 @@ Trait Foobar Does Foo Does Bar
 End Trait&#10;</code></pre>
 </div>
 <h3>Abstract traits</h3>
-<p>If all of the methods and properties of a trait must be abstract, then you can put the modifier <code class="at">@Abstract</code> before the trait.
+<p>If all of the methods and properties of a trait must be abstract, you can put the modifier <code class="at">@Abstract</code> before the trait.
 Then it is not necessary to put the modifier before each method and property.</p>
 <p>An abstract trait has more limits than a usual trait:</p>
 <ul>

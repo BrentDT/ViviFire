@@ -74,10 +74,10 @@ They are an alternative to literals found in random locations in code.</p>
 <p>Usually it is not necessary to directly set a constant's value.
 The compiler can make sure that each one is different.</p>
 <h3>Usual construct</h3>
-<p>If an enumeration is not an extension to a different one and the first member is not given a value with the operator &ldquo;<code class="op">=</code>&rdquo;, then its default value is zero.
+<p>If an enumeration is not an extension to a different one and the first member is not given a value with the operator &ldquo;<code class="op">=</code>&rdquo;, its default value is zero.
 Members of an enumeration can be positive or negative.
 members can have the same value, unless given the modifier <code class="at">@Unique</code>, but the names in an enumeration must be different.</p>
-<p>If <code class="id">type</code> is a different enumeration, then the new one is an extension of <code class="id">type</code>.
+<p>If <code class="id">type</code> is a different enumeration, the new one is an extension of <code class="id">type</code>.
 Thus the default value of the first member is the largest member of <code class="id">type</code> plus one.</p>
 <h3>Bit-flag construct</h3>
 <p>The bit-flag construct looks almost the same as the usual construct, but has important differences.
@@ -88,9 +88,9 @@ The first member thus has a default value of one, the second is 2, the third is 
 <p><code class="id">type_name</code> is usually one of the primitive integer types:
 <span class="kws"><code>Int8</code>, <code>UInt8</code>, <code>Int16</code>, <code>UInt16</code>, <code>Int32</code>, <code>UInt32</code>, <code>Int</code>, <code>UInt</code>, <code>Int64</code>, <code>UInt64</code>, <code>Int128</code>, or <code>UInt128</code></span>.</p>
 <p>A member can be given one value in the range of <code class="id">type</code>.
-If you try to initialize a member with a value out of range, then it causes a compiler error.
+If you try to initialize a member with a value out of range, it causes a compiler error.
 Members can have the same values, unless given the modifier <code class="at">@Unique</code>, but the names in a set of flags must be different.</p>
-<p>If <code class="id">type</code> is the name of a bit field, then the new statement is an extension to the flags.
+<p>If <code class="id">type</code> is the name of a bit field, the new statement is an extension to the flags.
 The range of an extension is the same as its parent.</p>
 <h3>Changes in syntax with <code>@Option</code></h3>
 <p>There are four areas where you can change the syntax of the statement:</p>

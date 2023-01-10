@@ -35,14 +35,14 @@ They are fastest with the types <code class="kw">Int</code> and <code class="kw"
 <h3>Large integers</h3>
 <p>TODO</p>
 <h3>Small integers</h3>
-<p>If the full range of <code class="kw">Int</code> is more than what is necessary, then <code class="kw">Int16</code> is a possible alternative.
+<p>If the full range of <code class="kw">Int</code> is more than what is necessary, <code class="kw">Int16</code> is a possible alternative.
 The type <code class="kw">Int16</code> holds integer values in the range &minus;32,768 thru 32,767.
 For the smallest integer range, the type <code class="kw">Int8</code> holds values from &minus;128 thru 127.</p>
 <p>Some code uses a large number of variables to hold small integers.
-If your code uses the types <code class="kw">Int16</code> and <code class="kw">Int8</code> for its variables, then the runtime can possibly decrease the memory used.
+If your code uses the types <code class="kw">Int16</code> and <code class="kw">Int8</code> for its variables, the runtime can possibly decrease the memory used.
 But operations with <code class="kw">Int16</code> and <code class="kw">Int8</code> are usually slower than with <code class="kw">Int</code>.</p>
 <h3>Unsigned integers</h3>
-<p>If you know that a variable must not hold a negative value, then the unsigned types are available.
+<p>If you know that a variable must not hold a negative value, the unsigned types are available.
 The unsigned types are <span class="kws"><code>UInt8</code>, <code>UInt16</code>, <code>UInt32</code>, <code>UInt</code>, <code>UInt64</code>, and <code>UInt128</code></span>.
 Each of these data types can hold a positive integer two times larger than the related signed type (<span class="kws"><code>Int8</code>, <code>Int16</code>, <code>Int32</code>, <code>Int</code>, <code>Int64</code>, and <code>Int128</code></span>).
 The performance of each unsigned type is the same as the related signed type.

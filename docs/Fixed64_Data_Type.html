@@ -29,7 +29,7 @@
 <dt>Automatic conversions</dt>
 <dd><code class="kw">Fixed64</code> widens to <span class="kws"><code>Real32</code>, <code>Real64</code>, <code>Real</code>, <code>Real128</code>, or <code>Fixed128</code></span> without risk of overflow.</dd>
 <dt>Type characters</dt>
-<dd>If you add the character &laquo;<code class="op">@</code>&raquo; to the end of a variable name, then the variable has the type <code class="kw">Fixed64</code>.</dd>
+<dd>If you add the character &laquo;<code class="op">@</code>&raquo; to the end of a variable name, the variable has the type <code class="kw">Fixed64</code>.</dd>
 </dl>
 <h2>Fixed64 literal</h2>
 <div class="language-literal">
@@ -43,7 +43,7 @@
 <dd>Optional one character.
 Some permitted symbols are: <span class="ops"><code>$</code>, <code>&euro;</code>, <code>&pound;</code>, and <code>&yen;</code></span>.</dd>
 <dd>these symbols are ignored by the compiler.
-If you use a symbol, then use the same one in all of your code.</dd>
+If you use a symbol, use the same one in all of your code.</dd>
 <dt><code class="id">integer_part</code></dt>
 <dd>One to 18 decimal digits.
 For the default number of decimal digits, the maximum is 15 digits.
@@ -66,16 +66,16 @@ The default is 4.</dd>
 <dd>Returns the default value, <code>&#164;0.0</code>.</dd>
 <dt><pre><code>Fixed64.Epsilon(Optional x As Fixed64) As Fixed64</code></pre></dt>
 <dd>Returns the smallest value more than &#164;0.0.
-If <code>x</code> is not given, then it returns &#164;0.0001</dd>
+If <code>x</code> is not given, it returns &#164;0.0001</dd>
 <dt><pre><code>Fixed64.Max(Optional x As Fixed64) As Fixed64</code></pre></dt>
 <dd>Returns the largest positive value for <code>x</code>.
-If <code>x</code> is not given, then it returns &#164;922_337_203_685_477.5807</dd>
+If <code>x</code> is not given, it returns &#164;922_337_203_685_477.5807</dd>
 <dt><pre><code>Fixed64.Min(Optional x As Fixed64) As Fixed64</code></pre></dt>
 <dd>Returns the smallest negative value for <code>x</code>.
-If <code>x</code> is not given, then it returns &minus;&#164;922_337_203_685_477.5808</dd>
+If <code>x</code> is not given, it returns &minus;&#164;922_337_203_685_477.5808</dd>
 <dt><pre><code>Fixed64.Parse(str As String, Optional #format As Format) As Fixed64</code></pre></dt>
 <dd>Tries to parse a string that shows as a number.</dd>
-<dd>If <code>#format</code> is not given or is <code class="kw">#Null</code>, then it uses the format of the local culture.
+<dd>If <code>#format</code> is not given or is <code class="kw">#Null</code>, it uses the format of the local culture.
 Or you can make it clear with <code>Format.UserLocale</code>.</dd>
 <dt><pre><code>Fixed64.Size As Int</code></pre></dt>
 <dd>Returns the number of available bytes.

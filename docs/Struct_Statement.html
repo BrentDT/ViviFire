@@ -75,14 +75,14 @@ You must supply the width between parentheses after one of these keywords.
 The width must be an integer literal in the range 1 thru 128.</p>
 <p>Optionally you can supply a value type between the keyword and the left parenthesis, written between brackets (<code class="op">[ ]</code>).
 This is known as the storage boundary type.
-If supplied, then the width must be in the range one thru the size of the type in bits.</p>
+If supplied, the width must be in the range one thru the size of the type in bits.</p>
 <p><code class="kw">UBits</code> is short for &ldquo;unsigned bit field&rdquo;.</p>
 <p><code class="kw">SBits</code> is short for &ldquo;signed bit field&rdquo;.
 When you use <code class="kw">SBits</code>, the most significant bit is reserved as a sign bit.</p>
-<p>If you supply a storage boundary, then each field uses some number of bits from the storage.
+<p>If you supply a storage boundary, each field uses some number of bits from the storage.
 You typically try to use all of the bits in one or more field declarations.
-But if there are bits that are not used, then these are known as <dfn>padding</dfn>.</p>
-<p>If a structure mixes bit fields and named types, then the named types will usually be put in boundaries.
+But if there are bits that are not used, these are known as <dfn>padding</dfn>.</p>
+<p>If a structure mixes bit fields and named types, the named types will usually be put in boundaries.
 The type of CPU sets the boundaries, counted from the start of the Struct:
 Intel processors usually have 8-bit boundaries, while Motorola processors usually have 16-bit boundaries.
 A bit field must not go across a boundary.</p>
@@ -118,8 +118,8 @@ But each instance of a structure has a lifetime.
 You control the lifetime of an instance by how and where you declare it.</dd>
 <dt>Qualification</dt>
 <dd>Code that is not in the structure must qualify the name of a member with the name of that structure.
-If code in an inner structure refers to an un-qualified name, then ViviFire tries to find it in the inner structure.
-If it does not find the element, then it tries the next outer block in sequence.</dd>
+If code in an inner structure refers to an un-qualified name, ViviFire tries to find it in the inner structure.
+If it does not find the element, it tries the next outer block in sequence.</dd>
 <dt>Memory used</dt>
 <dd>TODO</dd>
 </dl>

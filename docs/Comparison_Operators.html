@@ -86,10 +86,10 @@ A comparison expression without this clause could possibly give incorrect result
 The tolerance value is the maximum the two values can be different but compare as equal.</p>
 <p>At times you could have an expression with a mixture of comparisons with and without a tolerance.
 You can use a tilde (<code class="op">~</code>) written before the comparison operator to show which comparisons have a tolerance.
-If you use a tilde, then you must also supply a tolerance.</p>
+If you use a tilde, you must also supply a tolerance.</p>
 <p>A tolerance is applicable only to equality-type comparisons
 (<span class="ops"><code>&lt;=</code>, <code>&gt;=</code>, <code>=</code>, and <code>&lt;&gt;</code></span>).
-If you use a tolerance on an expression without one of these operators, then you get a warning, and the tolerance is ignored.</p>
+If you use a tolerance on an expression without one of these operators, you get a warning, and the tolerance is ignored.</p>
 <h3>Comparing strings</h3>
 <p>TODO</p>
 <h3>Range comparisons</h3>
@@ -101,7 +101,7 @@ This syntax is almost the same as that used by mathamatics.</p>
 <div class="language-vivifire syntax">
 <pre><code>value_1 { &lt; | &lt;= } value_2 And value_2 { &lt; | &lt;= } value_3&#10;</code></pre>
 </div>
-<p>If you wrote code the same as above and <code class="id">value_2</code> is an expression with side effects, then it can have unknown results.
+<p>If you wrote code the same as above and <code class="id">value_2</code> is an expression with side effects, it can have unknown results.
 The range comparison makes sure that each expression does not calculate more than one time.</p>
 <p>Only the operators <code class="op">&lt;</code> and <code class="op">&lt;=</code> are correct in this type of comparison.
 It is not a syntax error to mix these with the other comparison operators, but it is usually a programming error.
@@ -111,7 +111,7 @@ Thus, we do not recommend it.</p>
 <p>While you can use all the comparison operators on number and string values, object references are different.
 Objects can only compare for equality with the <a href="Is_Operator.html">Is operator</a>.
 This operator lets you know if two object references refer to the same object.</p>
-<p>If an object boxes a number or string, then you can use the usual comparison operators.
+<p>If an object boxes a number or string, you can use the usual comparison operators.
 Number objects compare <code class="kw">#Null</code> as zero.
 String objects compare <code class="kw">#Null</code> as the empty string.</p>
 <h2>Examples</h2>

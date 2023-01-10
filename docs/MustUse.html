@@ -25,12 +25,12 @@
 <h2>Instructions</h2>
 <p>When you call a procedure that returns a value, you can usually ignore the value if it is not necessary for subsequent calculations.
 For example, a procedure can return an integer error code, but it has almost no risk of errors.
-If you made the procedure, then you can know the risks.</p>
+If you made the procedure, you can know the risks.</p>
 <p>Other programmers that use your code possibly do not have the time to think about the risks.
-If a return value is important, then it is necessary to tell the user.
+If a return value is important, it is necessary to tell the user.
 You can tell the user when a return value is necessary with the modifier <code class="at">@MustUse</code>.</p>
 <p>You can add <code class="at">@MustUse</code> to procedures of the types <code class="kw">Method</code> and <code class="kw">Sub</code>.
-If you subsequently call such a procedure and ignore the return value, then the compiler shows a warning.</p>
+If you subsequently call such a procedure and ignore the return value, the compiler shows a warning.</p>
 <p>The warning caused by <code class="at">@MustUse</code> is Level 1.
 You can increase this warning to an error if you think it is necessary.
 See the section &ldquo;Warning&rdquo; of <a href="Option_Directive.html">@Option Directive</a> for more information.</p>

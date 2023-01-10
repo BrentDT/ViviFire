@@ -42,8 +42,8 @@ You must not supply <code class="id">expression</code>.</p>
 The data type of <code class="id">expression</code> must be compatible with the return type of the procedure.
 As an alternative, you can assign <code class="id">expression</code> to the name of the procedure, then use <code class="kw">Exit Function</code> or <code class="kw">Exit Property</code>.</p>
 <!-- TODO: Method -->
-<p>If you put <span class="kws"><code>Return</code> in a block of the types <code>Try</code> or <code>Catch</code> that also includes a block <code>Finally</code></span>, then <code class="kw">Return</code> causes <code class="kw">Finally</code> to execute.
-And if <code class="kw">Return</code> includes <code class="id">expression</code>, then it gets calculated after <code class="kw">End Try</code>.
+<p>If you put <span class="kws"><code>Return</code> in a block of the types <code>Try</code> or <code>Catch</code> that also includes a block <code>Finally</code></span>, <code class="kw">Return</code> causes <code class="kw">Finally</code> to execute.
+And if <code class="kw">Return</code> includes <code class="id">expression</code>, it gets calculated after <code class="kw">End Try</code>.
 <code class="kw">Return</code> is not permitted in blocks of the type <code class="kw">Finally</code>.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">

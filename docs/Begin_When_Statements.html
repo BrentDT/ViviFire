@@ -46,8 +46,8 @@ end_clause&#10;</code></pre>
 You must use each label given here in a subsequent block that starts with <code class="kw">When</code>.</dd>
 <dt><code class="id">loop_statements</code></dt>
 <dd>Optional statements that execute a minimum of one time.</dd>
-<dd>If there is no subsequent <code class="kw">When Each</code> or <code class="kw">When Else</code>, then these statements execute again and again.
-But, if there is such a block, then these statements execute only one time at the start of the loop.
+<dd>If there is no subsequent <code class="kw">When Each</code> or <code class="kw">When Else</code>, these statements execute again and again.
+But, if there is such a block, these statements execute only one time at the start of the loop.
 Then execution moves to <code class="kw">When Each</code> or <code class="kw">When Else</code> for all subsequent iterations.</dd>
 <dt><code class="kw">When</code></dt>
 <dd>Mandatory one or more times</dd>
@@ -57,7 +57,7 @@ Each and Else are equivalent.</dd>
 <dt><code class="id">label</code></dt>
 <dd>Specifies the start of statements that execute because of &laquo;<code>Exit label</code>&raquo;.
 Mandatory for each label in <code class="id">label_list</code>.
-But if no such list is supplied, then the compiler does not do this check.</dd>
+But if no such list is supplied, the compiler does not do this check.</dd>
 <dt><code class="nkw">DONE</code></dt>
 <dd>Specifies the start of statements that execute after all iterations completed.</dd>
 <dt><code class="nkw">NONE</code></dt>
@@ -69,17 +69,17 @@ But if no such list is supplied, then the compiler does not do this check.</dd>
 </dl>
 <h2>Instructions</h2>
 <h3><code>When label</code></h3>
-<p>If you use &laquo;<code>When label</code>&raquo;, then the statements in this block of code execute because of &laquo;<code>Exit label</code>&raquo;.
+<p>If you use &laquo;<code>When label</code>&raquo;, the statements in this block of code execute because of &laquo;<code>Exit label</code>&raquo;.
 Execution then moves out of the loop.</p>
 <p>You can supply a list of labels after the keyword <code class="kw">Begin</code>.
-If you do, then you must also supply the related blocks with <code class="kw">When</code> and one of these labels.</p>
+If you do, you must also supply the related blocks with <code class="kw">When</code> and one of these labels.</p>
 <h3><code>When DONE</code></h3>
-<p>If you use &laquo;<code>When DONE</code>&raquo;, then the statements in this block of code execute only when the loop stops as usual.
+<p>If you use &laquo;<code>When DONE</code>&raquo;, the statements in this block of code execute only when the loop stops as usual.
 Execution then moves out of the loop.</p>
-<p>If a loop stops because of <code class="kw">Exit</code> or <code class="kw">Return</code>, then <code>When DONE</code> does not execute.
+<p>If a loop stops because of <code class="kw">Exit</code> or <code class="kw">Return</code>, <code>When DONE</code> does not execute.
 Thus execution continues as usual for the given statement.</p>
 <h3><code>When NONE</code></h3>
-<p>If you use &laquo;<code>When NONE</code>&raquo;, then the statements in this block of code execute only when the body of the loop did not execute.
+<p>If you use &laquo;<code>When NONE</code>&raquo;, the statements in this block of code execute only when the body of the loop did not execute.
 Execution then moves out of the loop.</p>
 <p>A table that summarizes the conditions in which this can occur follows.</p>
 <style media="all and (max-width: 40em)">
@@ -107,10 +107,10 @@ Or <var>A</var>&nbsp;&lt;&nbsp;<var>B</var> for a negative <var>D</var></td></tr
 <p class="note">Note:
 You cannot use <code>When NONE</code> in <code class="kw">Do&hellip;Loop While</code> and <code class="kw">Do&hellip;Loop Until</code> because they execute their statements a minimum of one time.</p>
 <h3><code>When Each</code> or <code>When Else</code></h3>
-<p>If you use <code class="kw">When Each</code> or <code class="kw">When Else</code>, then this block of code becomes the body of the loop.
+<p>If you use <code class="kw">When Each</code> or <code class="kw">When Else</code>, this block of code becomes the body of the loop.
 Statements in the block that starts with <code class="kw">Begin</code> execute only one time before the initial iteration of the loop.</p>
 <p>When Each and When Else are equivalent.
-If you use one, then you cannot use the other in the same loop.
+If you use one, you cannot use the other in the same loop.
 We recommend that you select one and use only that one.
 You can specify one with the directive <code class="at">@Option</code>.</p>
 <h3>Scope</h3>

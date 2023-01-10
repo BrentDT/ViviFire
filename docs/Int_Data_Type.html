@@ -27,11 +27,11 @@ On 32-bit platforms, values are in the range &minus;2,147,483,648 &ndash; +2,147
 <p><code class="kw">Int</code> is short for &ldquo;integer&rdquo;.</p>
 <dl>
 <dt>Default value</dt>
-<dd>If you declare a variable of type <code class="kw">Int</code> and do not initialize it, then its default value is zero (0).</dd>
+<dd>If you declare a variable of type <code class="kw">Int</code> and do not initialize it, its default value is zero (0).</dd>
 <dt>Automatic conversions</dt>
 <dd><code class="kw">Int</code> widens to <span class="kws"><code>Int64</code>, <code>Int128</code>, <code>Real32</code>, <code>Real64</code>, <code>Real</code>, or <code>Real128</code></span> without risk of overflow.</dd>
 <dt>Type characters</dt>
-<dd>If you add the character &ldquo;<code class="op">%</code>&rdquo; to the end of a variable name, then the variable has the type <code class="kw">Int</code>.</dd>
+<dd>If you add the character &ldquo;<code class="op">%</code>&rdquo; to the end of a variable name, the variable has the type <code class="kw">Int</code>.</dd>
 </dl>
 <h2>Shared methods and properties</h2>
 <dl class="language-vivifire listing">
@@ -43,7 +43,7 @@ On 32-bit platforms, values are in the range &minus;2,147,483,648 &ndash; +2,147
 <dd>Returns the minimum negative value.</dd>
 <dt><pre><code>Int.Parse(str As String, Optional #format As Format) As Int</code></pre></dt>
 <dd>Tries to parse a string that shows as an integer.</dd>
-<dd>If <code class="id">#format</code> is not given or is <code class="kw">#Null</code>, then it tries to parse <code class="id">str</code> as a decimal (base-10) integer.
+<dd>If <code class="id">#format</code> is not given or is <code class="kw">#Null</code>, it tries to parse <code class="id">str</code> as a decimal (base-10) integer.
 Or you can make it clear with <code>Format.Base10</code>.</dd>
 <dt><pre><code>Int.Size As Int</code></pre></dt>
 <dd>Returns the number of available bytes.

@@ -56,7 +56,7 @@ It is not necessary for generic types to box and unbox data.
 Each one is specially made for one data type.</li>
 <li>Decreased code &ndash;
 You write the code in a generic type only one time.
-If you make implementations of a type for each data type, then you must write the same code again and again.
+If you make implementations of a type for each data type, you must write the same code again and again.
 Their only differences are the data types they use.
 But generic types automatically make implementations for each data type.</li>
 <li>Code that you can use again &ndash; TODO</li>
@@ -76,7 +76,7 @@ The constraint makes it necessary for the type argument to implement <code>Compa
     ' ...
 End Class&#10;</code></pre>
 </div>
-<p>If you try to use <code>GenericClass</code> with a type that does not implement <code>Compare</code>, then the compiler gives an error.</p>
+<p>If you try to use <code>GenericClass</code> with a type that does not implement <code>Compare</code>, the compiler gives an error.</p>
 <h3>Types of constraints</h3>
 <p>Your constraint can specify the requirements that follow:</p>
 <ul>
@@ -86,18 +86,18 @@ End Class&#10;</code></pre>
 <li>The type argument must have a constructor without parameters.</li>
 <li>The class that uses a trait must inherit from a given class.</li>
 </ul>
-<p>If you must specify more than one requirement, then you can put a comma between each one.
-But if a constraint makes a line of code too long, then you can divide it into many constraints.
+<p>If you must specify more than one requirement, you can put a comma between each one.
+But if a constraint makes a line of code too long, you can divide it into many constraints.
 you can use <code class="kw">Where</code> again and again, each on a different line.</p>
 <p>But the shortest constraint can use a type parameter a minimum of one time.
 Then you must put the requirements in the sequence given above.</p>
 <ul>
-<li>If a sub-type is necessary, then use one of the operators <code class="op">&lt;</code> or <code class="op">&lt;=</code>.</li>
-<li>If a reference type is necessary, then use &laquo;<code class="kw">Is Class</code>&raquo;.</li>
-<li>If a value type is necessary, then use &laquo;<code class="kw">Is Struct</code>&raquo;.</li>
-<li>If a unit of measure is necessary, then use &laquo;<code class="kw">Is Unit</code>&raquo;.</li>
-<li>If a trait is necessary, then use &laquo;<code class="kw">Does</code>&raquo;.</li>
-<li>If a constructor is necessary, then use &laquo;<code class="kw">Constructor()</code>&raquo;.
+<li>If a sub-type is necessary, use one of the operators <code class="op">&lt;</code> or <code class="op">&lt;=</code>.</li>
+<li>If a reference type is necessary, use &laquo;<code class="kw">Is Class</code>&raquo;.</li>
+<li>If a value type is necessary, use &laquo;<code class="kw">Is Struct</code>&raquo;.</li>
+<li>If a unit of measure is necessary, use &laquo;<code class="kw">Is Unit</code>&raquo;.</li>
+<li>If a trait is necessary, use &laquo;<code class="kw">Does</code>&raquo;.</li>
+<li>If a constructor is necessary, use &laquo;<code class="kw">Constructor()</code>&raquo;.
 The parentheses are mandatory.</li>
 </ul>
 <p>See <a href="Where_Clause_Generics.html">Where Clause (Generics)</a> for more information.</p>

@@ -39,11 +39,11 @@ Platforms for which the fastest floating-point type is smaller than <code class=
 <dt>Zeros at the end</dt>
 <dd>The floating-point data types usually cannot show 0 characters at the end, after the decimal point.
 Thus numbers, for example, 1.4200 and 1.42 are the same value.
-If you must show zeros at the end, then you must use a formatter procedure.
+If you must show zeros at the end, you must use a formatter procedure.
 <!-- TODO: link to a list of such procedures -->
 </dd>
 <dt>Type characters</dt>
-<dd>If you add an exclamation point (<code class="op">!</code>) to the end of a variable name, then it has the type <code class="kw">Real</code>.</dd>
+<dd>If you add an exclamation point (<code class="op">!</code>) to the end of a variable name, it has the type <code class="kw">Real</code>.</dd>
 </dl>
 <h2>Real literal</h2>
 <div class="language-literal">
@@ -86,9 +86,9 @@ Mathematical overflow is one cause of this result.</dd>
 <dd>Returns the minimum negative value.</dd>
 <dt><pre><code>Real.Parse(str As String, Optional #format As Format) As Real</code></pre></dt>
 <dd>Tries to parse a string that shows as a floating-point number.</dd>
-<dd>If <code>#format</code> is not given or is <code class="kw">#Null</code>, then it uses the format of the local culture.
+<dd>If <code>#format</code> is not given or is <code class="kw">#Null</code>, it uses the format of the local culture.
 Or you can make it clear with <code>Format.UserLocale</code>.</dd>
-<dd>If <code>#format</code> is <code>Format.RealLiteral</code>, then it uses the format of a literal of type <code class="kw">Real</code>.</dd>
+<dd>If <code>#format</code> is <code>Format.RealLiteral</code>, it uses the format of a literal of type <code class="kw">Real</code>.</dd>
 <dt><pre><code>Real.Size As Int</code></pre></dt>
 <dd>Returns the number of available bytes.
 Typical values are 8 or 10.</dd>

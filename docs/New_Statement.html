@@ -51,7 +51,7 @@ The data type must be related to the type specified in a constructor of <code cl
 <dt><code class="id">method_name</code></dt>
 <dd>Optional name of the method of <code class="id">class_name</code> to call for each <code class="id">initializer</code> or <code class="id">statement</code>.
 It must come after the keyword <code class="kw">Call</code>.
-If you supply <code class="kw">Call</code> without <code class="id">method_name</code>, then the default is <code>Add</code>.</dd>
+If you supply <code class="kw">Call</code> without <code class="id">method_name</code>, the default is <code>Add</code>.</dd>
 <dt><code class="id">initializer</code></dt>
 <dd>Optional on the same line after <code class="id">method_name</code>.
 It must be a list of values with a comma between each, all between braces (<code class="op">{ }</code>).</dd>
@@ -64,13 +64,13 @@ You can also use one of <code class="kw">End New</code> or <code class="kw">End<
 </dl>
 <h2>Instructions</h2>
 <p>The statement <code class="kw">New</code> has many of the same functions as the statement <code class="kw">Dim</code>, but there are important differences.
-<code class="kw">Dim</code> can declare and initialize several scalar variables and arrays of value types and reference types.</p>
+<code class="kw">Dim</code> can declare and initialize many scalar variables and arrays of value types and reference types.</p>
 <p>How <code class="kw">New</code> is different:</p>
 <ul>
 <li>It can declare and initialize only one variable of a reference type.</li>
-<li>If the variable is nullable, then it is always given a value.</li>
-<li>If a constructor of the given type has an array parameter, then you can declare elements with the block construct.</li>
-<li>If you must enter data into the variable with several calls to the same method, then there is a construct for that.</li>
+<li>If the variable is nullable, it is always given a value.</li>
+<li>If a constructor of the given type has an array parameter, you can declare elements with the block construct.</li>
+<li>If you must enter data into the variable with many calls to the same method, there is a construct for that.</li>
 </ul>
 <h2>block construct</h2>
 <p>Usually you use the block construct when a constructor for a class has an object-array parameter.
@@ -92,7 +92,7 @@ But, <code class="kw">New</code> is mandatory for some statements in the block c
 (1) the statement also uses the block construct, or (2) it has a different data type from <code class="id">default_type</code>.</p>
 <h4>Argument-list members</h4>
 <p>It is not necessary to write the keyword <code class="kw">New</code> and <code class="id">class_name</code> again and again.
-If the statement block has many objects with the same data type, then you can supply only the argument list.
+If the statement block has many objects with the same data type, you can supply only the argument list.
 You can write the arguments between parentheses (<code class="op">(&hellip;)</code>) or without them.
 This manual always writes them without parentheses.</p>
 <p>You can use a child class of the declared data type for most or all of the statements.
@@ -105,8 +105,8 @@ You can use a vertical bar (<code class="op">|</code>) with optional hyphens (<c
 There is no limit on the number of hyphens, but this manual usually uses 4 hyphens (<code>|----</code>).</p>
 <h4><code>Object</code> members</h4>
 <p>A statement of the type <code class="kw">Object</code> makes an instance of a child class.
-If you do not supply a parent class for the object, then the default is the type of the array argument (or <code class="id">default_type</code>, if given).
-But if you do supply the parent, then it must be a child of the default class.</p>
+If you do not supply a parent class for the object, the default is the type of the array argument (or <code class="id">default_type</code>, if given).
+But if you do supply the parent, it must be a child of the default class.</p>
 <h4>Procedure-call members</h4>
 <p>Procedure calls in the block construct can only be methods and properties of the class <code class="id">class_name</code>.
 They must start with a dot (<code class="op">.</code>) before the procedure name.</p>
@@ -133,7 +133,7 @@ It shows &ldquo;File&rdquo; on the menu bar.
 In the related popup menu, it shows two commands: &ldquo;Open&hellip;&rdquo; and &ldquo;Exit&rdquo.
 Between these two items we write a vertical bar, which shows as a separator.
 This symbol is an alternative to <code class="kw">#Null</code> that you can use only in argument lists.
-If you select one of the commands, then it calls the related procedure.</p>
+If you select one of the commands, it calls the related procedure.</p>
 <div class="language-vivifire listing">
 <pre><code>' Make a menu.
 Menu FileMenu, "&File", "&amp;Open...", DoOpen, |, "E&amp;xit", DoExit&#10;</code></pre>

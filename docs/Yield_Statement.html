@@ -36,7 +36,7 @@ The loop receives this value.</dd>
 <h2>Instructions</h2>
 <p><code class="kw">Yield</code> returns one element of a collection.
 You must use <code class="kw">Yield</code> in a method or <code class="kw">Get</code> accessor of a property with the modifier <code class="at">@Iterator</code>.
-An <dfn>iterator</dfn> is a procedure that does special iterations over a collection.</p>
+An <dfn>iterator</dfn> is a procedure that does special iterations through a collection.</p>
 <p>The statement <code class="kw">For Each</code> consumes data from an iterator.
 Each iteration of the loop calls the iterator procedure.
 While in the procedure, <code class="kw">Yield</code> returns <code class="id">expression</code> and stores the location where execution stopped.
@@ -47,7 +47,7 @@ Execution starts again from that location with a subsequent call to the iterator
 <p>An iterator procedure must obey the rules that follow.</p>
 <ul>
 <li>It must be one of <code class="kw">Method</code> or <code class="kw">Property</code>.</li>
-<li>If <code class="kw">Property</code>, then it must have an accessor (<code class="kw">Get</code>).</li>
+<li>If <code class="kw">Property</code>, it must have an accessor (<code class="kw">Get</code>).</li>
 <li>It must have the modifier <code class="at">@Iterator</code>.</li>
 <li>It must not have a parameter with the modifier <code class="kw">ByRef</code>.</li>
 </ul>

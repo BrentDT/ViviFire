@@ -27,7 +27,7 @@ These become very important when you use nested data structures.</p>
 <h2><code>.?</code> operator</h2>
 <p>The operator <code class="op">.?</code> is almost the same as the operator &laquo;<code class="op">.</code>&raquo;.
 It does a test on the left operand for <code class="kw">#Null</code> before it does a member access operation.
-If the left operand is <code class="kw">#Null</code>, then the result is also <code class="kw">#Null</code>.
+If the left operand is <code class="kw">#Null</code>, the result is also <code class="kw">#Null</code>.
 An example follows:</p>
 <div class="language-vivifire listing">
 <pre><code>Var #name = #article.?#author.?name&#10;</code></pre>
@@ -45,7 +45,7 @@ End If&#10;</code></pre>
 <h2><code>??</code> operator</h2>
 <p>The operator <code class="op">??</code> is almost the same as the operator &laquo;<code class="op">?</code>&raquo;.
 It does a test on the result returned by the procedure for #Null before it calls the method given by the right operand.
-But if the returned value is null, then the result of the expression is null.
+But if the returned value is null, the result of the expression is null.
 An example follows:</p>
 <div class="language-vivifire listing">
 <pre><code>Var title = #GetForegroundWindow??#GetFirstChild??GetTitle?&#10;</code></pre>
@@ -64,8 +64,8 @@ End If&#10;</code></pre>
 <h2><code>|?</code> operator</h2>
 <p>The operator &laquo;<code class="op">|?</code>&raquo; is almost the same as the operators &laquo;<code class="kw">Or Else</code>&raquo; or &laquo;<code class="kw">If&hellip;Then&hellip;Else</code>&raquo;.
 You use this operator only with nullable variables.
-If the left operand is <em>not</em> null, then this becomes the result.
-But if the left operand is null, then the result becomes the right operand.</p>
+If the left operand is <em>not</em> null, this becomes the result.
+But if the left operand is null, the result becomes the right operand.</p>
 <p>There are other differences between these operators:</p>
 <ul>
 <li>With <code class="kw">Or Else</code>, the operands must be Boolean or numeric values.</li>

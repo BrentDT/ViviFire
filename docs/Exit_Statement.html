@@ -65,11 +65,11 @@ The procedure returns the value of the variable with the same name as the proced
 Execution continues with the line after <code class="kw">End While</code>.</p><h3>With Begin&hellip;When</h3>
 <p>You must be careful when you use <code class="kw">Exit</code> in <code class="kw">Begin&hellip;When</code>.
 This construct lets you catch when a loop completes correctly.
-When you use <code class="kw">Exit</code> with <code>keyword_list</code> to stop a loop, then <code>When Done</code> and <code>When Else</code> are ignored.</p>
+When you use <code class="kw">Exit</code> with <code>keyword_list</code> to stop a loop, <code>When Done</code> and <code>When Else</code> are ignored.</p>
 <p>You use <code>Exit identifier</code> to stop a loop and move execution to the line <code class="kw">When</code> with the given <code>identifier</code>.</p>
 <h3>With nested structures</h3>
 <p>When <code class="kw">Exit</code> is used in nested structures of the same type (for example, two <code class="kw">For</code> loops), <code class="kw">Exit</code> moves out of the most inner structure and gives control to the next higher level.
-If you must move out of more than one level, then you can write each structure's keyword in sequence, with a comma between each one.
+If you must move out of more than one level, you can write each structure's keyword in sequence, with a comma between each one.
 See the example below.</p>
 <h2>Examples</h2>
 <h3>Begin&hellip;When</h3>
