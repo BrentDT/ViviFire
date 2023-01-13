@@ -70,7 +70,7 @@ Control is connected with the variable <code class="id">counter</code> specified
 Other loop structures are possibly more flexible.
 See the <a href="#See_also">See also</a> section below for more information.</p>
 <h2>Usual execution</h2>
-<p>When a loop of type <code class="kw">For</code> starts, ViviFire evaluates <code class="id">start_value</code>, <code class="id">end_value</code>, and <code class="id"	>step_value</code>.
+<p>When a loop of type <code class="kw">For</code> starts, ViviFire evaluates <code class="id">start_value</code>, <code class="id">end_value</code>, and <code class="id">step_value</code>.
 ViviFire evaluates these values only one time and gives <code class="id">counter</code> the value of <code class="id">start_value</code>.
 Before the statement block executes, ViviFire compares <code class="id">counter</code> to <code class="id">end_value</code>.
 If <code class="id">counter</code> is larger than <code class="id">end_value</code> (or smaller if <code class="id">step_value</code> is negative), the loop does not execute and execution moves to the statement after <code class="kw">End</code>.
