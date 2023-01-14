@@ -21,7 +21,8 @@
 </nav>
 <main>
 <h1 id="top"><code>@Option</code> Directive</h1>
-<p>Makes sure that your code agrees with a given style or syntax.</p>
+<p>Makes sure that your code agrees with a given style or syntax.
+And also lets you change how some functions operate.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <pre><code>@Option options&hellip;&#10;</code></pre>
@@ -32,6 +33,29 @@
 <dd>Mandatory one or more identifiers</dd>
 </dl>
 <h2>Instructions</h2>
+<nav aria-labelledby="toc">
+<details open>
+<summary id="toc">Table of contents</summary>
+<ol class="notranslate" style="display: inline-block; columns: 2">
+<li><a href="#ArgByName">ArgByName</a></li>
+<li><a href="#Charset">Charset</a></li>
+<li><a href="#Dim">Dim</a></li>
+<li><a href="#End">End</a></li>
+<li><a href="#Enum">Enum</a></li>
+<li><a href="#If">If</a></li>
+<li><a href="#Last">Last</a></li>
+<li><a href="#Mod">Mod</a></li>
+<li><a href="#New">New</a></li>
+<li><a href="#Optional">Optional</a></li>
+<li><a href="#Select">Select</a></li>
+<li><a href="#String">String</a></li>
+<li><a href="#Test">Test</a></li>
+<li><a href="#Unit">Unit</a></li>
+<li><a href="#Warning">Warning</a></li>
+<li><a href="#When">When</a></li>
+</ol>
+</details>
+</nav>
 <h3 id="ArgByName" class="notranslate">ArgByName</h3>
 <h4><code>@Option ArgByName { Boolean | Literal }</code></h4>
 <p>Procedure calls that have one or more Booleans or literals for arguments can show a warning if not passed by name.
@@ -144,6 +168,35 @@ Thus, use of the one-line construct becomes an error.</p>
 <h3 id="Last" class="notranslate">Last</h3>
 <h4><code>@Option Last</code></h4>
 <p>No more directives of the type <code class="at">@Option</code> are permitted after this one.</p>
+<h3 id="Mod" class="notranslate">Mod</h3>
+<h4><code>@Option Mod Floored</code></h4>
+<p>Changes how the operator <code class="kw">Mod</code> operates.
+Usually the two operators <code class="kw">Mod</code> and <code class="kw">Rem</code> operate the same.
+They return the remainder after division.</p>
+<p>Usually the sign of the remainder comes from the left side, or <dfn>dividend</dfn>.
+This type of operation is known as <dfn>truncated modulo</dfn>.
+But this directive causes the sign of the remainder to come from the right side, or <dfn>divisor</dfn>.
+This alternative operation is known as <dfn>floored modulo</dfn>.</p>
+<table class="language-vivifire">
+<caption>Mod results</caption>
+<thead>
+<tr><th>Example</th><th>Truncated</th><th>Floored</th></tr>
+</thead>
+<tbody>
+<tr><td><code>+9 Mod +4</code></td>
+	<td><samp>&nbsp;1</samp></td>
+	<td><samp>&nbsp;1</samp></td></tr>
+<tr><td><code>-9 Mod +4</code></td>
+	<td><samp>-1</samp></td>
+	<td><samp>&nbsp;1</samp></td></tr>
+<tr><td><code>+9 Mod -4</code></td>
+	<td><samp>&nbsp;1</samp></td>
+	<td><samp>-1</samp></td></tr>
+<tr><td><code>-9 Mod -4</code></td>
+	<td><samp>-1</samp></td>
+	<td><samp>-1</samp></td></tr>
+</tbody>
+</table>
 <h3 id="New" class="notranslate">New</h3>
 <h4><code>@Option New</code></h4>
 <p>You must start <code class="kw">New</code> Statements with <code class="kw">New</code>.
@@ -233,6 +286,7 @@ Thus &ldquo;kilometer&rdquo; is correct syntax, but &ldquo;km&rdquo; is incorrec
 <h3 id="Warning" class="notranslate">Warning</h3>
 <h4><code>@Option Warning[1-5]</code></h4>
 <table>
+<caption>Warning levels</caption>
 <thead>
 <tr><th>Option</th>
 <th>ViviFire shows</th></tr>
@@ -294,7 +348,7 @@ When found
 End&#10;</code></pre>
 </div>
 <h2>See also</h2>
-<ul class="articles">
+<ul class="articles" style="display: inline-block; columns: 2">
 <li><a href="Begin_When_Statements.html">Begin&hellip;When Statements</a></li>
 <li><a href="Constructor_Statement.html">Constructor Statement</a></li>
 <li><a href="Dim_Statement.html">Dim Statement</a></li>
@@ -302,6 +356,7 @@ End&#10;</code></pre>
 <li><a href="For_Each_In_Statement.html">For Each Statement</a></li>
 <li><a href="For_To_Statement.html">For Statement</a></li>
 <li><a href="If_Then_Else_Statement.html">If&hellip;Else Statement</a></li>
+<li><a href="Mod_Operator.html">Mod Operator</a></li>
 <li><a href="New_Statement.html">New Statement</a></li>
 <li><a href="Optional.html">Optional</a></li>
 <li><a href="Select_Case_Statement.html">Select&hellip;Case Statement</a></li>
