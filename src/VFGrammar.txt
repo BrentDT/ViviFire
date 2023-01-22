@@ -1749,6 +1749,10 @@ ExitStatement (. ID(L"ExitStatement", 3) .)
 =
 	(. int kind = 0; .)
 	"Exit"
+	(.
+	if (std::find(context.rbegin(), context.rend(), _Finally) != context.rend())
+	    SemErr(L"Cannot use EXIT in FINALLY");
+	.)
 	(
 		identifier
 		(.
@@ -1905,8 +1909,11 @@ GotoStatement (. ID(L"GotoStatement", 3) .)
 =
 	"Goto"
 	(.
-	if (std::find(context.begin(), context.end(), _Select) == context.end())
-	    SemErr(L"GOTO without SELECT");
+	if (std::find(context.rbegin(), context.rend(), _Select) == context.rend())
+	    SemErr(L"GOTO CASE without SELECT");
+
+	if (std::find(context.rbegin(), context.rend(), _Finally) != context.rend())
+	    SemErr(L"Cannot use GOTO CASE in FINALLY");
 	.)
 	"Case" ( "Else" | Expression )
 .
