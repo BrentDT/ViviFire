@@ -88,16 +88,18 @@ Var test2 = a &gt; b And b &lt; c&#10;</code></pre>
 <tr><th>Variable</th><th>Value</th></tr>
 </thead>
 <tbody>
-<tr><th><code>test1</code></th><td><samp>True</samp></td></tr>
-<tr><th><code>test2</code></th><td><samp>False</samp></td></tr>
+<tr><th><code>test1</code></th>
+<td><samp>True</samp></td></tr>
+<tr><th><code>test2</code></th>
+<td><samp>False</samp></td></tr>
 </tbody>
 </table>
 <h3>Example 2</h3>
 <div class="language-vivifire listing">
 <pre><code>var a = 5, b = 10, c = 15
-Var pattern1 = a And b
-Var pattern2 = b And c
-Var pattern3 = a And c&#10;</code></pre>
+Var a_and_b = a And b
+Var a_and_c = a And c
+Var b_and_c = b And c&#10;</code></pre>
 </div>
 <table class="results">
 <caption>After execution</caption>
@@ -105,9 +107,18 @@ Var pattern3 = a And c&#10;</code></pre>
 <tr><th>Variable</th><th>Value</th></tr>
 </thead>
 <tbody>
-<tr><th><code>pattern1</code></th><td><samp>0</samp></td></tr>
-<tr><th><code>pattern2</code></th><td><samp>10</samp></td></tr>
-<tr><th><code>pattern3</code></th><td><samp>5</samp></td></tr>
+<tr><th><code>a</code></th>
+<td><samp>&nbsp;5 (00000101)</samp></td></tr>
+<tr><th><code>b</code></th>
+<td><samp>10 (00001010)</samp></td></tr>
+<tr><th><code>c</code></th>
+<td><samp>15 (00001111)</samp></td></tr>
+<tr><th><code>a_and_b</code></th>
+<td><samp>&nbsp;0 (00000000)</samp></td></tr>
+<tr><th><code>a_and_c</code></th>
+<td><samp>5 (00000101)</samp></td></tr>
+<tr><th><code>b_and_c</code></th>
+<td><samp>10 (00001010)</samp></td></tr>
 </tbody>
 </table>
 <h2>See also</h2>

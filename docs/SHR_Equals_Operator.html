@@ -54,7 +54,7 @@ Such types include <span class="kws"><code>Int8</code>, <code>Int16</code>, <cod
 The bits on the left side copy the sign bit, while the bits on the right side are discarded.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
-<pre><code>a = &amp;B1010_1000
+<pre><code>a = %B1010_1000
 b = a
 a SHR= 2
 b SHR= 4&#10;</code></pre>
@@ -65,8 +65,10 @@ b SHR= 4&#10;</code></pre>
 <tr><th>Variable</th><th>Value</th></tr>
 </thead>
 <tbody>
-<tr><th><code>a</code></th><td><code>&amp;B0010_1010</code> (42)</td></tr>
-<tr><th><code>b</code></th><td><code>&amp;B0000_1010</code> (6)</td></tr>
+<tr><th><code>a</code></th>
+<td><samp>42 (00101010)</samp></td></tr>
+<tr><th><code>b</code></th>
+<td><samp>&nbsp;6 (00001010)</samp></td></tr>
 </tbody>
 </table>
 <h2>See also</h2>

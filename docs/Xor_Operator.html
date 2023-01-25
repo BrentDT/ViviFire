@@ -72,7 +72,32 @@ The table that follows shows how to calculate the bit in the result.</p>
 The logical and bitwise operators have lower precedence than the arithmetic and relational operators.
 Thus, we recommend that you put parentheses around bitwise operations to make sure they give correct results.</p>
 <h2>Examples</h2>
-<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>Var a = 255, b = 170, c = 85
+Var a_xor_b = a Xor b
+Var a_xor_c = a Xor c
+Var b_xor_c = b Xor c&#10;</code></pre>
+</div>
+<table class="results">
+<caption>After execution</caption>
+<thead>
+<tr><th>Variable</th><th>Value</th></tr>
+</thead>
+<tbody>
+<tr><th><code>a</code></th>
+<td><samp>255 (11111111)</samp></td></tr>
+<tr><th><code>b</code></th>
+<td><samp>170 (10101010)</samp></td></tr>
+<tr><th><code>c</code></th>
+<td><samp>&nbsp;85 (01010101)</samp></td></tr>
+<tr><th><code>a_xor_b</code></th>
+<td><samp>&nbsp;85 (01010101)</samp></td></tr>
+<tr><th><code>a_xor_c</code></th>
+<td><samp>170 (10101010)</samp></td></tr>
+<tr><th><code>b_xor_c</code></th>
+<td><samp>255 (11111111)</samp></td></tr>
+</tbody>
+</table>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="And_Operator.html">And Operator</a></li>

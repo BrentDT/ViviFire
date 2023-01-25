@@ -64,7 +64,7 @@ The logical and bitwise operators have lower precedence than the arithmetic and 
 Thus, we recommend that you put parentheses around bitwise operations to make sure they give correct results.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
-<pre><code>Var pattern As UInt8 = &amp;B11110000
+<pre><code>Var pattern As UInt8 = %B11110000
 Var inverse = Not pattern&#10;</code></pre>
 </div>
 <table class="result">
@@ -74,9 +74,9 @@ Var inverse = Not pattern&#10;</code></pre>
 </thead>
 <tbody>
 <tr><th><code>pattern</code></th>
-<td><samp>240</samp> (<code>&amp;B11110000</code>)</td></tr>
+<td><samp>240 (11110000)</samp></td></tr>
 <tr><th><code>inverse</code></th>
-<td><samp>15</samp> (<code>&amp;B00001111</code>)</td></tr>
+<td><samp>&nbsp;15 (00001111)</samp></td></tr>
 </tbody>
 </table>
 <h2>See also</h2>
