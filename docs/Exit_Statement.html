@@ -32,9 +32,11 @@
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="id">keyword_list</code></dt>
-<dd>The keyword for a procedure: <span class="kws"><code>Function</code>, <code>Method</code>, <code>Property</code>, or <code>Sub</code></span>.</dd>
-<dd>Or one or more of the keywords for loops: <span class="kws"><code>Do</code>, <code>For</code>, or <code>While</code></span>.
-You write a comma between each keyword to make a list.</dd>
+<dd>One of the keywords for a procedure:
+<span class="kws"><code>Constructor</code>, <code>Function</code>, <code>Method</code>, <code>Property</code>, or <code>Sub</code></span>.</dd>
+<dd>Or one or more of the keywords for loops:
+<span class="kws"><code>Do</code>, <code>For</code>, or <code>While</code></span>.
+You can write a comma between each loop keyword to make a list.</dd>
 <dt><code class="id">identifier</code></dt>
 <dd>An identifier that is the same as one that you gave in the line <code class="kw">Begin</code> of <code class="kw">Begin&hellip;When</code>.</dd>
 <dt><code class="kw">Exit Program</code></dt>
@@ -45,6 +47,8 @@ Control returns to the process that started the program.</dd>
 The default value is zero (0).</dd>
 </dl>
 <h2>Instructions</h2>
+<p><code class="kw">Exit Constructor</code> immediately stops a procedure of type <code class="kw">Constructor</code>.
+Execution returns to the line that called the procedure, if there are more procedures to call.</p>
 <p><code class="kw">Exit Do</code> immediately stops a loop of type <code class="kw">Do&hellip;Loop</code>.
 Execution continues with the line after <code class="kw">Loop</code>.</p>
 <p><code class="kw">Exit For</code> immediately stops a loop of types <code class="kw">For</code> or <code class="kw">For Each</code>.
@@ -108,6 +112,7 @@ For most operating systems, this value is one (1).</li>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Begin_When_Statements.html">Begin&hellip;When Statements</a></li>
+<li><a href="Constructor_Statement.html">Constructor Statement</a></li>
 <li><a href="Do_Loop_Statement.html">Do&hellip;Loop Statement</a></li>
 <li><a href="For_Each_In_Statement.html">For Each Statement</a></li>
 <li><a href="For_To_Statement.html">For Statement</a></li>

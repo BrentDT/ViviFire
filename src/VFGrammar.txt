@@ -604,6 +604,8 @@ void Warn(int line, int col, const wchar_t *msg) {
 
 const wchar_t * Exit_block_without_block(int kind) {
 	switch (kind) {
+	case _Constructor:
+		return L"EXIT CONSTRUCTOR without CONSTRUCTOR";
 	case _Do:
 		return L"EXIT DO without DO";
 	case _For:
@@ -1248,7 +1250,7 @@ BitShiftExpression (. ID(L"BitShift", 2) .)
 Block<int &tkn> (. ID(L"Block", 3) .)
 =
 	(. tkn = la->kind; .)
-	( "Do" | "For" | "Function" | "Method" | "Property" | "Sub" | "While" )
+	( "Constructor" | "Do" | "For" | "Function" | "Method" | "Property" | "Sub" | "While" )
 .
 BlockStatement (. ID(L"BlockStatement", 3) .)
 =
@@ -1466,7 +1468,9 @@ ConstructorStatement<Modif &mods> (. ID(L"ConstructorStatement", 3) .)
 	"Constructor" (. line = t->line; col = t->col; .)
 	[ FormalParameterList<_Constructor> | DimOrVar ]
 	SyncNewline<s_name>
+	(. context.push_back(_Constructor); .)
 	{ Statement }
+	(. context.pop_back(); .)
 	(. if (la->kind != _End) Err(line, col, L"CONSTRUCTOR without END"); .)
 	"End"
 	(. Optional(_Constructor); .)
