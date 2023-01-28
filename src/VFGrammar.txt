@@ -1206,10 +1206,10 @@ AssignmentStatement (. ID(L"AssignmentStatement", 3) .)
 =
 	(
 		AssignmentOperator [OptionalNewline]
-		( Expression | LambdaExpression )
+		Expression
 	|
 		":=" Expression
-		{ ":=" Expression } //FIXME: Allow lambda here?
+		{ ":=" Expression }
 	)
 .
 AsTypeClause<bool bBits> (. ID(L"AsTypeClause", 3) .)
@@ -1403,14 +1403,11 @@ ConcatenationExpression (. ID(L"Concatenation", 2) .)
 ///=
 ///	ComparisonOperator "Is" NullCoalescingExpression
 ///.
-ConditionalExpression (. ID(L"Conditional", 2) .)
+ConditionalExpression
 =
-	( EnclosedExpression
-	| "If" EnclosedExpression
-		( "Then" EnclosedExpression "Else" EnclosedExpression
-///		| "<=>" NullCoalescingExpression ConditionalComparison { ConditionalComparison }
-		)
-	)
+	"If" EnclosedExpression
+	"Then" EnclosedExpression
+	"Else" EnclosedExpression
 .
 ConstantDeclarator (. ID(L"ConstantDeclarator", 3) .)
 =
@@ -1647,10 +1644,10 @@ DoStatement (. ID(L"DoStatement", 3) .)
 		[ LoopBody<POSTCONDITIONAL> ]
 		(. context.pop_back(); .)
 	(. if (la->kind != _Loop) Err(line, col, L"DO without LOOP"); .)
-		"Loop" WhileOrUntil Expression
+		"Loop" WhileOrUntil TolExpression
 		SyncNewline<s_name>
 	|	// Do While/Until...Loop
-		WhileOrUntil Expression
+		WhileOrUntil TolExpression
 		SyncNewline<s_name>
 		(. context.push_back(_Do); .)
 		[ LoopBody<PRECONDITIONAL> ]
@@ -1792,16 +1789,19 @@ ExitStatement (. ID(L"ExitStatement", 3) .)
 .
 Expression (. ID(L"Expression", 2) .)
 =
-	ConditionalExpression
-	(. if (la->kind == _right_paren) { Get(); SemErr(L"Parentheses do not agree"); } .)
-	[
-		"Tol" real_literal
-		[
-			LogicalOperator
-			(. SemErr(L"Cannot have expression after TOL clause"); .)
-			Expression
-		]
-	]
+	(
+		EnclosedExpression
+	|
+		ConditionalExpression
+	|
+		LambdaExpression
+	)
+	(.
+	if (la->kind == _right_paren) {
+		Get();
+		SemErr(L"Parentheses do not agree");
+	}
+	.)
 .
 /*F*/
 FixedPointType<int &tkn> (. ID(L"FixedPointType", 3) .)
@@ -1948,7 +1948,7 @@ IfBlockStatement<int line, int col, option_type nThen> (. ID(L"IfBlockStatement"
 	SyncNewline<s_name>
 	{ Statement }
 	{	"Else" (. if (bElseSeen) SemErr(L"ELSE or ELSE IF cannot follow ELSE"); .)
-		( "If" Expression (. Optional(_Then); .)
+		( "If" TolExpression (. Optional(_Then); .)
 		| (. bElseSeen = true; .)
 		)
 		SyncNewline<s_name>
@@ -1962,7 +1962,7 @@ IfStatement (. ID(L"IfStatement", 3) .)
 =
 	(. int line, col; .)
 	"If" (. line = t->line; col = t->col; .)
-	Expression
+	TolExpression
 	(	"Then"
 		(
 			IfBlockStatement<line, col, WITH_THEN>
@@ -2631,7 +2631,7 @@ SelectStatement (. ID(L"SelectStatement", 3) .)
 	.)
 	"Select" (. line = t->line; col = t->col; .)
 	(. Optional(_Case); .)
-	Expression
+	TolExpression
 	SyncNewline<s_name>
 	(. context.push_back(_Select); .)
 	{ CaseClause<clause> }
@@ -2846,6 +2846,18 @@ SyncNewline<const wchar_t *name> (. ID(L"SyncNewline", 3) .)
 	line_break { line_break }
 .
 /*T*/
+TolExpression (. ID(L"TolExpr", 2) .)
+=
+	Expression
+	[
+		"Tol" real_literal
+		[
+			LogicalOperator
+			(. SemErr(L"Cannot have expression after TOL clause"); .)
+			Expression
+		]
+	]
+.
 TraitMember (. ID(L"TraitMember", 3) .)
 =
 	(. Modif mods(this); .)
@@ -3098,7 +3110,7 @@ WhileStatement (. ID(L"WhileStatement", 3) .)
 =
 	(. int line, col; .)
 	"While" (. line = t->line; col = t->col; .)
-	Expression
+	TolExpression
 	SyncNewline<s_name>
 	(. context.push_back(_While); .)
 	[ LoopBody<PRECONDITIONAL> ]
