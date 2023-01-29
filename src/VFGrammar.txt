@@ -765,7 +765,18 @@ bool IsIdentifier(int kind) {
 }
 
 bool IsNamedArgument() {
-	return (IsIdentifier(la->kind) && scanner->Peek()->kind == _colon_equals);
+	if (!IsIdentifier(la->kind)) return false;
+
+	int next = scanner->Peek()->kind;
+
+	if (_equals == next) {
+		// TODO: Set a flag on the AST and subsequently do more tests than is possible here.
+		Warn(t->line, t->col, 
+		    L"The argument does an unusual test for equality (=). Possibly you want a named argument (:=).");
+		return false;
+	}
+
+	return (_colon_equals == next);
 }
 
 ///bool IsNewStatement() {
