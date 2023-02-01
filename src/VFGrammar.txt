@@ -1291,8 +1291,14 @@ CallStatement (. ID(L"CallStatement", 3) .)
 =
 	"Call"
 	( QualifiedName<0>
-	| "Base"
-	| "Constructor"
+	|
+		"Base"
+	|
+		"Constructor"
+		(.
+		if (std::find(context.rbegin(), context.rend(), _Constructor) == context.rend())
+		    SemErr(L"CALL CONSTRUCTOR is available only in a CONSTRUCTOR");
+		.)
 	)
 	[ ArgumentList ]
 .
@@ -1475,12 +1481,22 @@ ConstructorStatement<Modif &mods> (. ID(L"ConstructorStatement", 3) .)
 	mods.validate();
 
 	int line, col;
+	bool var_construct = false;
 	.)
 	"Constructor" (. line = t->line; col = t->col; .)
-	[ FormalParameterList<_Constructor> | DimOrVar ]
+	[
+		DimOrVar
+		(. var_construct = true; .)
+	]
+	[
+		(. if (var_construct) Err(la->line, la->col, L"CONSTRUCTOR VAR cannot have a parameter list"); .)
+		FormalParameterList<_Constructor>
+	]
 	SyncNewline<s_name>
 	(. context.push_back(_Constructor); .)
+	(. if (var_construct) context.push_back(_Var); .)
 	{ Statement }
+	(. if (var_construct) context.pop_back(); .)
 	(. context.pop_back(); .)
 	(. if (la->kind != _End) Err(line, col, L"CONSTRUCTOR without END"); .)
 	"End"
