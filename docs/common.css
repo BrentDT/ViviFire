@@ -105,7 +105,13 @@ div.listing pre, div.syntax pre {
 	margin-bottom: 0;
 }
 code, code[class="language-vivifire"], pre, PRE[class="language-vivifire"] {
-	font-family: "Source Code Pro", Consolas, Inconsolata, Menlo, "DejaVu Sans Mono", monospace;
+	font-family: 
+		Inconsolata, 
+		"Fira Code", 
+		Consolas, /* Win */
+		Menlo, /* Apple */
+		"Source Code Pro", /* Win */
+		monospace;
 	font-size: 95%;
 	white-space: pre;
 }
