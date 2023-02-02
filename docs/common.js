@@ -24,10 +24,10 @@ if (!chm) {
 document.write('<hr><p>'+
 '<div id="poll" role="status" aria-live="polite" aria-relevant="text">' +
 '<div role="form" aria-label="poll">' +
-'<p>What do you think about this article?</p>' +
-'<button onclick="vote(0)">Good</button>' +
-'<button onclick="vote(1)">Bad</button>' +
-'<button class="touch-only" onclick="vote(2)">Bad on mobile</button>' +
+'<p>Did this article help you?</p>' +
+'<button onclick="vote(0)">Yes</button>' +
+'<button onclick="vote(1)">No</button>' +
+///'<button class="touch-only" onclick="vote(2)">Bad on mobile</button>' +
 '</div>' +
 '</div></p>');
 
