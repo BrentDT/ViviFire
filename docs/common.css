@@ -270,10 +270,10 @@ a[href^="Widening_and_Narrowing_Conversions."]:link {
 	}
 }
 
-@media (any-pointer: coarse) {
-	/* Touch-enabled devices */
-	a, button {
-		min-height: 32px;
+@media (pointer: coarse) {
+	/* Touch-only devices */
+	a, button, label {
+		min-height: 48px;
 		min-width: 48px;
 	}
 	dt + dt a, li a {
