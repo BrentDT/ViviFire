@@ -64,7 +64,7 @@ See <a href="Option_Directive.html">@Option Directive</a> for more information.<
 </dl>
 <h2>Instructions</h2>
 <p><code class="kw">End For</code> is not the same as <a href="Exit_Statement.html"><code>Exit For</code></a>.</p>
-<p>Use the construct <code class="kw">For</code> when you must execute one or more statements again and again.
+<p>You can use <code class="kw">For</code> when you want to execute one or more statements again and again.
 It is recommended when you can be sure how many times the statements must execute.
 Control is connected with the variable <code class="id">counter</code> specified in the line that starts with <code class="kw">For</code>.
 Other loop structures are possibly more flexible.
@@ -77,7 +77,8 @@ If <code class="id">counter</code> is larger than <code class="id">end_value</co
 But the opposite result is more typical, thus the loop executes.</p>
 <p>Each time ViviFire executes <code class="kw">End</code>, it adds <code class="id">step_value</code> to <code class="id">counter</code> and goes back to <code class="kw">For</code>.
 Again it compares counter to end_value, and again it executes the block or stops the loop as a result.
-This process continues until <code class="id">counter</code> becomes out-of-range of <code class="id">end_value</code> or the statement <code class="kw">Exit For</code> stops the loop.</p>
+This process continues until <code class="id">counter</code> becomes out-of-range of <code class="id">end_value</code>.
+Alternatively, one of the statements <code class="kw">Exit</code> or <code class="kw">Return</code> can stop the loop.</p>
 <h3><code>step</code></h3>
 <p><code class="id">step_value</code> can be positive or negative.
 The value of this parameter selects how the loop executes as follows:</p>
@@ -96,16 +97,20 @@ The value of this parameter selects how the loop executes as follows:</p>
 </table>
 <p>If you do not supply <code class="id">step_value</code>, its default value is 1.</p>
 <h3>Counter</h3>
-<p>The variable <code class="id">counter</code> is always locally scoped to the loop body.
-You are not permitted to change its value directly.</p>
+<ul>
+<li>The variable <code class="id">counter</code> is always locally scoped to the loop body.</li>
+<li>This variable cannot have the same name as a different (unqualified) variable that is available in the same scope.</li>
+<li>The variable must have an integer data type.</li>
+<li>You are not permitted to change the value of the variable directly.</li>
+</ul>
 <h2><code>Exit For</code></h2>
 <p>The statement <code class="kw">Exit For</code> can stop this type of loop.
 <code class="kw">Exit For</code> immediately moves execution to the statement after <code class="kw">End</code>.</p>
 <p><code class="kw">Exit</code> can also stop more than one nested loop.
 You can use the statement &laquo;<code class="kw">Exit For, For</code>&raquo; in the inner loop to stop two loops.</p>
 <h2 id="When_statements">When statements</h2>
-<p>To find if a loop of this type completed because <code class="id">counter</code> became more than <code class="id">end_value</code>, use <code>When DONE</code>.
-To find if a loop of this type did not execute because <code class="id">counter</code> was initially out-of-range, use <code>When NONE</code>.
+<p>To find if a loop of this type completed because <code class="id">counter</code> became more than <code class="id">end_value</code>, use &laquo;<code>When DONE</code>&raquo;.
+To find if a loop of this type did not execute because <code class="id">counter</code> was initially out-of-range, use &laquo;<code>When NONE</code>&raquo;.
 See <a href="Begin_When_Statements.html">Begin&hellip;When Statements</a> for more information.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
