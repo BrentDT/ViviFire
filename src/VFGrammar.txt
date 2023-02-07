@@ -1293,6 +1293,10 @@ CallStatement (. ID(L"CallStatement", 3) .)
 	( QualifiedName<0>
 	|
 		"Base"
+		(.
+		if (std::find(context.rbegin(), context.rend(), _Constructor) == context.rend())
+		    SemErr(L"CALL BASE is available only in a CONSTRUCTOR");
+		.)
 	|
 		"Constructor"
 		(.
