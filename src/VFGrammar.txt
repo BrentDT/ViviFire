@@ -1051,7 +1051,6 @@ GoTo        = "GoTo".
 Handles     = "Handles".
 If          = "If".
 In          = "In".
-Int         = "Int".
 Int8        = "Int8".
 Int16       = "Int16".
 Int32       = "Int32".
@@ -1073,7 +1072,6 @@ Out         = "Out".
 Program     = "Program".
 Property    = "Property".
 Raise       = "Raise".
-Real        = "Real".
 Real32      = "Real32".
 Real64      = "Real64".
 Real128     = "Real128".
@@ -1847,7 +1845,7 @@ FixedPointType<int &tkn> (. ID(L"FixedPointType", 3) .)
 FloatingPointType<int &tkn> (. ID(L"FloatingPointType", 3) .)
 =
 	(. tkn = la->kind; .)
-	( "Real32" | "Real64" | "Real" | "Real128" )
+	( "Real32" | "Real64" | "Real128" )
 .
 FormalParameter<param_type &param> (. ID(L"FormalParameter", 3) .)
 =
@@ -2031,7 +2029,7 @@ IntegerConstant (. ID(L"IntegerConstant", 3) .)
 IntegerType<int &tkn> (. ID(L"IntegerType", 3) .)
 =
 	(. tkn = la->kind; .)
-	( "Int8"  | "Int16"  | "Int32"  | "Int"  | "Int64"  | "Int128"
+	( "Int8"  | "Int16"  | "Int32"  | "Int64"  | "Int128"
 	| "UInt8" | "UInt16" | "UInt32" | "UInt" | "UInt64" | "UInt128"
 	)
 .
