@@ -1096,7 +1096,6 @@ Tol         = "Tol".
 Trait       = "Trait".
 Try         = "Try".
 UBits       = "UBits".
-UInt        = "UInt".
 UInt8       = "UInt8".
 UInt16      = "UInt16".
 UInt32      = "UInt32".
@@ -2030,7 +2029,7 @@ IntegerType<int &tkn> (. ID(L"IntegerType", 3) .)
 =
 	(. tkn = la->kind; .)
 	( "Int8"  | "Int16"  | "Int32"  | "Int64"  | "Int128"
-	| "UInt8" | "UInt16" | "UInt32" | "UInt" | "UInt64" | "UInt128"
+	| "UInt8" | "UInt16" | "UInt32" | "UInt64" | "UInt128"
 	)
 .
 IntegerTypeOrExtension (. ID(L"IntegerTypeOrExtension", 3) .)
