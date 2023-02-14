@@ -44,13 +44,13 @@ Sub NotMuch
 End Sub&#10;</code></pre>
 </div>
 </li>
-<li>The procedure can return a value of the type <code class="kw">Int</code>.
+<li>The procedure can return a value of the type <code class="kw">Int32</code>.
 The operating system uses this value as the error code for your program.
 Other programs can read this value.
 <div class="language-vivifire listing">
 <pre><code>Program = ErrorOnly
 
-Sub ErrorOnly As Int
+Sub ErrorOnly As Int32
     MessageBox "Start of program"
     ErrorOnly = %EXIT_SUCCESS
     MessageBox "End of program with error code " &amp;
@@ -64,7 +64,7 @@ You can select what to do with different arguments.
 <div class="language-vivifire listing">
 <pre><code>Program = ArgsAndError
 
-Sub ArgsAndError(args() As String) As Int
+Sub ArgsAndError(args() As String) As Int32
     MessageBox "Start of program"
     For Each arg In args
     Begin
@@ -103,7 +103,7 @@ End Sub&#10;</code></pre>
 <li><a href="Modules.html">Modules</a></li>
 <li><a href="Exit_Statement.html">Exit Statement</a></li>
 <li><a href="Sub_Statement.html">Sub Statement</a></li>
-<li><a href="Int_Data_Type.html">Int Data Type</a></li>
+<li><a href="Int32_Data_Type.html">Int32 Data Type</a></li>
 <li><a href="String_Data_Type.html">String Data Type</a></li>
 <li><a href="For_Each_In_Statement.html">For Each Statement</a></li>
 <li><a href="Begin_When_Statements.html">Begin&hellip;When Statements</a></li>

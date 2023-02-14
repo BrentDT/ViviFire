@@ -50,7 +50,7 @@ Dim backtick As Char = ```&#10;</code></pre>
 <dd>Returns <code>%NUL</code>.</dd>
 <dt><pre><code>Char.Lower(c As Char, Optional #fmt As Format) As Char</code></pre></dt>
 <dd>Returns a lower-case letter if given an upper-case letter, or the given character if it is not a letter.</dd>
-<dt><pre><code>Char.Size As Int</code></pre></dt>
+<dt><pre><code>Char.Size As Int32</code></pre></dt>
 <dd>Returns the number of available bytes.
 This is always 4.</dd>
 <dt><pre><code>Char.Upper(c As Char, Optional #fmt As Format) As Char</code></pre></dt>
@@ -62,37 +62,37 @@ or (2) a necessary string (<code class="id">str</code>) and a necessary position
 The position starts at zero.</p>
 <dl class="language-vivifire listing">
 <dt><pre><code>Char.IsControl(chr As Char) As Boolean
-Char.IsControl(str As String, pos As Int) As Boolean</code></pre></dt>
+Char.IsControl(str As String, pos As Int32) As Boolean</code></pre></dt>
 <dd>Returns true if given a control character, and false if given a different character.</dd>
 <dt><pre><code>Char.IsDigit(chr As Char) As Boolean
-Char.IsDigit(str As String, pos As Int) As Boolean</code></pre></dt>
+Char.IsDigit(str As String, pos As Int32) As Boolean</code></pre></dt>
 <dd>Returns true if given a number between 0 and 9, and false if given a different character.</dd>
 <dt><pre><code>Char.IsLetter(chr As Char) As Boolean
-Char.IsLetter(str As String, pos As Int) As Boolean</code></pre></dt>
+Char.IsLetter(str As String, pos As Int32) As Boolean</code></pre></dt>
 <dd>Returns true if given a letter, and false if given a different character.</dd>
 <dt><pre><code>Char.IsLower(chr As Char) As Boolean
-Char.IsLower(str As String, pos As Int) As Boolean</code></pre></dt>
+Char.IsLower(str As String, pos As Int32) As Boolean</code></pre></dt>
 <dd>Returns true if given a lower-case letter, and false if given a different character.</dd>
 <dt><pre><code>Char.IsNumber(chr As Char) As Boolean
-Char.IsNumber(str As String, pos As Int) As Boolean</code></pre></dt>
+Char.IsNumber(str As String, pos As Int32) As Boolean</code></pre></dt>
 <dd>Returns true if given a number or related character, and false if given a different character.</dd>
 <dt><pre><code>Char.IsPunctuation(chr As Char) As Boolean
-Char.IsPunctuation(str As String, pos As Int) As Boolean</code></pre></dt>
+Char.IsPunctuation(str As String, pos As Int32) As Boolean</code></pre></dt>
 <dd>Returns true if given a punctuation character, and false if given a different character.</dd>
 <dt><pre><code>Char.IsSeparator(chr As Char) As Boolean
-Char.IsSeparator(str As String, pos As Int) As Boolean</code></pre></dt>
+Char.IsSeparator(str As String, pos As Int32) As Boolean</code></pre></dt>
 <dd>Returns true if given a separator character, and false if given a different character.</dd>
 <dt><pre><code>Char.IsSymbol(chr As Char) As Boolean
-Char.IsSymbol(str As String, pos As Int) As Boolean</code></pre></dt>
+Char.IsSymbol(str As String, pos As Int32) As Boolean</code></pre></dt>
 <dd>Returns true if given a symbol character, and false if given a different character.</dd>
 <dt><pre><code>Char.IsUpper(chr As Char) As Boolean
-Char.IsUpper(str As String, pos As Int) As Boolean</code></pre></dt>
+Char.IsUpper(str As String, pos As Int32) As Boolean</code></pre></dt>
 <dd>Returns true if given an upper-case letter, and false if given a different character.</dd>
 <dt><pre><code>Char.IsWhitespace(chr As Char) As Boolean
-Char.IsWhitespace(str As String, pos As Int) As Boolean</code></pre></dt>
+Char.IsWhitespace(str As String, pos As Int32) As Boolean</code></pre></dt>
 <dd>Returns true if given a whitespace character, and false if given a different character.</dd>
 <dt><pre><code>Char.UnicodeBlock(chr As Char) As UnicodeBlocks
-Char.UnicodeBlock(str As String, pos As Int) As UnicodeBlocks</code></pre></dt>
+Char.UnicodeBlock(str As String, pos As Int32) As UnicodeBlocks</code></pre></dt>
 <dd>Returns an enumeration value of type <code>UnicodeBlocks</code> that is related to the Unicode block of the given character.</dd>
 </dl>
 <h2>See also</h2>

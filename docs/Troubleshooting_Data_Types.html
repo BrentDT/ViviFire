@@ -24,7 +24,7 @@
 <h1 id="top">Data Type Troubleshooting</h1>
 <p>What follows is a list of problems that can occur when you use intrinsic data types.</p>
 <h2>Floating-point values do not compare as equal</h2>
-<p>When you use floating-point numbers (<a href="Real32_Data_Type.html">Real32</a>, <a href="Real64_Data_Type.html">Real64</a>, <a href="Real_Data_Type.html">Real</a>, and <a href="Real128_Data_Type.html">Real128</a>), know that they are stored as binary fractions.
+<p>When you use floating-point numbers (<a href="Real32_Data_Type.html"><code>Real32</code></a>, <a href="Real64_Data_Type.html"><code>Real64</code></a>, and <a href="Real128_Data_Type.html"><code>Real128</code></a>), know that they are stored as binary fractions.
 They can hold an accurate quantity only when it is a binary fraction with <code>k / (2 ^ n)</code>, where <code class="id">k</code> and <code class="id">n</code> are integers.
 For example, <code>0.5 = 1/2</code> and <code>0.1875 = 3/16</code>.
 Thus these are accurate values.

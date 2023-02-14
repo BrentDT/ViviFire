@@ -27,28 +27,48 @@
 Integer types show as whole numbers, while non-integer types can show numbers with a fractional part.</p>
 <p>To compare all the ViviFire data types, see <a href="Data_Type_Summary.html">Data Type Summary</a>.</p>
 <h2>Integer types</h2>
-<p>The signed integer data types are <a href="Int8_Data_Type.html#">Int8</a> (8-bit), <a href="Int16_Data_Type.html#">Int16</a> (16-bit), <a href="Int32_Data_Type.html#">Int32</a> (32-bit), <a href="Int64_Data_Type.html#">Int64</a> (64-bit), <a href="Int128_Data_Type.html#">Int128</a> (128-bit), and <a href="Int_Data_Type.html#">Int</a> (platform-controlled).</p>
-<p>The unsigned integer data types are <a href="UInt8_Data_Type.html#">UInt8</a> (8-bit), <a href="UInt16_Data_Type.html#">UInt16</a> (16-bit), <a href="UInt32_Data_Type.html#">UInt32</a> (32-bit), <a href="UInt64_Data_Type.html#">UInt64</a> (64-bit), <a href="UInt128_Data_Type.html#">UInt128</a> (128-bit), and <a href="UInt_Data_Type.html#">UInt</a> (platform-controlled).</p>
+<p>The signed integer data types are as follows:</p>
+<ul>
+<li><a href="Int8_Data_Type.html#"><code>Int8</code></a> (8-bit)</li>
+<li><a href="Int16_Data_Type.html#"><code>Int16</code></a> (16-bit)</li>
+<li><a href="Int32_Data_Type.html#"><code>Int32</code></a> (32-bit)</li>
+<li><a href="Int64_Data_Type.html#"><code>Int64</code></a> (64-bit)</li>
+<li><a href="Int128_Data_Type.html#"><code>Int128</code></a> (128-bit).</li>
+</ul>
+<p>The unsigned integer data types are as follows:</p>
+<ul>
+<li><a href="UInt8_Data_Type.html#"><code>UInt8</code></a> (8-bit)</li>
+<li><a href="UInt16_Data_Type.html#"><code>UInt16</code></a> (16-bit)</li>
+<li><a href="UInt32_Data_Type.html#"><code>UInt32</code></a> (32-bit)</li>
+<li><a href="UInt64_Data_Type.html#"><code>UInt64</code></a> (64-bit)</li>
+<li><a href="UInt128_Data_Type.html#"><code>UInt128</code></a> (128-bit).</li>
+</ul>
 <h3>Performance</h3>
-<p>Arithmetic operations are faster with integer types than with other data types.
-They are fastest with the types <code class="kw">Int</code> and <code class="kw">UInt</code> in ViviFire.</p>
+<p>Arithmetic operations are faster with integer types than with other data types.</p>
 <h3>Large integers</h3>
 <p>TODO</p>
 <h3>Small integers</h3>
-<p>If the full range of <code class="kw">Int</code> is more than what is necessary, <code class="kw">Int16</code> is a possible alternative.
+<p>If the full range of <code class="kw">Int32</code> is more than what is necessary, <code class="kw">Int16</code> is a possible alternative.
 The type <code class="kw">Int16</code> holds integer values in the range &minus;32,768 thru 32,767.
 For the smallest integer range, the type <code class="kw">Int8</code> holds values from &minus;128 thru 127.</p>
 <p>Some code uses a large number of variables to hold small integers.
 If your code uses the types <code class="kw">Int16</code> and <code class="kw">Int8</code> for its variables, the runtime can possibly decrease the memory used.
-But operations with <code class="kw">Int16</code> and <code class="kw">Int8</code> are usually slower than with <code class="kw">Int</code>.</p>
+But operations with <code class="kw">Int16</code> and <code class="kw">Int8</code> are usually slower than with <code class="kw">Int32</code>.</p>
 <h3>Unsigned integers</h3>
 <p>If you know that a variable must not hold a negative value, the unsigned types are available.
-The unsigned types are <span class="kws"><code>UInt8</code>, <code>UInt16</code>, <code>UInt32</code>, <code>UInt</code>, <code>UInt64</code>, and <code>UInt128</code></span>.
-Each of these data types can hold a positive integer two times larger than the related signed type (<span class="kws"><code>Int8</code>, <code>Int16</code>, <code>Int32</code>, <code>Int</code>, <code>Int64</code>, and <code>Int128</code></span>).
+The unsigned types are <span class="kws"><code>UInt8</code>, <code>UInt16</code>, <code>UInt32</code>, <code>UInt64</code>, and <code>UInt128</code></span>.
+Each of these data types can hold a positive integer two times larger than the related signed type (<span class="kws"><code>Int8</code>, <code>Int16</code>, <code>Int32</code>, <code>Int64</code>, and <code>Int128</code></span>).
 The performance of each unsigned type is the same as the related signed type.
-Thus, <code class="kw">UInt</code> and <code class="kw">Int</code> have the same very good performance.</p>
+Thus, <code class="kw">UInt32</code> and <code class="kw">Int32</code> have the same performance.</p>
 <h2>Non-integer types</h2>
-<p>The non-integer numeric data types are <a href="Fixed64_Data_Type.html">Fixed64</a> (64-bit fixed-point), <a href="Fixed128_Data_Type.html">Fixed128</a> (128-bit fixed-point), <a href="Real32_Data_Type.html#">Real32</a> (32-bit floating-point), <a href="Real64_Data_Type.html#">Real64</a> (64-bit floating-point), <a href="Real128_Data_Type.html#">Real128</a> (128-bit floating-point), and <a href="Real_Data_Type.html#">Real</a> (platform-controlled).</p>
+<p>The non-integer numeric data types are as follows:</p>
+<ul>
+<li><a href="Fixed64_Data_Type.html"><code>Fixed64</code></a> (64-bit fixed-point)</li>
+<li><a href="Fixed128_Data_Type.html"><code>Fixed128</code></a> (128-bit fixed-point)</li>
+<li><a href="Real32_Data_Type.html#"><code>Real32</code></a> (32-bit floating-point)</li>
+<li><a href="Real64_Data_Type.html#"><code>Real64</code></a> (64-bit floating-point)</li>
+<li><a href="Real128_Data_Type.html#"><code>Real128</code></a> (128-bit floating-point)</li>
+</ul>
 <h3>Performance</h3>
 <p>TODO</p>
 <h3>Small magnitudes</h3>

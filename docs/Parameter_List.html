@@ -80,19 +80,19 @@ Also, the lines <code class="kw">End Method</code> are not given to help show th
     ' Does not return a value.
 Method GetNumber%
     ' Returns an integer.
-Method GetNumber() As Int
+Method GetNumber() As Int32
     ' This is almost the same as above, with more verbosity.&#10;</code></pre>
 </div>
 <h3>One or more mandatory parameters</h3>
 <div class="language-vivifire listing">
-<pre><code>Method Increment amount As Int
+<pre><code>Method Increment amount As Int32
     ' Has one mandatory parameter passed by value.
     ' Does not return a value.
-Method GetPoint(ByRef x As Int, ByRef y As Int)
+Method GetPoint(ByRef x As Int32, ByRef y As Int32)
     ' Has two parameters passed by reference.
     ' Does not return a value.
     ' The parentheses are optional.
-Method AddStudent(name As String) As Int
+Method AddStudent(name As String) As Int32
     ' Has one parameter passed by value.
     ' Returns an integer value.
     ' String is a reference type.

@@ -31,7 +31,7 @@
 <p>If you subtract a larger number from a smaller number, you find the result as follows:</p>
 <pre class="language-vivifire"><code>number Mod UInt64.Max + 1</code></pre></dd>
 <dt>Automatic conversions</dt>
-<dd><code class="kw">UInt64</code> widens to <span class="kws"><code>Int128</code>, <code>UInt128</code>, <code>Real32</code>, <code>Real64</code>, <code>Real</code>, or <code>Real128</code></span> without risk of overflow.</dd>
+<dd><code class="kw">UInt64</code> widens to <span class="kws"><code>Int128</code>, <code>UInt128</code>, <code>Real32</code>, <code>Real64</code>, or <code>Real128</code></span> without risk of overflow.</dd>
 <dt>Type characters</dt>
 <dd><code class="kw">UInt64</code> has no type characters.</dd>
 </dl>
@@ -48,7 +48,7 @@ This is always zero (0)</dd>
 <dd>Tries to parse a string that shows as an integer.</dd>
 <dd>If <code>#format</code> is not given or is <code class="kw">#Null</code>, it tries to parse <code>str</code> as a decimal (base-10) integer.
 Or you can make it clear with <code>Format.Base10</code>.</dd>
-<dt><pre><code>UInt64.Size As Int</code></pre></dt>
+<dt><pre><code>UInt64.Size As Int32</code></pre></dt>
 <dd>Returns the number of available bytes.
 This is always 8.</dd>
 </dl>

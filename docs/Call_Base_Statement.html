@@ -38,15 +38,15 @@ You can put parentheses around the list, if you want.</dd>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
 <pre><code>@Open Class BaseClass
-    Var a As Int
-    Var b As Real
+    Var a As Int32
+    Var b As Real64
 
     Constructor
         a = 0
         b = 0.0
     End Constructor
 
-    Constructor x As Int, y As Real
+    Constructor x As Int32, y As Real64
         a = x
         b = y
     End Constructor
@@ -57,7 +57,7 @@ Class DerivedClass Is BaseClass
         Call Base
     End Constructor
 
-    Constructor a As Int, b As Real
+    Constructor a As Int32, b As Real64
         Call Base a, b
     End Constructor
 End Class&#10;</code></pre>

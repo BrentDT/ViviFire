@@ -37,7 +37,7 @@ It declares an integer variable.</dd>
 <dd>Optional in the line that starts with <code class="kw">End</code></dd>
 <dt><code>type</code></dt>
 <dd>Optional data type of <code class="id">counter</code>.
-Permitted types include: <span class="kws"><code>Int8</code>, <code>Int16</code>, <code>Int32</code>, <code>Int</code>, <code>Int64</code>, <code>Int128</code>, <code>UInt8</code>, <code>UInt16</code>, <code>UInt32</code>, <code>UInt</code>, <code>UInt64</code>, and <code>UInt128</code></span>.</dd>
+Permitted types include: <span class="kws"><code>Int8</code>, <code>Int16</code>, <code>Int32</code>, <code>Int64</code>, <code>Int128</code>, <code>UInt8</code>, <code>UInt16</code>, <code>UInt32</code>, <code>UInt64</code>, and <code>UInt128</code></span>.</dd>
 <dt><code class="id">start_value</code></dt>
 <dd>Mandatory integer expression.
 It becomes the initial value of <code class="id">counter</code>.</dd>
@@ -114,7 +114,7 @@ To find if a loop of this type did not execute because <code class="id">counter<
 See <a href="Begin_When_Statements.html">Begin&hellip;When Statements</a> for more information.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
-<pre><code>For index As Int = 1 To 5
+<pre><code>For index As Int32 = 1 To 5
     #Debug.Print index
 End For
 #Debug.PrintLine&#10;</code></pre>

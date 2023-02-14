@@ -98,17 +98,17 @@ Declare Function TwoArgs Is FourArgs(3, 2, Optional 1=0, 4=0)&#10;</code></pre>
 <h3>Foreign function libraries</h3>
 <div class="language-vivifire listing">
 <pre><code>Declare "user32.dll" Function BringWindowToTop (
-    h As Int) As Int
+    h As Int32) As Int32
 Declare "user32.dll" UTF16 Function SetWindowText Is "SetWindowTextW" (
-    h As Int, s As String ) As Int&#10;</code></pre>
+    h As Int32, s As String ) As Int32&#10;</code></pre>
 </div>
 <hr>
 <div class="language-vivifire listing">
 <pre><code>Declare "user32.dll" UTF16
     Function BringWindowToTop (
-        h As Int) As Int
+        h As Int32) As Int32
     Function SetWindowText Is "SetWindowTextW" (
-        h As Int, s As String) As Int
+        h As Int32, s As String) As Int32
 End Declare&#10;</code></pre>
 </div>
 <h2>See also</h2>

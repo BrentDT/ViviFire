@@ -47,7 +47,7 @@ And if <code class="kw">Return</code> includes <code class="id">expression</code
 <code class="kw">Return</code> is not permitted in blocks of the type <code class="kw">Finally</code>.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
-<pre><code>Method RelativeTime(sec As Int) As String
+<pre><code>Method RelativeTime(sec As Int32) As String
     If sec < 2*60 Return "seconds"
     If sec < 2*60*60 Return "minutes"
     If sec < 2*24*60*60 Return "hours"

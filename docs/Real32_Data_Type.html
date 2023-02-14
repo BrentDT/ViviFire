@@ -34,7 +34,7 @@ Some conditions can let the ViviFire runtime decrease the memory that your progr
 <dt>Default value</dt>
 <dd>When you declare a variable of type <code class="kw">Real32</code> and do not initialize it, its default value is zero (0.0).</dd>
 <dt>Automatic conversions</dt>
-<dd><code class="kw">Real32</code> widens to <span class="kws"><code>Real64</code>, <code>Real</code>, or <code>Real128</code></span> without risk of overflow.</dd>
+<dd><code class="kw">Real32</code> widens to <code class="kw">Real64</code> or <code class="kw">Real128</code> without risk of overflow.</dd>
 <dt>Zeros at the end</dt>
 <dd>The floating-point data types usually cannot show 0 characters at the end, after the decimal point.
 Thus numbers, for example, 1.4200 and 1.42 are the same value.
@@ -69,7 +69,7 @@ Mathematical overflow is one cause of this result.</dd>
 <dd>If <code>#format</code> is not given or is <code class="kw">#Null</code>, it uses the format of the local culture.
 Or you can make it clear with <code>Format.UserLocale</code>.</dd>
 <dd>If <code>#format</code> is <code>Format.RealLiteral</code>, it uses the format of a literal of type <code class="kw">Real32</code>.</dd>
-<dt><pre><code>Real32.Size As Int</code></pre></dt>
+<dt><pre><code>Real32.Size As Int32</code></pre></dt>
 <dd>Returns the number of available bytes.
 This is always 4.</dd>
 </dl>
@@ -79,7 +79,6 @@ This is always 4.</dd>
 </div>
 <h2>See also</h2>
 <ul class="articles">
-<li><a href="Real_Data_Type.html">Real Data Type</a></li>
 <li><a href="Real64_Data_Type.html">Real64 Data Type</a></li>
 <li><a href="Real128_Data_Type.html">Real128 Data Type</a></li>
 <!-- li><_a href="Format_Class.html">Format Class</a></li -->

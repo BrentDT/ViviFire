@@ -31,7 +31,7 @@
 <p>If you subtract a larger number from a smaller number, you find the result as follows:</p>
 <pre class="language-vivifire"><code>number Mod UInt128.Max + 1</code></pre></dd>
 <dt>Automatic conversions</dt>
-<dd><code class="kw">UInt128</code> widens to <span class="kws"><code>Real32</code>, <code>Real64</code>, <code>Real</code>, or <code>Real128</code></span> without risk of overflow.</dd>
+<dd><code class="kw">UInt128</code> widens to <span class="kws"><code>Real32</code>, <code>Real64</code>, or <code>Real128</code></span> without risk of overflow.</dd>
 <dt>Type characters</dt>
 <dd><code class="kw">UInt128</code> has no type characters.</dd>
 </dl>
@@ -48,7 +48,7 @@ This is always zero (0)</dd>
 <dd>Tries to parse a string that shows as an integer.</dd>
 <dd>If <code>#fnt</code> is not given or is <code class="kw">#Null</code>, it tries to parse <code>str</code> as a decimal (base-10) integer.
 Or you can make it clear with <code>Format.Base10</code>.</dd>
-<dt><pre><code>UInt128.Size As Int</code></pre></dt>
+<dt><pre><code>UInt128.Size As Int32</code></pre></dt>
 <dd>Returns the number of available bytes.
 This is always 16.</dd>
 </dl>
@@ -76,7 +76,6 @@ Dim result As UInt64 = low - high&#10;</code></pre>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Int128_Data_Type.html">Int128 Data Type</a></li>
-<li><a href="UInt_Data_Type.html">UInt Data Type</a></li>
 <li><a href="UInt64_Data_Type.html">UInt64 Data Type</a></li>
 <!-- li><_a href="Format_Class.html">Format Class</a></li -->
 <li><a href="Type_Characters.html">Type Characters</a></li>

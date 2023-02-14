@@ -8,7 +8,6 @@
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Recursive_Procedures.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
 <meta name="author" content="Brent Thorn, https://github.com/brentdt">
-<meta name="DC.date.reviewed" content="2022-05-12">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -27,7 +26,7 @@
 But know that a loop construct usually can do the same work more satisfactorily.</p>
 <p>The procedure that follows uses recursion to calculate the factorial of its initial argument.</p>
 <div class="language-vivifire listing">
-<pre><code>Function factorial(n As Int) As Int
+<pre><code>Function factorial(n As Int32) As Int32
     Return If n &lt;= 1 Then 1 Else n * factorial(n - 1)
 End Function&#10;</code></pre>
 </div>

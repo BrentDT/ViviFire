@@ -27,9 +27,9 @@
 <dt>Default value</dt>
 <dd>When you declare a variable of type <code class="kw">Int32</code> and do not initialize it, its default value is zero (0).</dd>
 <dt>Automatic conversions</dt>
-<dd><code class="kw">Int32</code> widens to <span class="kws"><code>Int</code>, <code>Int64</code>, <code>Int128</code>, <code>Real32</code>, <code>Real64</code>, <code>Real</code>, or <code>Real128</code></span> without risk of overflow.</dd>
+<dd><code class="kw">Int32</code> widens to <span class="kws"><code>Int64</code>, <code>Int128</code>, <code>Real32</code>, <code>Real64</code>, or <code>Real128</code></span> without risk of overflow.</dd>
 <dt>Type characters</dt>
-<dd><code class="kw">Int32</code> has no type character.</dd>
+<dd>When you put a percent sign (<code class="op">%</code>) at the end of a name, it declares it has the type <code class="kw">Int32</code>.</dd>
 </dl>
 <h2>Shared methods and properties</h2>
 <dl class="language-vivifire listing">
@@ -43,17 +43,17 @@
 <dd>Tries to parse a string that shows as an integer.</dd>
 <dd>If <code>#format</code> is not given or is <code class="kw">#Null</code>, it tries to parse <code>str</code> as a decimal (base-10) integer.
 Or you can make it clear with <code>Format.Base10</code>.</dd>
-<dt><pre><code>Int32.Size As Int</code></pre></dt>
+<dt><pre><code>Int32.Size As Int32</code></pre></dt>
 <dd>Returns the number of available bytes.
 This is always 4.</dd>
 </dl>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
-<pre><code>Dim foo As Int32&#10;</code></pre>
+<pre><code>Dim foo As Int32
+Dim bar%&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
-<li><a href="Int_Data_Type.html">Int Data Type</a></li>
 <li><a href="Int16_Data_Type.html">Int16 Data Type</a></li>
 <li><a href="Int64_Data_Type.html">Int64 Data Type</a></li>
 <li><a href="UInt32_Data_Type.html">UInt32 Data Type</a></li>

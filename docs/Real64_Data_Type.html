@@ -34,7 +34,7 @@ Some conditions can let the ViviFire runtime decrease the memory that your progr
 <dt>Default value</dt>
 <dd>When you declare a variable of type <code class="kw">Real64</code> and do not initialize it, its default value is zero (0.0).</dd>
 <dt>Automatic conversions</dt>
-<dd><code class="kw">Real64</code> widens to <code class="kw">Real</code> or <code class="kw">Real128</code> without risk of overflow.</dd>
+<dd><code class="kw">Real64</code> widens to <code class="kw">Real128</code> without risk of overflow.</dd>
 <dt>Zeros at the end</dt>
 <dd>The floating-point data types usually cannot show 0 characters at the end, after the decimal point.
 Thus numbers, for example, 1.4200 and 1.42 are the same value.
@@ -42,7 +42,26 @@ If you must show zeros at the end, you must use a formatter procedure.
 <!-- TODO: link to a list of such procedures -->
 </dd>
 <dt>Type characters</dt>
-<dd><code class="kw">Real64</code> has no type characters.</dd>
+<dd>When you put an exclamation sign (<code class="op">!</code>) at the end of a name, it declares it has the type <code class="kw">Real64</code>.</dd>
+</dl>
+<h2>Real literal</h2>
+<div class="language-literal">
+<pre><code>[ <var>integer_part</var> ] <kbd>.</kbd> <var>fractional_part</var> [ <kbd>E</kbd> [ <kbd>+</kbd> | <kbd>-</kbd> ] <var>exponent_part</var> ] [ <kbd>!</kbd> ]</code></pre>
+<div>or</div>
+<pre><code><var>integer_part</var> <kbd>E</kbd> [ <kbd>+</kbd> | <kbd>-</kbd> ] <var>exponent_part</var> [ <kbd>!</kbd> ]</code></pre>
+<div>or</div>
+<pre><code><var>integer_part</var> <kbd>!</kbd></code></pre>
+</div>
+<h3>Parts</h3>
+<dl class="parts">
+<dt><code class="id">integer_part</code></dt>
+<dd>One or more decimal digits.
+You can use an underscore character (<code class="op">_</code>) to divide it into groups of digits.</dd>
+<dt><code class="id">fractional_part</code></dt>
+<dd>One or more decimal digits.</dd>
+<dt><code class="id">exponent_part</code></dt>
+<dd>One or more decimal digits.
+Typically the maximum number of digits is three or four.</dd>
 </dl>
 <h2>Shared methods and properties</h2>
 <dl class="language-vivifire listing">
@@ -69,17 +88,17 @@ Mathematical overflow is one cause of this result.</dd>
 <dd>If <code>#format</code> is not given or is <code class="kw">#Null</code>, it uses the format of the local culture.
 Or you can make it clear with <code>Format.UserLocale</code>.</dd>
 <dd>If <code>#format</code> is <code>Format.RealLiteral</code>, it uses the format of a literal of type <code class="kw">Real64</code>.</dd>
-<dt><pre><code>Real64.Size As Int</code></pre></dt>
+<dt><pre><code>Real64.Size As Int32</code></pre></dt>
 <dd>Returns the number of available bytes.
 This is always 8.</dd>
 </dl>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
-<pre><code>Dim foo As Real64&#10;</code></pre>
+<pre><code>Dim foo As Real64
+Dim bar!&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
-<li><a href="Real_Data_Type.html">Real Data Type</a></li>
 <li><a href="Real32_Data_Type.html">Real32 Data Type</a></li>
 <li><a href="Real128_Data_Type.html">Real128 Data Type</a></li>
 <li><a href="Fixed64_Data_Type.html">Fixed64 Data Type</a></li>

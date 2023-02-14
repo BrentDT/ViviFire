@@ -49,21 +49,21 @@ If supplied, <code class="id">width</code> cannot be more than the size of <code
 <p>If you subtract a larger number from a smaller number, you find the result as follows:</p>
 <pre class="language-vivifire"><code>number Mod UBits(width).Max + 1</code></pre></dd>
 <dt>Automatic conversions</dt>
-<dd><code class="kw">SBits</code> and <code class="kw">UBits</code> widen to <span class="kws"><code>UInt64</code>, <code>UInt128</code>, <code>Real32</code>, <code>Real64</code>, <code>Real</code>, or <code>Real128</code></span> without risk of overflow.</dd>
+<dd><code class="kw">SBits</code> and <code class="kw">UBits</code> widen to <span class="kws"><code>UInt64</code>, <code>UInt128</code>, <code>Real32</code>, <code>Real64</code>, or <code>Real128</code></span> without risk of overflow.</dd>
 <dt>Type characters</dt>
 <dd><code class="kw">SBits</code> and <code class="kw">UBits</code> have no type characters.</dd>
 </dl>
 <h2>Shared methods and properties</h2>
 <dl class="language-vivifire listing">
-<!-- TENTATIVE: return type --><dt><pre><code>SBits(width).Max As Int</code></pre></dt>
-<!-- TENTATIVE: return type --><dt><pre><code>UBits(width).Max As UInt</code></pre></dt>
+<!-- TENTATIVE: return type --><dt><pre><code>SBits(width).Max As Int32</code></pre></dt>
+<!-- TENTATIVE: return type --><dt><pre><code>UBits(width).Max As UInt32</code></pre></dt>
 <dd>Returns the maximum value.</dd>
-<!-- TENTATIVE: return type --><dt><pre><code>SBits(width).Min As Int</code></pre></dt>
-<!-- TENTATIVE: return type --><dt><pre><code>UBits(width).Min As UInt</code></pre></dt>
+<!-- TENTATIVE: return type --><dt><pre><code>SBits(width).Min As Int32</code></pre></dt>
+<!-- TENTATIVE: return type --><dt><pre><code>UBits(width).Min As UInt32</code></pre></dt>
 <dd>Returns the minimum value.
 For <code class="kw">UBits</code>, this is always zero (0).</dd>
-<!-- TENTATIVE --><dt><pre><code>SBits(width).Size As Int</code></pre></dt>
-<!-- TENTATIVE --><dt><pre><code>UBits(width).Size As Int</code></pre></dt>
+<!-- TENTATIVE --><dt><pre><code>SBits(width).Size As Int32</code></pre></dt>
+<!-- TENTATIVE --><dt><pre><code>UBits(width).Size As Int32</code></pre></dt>
 <dd>Returns the number of available bytes.</dd>
 </dl>
 <h2>Examples</h2>

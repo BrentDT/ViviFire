@@ -37,7 +37,7 @@ Some examples follow.</p>
 You also can make arrays with more than one subscript, usually known as <dfn>multidimensional arrays</dfn>.
 See <a href="Array_Dimensions.html">Array Dimensions</a> for more information.</p>
 <h2>To store values in an array</h2>
-<p>You get access to each element in an array with an index of type <code class="kw">Int</code>.
+<p>You get access to each element in an array with an index of type <code class="kw">Int32</code>.
 You write the name of the array, then the index between parentheses.
 Indexes for multidimensional arrays have a comma between each.
 You use one index for each array dimension.</p>
@@ -59,7 +59,7 @@ Typically you use one of the two statements <code class="kw">For</code> or <code
 If you do not know the limits of the array, you can call the method <code>Last</code> to get the highest index value.</p>
 <p>The example that follows uses the statement <code class="kw">For</code> to iterate through an array with one dimension.</p>
 <div class="language-vivifire listing">
-<pre><code>Dim numbers() As Int = { 1, 2, 3 }
+<pre><code>Dim numbers() As Int32 = { 1, 2, 3 }
 
 For index = 0 To numbers.Last(0)
     PrintLine numbers(index)
@@ -87,13 +87,13 @@ End For&#10;</code></pre>
 
 <p>The example that follows uses the statement <code class="kw">For Each</code> to iterate through arrays with one and two dimensions.</p>
 <div class="language-vivifire listing">
-<pre><code>Dim numbers1D() As Int = { 1, 2, 3 }
+<pre><code>Dim numbers1D() As Int32 = { 1, 2, 3 }
 
 For Each number In numbers1D
     PrintLine number
 End For
 
-Dim numbers2D(*2) As Int = {{4, 5}, {6, 7}, {8, 9}}
+Dim numbers2D(*2) As Int32 = {{4, 5}, {6, 7}, {8, 9}}
 
 For Each number In numbers2D
    PrintLine number
@@ -115,12 +115,12 @@ End For&#10;</code></pre>
 <pre><code>Dim my_numbers() = GetNumbers()
 ShowNumbers my_numbers
 
-Sub GetNumbers() As Int*1
-    Dim numbers() As Int = { 119, 111, 114, 108, 100 }
+Sub GetNumbers() As Int32*1
+    Dim numbers() As Int32 = { 119, 111, 114, 108, 100 }
     Return numbers
 End Sub
 
-Sub ShowNumbers(numbers(*1) As Int)
+Sub ShowNumbers(numbers(*1) As Int32)
     For Each number In numbers
         PrintLine number
     End For

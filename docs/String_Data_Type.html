@@ -86,23 +86,23 @@ The applicable directives are:</p>
 <p>See <a href="Option_Directive.html#String">@Option Directive</a> for more information.</p>
 <h2>Shared methods and properties</h2>
 <dl class="language-vivifire listing">
-<dt><pre><code>String.CharAt(str As String, pos As Int) As Char</code></pre></dt>
+<dt><pre><code>String.CharAt(str As String, pos As Int32) As Char</code></pre></dt>
 <dd>Returns the character at the given position in a string.
 If <code class="id">pos</code> is larger than the end of the string, the method raises <code>RangeError</code>.
 If you must do an operation for each character in a string, &ldquo;<code>For Each chr As Char In str</code>&rdquo; could give better results.</dd>
 <dt><pre><code>String.Default As String</code></pre></dt>
 <dd>Returns the default value, <code>&quot;&quot;</code>.</dd>
-<dt><pre><code>String.Find(str As String, what As String, Optional start As Int, length As Int, flags As FindFlags) As Int
-String.Find(str As String, what As Char, Optional start As Int, length As Int, flags As FindFlags) As Int</code></pre></dt>
+<dt><pre><code>String.Find(str As String, what As String, Optional start As Int32, length As Int32, flags As FindFlags) As Int32
+String.Find(str As String, what As Char, Optional start As Int32, length As Int32, flags As FindFlags) As Int32</code></pre></dt>
 <dd>Returns the position of a substring or character (<code class="id">what</code>) in a given string.
 If it cannot find the supplied argument, the value returned is &laquo;<code>String.NotFound</code>&raquo;.
 You can optionally supply where to start (<code class="id">start</code>), how many characters (<code class="id">length</code>), and how to find the next index (<code class="id">flags</code>).
 Values of <code>FindFlags</code> are: <code>IgnoreCase</code> and <code>FromEnd</code>.</dd>
-<dt><pre><code>String.Length(str As String) As Int</code></pre></dt>
+<dt><pre><code>String.Length(str As String) As Int32</code></pre></dt>
 <dd>Returns the number of characters in a string.</dd>
 <dt><pre><code>String.Lower(str As String) As String</code></pre></dt>
 <dd>Returns a string with upper-case letters changed to lower-case.</dd>
-<dt><pre><code>String.Part(str As String, start As Int, Optional length As Int) As String</code></pre></dt>
+<dt><pre><code>String.Part(str As String, start As Int32, Optional length As Int32) As String</code></pre></dt>
 <dd>Returns part of a string at a given position (<code class="id">start</code>), and with a optional given length.
 If <code class="id">length</code> is not given, the returned string is from <code class="id">start</code> thru the end of the given string.
 If <code class="id">start</code> is larger than the end of the given string, the method raises <code>RangeError</code>.</dd>

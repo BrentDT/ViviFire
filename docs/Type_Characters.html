@@ -31,10 +31,10 @@ The table that follows shows the available identifier type characters with code 
 </thead>
 <tbody>
 <tr><td class="char"><code>%</code></td>
-<td><code class="kw">Int</code></td>
+<td><code class="kw">Int32</code></td>
 <td><pre><code>Dim a%</code></pre></td></tr>
 <tr><td class="char"><code>!</code></td>
-<td><code class="kw">Real</code></td>
+<td><code class="kw">Real64</code></td>
 <td><pre><code>Dim a!</code></pre></td></tr>
 <tr><td class="char"><code>@</code></td>
 <td><code class="kw">Fixed64</code></td>
@@ -44,7 +44,7 @@ The table that follows shows the available identifier type characters with code 
 <td><pre><code>Dim a$</code></pre></td></tr>
 </tbody>
 </table>
-<p>There are no identifier type characters for the data types <span class="kws"><code>Boolean</code>, <code>Char</code>, <code>Fixed128</code>, <code>Int8</code> thru <code>Int128</code>, <code>Real32</code> thru <code>Real128</code>, <code>SafeString</code>, <code>SBits</code>, <code>UBits</code>, <code>UInt</code>, or <code>UInt8</code> thru <code>UInt128</code></span>.
+<p>There are no identifier type characters for the data types <span class="kws"><code>Boolean</code>, <code>Char</code>, <code>Fixed128</code>, <code>Int8</code>, <code>Int16</code>, <code>Int64</code>, <code>Int128</code>, <code>Real32</code>, <code>Real128</code>, <code>SafeString</code>, <code>SBits</code>, <code>UBits</code>, or <code>UInt8</code> thru <code>UInt128</code></span>.
 Also, compound data types, for example, arrays and structures do not have an identifier type character.</p>
 <h2>Default literal types</h2>
 <p>The qualities of a literal usually give it its data type.
@@ -62,16 +62,16 @@ The table that follows gives the defaults.</p>
 </thead>
 <tbody>
 <tr><td>Number, no fraction part</td>
-<td><a href="Int_Data_Type.html"><code>Int</code></a></td>
+<td><a href="Int32_Data_Type.html"><code>Int32</code></a></td>
 <td><pre><code>32768 32_768</code></pre></td></tr>
 <tr><td>Number with a fraction part</td>
-<td><a href="Real_Data_Type.html#Real_literal"><code>Real</code></a></td>
+<td><a href="Real64_Data_Type.html#Real_literal"><code>Real64</code></a></td>
 <td><pre><code>3.14159 4.1e-8</code></pre></td></tr>
 <tr><td>Between two backtick symbols</td>
 <td><a href="Char_Data_Type.html#Char_literal"><code>Char</code></a></td>
 <td><pre><code>`A` `@`</code></pre></td></tr>
 <tr><td>Starts with a percent symbol and a minimum of two letters</td>
-<td><code class="kw">Int</code></td>
+<td><code class="kw">Int32</code></td>
 <td><pre><code>%CR %RETURN</code></pre></td></tr>
 <tr><td>Between two quotation symbols</td>
 <td><a href="String_Basics.html#String_literal"><code>String</code></a></td>
