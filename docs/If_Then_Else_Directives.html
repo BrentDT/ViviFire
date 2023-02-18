@@ -2,7 +2,7 @@
 <html lang="en-US" dir="ltr">
 <head>
 <meta charset="utf-8">
-<title>@If&hellip;@Else Directives - The ViviFire Programming Language</title>
+<title>Const If&hellip;Else Statement - The ViviFire Programming Language</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/If_Then_Else_Directives.html">
@@ -16,50 +16,58 @@
 <li><a href="http://vivifire.com/">Home</a></li>
 <li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
 <li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
-<li><a rel="parent" href="Directives.html">Directives</a></li>
+<li><a href="Statements_Reference.html">Statements</a></li>
+<li><a rel="parent" href="Statements_1.html">A&ndash;E Statements</a></li>
 </ul>
 </nav>
 <main>
-<h1 id="top"><code>@If&hellip;@Else</code> Directives</h1>
+<h1 id="top"><code>Const If&hellip;Else</code> Statement</h1>
 <p>Lets you compile some code and ignore other code for different conditions.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<pre><code>@If condition [ Then ]
+<pre><code>Const If condition [ Then ]
     [ statements ]
-[ @Else If condition [ Then ]
-    [ statements ] ]
+[ Else If else_if_condition [ Then ]
+    [ else_if_statements ] ]
 &hellip;
-[ @Else
-    [ statements ] ]
-@End [ If ]&#10;</code></pre>
+[ Else
+    [ else_statements ] ]
+End [ If ]&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="id">condition</code></dt>
-<dd>Mandatory</dd>
+<dd>Mandatory Boolean expression.</dd>
 <dt><code class="id">statements</code></dt>
-<dd>Optional declarations or executable statements.</dd>
-<dt><code class="at">@Else</code></dt>
-<dd>Optional</dd>
-<dt><code class="at">@End</code></dt>
-<dd>Completes the directive block.
-You can also use <code class="at">@End If</code>.</dd>
+<dd>Optional one or more statements, compiled only if <code class="id">condition</code> is true.</dd>
+<dt><code class="kw">Else If</code></dt>
+<dd>Optional keywords that you can use again and again.</dd>
+<dt><code class="id">else_if_condition</code></dt>
+<dd>Mandatory after <code class="kw">Else If</code>, a Boolean expression calculated only when <code class="id">condition</code> (or <code class="id">else_if_condition</code> before this one) is false.</dd>
+<dt><code class="id">else_if_statements</code></dt>
+<dd>Optional one or more statements, compiled only when <code class="id">elseif_condition</code> is true.</dd>
+<dt><code class="id">else_statements</code></dt>
+<dd>Optional one or more statements, compiled only when <code class="id">condition</code> and all of <code class="id">else_if_condition(s)</code> are false.</dd>
+<dt><code class="kw">End</code></dt>
+<dd>Completes the statement.
+You can also use <code class="kw">End If</code>.</dd>
 </dl>
 <h2>Instructions</h2>
 <p>TODO</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
-<pre><code>@If Debug
+<pre><code>Const If Debug Then
     Const timeout = 60
-@Else
+Else
     Const timeout = 600
-@End&#10;</code></pre>
+End If&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Conditional_Operator.html">Conditional Operator</a></li>
 <li><a href="If_Then_Else_Statement.html">If&hellip;Else Statement</a></li>
 <li><a href="Conditional_Compilation.html">Conditional Compilation</a></li>
+<li><a href="Const_Statement.html">Const Statement</a></li>
 </ul>
 </main>
 <script src="common.js"></script>

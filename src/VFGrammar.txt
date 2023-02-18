@@ -625,65 +625,6 @@ const wchar_t * Exit_block_without_block(int kind) {
 	}
 }
 
-// Conditional compilation: '@IF...@ELSE...@END'.
-// FIXME: Does not work at all.
-int cc_depth, cc_exec;
-
-void CCInit() {
-	cc_depth = cc_exec = 0;
-}
-
-void CCGet() {
-	delete t;
-	t = la;
-	la = scanner->Scan();
-}
-
-bool CCTest() {
-return false; // FIXME: temporary
-	if (la->kind == _Not) {
-		CCGet();
-	}
-	if (la->kind != _identifier) SynErr(_identifier);
-	// test it
-	CCGet();
-}
-
-void CCEval() {
-	if (t->kind != _line_break) SemErr(L"Compiler directive must start a line");
-
-	switch (la->kind) {
-	case _atIf: {
-		bool test = false;
-		CCGet();
-		test = CCTest();
-		while (la->kind == _And || la->kind == _Or) {
-			CCGet();
-			if (t->kind == _And)
-				test &= CCTest();
-			else
-				test |= CCTest();
-		}
-		if (la->kind == _Then) CCGet();
-		if (la->kind != _line_break) SynErr(_line_break);
-		cc_depth++;
-		if (test) cc_exec = cc_depth;
-		break;
-	}
-	case _atElse:
-		if (cc_exec == cc_depth - 1) cc_exec++;
-		break;
-	case _atEnd:
-		if (cc_depth > 0) cc_depth--; else SemErr(L"@END IF without @IF");
-		if (cc_exec > cc_depth) cc_exec = cc_depth;
-		break;
-	}
-
-	if (cc_exec == cc_depth) {
-		while (la->kind < _atError) CCGet();
-	}
-}
-
 void ParseInlineComment() {
 	// Parse out "expect-error {{msg}}" or "expect-warning {{msg}}".
 	wchar_t *p = la->val;
@@ -1123,21 +1064,12 @@ atOption = "@Option". (. option.Parse(); .) //{notEOL}. //TODO
 atError  = "@Error"{notEOL}. //TODO
 atWarn   = "@Warn"{notEOL}. //TODO
 
-// Conditional compilation
-
-atIf   = "@If"{notEOL}.    //TODO
-atElse = "@Else"{notEOL}.  //TODO
-atEnd  = "@End"{notEOL}.   //TODO
-
 // Comments
 
 InlineComment = ("'"|"//"){notEOL}. (.
 	if (option.test) ParseInlineComment(); .)
 
 MidlineComment = "/'"{"#"|alnum|"_"|"."|"-"|"/"|":"|sigil}"'/".
-
-///COMMENTS FROM "/*" TO "*/" NESTED  // C-style
-///COMMENTS FROM "/'" TO "'/" NESTED
 
 IGNORE t + '\u00a0' // non-breaking space
 
@@ -1440,13 +1372,27 @@ ConstantValueError (. ID(L"ConstantValueError", 3) .)
 	)
 	(. SemErr(L"Cannot use a constant value here"); .)
 .
+ConstIfStatement<Modif &mods, int line, int col> (. ID(L"ConstIfStatement", 3) .)
+=
+	(. mods.validate(); .)
+	(. option_type nThen = WITHOUT_THEN; .)
+	"If" TolExpression
+	[ "Then" (. nThen = WITH_THEN; .) ]
+	IfBlockStatement<line, col, nThen>
+.
 ConstStatement<Modif &mods> (. ID(L"ConstStatement", 3) .)
 =
-	(.
-	mods.allow(Modif::Deprecated);
-	mods.validate();
-	.)
-	"Const" ConstantDeclarator { WEAK comma ConstantDeclarator }
+	(. int line = la->line, col = la->col; .)
+	"Const"
+	(
+		(.
+		mods.allow(Modif::Deprecated);
+		mods.validate();
+		.)
+		ConstantDeclarator { WEAK comma ConstantDeclarator }
+	|
+		ConstIfStatement<mods, line, col>
+	)
 	SyncNewline<s_name>
 .
 Constraint<int block> (. ID(L"Constraint", 3) .)

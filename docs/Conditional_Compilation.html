@@ -24,17 +24,17 @@
 <p>With <dfn>conditional compilation</dfn>, applicable blocks of code in a program can compile while other blocks are ignored.
 For example, you can compare different solutions to a problem, or you can make changes specially for a given culture.
 Conditional compilation statements operate only at compile-time, not at run-time.</p>
-<p>You specify conditional compilation of a block of code with the directives <code class="at">@If&hellip;@Else</code>.
+<p>You specify conditional compilation of a block of code with the statement <code class="kw">Const If&hellip;Else</code>.
 For example, you can make POSIX-compatible and Windows versions of the same program from the same source code.
-You put code special to each platform between the directives <code>@If</code>, <code>@Else</code>, and <code>@End</code>.
+You put code special to each platform between the lines that start <code>Const If</code>, <code>Else</code>, and <code>End</code>.
 Then you can use the compilation constants <code>POSIX</code> and <code>WINDOWS</code> to select the applicable code.
-The example below shows how.</p>
+The example that follows shows how.</p>
 <div class="language-vivifire listing">
-<pre><code>@If POSIX
+<pre><code>Const If POSIX Then
 ' Unix-like code goes here.
-@Else If WINDOWS
+Else If WINDOWS Then
 ' Windows-only code goes here.
-@End&#10;</code></pre>
+End If&#10;</code></pre>
 </div>
 <h2>Conditional compilation constants</h2>
 <h3>Scope</h3>
@@ -72,7 +72,7 @@ The example below shows how.</p>
 </table>
 <h2>See also</h2>
 <ul class="articles">
-<li><a href="If_Then_Else_Directives.html">@If&hellip;@Else Directives</a></li>
+<li><a href="If_Then_Else_Directives.html">Const If&hellip;Else Statement</a></li>
 </ul>
 </main>
 <script src="common.js"></script>

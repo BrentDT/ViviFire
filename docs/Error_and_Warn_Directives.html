@@ -39,22 +39,22 @@ The message usually is a warning that there is a possible problem in the code.
 A warning usually does not stop the compiler.</p>
 <p>The directive <code class="at">@Error</code> shows an error message from the compiler.
 You cannot ignore an error message, because it always causes the compiler to stop.</p>
-<p>Usually you use the directives <code class="kw">@Warn</code> and <code class="kw">@Error</code> in conditional compilation directives (<code class="kw">@If&hellip;@Else</code>).
+<p>Usually you use the directives <code class="kw">@Warn</code> and <code class="kw">@Error</code> with conditional compilation (<code class="kw">Const If&hellip;Else</code>).
 There could be unusual conditions when it is applicable to give a warning of some problem without condition.
 But we do not recommend it.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
-<pre><code>@If Win32
+<pre><code>Const If Win32 Then
   ' Windows-only code goes here.
-@Else If Linux Or MacOS
+Else If Linux Or MacOS Then
   ' Unix-like code goes here.
-@Else
+Else
 @Error "Platform not supported"
-@End If&#10;</code></pre>
+End If&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
-<li><a href="If_Then_Else_Directives.html">@If&hellip;@Else Directives</a></li>
+<li><a href="If_Then_Else_Directives.html">Const If&hellip;Else Statement</a></li>
 <li><a href="Option_Directive.html">@Option Directive</a></li>
 </ul>
 </main>
