@@ -917,13 +917,12 @@ string_constant =
 
 string_literal =
 	['_']          // continuation
-	'"'{str}'"'    // normal string
-	{ ///['/'|'\\']   // path string
-	  '"'{str}'"'  // double quotes
-	}.
+	'"'{str}'"'    // usual string
+	{'"'{str}'"'}  // double quotes
+	.
 
 malformed_string_literal =
-	['_']'"'{str}{'"'/*['/'|'\\']*/'"'{str}}/*['"'('/'|'\\')]*/.
+	["_"]'"'{str}{'"''"'{str}}.
 
 time_literal =
 	dec{dec}":"dec{dec}[":"dec{dec}["."dec{dec}]].
