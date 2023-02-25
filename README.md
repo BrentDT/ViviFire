@@ -40,7 +40,7 @@ Begin
         Left := 100, Top := 50, Height := 25, Width := 100
     Begin
         .OnClick = Sub
-            @Shared Var count As Int
+            @Shared Var count As Int32
             count += 1
             text.Caption = "Clicked " & count & " times."
         End
