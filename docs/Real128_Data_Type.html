@@ -28,7 +28,8 @@
 <dl>
 <dt>Precision</dt>
 <dd>Floating-point data types cannot store all values accurately.
-Operations, for example, when values are compared, can cause results that you think are incorrect.
+Some operations can cause results that you think are incorrect.
+A typical example is when you compare values.
 See <a href="Troubleshooting_Data_Types.html#">Data Type Troubleshooting</a> for more information.</dd>
 <dt>Default value</dt>
 <dd>When you declare a variable of type <code class="kw">Real128</code> and do not initialize it, its default value is zero (0.0).</dd>
@@ -51,7 +52,7 @@ If you must show zeros at the end, you must use a formatter procedure.
 <dd>Returns true if <code class="id">num</code> is infinity (positive or negative).
 Mathematical overflow is one cause of this result.</dd>
 <dt><pre><code>Real128.IsNaN(num As Real128) As Boolean</code></pre></dt>
-<dd>Returns true if <code class="id">num</code> is not a number (Nan).
+<dd>Returns true if <code class="id">num</code> is not a number (NaN).
 &ldquo;Zero divided by zero&rdquo; and &ldquo;square root of a negative&rdquo; are two causes of this result.</dd>
 <dt><pre><code>Real128.IsNegInf(num As Real128) As Boolean</code></pre></dt>
 <dd>Returns true if <code class="id">num</code> is negative infinity.</dd>

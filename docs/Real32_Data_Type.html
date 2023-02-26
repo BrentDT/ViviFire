@@ -26,7 +26,8 @@
 <dl>
 <dt>Precision</dt>
 <dd>Floating-point data types cannot store all values accurately.
-Operations, for example, when values are compared, can cause results that you think are incorrect.
+Some operations can cause results that you think are incorrect.
+A typical example is when you compare values.
 See <a href="Troubleshooting_Data_Types.html#">Data Type Troubleshooting</a> for more information.</dd>
 <dt>Space efficiency</dt>
 <dd>You can use <code class="kw">Real32</code> in conditions where the increased precision of <code class="kw">Real64</code> is not necessary.
@@ -54,7 +55,7 @@ If you must show zeros at the end, you must use a formatter procedure.
 <dd>Returns true if <code class="id">num</code> is infinity (positive or negative).
 Mathematical overflow is one cause of this result.</dd>
 <dt><pre><code>Real32.IsNaN(num As Real32) As Boolean</code></pre></dt>
-<dd>Returns true if <code class="id">num</code> is not a number (Nan).
+<dd>Returns true if <code class="id">num</code> is not a number (NaN).
 &ldquo;Zero divided by zero&rdquo; and &ldquo;square root of a negative&rdquo; are two causes of this result.</dd>
 <dt><pre><code>Real32.IsNegInf(num As Real32) As Boolean</code></pre></dt>
 <dd>Returns true if <code class="id">num</code> is negative infinity.</dd>
