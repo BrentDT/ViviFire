@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2022 Brent D. Thorn
+ * Copyright 2023 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.com/.
  *
@@ -109,9 +109,11 @@ int main (int argc, char *argv[]) {
 	
 	p->Parse();
 	
-	// Calculate the duration.
-	std::chrono::duration<double> timer = std::chrono::steady_clock::now() - start;
-	wprintf(L"Time: %.3f sec\n", timer.count());
+	if (args.t) {
+		// Calculate the duration.
+		std::chrono::duration<double> timer = std::chrono::steady_clock::now() - start;
+		wprintf(L"Time: %.3f sec\n", timer.count());
+	}
 	
 	coco_string_delete(fileName);
 	delete p	->scanner;

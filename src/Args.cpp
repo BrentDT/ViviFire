@@ -1,13 +1,13 @@
 /*
-* ViviFire Programming Language
-*
-* Copyright 2021 Brent D. Thorn
-*
-* You can get the latest version at http://vivifire.com/.
-*
-* Use of this source code is governed by an MIT-style license that can be
-* found in the LICENSE file.
-*/
+ * ViviFire Programming Language
+ *
+ * Copyright 2023 Brent D. Thorn
+ *
+ * You can get the latest version at http://vivifire.com/.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file.
+ */
 
 #include <ctype.h>
 #include <stdio.h>
@@ -30,13 +30,17 @@ bool Args::Parse (int argc, char *argv[]) {
 					show_help = true;
 					break;
 				case 'm':
-					if (arg[2] == '\0') m = true;
+					if (arg[2] == '\0') this->m = true;
+					else goto bad_flag;
+					break;
+				case 't':
+					if (arg[2] == '\0') this->t = true;
 					else goto bad_flag;
 					break;
 				case 'v':
 					switch (arg[2]) {
 					case '0': case '1': case '2': case '3':
-						if (arg[3] == '\0') v = arg[2] - '0';
+						if (arg[3] == '\0') this->v = arg[2] - '0';
 						else goto bad_flag;
 						break;
 					case '\0':
@@ -53,7 +57,7 @@ bool Args::Parse (int argc, char *argv[]) {
 				} // switch
 			} else if (file == NULL) {
 				// Doesn't look like a switch, assume it's a filename.
-				file = arg;
+				this->file = arg;
 			} else {
 				fprintf(stderr, "Cannot specify more than one file.");
 				return false;
@@ -65,12 +69,13 @@ bool Args::Parse (int argc, char *argv[]) {
 		fprintf((show_help) ? stdout : stderr,
 		"ViviFire Test Parser by Brent D. Thorn, " NOW "\n"
 		"Syntax:\n"
-		"\tVF [-m] [-v[0-3]] file\n"
+		"\tvf [-m] [-t] [-v[0-3]] file\n"
 		"Switches:\n"
 		"\t-m   Display memory usage\n"
+		"\t-t   Display time elapsed\n"
 		"\t-v0  Minimal verbosity; Errors only\n"
 		"\t-v1  Displays tokens and errors (default)\n"
-		"\t-v2  Displays expressions, tokens, and errors\n"
+		"\t-v2  Displays statements, tokens, and errors\n"
 		"\t-v3  Maximum verbosity"
 		);
 		return false;
