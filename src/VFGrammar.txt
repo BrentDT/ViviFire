@@ -38,7 +38,7 @@
 // 'SyncNewline' gets passed 's_name'.
 #define ID(sn, iv) \
 	static const wchar_t *s_name = sn; \
-	if (args.v >= iv) wprintf(L">%ls", s_name);
+	if (args.v >= Args::iv) wprintf(L">%ls", s_name);
 
 extern Args args;
 
@@ -1074,7 +1074,7 @@ IGNORE t + '\u00a0' // non-breaking space
 
 PRODUCTIONS
 
-ViviFire (. ID(L"ViviFire", 3) .)
+ViviFire (. ID(L"ViviFire", STMT) .)
 =
 	Module
 
@@ -1105,11 +1105,11 @@ ViviFire (. ID(L"ViviFire", 3) .)
 .
 
 /*A*/
-AdditiveExpression (. ID(L"Additive", 2) .)
+AdditiveExpression (. ID(L"Additive", EXPR) .)
 =
 	MultiplicativeExpression { ( '+' | '-' ) MultiplicativeExpression }
 .
-Argument (. ID(L"Argument", 3) .)
+Argument (. ID(L"Argument", STMT) .)
 =
 	( null_literal
 	|
@@ -1123,14 +1123,14 @@ Argument (. ID(L"Argument", 3) .)
 		Warn(la->line, la->col, L"Possibly argument list has missing comma");
 	} .)
 .
-ArgumentList (. ID(L"ArgumentList", 3) .)
+ArgumentList (. ID(L"ArgumentList", STMT) .)
 =
 	// Disambiguate "("args")" from "("expr")".
 	( IF (la->kind == _left_paren) EnclosedArgumentList
 	| UnenclosedArgumentList
 	)
 .
-ArrayDimensionList (. ID(L"ArrayDimensionList", 3) .)
+ArrayDimensionList (. ID(L"ArrayDimensionList", STMT) .)
 =
 	'('
 	[ Rank                             // Eg 'Dim matrix(*2)'
@@ -1138,12 +1138,12 @@ ArrayDimensionList (. ID(L"ArrayDimensionList", 3) .)
 	]
 	')'
 .
-AssignmentOperator (. ID(L"AssignmentOperator", 3) .)
+AssignmentOperator (. ID(L"AssignmentOperator", STMT) .)
 =
 	[ concatenation | "+" | "-" | "*" | "/" | "Div" | "Mod" | "Rem" | "SHL" | "SHR" | "And" | "Or" | "Xor" ]
 	"="
 .
-AssignmentStatement (. ID(L"AssignmentStatement", 3) .)
+AssignmentStatement (. ID(L"AssignmentStatement", STMT) .)
 =
 	(
 		AssignmentOperator [OptionalNewline]
@@ -1153,7 +1153,7 @@ AssignmentStatement (. ID(L"AssignmentStatement", 3) .)
 		{ ":=" Expression }
 	)
 .
-AsTypeClause<bool bBits> (. ID(L"AsTypeClause", 3) .)
+AsTypeClause<bool bBits> (. ID(L"AsTypeClause", STMT) .)
 =
 	"As"
 	( UserType [ EnclosedArgumentList ]
@@ -1162,7 +1162,7 @@ AsTypeClause<bool bBits> (. ID(L"AsTypeClause", 3) .)
 	[ Rank ]
 .
 /*B*/
-BaseUnitStatement<class Modif &mods> (. ID(L"BaseUnitStatement", 3) .)
+BaseUnitStatement<class Modif &mods> (. ID(L"BaseUnitStatement", STMT) .)
 =
 	(.
 	mods.allow(Modif::Deprecated);
@@ -1175,23 +1175,23 @@ BaseUnitStatement<class Modif &mods> (. ID(L"BaseUnitStatement", 3) .)
 	| ANY (. SemErr(L"Object BASE is available only in a child class"); .)
 	)
 .
-BitFieldType<int &tkn> (. ID(L"BitFieldType", 3) .)
+BitFieldType<int &tkn> (. ID(L"BitFieldType", STMT) .)
 =
 	(. tkn = la->kind; .)
 	( "SBits" | "UBits" )
 	[ "[" PassableType "]" ]
 	"(" integer_literal ")"
 .
-BitShiftExpression (. ID(L"BitShift", 2) .)
+BitShiftExpression (. ID(L"BitShift", EXPR) .)
 =
 	UnaryExpression { ( "SHL" | "SHR" ) UnaryExpression }
 .
-Block<int &tkn> (. ID(L"Block", 3) .)
+Block<int &tkn> (. ID(L"Block", STMT) .)
 =
 	(. tkn = la->kind; .)
 	( "Constructor" | "Do" | "For" | "Function" | "Method" | "Property" | "Sub" | "While" )
 .
-BlockStatement (. ID(L"BlockStatement", 3) .)
+BlockStatement (. ID(L"BlockStatement", STMT) .)
 =
 	( EventStatement
 	| DoStatement
@@ -1203,7 +1203,7 @@ BlockStatement (. ID(L"BlockStatement", 3) .)
 	)
 .
 /*C*/
-CallOrNew<int which, Modif *mods> (. ID(L"CallOrNew", 3) .)
+CallOrNew<int which, Modif *mods> (. ID(L"CallOrNew", STMT) .)
 =
 	(.
 	bool bShared = mods ? mods->allow(Modif::Shared) : false;
@@ -1215,7 +1215,7 @@ CallOrNew<int which, Modif *mods> (. ID(L"CallOrNew", 3) .)
 		NewBlockStatement
 	]
 .
-CallStatement (. ID(L"CallStatement", 3) .)
+CallStatement (. ID(L"CallStatement", STMT) .)
 =
 	"Call"
 	( QualifiedName<0>
@@ -1234,7 +1234,7 @@ CallStatement (. ID(L"CallStatement", 3) .)
 	)
 	[ ArgumentList ]
 .
-CaseClause<case_type &clause> (. ID(L"CaseClause", 3) .)
+CaseClause<case_type &clause> (. ID(L"CaseClause", STMT) .)
 =
 	"Case"
 		(. if (clause == CASE_ELSE) SemErr(L"CASE cannot follow CASE ELSE in SELECT"); .)
@@ -1253,20 +1253,20 @@ CaseClause<case_type &clause> (. ID(L"CaseClause", 3) .)
 	SyncNewline<s_name>
 	{ Statement }
 .
-CaseExpression (. ID(L"CaseExpression", 3) .)
+CaseExpression (. ID(L"CaseExpression", STMT) .)
 =
 	( "Is" ComparisonOperator Expression
 	| Expression [ "To" Expression ]
 	)
 .
-CatchClause (. ID(L"CatchClause", 3) .)
+CatchClause (. ID(L"CatchClause", STMT) .)
 =
 	"Catch" [ Name [ AsTypeClause<NO_BITS> ] ] SyncNewline<s_name>
 	(. context.push_back(_Catch); .)
 	{ Statement }
 	(. context.pop_back(); .)
 .
-ClassOrObjectMember<int kind> (. ID(L"ClassOrObjectMember", 3) .)
+ClassOrObjectMember<int kind> (. ID(L"ClassOrObjectMember", STMT) .)
 =
 	(. Modif mods(this); .)
 	[ ModifiersClause<mods> ]
@@ -1289,7 +1289,7 @@ ClassOrObjectMember<int kind> (. ID(L"ClassOrObjectMember", 3) .)
 	| SubStatement<mods>
 	)
 .
-ClassStatement<Modif &mods> (. ID(L"ClassStatement", 3) .)
+ClassStatement<Modif &mods> (. ID(L"ClassStatement", STMT) .)
 =
 	(.
 	bool bAbstract = mods.allow(Modif::Abstract);
@@ -1317,7 +1317,7 @@ ClassStatement<Modif &mods> (. ID(L"ClassStatement", 3) .)
 	(. Optional(_Class); .)
 	Newline
 .
-CollectionInitializer (. ID(L"CollectionInitializer", 3) .)
+CollectionInitializer (. ID(L"CollectionInitializer", STMT) .)
 =
 	"{" [ OptionalNewline ]
 	InitializationElement
@@ -1331,16 +1331,16 @@ CollectionInitializer (. ID(L"CollectionInitializer", 3) .)
 		line_break
 	]
 .
-ComparisonExpression (. ID(L"Comparison", 2) .)
+ComparisonExpression (. ID(L"Comparison", EXPR) .)
 =
 	NullCoalescingExpression { ComparisonOperator NullCoalescingExpression }
 .
-ComparisonOperator (. ID(L"ComparisonOperator", 3) .)
+ComparisonOperator (. ID(L"ComparisonOperator", STMT) .)
 =
 	[ "~" ]
 	( "=" | "<>" | "<" | "<=" | ">" | ">=" )
 .
-ConcatenationExpression (. ID(L"Concatenation", 2) .)
+ConcatenationExpression (. ID(L"Concatenation", EXPR) .)
 =
 	AdditiveExpression
 	{ concatenation AdditiveExpression }
@@ -1360,18 +1360,18 @@ ConditionalExpression
 	"Then" EnclosedExpression
 	"Else" EnclosedExpression
 .
-ConstantDeclarator (. ID(L"ConstantDeclarator", 3) .)
+ConstantDeclarator (. ID(L"ConstantDeclarator", STMT) .)
 =
 	Name [ TypeClause<NO_BITS> ] "=" Expression
 .
-ConstantValueError (. ID(L"ConstantValueError", 3) .)
+ConstantValueError (. ID(L"ConstantValueError", STMT) .)
 =
 	( char_literal | date_literal | fixed_literal | integer_constant | integer_literal | null_literal
 	| real_literal | string_constant | string_literal | time_literal | version_literal
 	)
 	(. SemErr(L"Cannot use a constant value here"); .)
 .
-ConstIfStatement<Modif &mods, int line, int col> (. ID(L"ConstIfStatement", 3) .)
+ConstIfStatement<Modif &mods, int line, int col> (. ID(L"ConstIfStatement", STMT) .)
 =
 	(. mods.validate(); .)
 	(. option_type nThen = WITHOUT_THEN; .)
@@ -1379,7 +1379,7 @@ ConstIfStatement<Modif &mods, int line, int col> (. ID(L"ConstIfStatement", 3) .
 	[ "Then" (. nThen = WITH_THEN; .) ]
 	IfBlockStatement<line, col, nThen>
 .
-ConstStatement<Modif &mods> (. ID(L"ConstStatement", 3) .)
+ConstStatement<Modif &mods> (. ID(L"ConstStatement", STMT) .)
 =
 	(. int line = la->line, col = la->col; .)
 	"Const"
@@ -1394,7 +1394,7 @@ ConstStatement<Modif &mods> (. ID(L"ConstStatement", 3) .)
 	)
 	SyncNewline<s_name>
 .
-Constraint<int block> (. ID(L"Constraint", 3) .)
+Constraint<int block> (. ID(L"Constraint", STMT) .)
 =
 	(
 		(. int c = 0; .)
@@ -1420,7 +1420,7 @@ Constraint<int block> (. ID(L"Constraint", 3) .)
 		UserType
 	)
 .
-ConstructorStatement<Modif &mods> (. ID(L"ConstructorStatement", 3) .)
+ConstructorStatement<Modif &mods> (. ID(L"ConstructorStatement", STMT) .)
 =
 	(.
 	mods.allow(Modif::Deprecated);
@@ -1449,18 +1449,18 @@ ConstructorStatement<Modif &mods> (. ID(L"ConstructorStatement", 3) .)
 	(. Optional(_Constructor); .)
 	Newline
 .
-ConvertibleType (. ID(L"ConvertibleType", 3) .)
+ConvertibleType (. ID(L"ConvertibleType", STMT) .)
 =
 	( PrimitiveType<NO_BITS> | UserType )
 .
 /*D*/
-DateTimeExpression (. ID(L"DateTime", 2) .)
+DateTimeExpression (. ID(L"DateTime", EXPR) .)
 =
 	( date_literal [ time_literal ]
 	| time_literal
 	)
 .
-DeclarationStatement (. ID(L"DeclarationStatement", 3) .)
+DeclarationStatement (. ID(L"DeclarationStatement", STMT) .)
 =
 	(. Modif mods(this); .)
 	[ ModifiersClause<mods> ]
@@ -1470,14 +1470,14 @@ DeclarationStatement (. ID(L"DeclarationStatement", 3) .)
 	| NewStatement<&mods>
 	)
 .
-Declarator<bool bBits> (. ID(L"Declarator", 3) .)
+Declarator<bool bBits> (. ID(L"Declarator", STMT) .)
 =
 	Name
 	[ ArrayDimensionList ]
 	[ TypeClause<bBits> ]
 	[ '=' InitializationExpression ]
 .
-DeclaratorList<bool bBits> (. ID(L"DeclaratorList", 3) .)
+DeclaratorList<bool bBits> (. ID(L"DeclaratorList", STMT) .)
 =
 	Declarator<bBits>
 	{
@@ -1485,13 +1485,13 @@ DeclaratorList<bool bBits> (. ID(L"DeclaratorList", 3) .)
 		Declarator<bBits>
 	}
 .
-DeclareParameter<bool &isOptional> (. ID(L"DeclareParameter", 3) .)
+DeclareParameter<bool &isOptional> (. ID(L"DeclareParameter", STMT) .)
 =
 	[ "Optional" (. isOptional = true; .) ]
 	integer_literal
 	[ "=" EnclosedExpression ]
 .
-DeclareParameterList (. ID(L"DeclareParameterList", 3) .)
+DeclareParameterList (. ID(L"DeclareParameterList", STMT) .)
 =
 	(. bool isOptional; .)
 	( IF (IsDeclareParameterList())
@@ -1509,14 +1509,14 @@ DeclareParameterList (. ID(L"DeclareParameterList", 3) .)
 		[ TypeClause<NO_BITS> ]
 	)
 .
-DeclareSignature<bool isAlias> (. ID(L"DeclareSignature", 3) .)
+DeclareSignature<bool isAlias> (. ID(L"DeclareSignature", STMT) .)
 =
 	( "Function" | "Sub" )
 	Name
 	[ "Is" ( string_literal | QualifiedName<0> ) ]
 	[ DeclareParameterList ]
 .
-DeclareStatement<Modif &mods> (. ID(L"DeclareStatement", 3) .)
+DeclareStatement<Modif &mods> (. ID(L"DeclareStatement", STMT) .)
 =
 	(.
 	mods.allow(Modif::Deprecated);
@@ -1563,11 +1563,11 @@ DeclareStatement<Modif &mods> (. ID(L"DeclareStatement", 3) .)
 	)
 	SyncNewline<s_name>
 .
-Deprecated (. ID(L"Deprecated", 3) .)
+Deprecated (. ID(L"Deprecated", STMT) .)
 =
 	"@Deprecated" [ string_literal ]
 .
-DestructorStatement<Modif &mods> (. ID(L"DestructorStatement", 3) .)
+DestructorStatement<Modif &mods> (. ID(L"DestructorStatement", STMT) .)
 =
 	(.
 	mods.validate();
@@ -1582,13 +1582,13 @@ DestructorStatement<Modif &mods> (. ID(L"DestructorStatement", 3) .)
 	(. Optional(_Destructor); .)
 	Newline
 .
-DimOrVar (. ID(L"DimOrVar", 3) .)
+DimOrVar (. ID(L"DimOrVar", STMT) .)
 =
 	( "Dim"  (. if (option.Dim_or_Var == TERNARY2) SemErr(L"Must use VAR because of @OPTION"); .)
 	| "Var"  (. if (option.Dim_or_Var == TERNARY1) SemErr(L"Must use DIM because of @OPTION"); .)
 	)
 .
-DimStatement<Modif &mods> (. ID(L"DimStatement", 3) .)
+DimStatement<Modif &mods> (. ID(L"DimStatement", STMT) .)
 =
 	(.
 	// Permit @Deprecated?
@@ -1599,7 +1599,7 @@ DimStatement<Modif &mods> (. ID(L"DimStatement", 3) .)
 	DeclaratorList<NO_BITS>
 	SyncNewline<s_name>
 .
-DivFunction (. ID(L"Div", 2) .)
+DivFunction (. ID(L"Div", EXPR) .)
 =
 	"Div"
 	"(" EnclosedExpression
@@ -1607,11 +1607,11 @@ DivFunction (. ID(L"Div", 2) .)
 	[ comma EnclosedExpression ]
 	")"
 .
-DoesClause (. ID(L"DoesClause", 3) .)
+DoesClause (. ID(L"DoesClause", STMT) .)
 =
 	"Does" UserType
 .
-DoStatement (. ID(L"DoStatement", 3) .)
+DoStatement (. ID(L"DoStatement", STMT) .)
 =
 	(. int line, col; .)
 	"Do" (. line = t->line; col = t->col; .)
@@ -1635,7 +1635,7 @@ DoStatement (. ID(L"DoStatement", 3) .)
 	)
 .
 /*E*/
-EnclosedArgumentList (. ID(L"EnclosedArgumentList", 3) .)
+EnclosedArgumentList (. ID(L"EnclosedArgumentList", STMT) .)
 =
 	"(" [ OptionalNewline ]
 	[ Argument ]
@@ -1648,11 +1648,11 @@ EnclosedArgumentList (. ID(L"EnclosedArgumentList", 3) .)
 	}
 	")"
 .
-EnclosedExpression (. ID(L"Enclosed", 2) .)
+EnclosedExpression (. ID(L"Enclosed", EXPR) .)
 =
 	LogicalExpression
 .
-EnclosedParameterList<int parent> (. ID(L"EnclosedParameterList", 3) .)
+EnclosedParameterList<int parent> (. ID(L"EnclosedParameterList", STMT) .)
 =
 	(. param_type param(this, parent); .)
 	"(" [ OptionalNewline ]
@@ -1665,7 +1665,7 @@ EnclosedParameterList<int parent> (. ID(L"EnclosedParameterList", 3) .)
 	]
 	")"
 .
-EnumMember (. ID(L"EnumMember", 3) .)
+EnumMember (. ID(L"EnumMember", STMT) .)
 =
 	[ Deprecated [ OptionalNewline ] ]
 	identifier
@@ -1674,7 +1674,7 @@ EnumMember (. ID(L"EnumMember", 3) .)
 	)
 	SyncNewline<s_name>
 .
-EnumStatement<Modif &mods> (. ID(L"EnumStatement", 3) .)
+EnumStatement<Modif &mods> (. ID(L"EnumStatement", STMT) .)
 =
 	(.
 	mods.allow(Modif::Deprecated);
@@ -1710,7 +1710,7 @@ EnumStatement<Modif &mods> (. ID(L"EnumStatement", 3) .)
 	(. Optional(_Enum); .)
 	Newline
 .
-EventStatement (. ID(L"EventStatement", 3) .)
+EventStatement (. ID(L"EventStatement", STMT) .)
 =
 	(. bool generic = false; .)
 	"Event" identifier 
@@ -1719,7 +1719,7 @@ EventStatement (. ID(L"EventStatement", 3) .)
 	[ WhereClause<_Event, generic> ]
 	SyncNewline<s_name>
 .
-ExitStatement (. ID(L"ExitStatement", 3) .)
+ExitStatement (. ID(L"ExitStatement", STMT) .)
 =
 	(. int kind = 0; .)
 	"Exit"
@@ -1764,7 +1764,7 @@ ExitStatement (. ID(L"ExitStatement", 3) .)
 		[ EnclosedExpression ]
 	)
 .
-Expression (. ID(L"Expression", 2) .)
+Expression (. ID(L"Expression", EXPR) .)
 =
 	(
 		EnclosedExpression
@@ -1781,17 +1781,17 @@ Expression (. ID(L"Expression", 2) .)
 	.)
 .
 /*F*/
-FixedPointType<int &tkn> (. ID(L"FixedPointType", 3) .)
+FixedPointType<int &tkn> (. ID(L"FixedPointType", STMT) .)
 =
 	(. tkn = la->kind; .)
 	( "Fixed64" | "Fixed128" ) [ IF (IsFixedPointArgument()) "(" integer_literal ")" ]
 .
-FloatingPointType<int &tkn> (. ID(L"FloatingPointType", 3) .)
+FloatingPointType<int &tkn> (. ID(L"FloatingPointType", STMT) .)
 =
 	(. tkn = la->kind; .)
 	( "Real32" | "Real64" | "Real128" )
 .
-FormalParameter<param_type &param> (. ID(L"FormalParameter", 3) .)
+FormalParameter<param_type &param> (. ID(L"FormalParameter", STMT) .)
 =
 	( FormalParameterModifier<param>
 	| (. param.modifier(); .)
@@ -1803,17 +1803,17 @@ FormalParameter<param_type &param> (. ID(L"FormalParameter", 3) .)
 	| (. if (param.optional() && option.Optional_equals) SemErr(L"Optional parameter must have initializer because of @OPTION"); .)
 	)
 .
-FormalParameterList<int parent> (. ID(L"FormalParameterList", 3) .)
+FormalParameterList<int parent> (. ID(L"FormalParameterList", STMT) .)
 =
 	( EnclosedParameterList<parent> | UnenclosedParameterList<parent> )
 .
-FormalParameterModifier<param_type &param> (. ID(L"FormalParameterModifier", 3) .)
+FormalParameterModifier<param_type &param> (. ID(L"FormalParameterModifier", STMT) .)
 =
 	( "ByRef"     (. param.modifier(_ByRef); .)
 	| "Optional"  (. param.modifier(_Optional); .)
 	)
 .
-ForStatement (. ID(L"ForStatement", 3) .)
+ForStatement (. ID(L"ForStatement", STMT) .)
 =
 	(. int line, col; .)
 	"For" (. line = t->line; col = t->col; .)
@@ -1833,7 +1833,7 @@ ForStatement (. ID(L"ForStatement", 3) .)
 	(. Optional(_For); .)
 	Newline
 .
-FunctionSignature<Modif &mods, int &line, int &col, bool &bodied, bool &generic> (. ID(L"FunctionSignature", 3) .)
+FunctionSignature<Modif &mods, int &line, int &col, bool &bodied, bool &generic> (. ID(L"FunctionSignature", STMT) .)
 =
 	"Function" (. line = t->line; col = t->col; .)
 	Name
@@ -1851,7 +1851,7 @@ FunctionSignature<Modif &mods, int &line, int &col, bool &bodied, bool &generic>
 	)
 	SyncNewline<s_name>
 .
-FunctionStatement<Modif &mods> (. ID(L"FunctionStatement", 3) .)
+FunctionStatement<Modif &mods> (. ID(L"FunctionStatement", STMT) .)
 =
 	(.
 	mods.allow(Modif::Deprecated);
@@ -1882,7 +1882,7 @@ FunctionStatement<Modif &mods> (. ID(L"FunctionStatement", 3) .)
 	]
 .
 /*G*/
-GotoStatement (. ID(L"GotoStatement", 3) .)
+GotoStatement (. ID(L"GotoStatement", STMT) .)
 =
 	"Goto"
 	(.
@@ -1896,7 +1896,7 @@ GotoStatement (. ID(L"GotoStatement", 3) .)
 .
 /*H*/
 /*I*/
-IdentifierStatement (. ID(L"IdentifierStatement", 3) .)
+IdentifierStatement (. ID(L"IdentifierStatement", STMT) .)
 =
 	// Related: SimpleExpression
 	( Name [ TypeArgumentList ]
@@ -1918,7 +1918,7 @@ IdentifierStatement (. ID(L"IdentifierStatement", 3) .)
 		CallOrNew<0, nullptr>
 	]
 .
-IfBlockStatement<int line, int col, option_type nThen> (. ID(L"IfBlockStatement", 3) .)
+IfBlockStatement<int line, int col, option_type nThen> (. ID(L"IfBlockStatement", STMT) .)
 =
 	(. bool bElseSeen = false; .)
 	(. Optional(_Then, nThen); .)
@@ -1935,7 +1935,7 @@ IfBlockStatement<int line, int col, option_type nThen> (. ID(L"IfBlockStatement"
 	"End"
 	(. Optional(_If); .)
 .
-IfStatement (. ID(L"IfStatement", 3) .)
+IfStatement (. ID(L"IfStatement", STMT) .)
 =
 	(. int line, col; .)
 	"If" (. line = t->line; col = t->col; .)
@@ -1953,12 +1953,12 @@ IfStatement (. ID(L"IfStatement", 3) .)
 	)
 	Newline
 .
-InitializationElement (. ID(L"InitializationElement", 3) .)
+InitializationElement (. ID(L"InitializationElement", STMT) .)
 =
 	[ IF (IsUnorderedInit()) IntegerConstant ":=" ]
 	InitializationExpression
 .
-InitializationExpression (. ID(L"InitializationExpression", 3) .)
+InitializationExpression (. ID(L"InitializationExpression", STMT) .)
 =
 	(
 		Expression
@@ -1966,34 +1966,34 @@ InitializationExpression (. ID(L"InitializationExpression", 3) .)
 		CollectionInitializer
 	)
 .
-IntegerConstant (. ID(L"IntegerConstant", 3) .)
+IntegerConstant (. ID(L"IntegerConstant", STMT) .)
 =
 	( char_literal | integer_constant | integer_literal )
 .
-IntegerType<int &tkn> (. ID(L"IntegerType", 3) .)
+IntegerType<int &tkn> (. ID(L"IntegerType", STMT) .)
 =
 	(. tkn = la->kind; .)
 	( "Int8"  | "Int16"  | "Int32"  | "Int64"  | "Int128"
 	| "UInt8" | "UInt16" | "UInt32" | "UInt64" | "UInt128"
 	)
 .
-IntegerTypeOrExtension (. ID(L"IntegerTypeOrExtension", 3) .)
+IntegerTypeOrExtension (. ID(L"IntegerTypeOrExtension", STMT) .)
 =
 	(. int tkn = 0; .)
 	"Is" ( identifier | IntegerType<tkn> )
 .
-InUnitClause (. ID(L"InUnitClause", 3) .)
+InUnitClause (. ID(L"InUnitClause", STMT) .)
 =
 	"In" UnitOfMeasure
 .
-IsExpression (. ID(L"IsExpression", 2) .)
+IsExpression (. ID(L"IsExpression", EXPR) .)
 =
 	"Is" ( SimpleExpression | "Object" )
 .
 /*J*/
 /*K*/
 /*L*/
-LambdaExpression (. ID(L"Lambda", 2) .)
+LambdaExpression (. ID(L"Lambda", EXPR) .)
 =
 	(. int line, col; .)
 	(
@@ -2026,7 +2026,7 @@ LambdaExpression (. ID(L"Lambda", 2) .)
 		)
 	)
 .
-LambdaFunction<int line, int col> (. ID(L"LambdaFunction", 3) .)
+LambdaFunction<int line, int col> (. ID(L"LambdaFunction", STMT) .)
 =
 	SyncNewline<s_name>
 	{ Statement }
@@ -2034,7 +2034,7 @@ LambdaFunction<int line, int col> (. ID(L"LambdaFunction", 3) .)
 	"End"
 	(. Optional(_Function); .)
 .
-LambdaSub<int line, int col> (. ID(L"LambdaSub", 3) .)
+LambdaSub<int line, int col> (. ID(L"LambdaSub", STMT) .)
 =
 	SyncNewline<s_name>
 	{ Statement }
@@ -2042,24 +2042,24 @@ LambdaSub<int line, int col> (. ID(L"LambdaSub", 3) .)
 	"End"
 	(. Optional(_Sub); .)
 .
-LogicalExpression (. ID(L"Logical", 2) .)
+LogicalExpression (. ID(L"Logical", EXPR) .)
 =
 	ComparisonExpression { LogicalOperator ComparisonExpression }
 .
-LogicalOperator (. ID(L"LogicalOperator", 3) .)
+LogicalOperator (. ID(L"LogicalOperator", STMT) .)
 =
 	( "And" [ "Then" ]
 	| "Or" [ "Else" ]
 	| "Xor"
 	)
 .
-LoopControlVariable (. ID(L"LoopControlVariable", 3) .)
+LoopControlVariable (. ID(L"LoopControlVariable", STMT) .)
 =
 	( ObjectName [ AsTypeClause<NO_BITS> ]
 	| typed_identifier
 	)
 .
-LoopBody<bool isPreconditional> (. ID(L"LoopBody", 3) .)
+LoopBody<bool isPreconditional> (. ID(L"LoopBody", STMT) .)
 =
 	(
 		Statement { Statement }
@@ -2096,7 +2096,7 @@ LoopBody<bool isPreconditional> (. ID(L"LoopBody", 3) .)
 	)
 .
 /*M*/
-MethodStatement<Modif &mods> (. ID(L"MethodStatement", 3) .)
+MethodStatement<Modif &mods> (. ID(L"MethodStatement", STMT) .)
 =
 	(.
 	bool bAbstract = mods.allow(Modif::Abstract);
@@ -2126,7 +2126,7 @@ MethodStatement<Modif &mods> (. ID(L"MethodStatement", 3) .)
 	(. Optional(_Method); .)
 	Newline
 .
-MethodSignature<Modif &mods, int &line, int &col> (. ID(L"MethodSignature", 3) .)
+MethodSignature<Modif &mods, int &line, int &col> (. ID(L"MethodSignature", STMT) .)
 =
 	"Method"
 	(.
@@ -2155,7 +2155,7 @@ MethodSignature<Modif &mods, int &line, int &col> (. ID(L"MethodSignature", 3) .
 	.)
 	SyncNewline<s_name>
 .
-Modifier<int &m> (. ID(L"Modifier", 3) .)
+Modifier<int &m> (. ID(L"Modifier", STMT) .)
 =
 	(. m = Modif::LAST; .) // Sentinal.
 	"@"
@@ -2206,14 +2206,14 @@ Modifier<int &m> (. ID(L"Modifier", 3) .)
 	)
 	[ OptionalNewline ]
 .
-ModifiersClause<Modif &mods> (. ID(L"ModifiersClause", 3) .)
+ModifiersClause<Modif &mods> (. ID(L"ModifiersClause", STMT) .)
 =
 	(. int m; .)
 	Modifier<m>  (. mods.add(m); .)
 	{ Modifier<m>  (. mods.add(m); .) 
 	}
 .
-Module (. ID(L"Module", 3) .)
+Module (. ID(L"Module", STMT) .)
 =
 	(. bool bProcEntry = false; .)
 	[ Newline ]
@@ -2242,7 +2242,7 @@ Module (. ID(L"Module", 3) .)
 		ModuleStatement<bProcEntry>
 	}
 .
-ModuleMember (. ID(L"ModuleMember", 3) .)
+ModuleMember (. ID(L"ModuleMember", STMT) .)
 =
 	(. Modif mods(this); .)
 	[ ModifiersClause<mods> ]
@@ -2264,30 +2264,30 @@ ModuleMember (. ID(L"ModuleMember", 3) .)
 	| UnitStatement<mods>
 	)
 .
-ModuleStatement<bool bProcEntry> (. ID(L"ModuleStatement", 3) .)
+ModuleStatement<bool bProcEntry> (. ID(L"ModuleStatement", STMT) .)
 =
 	(. if (bProcEntry) Warn(L"Executable statements at module level ignored when entry point is a procedure"); .)
 	( BlockStatement
 	| SimpleStatement SyncNewline<s_name>
 	)
 .
-MultiplicativeExpression (. ID(L"Multiplicative", 2) .)
+MultiplicativeExpression (. ID(L"Multiplicative", EXPR) .)
 =
 	PowerExpression { MultiplicativeOperator PowerExpression }
 .
-MultiplicativeOperator (. ID(L"MultiplicativeOperator", 3) .)
+MultiplicativeOperator (. ID(L"MultiplicativeOperator", STMT) .)
 =
 	( '*' | '/' | "Div" | "Mod" | "Rem" )
 .
 /*N*/
-Name (. ID(L"Name", 3) .)
+Name (. ID(L"Name", STMT) .)
 =
 	( identifier
 	| nullable_identifier
 	| typed_identifier
 	)
 .
-///NamespaceStatement<Modif &mods> (. ID(L"NamespaceStatement", 3) .)
+///NamespaceStatement<Modif &mods> (. ID(L"NamespaceStatement", STMT) .)
 ///=
 ///	(.
 ///	mods.allow(Modif::Deprecated);
@@ -2299,7 +2299,7 @@ Name (. ID(L"Name", 3) .)
 ///	(. Optional(_Namespace); .)
 ///	Newline
 ///.
-NewBlockStatement (. ID(L"NewBlockStatement", 3) .)
+NewBlockStatement (. ID(L"NewBlockStatement", STMT) .)
 =
 	(.
 	int line, col;
@@ -2339,7 +2339,7 @@ NewBlockStatement (. ID(L"NewBlockStatement", 3) .)
 	)
 	(. coco_string_delete(type_name); .)
 .
-NewMember (. ID(L"NewMember", 3) .)
+NewMember (. ID(L"NewMember", STMT) .)
 =
 	[ Newline ]
 	( NewStatement<nullptr>
@@ -2348,27 +2348,27 @@ NewMember (. ID(L"NewMember", 3) .)
 	| ArgumentList SyncNewline<s_name>
 	)
 .
-NewStatement<Modif *mods> (. ID(L"NewStatement", 3) .)
+NewStatement<Modif *mods> (. ID(L"NewStatement", STMT) .)
 =
 	"New" UserType CallOrNew<_New, mods>
 	SyncNewline<s_name>
 .
-Newline (. ID(L"Newline", 3) .)
+Newline (. ID(L"Newline", STMT) .)
 =
 	line_break { line_break }
 .
-NullCoalescingExpression (. ID(L"NullCoalescing", 2) .)
+NullCoalescingExpression (. ID(L"NullCoalescing", EXPR) .)
 =
 	TypeExpression [ "|?" NullCoalescingExpression ]
 .
 /*O*/
-ObjectName (. ID(L"ObjectName", 3) .)
+ObjectName (. ID(L"ObjectName", STMT) .)
 =
 	( identifier
 	| nullable_identifier
 	)
 .
-ObjectStatement<Modif *mods> (. ID(L"ObjectStatement", 3) .)
+ObjectStatement<Modif *mods> (. ID(L"ObjectStatement", STMT) .)
 =
 	(.
 	mods ? mods->allow(Modif::Deprecated) : false;
@@ -2388,7 +2388,7 @@ ObjectStatement<Modif *mods> (. ID(L"ObjectStatement", 3) .)
 	(. Optional(_Object); .)
 	Newline
 .
-OptionalNewline (. ID(L"OptionalNewline", 3) .)
+OptionalNewline (. ID(L"OptionalNewline", STMT) .)
 =
 	// TODO: Think about heuristics to warn about possible missing elements, for example:
 	//     foo =
@@ -2398,16 +2398,16 @@ OptionalNewline (. ID(L"OptionalNewline", 3) .)
 	line_break
 .
 /*P*/
-PassableType (. ID(L"PassableType", 3) .)
+PassableType (. ID(L"PassableType", STMT) .)
 =
 	( PrimitiveType<NO_BITS> | UserType )
 	[ Rank ]
 .
-PowerExpression (. ID(L"Power", 2) .)
+PowerExpression (. ID(L"Power", EXPR) .)
 =
 	BitShiftExpression [ "^" PowerExpression ]
 .
-PrimaryExpression (. ID(L"Primary", 2) .)
+PrimaryExpression (. ID(L"Primary", EXPR) .)
 =
 	( char_literal
 	| integer_constant
@@ -2442,7 +2442,7 @@ PrimaryExpression (. ID(L"Primary", 2) .)
 	| malformed_string_literal   (. SemErr(L"Bad string constant"); .)
 	)
 .
-PrimitiveType<bool bBits> (. ID(L"PrimitiveType", 3) .)
+PrimitiveType<bool bBits> (. ID(L"PrimitiveType", STMT) .)
 =
 	(. int kind = 0; .)
 	( "Boolean" | "Char" | "DateTime"
@@ -2458,7 +2458,7 @@ PrimitiveType<bool bBits> (. ID(L"PrimitiveType", 3) .)
 ///	Name
 ///	[ IF (IsCall()) EnclosedArgumentList ]
 ///.
-PropertySignature<Modif &mods, int &line, int &col> (. ID(L"PropertySignature", 3) .)
+PropertySignature<Modif &mods, int &line, int &col> (. ID(L"PropertySignature", STMT) .)
 =
 	(. bool explicit_array = false; .)
 	"Property" (. line = t->line; col = t->col; .)
@@ -2473,7 +2473,7 @@ PropertySignature<Modif &mods, int &line, int &col> (. ID(L"PropertySignature", 
 	[ "Does" identifier dot identifier ]
 	SyncNewline<s_name>
 .
-PropertyStatement<Modif &mods> (. ID(L"PropertyStatement", 3) .)
+PropertyStatement<Modif &mods> (. ID(L"PropertyStatement", STMT) .)
 =
 	(.
 	bool bAbstract  = mods.allow(Modif::Abstract);
@@ -2522,7 +2522,7 @@ PropertyStatement<Modif &mods> (. ID(L"PropertyStatement", 3) .)
 	]
 .
 /*Q*/
-QualifiedName<int limit> (. ID(L"QualifiedName", 3) .)
+QualifiedName<int limit> (. ID(L"QualifiedName", STMT) .)
 =
 	(. const wchar_t *msg = L"Namespace or type name expected"; .)
 	Name
@@ -2532,7 +2532,7 @@ QualifiedName<int limit> (. ID(L"QualifiedName", 3) .)
 	}
 .
 /*R*/
-RaiseStatement (. ID(L"RaiseStatement", 3) .)
+RaiseStatement (. ID(L"RaiseStatement", STMT) .)
 =
 	"Raise"
 	(
@@ -2549,23 +2549,23 @@ RaiseStatement (. ID(L"RaiseStatement", 3) .)
 		.)
 	)
 .
-Rank (. ID(L"Rank", 3) .)
+Rank (. ID(L"Rank", STMT) .)
 =
 	"*" integer_literal
 .
-ReDimClause (. ID(L"ReDimClause", 3) .)
+ReDimClause (. ID(L"ReDimClause", STMT) .)
 =
 	QualifiedName<0>
 	"(" EnclosedExpression
 	{ comma EnclosedExpression }
 	")"
 .
-ReDimStatement (. ID(L"ReDimStatement", 3) .)
+ReDimStatement (. ID(L"ReDimStatement", STMT) .)
 =
 	"ReDim" ReDimClause
 	{ comma ReDimClause }
 .
-RequireComparison (. ID(L"RequireComparison", 3) .)
+RequireComparison (. ID(L"RequireComparison", STMT) .)
 =
 	// TODO: strings can only be "=" or "<>".
 	( [ version_literal ( "<" | "<=" ) ]  // Eg 1.0.0 <= version < 2.0.0
@@ -2574,12 +2574,12 @@ RequireComparison (. ID(L"RequireComparison", 3) .)
 	| "(" RequireLogic ")"
 	)
 .
-RequireLogic (. ID(L"RequireLogic", 3) .)
+RequireLogic (. ID(L"RequireLogic", STMT) .)
 =
 	RequireComparison
 	{ ( "And" | "Or" ) RequireComparison }
 .
-RequireStatement (. ID(L"RequireStatement", 3) .)
+RequireStatement (. ID(L"RequireStatement", STMT) .)
 =
 	"Require"
 	QualifiedName<_identifier> [ "As" identifier ]
@@ -2589,18 +2589,18 @@ RequireStatement (. ID(L"RequireStatement", 3) .)
 	SyncNewline<s_name>
 	(. if (la->kind == _Where) Err(la->line, la->col, L"WHERE clause must be on the same logical line as REQUIRE"); .)
 .
-ReturnStatement (. ID(L"ReturnStatement", 3) .)
+ReturnStatement (. ID(L"ReturnStatement", STMT) .)
 =
 	"Return" [ Expression ]
 .
-ReturnTypeClause (. ID(L"ReturnTypeClause", 3) .)
+ReturnTypeClause (. ID(L"ReturnTypeClause", STMT) .)
 =
 	( AsTypeClause<NO_BITS>
 	| InUnitClause
 	)
 .
 /*S*/
-SelectStatement (. ID(L"SelectStatement", 3) .)
+SelectStatement (. ID(L"SelectStatement", STMT) .)
 =
 	(.
 	int line, col;
@@ -2620,7 +2620,7 @@ SelectStatement (. ID(L"SelectStatement", 3) .)
 	(. Optional(_Select); .)
 	Newline
 .
-SimpleExpression (. ID(L"Simple", 2) .)
+SimpleExpression (. ID(L"Simple", EXPR) .)
 =
 	// Related: IdentifierStatement
 	PrimaryExpression
@@ -2634,7 +2634,7 @@ SimpleExpression (. ID(L"Simple", 2) .)
 	| EnclosedArgumentList
 	}
 .
-SimpleStatement (. ID(L"SimpleStatement", 3) .)
+SimpleStatement (. ID(L"SimpleStatement", STMT) .)
 =
 	( CallStatement
 	| GotoStatement
@@ -2646,19 +2646,19 @@ SimpleStatement (. ID(L"SimpleStatement", 3) .)
 	| YieldStatement
 	)
 .
-SimpleStatementError (. ID(L"SimpleStatementError", 3) .)
+SimpleStatementError (. ID(L"SimpleStatementError", STMT) .)
 =
 	(. Err(la->line, la->col, L"This statement not permitted with one-line IF...ELSE"); .)
 	BlockStatement
 .
-Statement (. ID(L"Statement", 3) .)
+Statement (. ID(L"Statement", STMT) .)
 =
 	( BlockStatement
 	| DeclarationStatement
 	| SimpleStatement SyncNewline<s_name>
 	)
 .
-StringExpression<std::wstring &res> (. ID(L"String", 2) .)
+StringExpression<std::wstring &res> (. ID(L"String", EXPR) .)
 =
 	(.
 	const std::wstring sep(S_PATH_SEP);
@@ -2680,7 +2680,7 @@ StringExpression<std::wstring &res> (. ID(L"String", 2) .)
 	(. for (const auto &substr : v) res += substr; .)
 	(. wprintf(L"\n[%ls]", res.c_str()); .) //TEMP
 .
-StructStatement<Modif &mods> (. ID(L"StructStatement", 3) .)
+StructStatement<Modif &mods> (. ID(L"StructStatement", STMT) .)
 =
 	(.
 	mods.allow(Modif::Deprecated);
@@ -2707,7 +2707,7 @@ StructStatement<Modif &mods> (. ID(L"StructStatement", 3) .)
 	(. Optional(_Struct); .)
 	Newline
 .
-StructProcedure (. ID(L"StructProcedure", 3) .)
+StructProcedure (. ID(L"StructProcedure", STMT) .)
 =
 	(. Modif mods(this); .)
 	( ConstructorStatement<mods>
@@ -2720,7 +2720,7 @@ StructProcedure (. ID(L"StructProcedure", 3) .)
 		DestructorStatement<mods>
 	)
 .
-StructState (. ID(L"StructState", 3) .)
+StructState (. ID(L"StructState", STMT) .)
 =
 	(. Modif mods(this); .)
 	[ ModifiersClause<mods> ]
@@ -2741,7 +2741,7 @@ StructState (. ID(L"StructState", 3) .)
 		ClassStatement<mods>
 	)
 .
-SubSignature<Modif &mods, int &line, int &col, bool &bGeneric> (. ID(L"SubSignature", 3) .)
+SubSignature<Modif &mods, int &line, int &col, bool &bGeneric> (. ID(L"SubSignature", STMT) .)
 =
 	"Sub" (. line = t->line; col = t->col; .)
 	Name
@@ -2776,7 +2776,7 @@ SubSignature<Modif &mods, int &line, int &col, bool &bGeneric> (. ID(L"SubSignat
 	.)
 	SyncNewline<s_name>
 .
-SubStatement<Modif &mods> (. ID(L"SubStatement", 3) .)
+SubStatement<Modif &mods> (. ID(L"SubStatement", STMT) .)
 =
 	(.
 	bool bConst    = mods.allow(Modif::Const);
@@ -2808,7 +2808,7 @@ SubStatement<Modif &mods> (. ID(L"SubStatement", 3) .)
 	(. Optional(_Sub); .)
 	Newline
 .
-SyncNewline<const wchar_t *name> (. ID(L"SyncNewline", 3) .)
+SyncNewline<const wchar_t *name> (. ID(L"SyncNewline", STMT) .)
 =
 	(.
 	wchar_t *msg = NULL;
@@ -2823,7 +2823,7 @@ SyncNewline<const wchar_t *name> (. ID(L"SyncNewline", 3) .)
 	line_break { line_break }
 .
 /*T*/
-TolExpression (. ID(L"TolExpr", 2) .)
+TolExpression (. ID(L"TolExpr", EXPR) .)
 =
 	Expression
 	[
@@ -2835,7 +2835,7 @@ TolExpression (. ID(L"TolExpr", 2) .)
 		]
 	]
 .
-TraitMember (. ID(L"TraitMember", 3) .)
+TraitMember (. ID(L"TraitMember", STMT) .)
 =
 	(. Modif mods(this); .)
 	[ ModifiersClause<mods> ]
@@ -2847,7 +2847,7 @@ TraitMember (. ID(L"TraitMember", 3) .)
 	| SubStatement<mods>
 	)
 .
-TraitStatement<Modif &mods> (. ID(L"TraitStatement", 3) .)
+TraitStatement<Modif &mods> (. ID(L"TraitStatement", STMT) .)
 =
 	(. // Permit @MustUse?
 	bool bAbstract = mods.allow(Modif::Abstract);
@@ -2870,7 +2870,7 @@ TraitStatement<Modif &mods> (. ID(L"TraitStatement", 3) .)
 	(. Optional(_Trait); .)
 	Newline
 .
-TryStatement (. ID(L"TryStatement", 3) .)
+TryStatement (. ID(L"TryStatement", STMT) .)
 =
 	(. int line, col; .)
 	"Try" (. line = t->line; col = t->col; .)
@@ -2888,27 +2888,27 @@ TryStatement (. ID(L"TryStatement", 3) .)
 	(. Optional(_Try); .)
 	Newline
 .
-TypeArgumentList (. ID(L"TypeArgumentList", 3) .)
+TypeArgumentList (. ID(L"TypeArgumentList", STMT) .)
 =
 	'[' PassableType { WEAK comma PassableType } ']'
 .
-TypeClause<bool bBits> (. ID(L"TypeClause", 3) .)
+TypeClause<bool bBits> (. ID(L"TypeClause", STMT) .)
 =
 	( AsTypeClause<bBits>
 	| InUnitClause
 	)
 .
-TypeConversion (. ID(L"TypeConversion", 2) .)
+TypeConversion (. ID(L"TypeConversion", EXPR) .)
 =
 	( "As" ConvertibleType
 	| InUnitClause
 	)
 .
-TypeExpression (. ID(L"Type", 2) .)
+TypeExpression (. ID(L"Type", EXPR) .)
 =
 	ConcatenationExpression [ IsExpression | TypeConversion ]
 .
-TypeParameter<int parent> (. ID(L"TypeParameter", 3) .)
+TypeParameter<int parent> (. ID(L"TypeParameter", STMT) .)
 =
 	[
 		( "In" | "Out" )
@@ -2916,7 +2916,7 @@ TypeParameter<int parent> (. ID(L"TypeParameter", 3) .)
 	]
 	identifier
 .
-TypeParameterList<int parent> (. ID(L"TypeParameterList", 3) .)
+TypeParameterList<int parent> (. ID(L"TypeParameterList", STMT) .)
 =
 	"["
 	TypeParameter<parent>
@@ -2924,15 +2924,15 @@ TypeParameterList<int parent> (. ID(L"TypeParameterList", 3) .)
 	"]"
 .
 /*U*/
-UnaryExpression (. ID(L"Unary", 2) .)
+UnaryExpression (. ID(L"Unary", EXPR) .)
 =
 	{ UnaryOperator } SimpleExpression
 .
-UnaryOperator (. ID(L"UnaryOperator", 3) .)
+UnaryOperator (. ID(L"UnaryOperator", STMT) .)
 =
 	( '+' | '-' | "Not" )
 .
-UnenclosedArgumentList (. ID(L"UnenclosedArgumentList", 3) .)
+UnenclosedArgumentList (. ID(L"UnenclosedArgumentList", STMT) .)
 =
 	(
 		Argument
@@ -2951,7 +2951,7 @@ UnenclosedArgumentList (. ID(L"UnenclosedArgumentList", 3) .)
 	}
 	(. if (t->kind == _comma) SemErr(L"Last argument is missing"); .)
 .
-UnenclosedParameterList<int parent> (. ID(L"UnenclosedParameterList", 3) .)
+UnenclosedParameterList<int parent> (. ID(L"UnenclosedParameterList", STMT) .)
 =
 	(. param_type param(this, parent); .)
 	FormalParameter<param>
@@ -2960,7 +2960,7 @@ UnenclosedParameterList<int parent> (. ID(L"UnenclosedParameterList", 3) .)
 		FormalParameter<param>
 	}
 .
-UnitAlias (. ID(L"UnitAlias", 3) .)
+UnitAlias (. ID(L"UnitAlias", STMT) .)
 =
 	(. int number = -1; .)
 	[
@@ -2975,21 +2975,21 @@ UnitAlias (. ID(L"UnitAlias", 3) .)
 		identifier
 	]
 .
-UnitExpression (. ID(L"Unit", 2) .)
+UnitExpression (. ID(L"Unit", EXPR) .)
 =
 	UnitOfMeasure  { ( integer_literal | real_literal ) UnitOfMeasure  }
 .
-UnitOfMeasure (. ID(L"UnitOfMeasure", 3) .)
+UnitOfMeasure (. ID(L"UnitOfMeasure", STMT) .)
 =
 	( identifier
 	| "(" identifier { [ "*" | "/" ] identifier } ")"
 	)
 .
-UnitParameter (. ID(L"UnitParameter", 3) .)
+UnitParameter (. ID(L"UnitParameter", STMT) .)
 =
 	"(" identifier InUnitClause ")"
 .
-UnitStatement<Modif &mods> (. ID(L"UnitStatement", 3) .)
+UnitStatement<Modif &mods> (. ID(L"UnitStatement", STMT) .)
 =
 	(.
 	mods.allow(Modif::Deprecated);
@@ -3008,17 +3008,17 @@ UnitStatement<Modif &mods> (. ID(L"UnitStatement", 3) .)
 	//      If value < 0.0 Then Raise RangeError
 	//  End Unit
 .
-UserType (. ID(L"UserType", 3) .)
+UserType (. ID(L"UserType", STMT) .)
 =
 	QualifiedName<_identifier> [ TypeArgumentList ]
 .
 /*V*/
-ValueType (. ID(L"ValueType", 3) .)
+ValueType (. ID(L"ValueType", STMT) .)
 =
 	( PrimitiveType<NO_BITS> | UserType )
 .
 /*W*/
-WhenStatement<bool isPreconditional, when_map &whens> (. ID(L"WhenStatement", 3) .)
+WhenStatement<bool isPreconditional, when_map &whens> (. ID(L"WhenStatement", STMT) .)
 =
 	"When"
 	( identifier
@@ -3050,7 +3050,7 @@ WhenStatement<bool isPreconditional, when_map &whens> (. ID(L"WhenStatement", 3)
 	Newline
 	{ Statement }
 .
-WhereClause<int block, bool generic> (. ID(L"WhereClause", 3) .)
+WhereClause<int block, bool generic> (. ID(L"WhereClause", STMT) .)
 =
 	"Where"
 	(. if (!generic) SemErr(L"Declared element is missing generic type parameter(s)"); .)
@@ -3060,7 +3060,7 @@ WhereClause<int block, bool generic> (. ID(L"WhereClause", 3) .)
 		Constraint<block>
 	}
 .
-WhereStatement (. ID(L"WhereStatement", 3) .)
+WhereStatement (. ID(L"WhereStatement", STMT) .)
 =
 	"Where" (. int line = t->line, col = t->col; .)
 	identifier  (. wchar_t *id = coco_string_create(t->val); .)
@@ -3077,13 +3077,13 @@ WhereStatement (. ID(L"WhereStatement", 3) .)
 	)
 	SyncNewline<s_name>
 .
-WhileOrUntil (. ID(L"WhileOrUntil", 3) .)
+WhileOrUntil (. ID(L"WhileOrUntil", STMT) .)
 =
 	( "While"
 	| "Until"
 	)
 .
-WhileStatement (. ID(L"WhileStatement", 3) .)
+WhileStatement (. ID(L"WhileStatement", STMT) .)
 =
 	(. int line, col; .)
 	"While" (. line = t->line; col = t->col; .)
@@ -3099,7 +3099,7 @@ WhileStatement (. ID(L"WhileStatement", 3) .)
 .
 /*X*/
 /*Y*/
-YieldStatement (. ID(L"YieldStatement", 3) .)
+YieldStatement (. ID(L"YieldStatement", STMT) .)
 =
 	"Yield"
 	(.
