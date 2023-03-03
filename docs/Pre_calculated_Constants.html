@@ -118,13 +118,20 @@ For the syntax of string constants, see <a href="String_Basics.html">String Basi
 	<td>(Platform-controlled)</td></tr>
 </tbody>
 </table>
-<h3>Magic constants</h3>
+<h2>Magic constants</h2>
 <p>Some constants have different values because of their location or when something occurred.</p>
-<table>
+<style media="all and (max-width: 40em)">
+	#tmc tbody th:before { content: "Constant"; }
+	#tmc td:nth-of-type(1):before { content: "Information"; }
+</style>
+<table id="tmc" class="wide">
 <thead>
 <tr><th>Constant</th><th>Information</th></tr>
 </thead>
 <tbody>
+<tr><th><code>%INDEX</code></th>
+	<td>The iteration count of the nearest loop.
+It 	starts at zero and adds one after each iteration.</td></tr>
 <tr><th><code>$DATE</code></th>
 	<td>The date during compilation in UTC</td></tr>
 <tr><th><code>$DATE_DMY</code></th>
@@ -145,13 +152,13 @@ For the syntax of string constants, see <a href="String_Basics.html">String Basi
 <td>The fully qualified name of the procedure or container</td></tr>
 <tr><th><code>$TIME</code></th>
 	<td>The time during compilation in UTC</td></tr>
-<tr><th><code>$TIME_12</code></th>
+<tr><th><code>$TIME_12HM</code></th>
 	<td>The time in 12-hour format ("1:37 PM")</td></tr>
-<tr><th><code>$TIME_12_SEC</code></th>
+<tr><th><code>$TIME_12HMS</code></th>
 	<td>The time in 12-hour format ("1:37:55 PM")</td></tr>
-<tr><th><code>$TIME_24</code></th>
+<tr><th><code>$TIME_24HM</code></th>
 	<td>The time in 24-hour format ("13:37")</td></tr>
-<tr><th><code>$TIME_24_SEC</code></th>
+<tr><th><code>$TIME_24HMS</code></th>
 	<td>The time in 24-hour format ("13:37:55")</td></tr>
 </tbody>
 </table>
