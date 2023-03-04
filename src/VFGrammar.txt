@@ -472,7 +472,7 @@ std::wstring StringValue(wchar_t *s) {
 enum datetime_fmt {
 	INVALID_FMT,
 	DATE, DATE_DMY, DATE_MDY, DATE_YMD,
-	TIME, TIME_12, TIME_12_SEC, TIME_24, TIME_24_SEC
+	TIME, TIME_12HM, TIME_12HMS, TIME_24HM, TIME_24HMS
 };
 
 std::wstring NamedString(wchar_t *s) {
@@ -553,20 +553,20 @@ std::wstring NamedString(wchar_t *s) {
 
 			if (s[0] == L'\0') { // $TIME
 				//TODO
-			} else if (!wcscmp(L"_12", s)) { // $TIME_12
+			} else if (!_wcsicmp(L"_12HM", s)) { // $TIME_12HM
 				secs += (utc->tm_hour < 12) ? L" AM": L" PM";
 				if (utc->tm_hour > 12) utc->tm_hour -= 12;
 				else if (utc->tm_hour == 0) utc->tm_hour = 12;
-			} else if (!_wcsicmp(L"_12_SEC", s)) { // $TIME_12_SEC
+			} else if (!_wcsicmp(L"_12HMS", s)) { // $TIME_12HMS
 				secs += L':';
 				if (utc->tm_sec < 10) secs += L'0';
 				secs += std::to_wstring(utc->tm_sec);
 				secs += (utc->tm_hour < 12) ? L" AM": L" PM";
 				if (utc->tm_hour > 12) utc->tm_hour -= 12;
 				else if (utc->tm_hour == 0) utc->tm_hour = 12;
-			} else if (!wcscmp(L"_24", s)) { // $TIME_24
+			} else if (!_wcsicmp(L"_24HM", s)) { // $TIME_24HM
 				// Nothing to do.
-			} else if (!_wcsicmp(L"_24_SEC", s)) { // $TIME_24_SEC
+			} else if (!_wcsicmp(L"_24HMS", s)) { // $TIME_24HMS
 				secs += L':';
 				if (utc->tm_sec < 10) secs += L'0';
 				secs += std::to_wstring(utc->tm_sec);
