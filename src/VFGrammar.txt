@@ -2660,25 +2660,21 @@ Statement (. ID(L"Statement", STMT) .)
 .
 StringExpression<std::wstring &res> (. ID(L"String", EXPR) .)
 =
-	(.
-	const std::wstring sep(S_PATH_SEP);
-	std::vector<std::wstring> v;
-	.)
-	( string_literal | string_constant ) (. v.push_back(StringValue(t->val)); .)
+	(. const std::wstring sep(S_PATH_SEP); .)
+	( string_literal | string_constant ) (. res += StringValue(t->val); .)
 	{ IF (la->kind == _string_constant || la->kind == _string_literal || la->kind == _slash || la->kind == _backslash)
 		[
 			"/"
 			(. if (option.String_bk_slash == TERNARY1) SemErr(L"Must use backslash because of @OPTION"); .)
-			(. v.push_back(sep); .)
+			(. res += sep; .)
 		|
 			"\\"
 			(. if (option.String_bk_slash == TERNARY2) SemErr(L"Must use slash because of @OPTION"); .)
-			(. v.push_back(sep); .)
+			(. res += sep; .)
 		]
-		( string_literal | string_constant ) (. v.push_back(StringValue(t->val)); .)
+		( string_literal | string_constant ) (. res += StringValue(t->val); .)
 	}
-	(. for (const auto &substr : v) res += substr; .)
-	(. wprintf(L"\n[%ls]", res.c_str()); .) //TEMP
+	(. if (args.v >= Args::STMT) wprintf(L"\n[%ls]", res.c_str()); .) //TEMP
 .
 StructStatement<Modif &mods> (. ID(L"StructStatement", STMT) .)
 =
