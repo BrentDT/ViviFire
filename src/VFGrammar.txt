@@ -1565,7 +1565,9 @@ DeclareStatement<Modif &mods> (. ID(L"DeclareStatement", STMT) .)
 .
 Deprecated (. ID(L"Deprecated", STMT) .)
 =
-	"@Deprecated" [ string_literal ]
+	"@" (. if ( !Match(L"Deprecated") ) SemErr(L"@DEPRECATED expected"); .)
+	[ string_literal ]
+	[ OptionalNewline ]
 .
 DestructorStatement<Modif &mods> (. ID(L"DestructorStatement", STMT) .)
 =
@@ -1667,7 +1669,7 @@ EnclosedParameterList<int parent> (. ID(L"EnclosedParameterList", STMT) .)
 .
 EnumMember (. ID(L"EnumMember", STMT) .)
 =
-	[ Deprecated [ OptionalNewline ] ]
+	[ Deprecated ]
 	identifier
 	( "=" Expression
 	| (. if (option.Enum_equals) SemErr(L"Enumeration constant must have initializer because of @OPTION"); .)
