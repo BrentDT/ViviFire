@@ -809,10 +809,12 @@ TOKENS
 
 line_break  = eol{eol}.
 
+at_sign     = "@".
 comma       = ",".
 dot         = ".".
 exclamation = "!".
 question    =  "?".
+semicolon   = ";".
 
 // Primary
 left_paren    = "(".
@@ -1669,12 +1671,17 @@ EnclosedParameterList<int parent> (. ID(L"EnclosedParameterList", STMT) .)
 .
 EnumMember (. ID(L"EnumMember", STMT) .)
 =
-	[ Deprecated ]
+	(. bool deprecated = false; .)
+	[ Deprecated (. deprecated = true; .) ]
 	identifier
-	( "=" Expression
-	| (. if (option.Enum_equals) SemErr(L"Enumeration constant must have initializer because of @OPTION"); .)
+	(
+		"=" Expression
+	|
+		(. if (option.Enum_equals) SemErr(L"Enumeration constant must have initializer because of @OPTION"); .)
 	)
-	SyncNewline<s_name>
+	SyncSeparator<s_name>
+	(. if (deprecated && t->kind == _semicolon && la->kind != _at_sign)
+	    Warn(la->line, la->col, L"@DEPRECATED has no effect on this constant. We recommend a line-break here."); .)
 .
 EnumStatement<Modif &mods> (. ID(L"EnumStatement", STMT) .)
 =
@@ -1689,24 +1696,32 @@ EnumStatement<Modif &mods> (. ID(L"EnumStatement", STMT) .)
 	int line, col;
 	.)
 	"Enum" (. line = t->line; col = t->col; .)
-	( identifier
-	| (. if (bFlags || bOpen || option.Enum_id) {
-		const wchar_t *reason = (bFlags) ? L"@FLAGS" : (bOpen) ? L"@OPEN" : L"@OPTION";
-		wchar_t *msg = coco_string_create_append(L"Enumeration type must have a name because of ", reason);
-		Err(msg);
-		coco_string_delete(msg);
-	} .)
+	(
+		identifier
+	|
+		(. if (bFlags || bOpen || option.Enum_id) {
+		    const wchar_t *reason = (bFlags) ? L"@FLAGS" : (bOpen) ? L"@OPEN" : L"@OPTION";
+		    wchar_t *msg = coco_string_create_append(L"Enumeration type must have a name because of ", reason);
+		    Err(msg);
+		    coco_string_delete(msg);
+		} .)
 	)
-	( IntegerTypeOrExtension
-	| (. if (bFlags || option.Enum_Is) {
-		const wchar_t *reason = (bFlags) ? L"@FLAGS" : L"@OPTION";
-		wchar_t *msg = coco_string_create_append(L"Enumeration must specify a width because of ", reason);
-		Err(msg);
-		coco_string_delete(msg);
-	} .)
+	(
+		IntegerTypeOrExtension
+	|
+		(. if (bFlags || option.Enum_Is) {
+		    const wchar_t *reason = (bFlags) ? L"@FLAGS" : L"@OPTION";
+		    wchar_t *msg = coco_string_create_append(L"Enumeration must have a clause IS because of ", reason);
+		    Err(msg);
+		    coco_string_delete(msg);
+		} .)
 	)
 	SyncNewline<s_name>
-	{ EnumMember }
+	{
+		EnumMember
+	}
+	// Make sure last EnumMember ends with EOL.
+	(. if (t->kind != _line_break) SynErr(_line_break); .)
 	(. if (la->kind != _End) Err(line, col, L"ENUM without END"); .)
 	"End"
 	(. Optional(_Enum); .)
@@ -2819,6 +2834,14 @@ SyncNewline<const wchar_t *name> (. ID(L"SyncNewline", STMT) .)
 	coco_string_delete(msg);
 	.)
 	line_break { line_break }
+.
+SyncSeparator<const wchar_t *name> (. ID(L"SyncSeparator", STMT) .)
+=
+	(
+		SyncNewline<name>
+	|
+		";" [ SyncNewline<name> ]
+	)
 .
 /*T*/
 TolExpression (. ID(L"TolExpr", EXPR) .)
