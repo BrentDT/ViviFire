@@ -26,12 +26,14 @@
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <h3>Usual construct</h3>
-<pre><code>[ modifiers ] Enum [ enumeration_name ] [ Is type ]
+<pre><code>[ modifiers ] _
+Enum [ enumeration_name ] [ Is base_type ]
     member_name [ = value ]
     &hellip;
 End [ Enum ]&#10;</code></pre>
 <h3>Bit flag construct</h3>
-<pre><code>[ modifiers ] @Flags Enum enumeration_name Is type
+<pre><code>[ modifiers ] _
+@Flags Enum enumeration_name Is base_type
     member_name [ = value ]
     &hellip;
 End [ Enum ]&#10;</code></pre>
@@ -42,25 +44,28 @@ End [ Enum ]&#10;</code></pre>
 <dd><p>Optional modifiers:</p>
 	<ul>
 	<li><code class="at">@Deprecated</code> &ndash; See <a href="Deprecated.html">@Deprecated</a>.</li>
+	<li><code class="at">@Flags</code> &ndash; Changes the enumeration into a set of bit flags.</li>
 	<li><code class="at">@Open</code> &ndash; The enumeration can be extended.</li>
 	<li><code class="at">@Unique</code> &ndash; All the values must be different.</li>
 	</ul>
 </dd>
-<dt><code class="at">@Flags</code></dt>
-<dd>Changes the enumeration into a set of bit flags.</dd>
 <dt><code>enumeration_name</code></dt>
 <dd>A name for the enumeration</dd>
-<dd>Optional in the usual construct</dd>
-<dd>Mandatory with <code class="at">@Open</code> and the bit-flag construct</dd>
-<dt><code class="id">type</code></dt>
+<dd>Optional in the usual construct.</dd>
+<dd>Mandatory with the modifiers <code class="at">@Flags</code> or <code class="at">@Open</code>, or the directive <code class="at">@Option Enum ID</code>.</dd>
+<dt><code class="id">base_type</code></dt>
 <dd>An integer data type or a different enumeration.
 It sets the range of possible values and the minimum value.</dd>
-<dd>Optional in the usual construct</dd>
-<dd>Mandatory in the bit-flag construct</dd>
+<dd>Optional in the usual construct.</dd>
+<dd>Mandatory with the modifier <code class="at">@Flags</code> or the directive <code class="at">@option Enum Is</code>.</dd>
 <dt><code class="id">member_name</code></dt>
 <dd>Mandatory name</dd>
+<dd>You can put one or more members on one line.
+Use a semicolon (<code class="op">;</code>) between each member on the same line.
+A semicolon is also permitted at the end of a line.</dd>
 <dt><code class="id">value</code></dt>
-<dd>Optional constant integer expression</dd>
+<dd>Optional constant integer expression.</dd>
+<dd>Mandatory with the directive <code class="at">@Option Enum Equals</code>.</dd>
 <dt><code class="kw">End</code></dt>
 <dd>Completes the statement.
 You can also use <code class="kw">End Enum</code>.</dd>
@@ -102,32 +107,38 @@ The range of an extension is the same as its parent.</p>
 </ul>
 <p>See <a href="Option_Directive.html">@Option Directive</a> for more information.</p>
 <h2>Examples</h2>
-<h3>Listing 1</h3>
+<h3>Example 1</h3>
 <div class="language-vivifire listing">
 <pre><code>@Open Enum fruit
     apple
     banana
     cherry
 End Enum&#10;</code></pre>
+<p>The equivalent code with values written:</p>
+<pre><code>@Open Enum fruit
+    apple  = 0
+    banana = 1
+    cherry = 2
+End Enum&#10;</pre></code>
 </div>
-<h3>Listing 2: Extending an enumeration</h3>
+<h3>Example 2: Extending an enumeration</h3>
 <div class="language-vivifire listing">
 <pre><code>Enum more_fruit Is fruit
-    peach
-    pear
-    pineapple
+    peach; pear; pineapple
 End Enum&#10;</code></pre>
 </div>
-<h3>Listing 3: A set of bit flags</h3>
+<p>The enumeration <code>more_fruit</code> has these members:
+(0) <code>apple</code>, (1) <code>banana</code>, (2) <code>cherry</code>, (3) <code>peach</code>, (4) <code>pear</code>, and (5) <code>pineapple</code>.</p>
+<h3>Example 3: A set of bit flags</h3>
 <div class="language-vivifire listing">
 <pre><code>@Flags Enum days Is Int8
-    Monday
-    Tuesday
-    Wednesday
-    Thursday
-    Friday
-    Saturday
-    Sunday
+    Monday    ' =  1 (00000001)
+    Tuesday   ' =  2 (00000010)
+    Wednesday ' =  4 (00000100)
+    Thursday  ' =  8 (00001000)
+    Friday    ' = 16 (00010000)
+    Saturday  ' = 32 (00100000)
+    Sunday    ' = 64 (01000000)
 End Enum
 
 Var weekend As days = Saturday Or Sunday&#10;</code></pre>
