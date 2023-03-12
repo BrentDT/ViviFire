@@ -104,7 +104,7 @@ div.listing pre, div.syntax pre {
 	width: 100%;
 	margin-bottom: 0;
 }
-code, code[class="language-vivifire"], pre, PRE[class="language-vivifire"] {
+code, code[class="language-vivifire"], pre, pre[class="language-vivifire"], code kbd, code var {
 	font-family: 
 		Inconsolata, 
 		"Fira Code", 
@@ -166,7 +166,6 @@ dt kbd, kbd.kw, kbd.mod, .kws kbd {
 }
 code.op, .ops code, 
 kbd.op, .ops kbd {
-	font-family: "Source Code Pro", Consolas, Inconsolata, Menlo, "DejaVu Sans Mono", monospace;
 	font-weight: bold;
 }
 code kbd {
@@ -218,6 +217,10 @@ code .err:after {
 }
 .checker tr:nth-child(even) td:nth-child(odd), .checker tr:nth-child(odd) td:nth-child(even) {
 	background-color: #ddd;
+}
+kbd.seq {
+	font-family: inherit;
+	whie-space: nowrap;
 }
 kbd kbd { /* Made to look like keys */
 	border-radius: 0.06em;
