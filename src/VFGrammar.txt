@@ -1113,17 +1113,14 @@ AdditiveExpression (. ID(L"Additive", EXPR) .)
 .
 Argument (. ID(L"Argument", STMT) .)
 =
-	( null_literal
+	(
+		null_literal
 	|
 		[ IF (IsNamedArgument())
 			Name ":="
 		]
 		( EnclosedExpression | LambdaExpression )
 	)
-	// If non-decimal integer ("&b...", "&h...", or "&o...")
-	(. if (la->kind == _integer_literal && la->val[0] == L'&') {
-		Warn(la->line, la->col, L"Possibly argument list has missing comma");
-	} .)
 .
 ArgumentList (. ID(L"ArgumentList", STMT) .)
 =
@@ -1345,12 +1342,9 @@ ComparisonOperator (. ID(L"ComparisonOperator", STMT) .)
 ConcatenationExpression (. ID(L"Concatenation", EXPR) .)
 =
 	AdditiveExpression
-	{ concatenation AdditiveExpression }
-	// If non-decimal integer ("&b...", "&h...", or "&o...")
-	(. if (la->kind == _integer_literal && la->val[0] == L'&') {
-		std::unique_ptr<wchar_t> msg(coco_string_create_append(L"Possibly concatenation is incorrectly written as integer literal: ", la->val));
-		Warn(la->line, la->col, msg.get());
-	} .)
+	{
+		concatenation AdditiveExpression
+	}
 .
 ///ConditionalComparison (. ID(ConditionalComparison) .)
 ///=
