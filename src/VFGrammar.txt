@@ -78,6 +78,7 @@ struct tag_option {
 	ternary     If_Then         = TERNARY0;
 	bool        If_End          = false;
 	bool        last            = false;
+	bool        Mod_floored     = false;
 	bool        New             = false;
 	bool        Optional_equals = false;
 	ternary     Select_Case     = TERNARY0;
@@ -88,7 +89,7 @@ struct tag_option {
 	short       warning         = 4;
 	short       warning_error   = 0;
 	ternary     When_Each_Else  = TERNARY0;
-	bool        When_id_Begin_id = false;
+	bool        When_Begin_id   = false;
 
 	bool match(const wchar_t *s) {
 		return parser->Match(s);
@@ -168,6 +169,12 @@ struct tag_option {
 				If_Then = NO; // @Option If [ No Then ]
 			}
 			break;
+		case _Mod:
+			parser->Get();
+			if (match(L"Floored")) {
+				Mod_floored = true; // @Option Mod Floored
+			} else goto bad_option;
+			break;
 		case _New:
 			parser->Get();
 			New = true; // @Option New
@@ -218,10 +225,10 @@ struct tag_option {
 			} else if (_Else == parser->la->kind) {
 				parser->Get();
 				When_Each_Else = TERNARY2; // @Option When Else
-			} else if (match(s_id) && _Begin == parser->la->kind) {
+			} else if (_Begin == parser->la->kind) {
 				parser->Get();
 				if (match(s_id)) {
-					When_id_Begin_id = true; // @Option When ID Begin ID
+					When_Begin_id = true; // @Option When Begin ID
 				} else goto bad_option;
 			} else goto bad_option;
 			break;
@@ -3050,7 +3057,7 @@ WhenStatement<bool isPreconditional, when_map &whens> (. ID(L"WhenStatement", ST
 	std::transform(id.begin(), id.end(), id.begin(), std::towupper);
 	switch ((whens[id] += 2)) {
 	case 2: // Label not in Begin.
-		if (option.When_id_Begin_id && kind == _identifier) {
+		if (option.When_Begin_id && kind == _identifier) {
 			SemErr(L"WHEN label must be declared with BEGIN because of @OPTION");
 		}
 		break;
