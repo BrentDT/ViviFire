@@ -26,14 +26,59 @@
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <h3>Usual construct</h3>
-<pre><code>[ @SI ] Unit unit_names [ = expression ]&#10;</code></pre>
+<pre><code>[ @SI [ prefix_type ] ] _
+Unit unit_names [ = expression ]&#10;</code></pre>
 <h3>Interval-scale construct</h3>
-<pre><code>[ @SI ] Unit unit_names ( parameter In unit ) = expression&#10;</code></pre>
+<pre><code>Unit unit_names ( parameter In unit ) = expression&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="at">@SI</code></dt>
 <dd>Optional indication of an SI (metric) unit.</dd>
+<dt><code class="id">prefix_type</code></dt>
+<dd>Optional after <code class="at">@SI</code>, one of these identifiers:
+	<ul>
+	<li><code>BINARY</code> &ndash; Gives these prefixes:
+		<code>kibi</code> or <code>Ki</code> (2^<sup>10</sup>),
+		<code>mebi</code> or <code>Mi</code> (2^<sup>20</sup>),
+		<code>gibi</code> or <code>Gi</code> (2^<sup>30</sup>),
+		<code>tebi</code> or <code>Ti</code> (2^<sup>40</sup>),
+		<code>pebi</code> or <code>Ti</code> (2^<sup>50</sup>),
+		<code>exbi</code> or <code>Ei</code> (2^<sup>60</sup>),
+		<code>zebi</code> or <code>Zi</code> (2^<sup>70</sup>),
+		<code>yobi</code> or <code>Yi</code> (2^<sup>80</sup>).
+	</li>
+	<li><code>LARGE</code> &ndash; Gives these prefixes:
+		<code>deca</code> or <code>deka</code> or <code>da</code> (10^<sup>1</sup>),
+		<code>hecto</code> or <code>h</code> (10^<sup>2</sup>),
+		<code>kilo</code> or <code>k</code> (10^<sup>3</sup>),
+		<code>mega</code> or <code>M</code> (10^<sup>6</sup>),
+		<code>giga</code> or <code>G</code> (10^<sup>9</sup>),
+		<code>tera</code> or <code>T</code> (10^<sup>12</sup>),
+		<code>peta</code> or <code>P</code> (10^<sup>15</sup>),
+		<code>exa</code> or <code>E</code> (10^<sup>18</sup>),
+		<code>zetta</code> or <code>Z</code> (10^<sup>21</sup>),
+		<code>yotta</code> or <code>Y</code> (10^<sup>24</sup>),
+		<code>ronna</code> or <code>R</code> (10^<sup>27</sup>),
+		<code>quetta</code> or <code>Q</code> (10^<sup>30</sup>).
+	</li>
+	<li><code>SMALL</code> &ndash; Gives these prefixes:
+		<code>deci</code> or <code>d</code> (10^<sup>&minus;1</sup>),
+		<code>centi</code> or <code>c</code> (10^<sup>&minus;2</sup>),
+		<code>milli</code> or <code>m</code> (10^<sup>&minus;3</sup>),
+		<code>micro</code> or <code>&micro;</code> or <code>u</code> (10^<sup>&minus;6</sup>),
+		<code>nano</code> or <code>n</code> (10^<sup>&minus;9</sup>),
+		<code>pico</code> or <code>p</code> (10^<sup>&minus;12</sup>),
+		<code>femto</code> or <code>f</code> (10^<sup>&minus;15</sup>),
+		<code>atto</code> or <code>a</code> (10^<sup>&minus;18</sup>),
+		<code>zepto</code> or <code>z</code> (10^<sup>&minus;21</sup>),
+		<code>yocto</code> or <code>y</code> (10^<sup>&minus;24</sup>),
+		<code>ronto</code> or <code>r</code> (10^<sup>&minus;27</sup>),
+		<code>quecto</code> or <code>q</code> (10^<sup>&minus;30</sup>).
+	</li>
+	</ul>
+	<p>If not supplied, the default prefixes are those given by <code>LARGE</code> and <code>small</code> put together.</p>
+</dd>
 <dt><code class="id">unit_names</code></dt>
 <dd>Mandatory one or more names with spaces between each.
 All names identify the same unit.
@@ -81,10 +126,31 @@ You use it with <code class="id">expression</code> for a unit with an interval s
 <p>TODO</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
-<pre><code>@SI Unit meter+s metre+s m
+<pre><code>// Permit meter, metres, kilometer, millimetres, m, km, mm ...
+@SI Unit meter+s metre+s m
+
+// Derived unit.
 Unit light_year+s ly = 9.4605284 petameters
+
+// in. is not permitted because IN is a keyword
+// and a name cannot have a period,
+// but you can write IN between backticks.
+Unit inch+es `in` = 2.54 cm
+
+// Kelvin cannot be plural.
 Unit Kelvin K
-Unit Celsius 1 degree_C 2 degrees_C (k In Kelvin) = k + 273.15&#10;</code></pre>
+
+// &deg;C is not given because it is not easy to write.
+// 1 makes a singular name and 2 makes a plural name.
+// This is an interval-scale unit, thus the parameter k.
+Unit Celsius 1 degree_C 2 degrees_C (k In Kelvin) = k + 273.15
+
+// Permit second, secs, milliseconds, s, ms, ...
+@SI SMALL Unit second+s sec+s s
+
+// Permit byte, kibibytes, mebibyte, B, KiB, MiB, ...
+// Does not permit Kilobyte, megabytes, KB, MB, ...
+@SI BINARY Unit byte+s B&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
