@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2022 Brent D. Thorn
+ * Copyright 2023 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.com/.
  *
@@ -13,8 +13,9 @@
 #define _MODIFIER_H_
 
 #include <assert.h>
-#include "Parser.h"
-#include "Scanner.h"
+
+class Parser;
+class Scanner;
 
 struct mod_type {
 	bool present = false, allowed = false;
@@ -30,6 +31,12 @@ public:
 		Shared, SI, Unique, WriteOnly,
 		LAST
 	};
+	
+	enum args { SI_default, SI_Binary, SI_Large, SI_Small };
+	
+	typedef union arg {
+		args si_arg;
+	} arg;
 
 private:
 	const wchar_t *m_name[LAST] = {
@@ -39,11 +46,13 @@ private:
 	};
 
 	mod_type m_mods[LAST];
-	int m_count;
+	int m_count = 0;
 	class Parser *m_parser;
 
 public:
-	Modif(Parser *p) : m_parser(p), m_count(0) {}
+	Modif(Parser *p) : m_parser(p) {
+		assert(m_name[LAST - 1] != nullptr);
+	}
 
 	void add(int m);
 	bool allow(int m);
@@ -52,5 +61,7 @@ public:
 	void validate() const;
 
 };
+
+typedef Modif::arg ModifArg;
 
 #endif
