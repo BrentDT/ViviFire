@@ -28,7 +28,7 @@ public:
 	enum mods {
 		Abstract, Backed, Const, Deprecated, Flags,
 		Iterator, MustUse, Open, Override, ReadOnly,
-		Shared, SI, Unique, WriteOnly,
+		Shared, SI, Strict, Unique, WriteOnly,
 		LAST
 	};
 	
@@ -42,7 +42,7 @@ private:
 	const wchar_t *m_name[LAST] = {
 		L"@Abstract", L"@Backed", L"@Const", L"@Deprecated", L"@Flags",
 		L"@Iterator", L"MustUse", L"@Open", L"@Override", L"@ReadOnly",
-		L"@Shared", L"@SI", L"@Unique", L"@WriteOnly"
+		L"@Shared", L"@SI", L"@Strict", L"@Unique", L"@WriteOnly"
 	};
 
 	mod_type m_mods[LAST];

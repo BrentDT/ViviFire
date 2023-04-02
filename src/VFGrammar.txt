@@ -1197,15 +1197,24 @@ Block<int &tkn> (. ID(L"Block", STMT) .)
 	(. tkn = la->kind; .)
 	( "Constructor" | "Do" | "For" | "Function" | "Method" | "Property" | "Sub" | "While" )
 .
-BlockStatement (. ID(L"BlockStatement", STMT) .)
+BlockStatement<Modif &mods> (. ID(L"BlockStatement", STMT) .)
 =
-	( EventStatement
-	| DoStatement
-	| ForStatement
-	| IfStatement
-	| SelectStatement
-	| TryStatement
-	| WhileStatement
+	(. if (mods.count() > 0 && la->kind != _Select) mods.validate(); .)
+	// Must change the line above if more statements get mods.
+	(
+		SelectStatement<mods>
+	|
+		EventStatement
+	|
+		DoStatement
+	|
+		ForStatement
+	|
+		IfStatement
+	|
+		TryStatement
+	|
+		WhileStatement
 	)
 .
 /*C*/
@@ -1463,10 +1472,8 @@ DateTimeExpression (. ID(L"DateTime", EXPR) .)
 	| time_literal
 	)
 .
-DeclarationStatement (. ID(L"DeclarationStatement", STMT) .)
+DeclarationStatement<Modif &mods> (. ID(L"DeclarationStatement", STMT) .)
 =
-	(. Modif mods(this); .)
-	[ ModifiersClause<mods> ]
 	( ConstStatement<mods>
 	| DeclareStatement<mods>
 	| DimStatement<mods>
@@ -1691,6 +1698,7 @@ EnumStatement<Modif &mods> (. ID(L"EnumStatement", STMT) .)
 	bool bFlags    = mods.allow(Modif::Flags);
 	bool bMustUse  = mods.allow(Modif::MustUse);
 	bool bOpen     = mods.allow(Modif::Open);
+	bool bStrict   = mods.allow(Modif::Strict);
 	bool bUnique   = mods.allow(Modif::Unique);
 	mods.validate();
 
@@ -2220,7 +2228,8 @@ Modifier<int &m, ModifArg &arg> (. ID(L"Modifier", STMT) .)
 					if (Matches(L"SMALL")) arg.si_arg = Modif::SI_Small;
 					else Err(t->line, t->col, L"Unknown identifier after @SI");
 				}
-			}
+			} else
+			if (Matches(L"Strict")) m = Modif::Strict;
 			break;
 		case L'U': case L'u':
 			if (Matches(L"Unique")) m = Modif::Unique;
@@ -2268,18 +2277,24 @@ Module (. ID(L"Module", STMT) .)
 		QualifiedName<_identifier>
 	)
 	SyncNewline<s_name>
-	{ IF (la->kind == _Where) WhereStatement }
-	{ IF (la->kind == _Require) RequireStatement }
+	{ IF (la->kind == _Where)
+		WhereStatement
+	}
+	{ IF (la->kind == _Require)
+		RequireStatement
+	}
 	{
-		ModuleMember
-	|
-		ModuleStatement<bProcEntry>
+		(. Modif mods(this); .)
+		[ ModifiersClause<mods> ]
+		(
+			ModuleMember<mods>
+		|
+			ModuleStatement<bProcEntry, mods>
+		)
 	}
 .
-ModuleMember (. ID(L"ModuleMember", STMT) .)
+ModuleMember<Modif &mods> (. ID(L"ModuleMember", STMT) .)
 =
-	(. Modif mods(this); .)
-	[ ModifiersClause<mods> ]
 	( BaseUnitStatement<mods>
 	| ClassStatement<mods>
 	| ConstStatement<mods>
@@ -2298,11 +2313,14 @@ ModuleMember (. ID(L"ModuleMember", STMT) .)
 	| UnitStatement<mods>
 	)
 .
-ModuleStatement<bool bProcEntry> (. ID(L"ModuleStatement", STMT) .)
+ModuleStatement<bool bProcEntry, Modif &mods> (. ID(L"ModuleStatement", STMT) .)
 =
 	(. if (bProcEntry) Warn(L"Executable statements at module level ignored when entry point is a procedure"); .)
-	( BlockStatement
-	| SimpleStatement SyncNewline<s_name>
+	(
+		BlockStatement<mods>
+	|
+		(. mods.validate(); .)
+		SimpleStatement SyncNewline<s_name>
 	)
 .
 MultiplicativeExpression (. ID(L"Multiplicative", EXPR) .)
@@ -2634,9 +2652,12 @@ ReturnTypeClause (. ID(L"ReturnTypeClause", STMT) .)
 	)
 .
 /*S*/
-SelectStatement (. ID(L"SelectStatement", STMT) .)
+SelectStatement<Modif &mods> (. ID(L"SelectStatement", STMT) .)
 =
 	(.
+	bool bStrict   = mods.allow(Modif::Strict);
+	mods.validate();
+
 	int line, col;
 	case_type clause = CASE_ZERO;
 	.)
@@ -2683,13 +2704,20 @@ SimpleStatement (. ID(L"SimpleStatement", STMT) .)
 SimpleStatementError (. ID(L"SimpleStatementError", STMT) .)
 =
 	(. Err(la->line, la->col, L"This statement not permitted with one-line IF...ELSE"); .)
-	BlockStatement
+	(. Modif mods(this); .)
+	BlockStatement<mods>
 .
 Statement (. ID(L"Statement", STMT) .)
 =
-	( BlockStatement
-	| DeclarationStatement
-	| SimpleStatement SyncNewline<s_name>
+	(. Modif mods(this); .)
+	[ ModifiersClause<mods> ]
+	(
+		BlockStatement<mods>
+	|
+		DeclarationStatement<mods>
+	|
+		(. mods.validate(); .)
+		SimpleStatement SyncNewline<s_name>
 	)
 .
 StringExpression<std::wstring &res> (. ID(L"String", EXPR) .)
