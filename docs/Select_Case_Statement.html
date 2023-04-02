@@ -25,7 +25,8 @@
 <p>Executes one of many blocks of statements, because of a test expression.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<pre><code>Select [ Case ] test_expression [ Tol tolerance ]
+<pre><code>[ @Strict ] _
+Select [ Case ] test_expression [ Tol tolerance ]
     Case expression_list
         [ statements ]
     &hellip;
@@ -35,6 +36,11 @@ End [ Select ]&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
+<dt><code class="at">@Strict</code></dt>
+<dd>Optional modifier specifies that you must supply tests for all possible values of <code class="id">test_expression</code>.</dd>
+<dd><code class="id">test_expression</code> can be an enumeration type (declared with <code class="kw">Enum</code>) that also has the modifier <code class="at">@Strict</code>.
+If it does, you must use all the constants with the equality construct, and without <code class="kw">Case Else</code>.
+Other data types put no such limits on the syntax.</dd>
 <dt><code class="id">test_expression</code></dt>
 <dd>Mandatory expression of an <a href="Elementary_Data_Types.html">elementary data type</a>.</dd>
 <dt><code class="id">tolerance</code></dt>
@@ -66,12 +72,14 @@ The value of <code class="id">expression_1</code> must be less than or equal to 
 You can also use <code class="kw">End Select</code>.</dd>
 </dl>
 <h2>Instructions</h2>
-<p>If <code class="id">test_expression</code> agrees with one of <code class="kw">Case</code> <code class="id">expression_list</code>, control moves to the block of statements that follow it and continues until the next <span class="kws"><code>Case</code>, <code>Case Else</code>, or <code>End Select</code></span>.
-Control then moves to the statement after <code class="kw">End Select</code>.
-If more than one expression can agree, only the first one that agrees gets executed.</p>
-<p>The line <code class="kw">Case Else</code> introduces the block <code class="id">else_statements</code>, which executes only when <code class="id">test_expression</code> agrees with none of <code class="id">expression_list</code>.
-Although not mandatory, it is thought a good practice to have one if unusual values of <code class="id">test_expression</code> are possible.
-If none of the blocks that start with <code class="kw">Case</code> executed, control moves to the statement after <code class="kw">End Select</code>.</p>
+<p>If <code class="id">test_expression</code> agrees with one of the expressions after <code class="kw">Case</code>, the related block of statements that follows it runs.
+The block continues until the next <span class="kws"><code>Case</code>, <code>Case Else</code>, or <code>End Select</code></span>.
+Then the statement after <code class="kw">End Select</code> runs.
+If more than one expression can agree, only the first one that agrees runs.</p>
+<p>The line <code class="kw">Case Else</code> is related to the block <code class="id">else_statements</code>.
+This block runs only when <code class="id">test_expression</code> agreed with none of the sets of expressions that came before it.
+Although not mandatory, we recommend that you supply <code class="kw">Case Else</code> if unusual values of <code class="id">test_expression</code> are possible.
+If none of the blocks that start with <code class="kw">Case</code> ran, the statement after <code class="kw">End</code> runs.</p>
 <h3>Changes in syntax with <code>@Option</code></h3>
 <p>There are three areas where you can change the syntax of the statement:</p>
 <ul>
@@ -82,9 +90,11 @@ If none of the blocks that start with <code class="kw">Case</code> executed, con
 <p>See <a href="Option_Directive.html">@Option Directive</a> for more information.</p>
 <h2 id="Examples">Examples</h2>
 <div class="language-vivifire listing">
-<pre><code>' FizzBuzz
-For n = 1 To 100
-    Select Case n Mod 15
+<pre><code>Program FizzBuzz
+Require ViviFire.IO
+
+For num = 1 To 100
+    Select Case num Mod 15
     Case 0
         PrintLine "fizzbuzz"
     Case 3, 6, 9, 12
@@ -92,7 +102,7 @@ For n = 1 To 100
     Case 5, 10
         PrintLine "buzz"
     Case Else
-        PrintLine n
+        PrintLine num
     End Select
 End For&#10;</code></pre>
 </div>
@@ -100,6 +110,7 @@ End For&#10;</code></pre>
 <ul class="articles">
 <li><a href="GoTo_Case_Statement.html">GoTo Case Statement</a></li>
 <li><a href="If_Then_Else_Statement.html">If&hellip;Else Statement</a></li>
+<li><a href="Enum_Statement.html">Enum Statement</a></li>
 <li><a href="Option_Directive.html">@Option Directive</a></li>
 </ul>
 </main>

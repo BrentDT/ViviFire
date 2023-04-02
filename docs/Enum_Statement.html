@@ -46,13 +46,15 @@ End [ Enum ]&#10;</code></pre>
 	<li><code class="at">@Deprecated</code> &ndash; See <a href="Deprecated.html">@Deprecated</a>.</li>
 	<li><code class="at">@Flags</code> &ndash; Changes the enumeration into a set of bit flags.</li>
 	<li><code class="at">@Open</code> &ndash; The enumeration can be extended.</li>
+	<li><code class="at">@Strict</code> &ndash; Variables of the enumeration type can hold only the given constants.</li>
 	<li><code class="at">@Unique</code> &ndash; All the values must be different.</li>
 	</ul>
 </dd>
 <dt><code>enumeration_name</code></dt>
 <dd>A name for the enumeration</dd>
 <dd>Optional in the usual construct.</dd>
-<dd>Mandatory with the modifiers <code class="at">@Flags</code> or <code class="at">@Open</code>, or the directive <code class="at">@Option Enum ID</code>.</dd>
+<dd>Mandatory with the modifiers <code class="at">@Flags</code>, <code class="at">@Open</code>, or <code class="at">@Strict</code>.</dd>
+<dd>Mandatory with the directive <code class="at">@Option Enum ID</code>.</dd>
 <dt><code class="id">base_type</code></dt>
 <dd>An integer data type or a different enumeration.
 It sets the range of possible values and the minimum value.</dd>
