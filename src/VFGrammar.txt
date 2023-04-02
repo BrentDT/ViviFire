@@ -2173,7 +2173,7 @@ MethodSignature<Modif &mods, int &line, int &col> (. ID(L"MethodSignature", STMT
 	.)
 	SyncNewline<s_name>
 .
-Modifier<int &m> (. ID(L"Modifier", STMT) .)
+Modifier<int &m, ModifArg &arg> (. ID(L"Modifier", STMT) .)
 =
 	(. m = Modif::LAST; .) // Sentinal.
 	"@"
@@ -2210,7 +2210,17 @@ Modifier<int &m> (. ID(L"Modifier", STMT) .)
 			break;
 		case L'S': case L's':
 			if (Matches(L"Shared")) m = Modif::Shared; else
-			if (Matches(L"SI")) m = Modif::SI;
+			if (Matches(L"SI")) {
+				m = Modif::SI;
+				arg.si_arg = Modif::SI_default;
+				if (_identifier == la->kind) {
+					Get();
+					if (Matches(L"BINARY")) arg.si_arg = Modif::SI_Binary; else
+					if (Matches(L"LARGE")) arg.si_arg = Modif::SI_Large; else
+					if (Matches(L"SMALL")) arg.si_arg = Modif::SI_Small;
+					else Err(t->line, t->col, L"Unknown identifier after @SI");
+				}
+			}
 			break;
 		case L'U': case L'u':
 			if (Matches(L"Unique")) m = Modif::Unique;
@@ -2226,9 +2236,15 @@ Modifier<int &m> (. ID(L"Modifier", STMT) .)
 .
 ModifiersClause<Modif &mods> (. ID(L"ModifiersClause", STMT) .)
 =
-	(. int m; .)
-	Modifier<m>  (. mods.add(m); .)
-	{ Modifier<m>  (. mods.add(m); .) 
+	(.
+	int m;
+	ModifArg arg;
+	.)
+	Modifier<m, arg>
+	(. mods.add(m); .)
+	{
+		Modifier<m, arg>
+		(. mods.add(m); .)
 	}
 .
 Module (. ID(L"Module", STMT) .)
