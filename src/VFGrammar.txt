@@ -789,6 +789,7 @@ t = '\t'.
 // Character sets
 
 ctrl = '\u0000' .. '\u001f'.
+ws = ctrl + '\u0020' + '\u00a0'.
 eol = n + r.
 notEOL = ANY - ctrl - eol.
 
@@ -807,7 +808,7 @@ nonbin = alnum - bin.
 nonhex = alnum - hex.
 nonoct = alnum - oct.
 
-currency = ANY - alnum - "_" - ctrl.
+currency = ANY - alnum - "_" - ws.
 
 str = ANY - ctrl - eol - '"'.
 char = ANY - ctrl - eol.
@@ -875,14 +876,7 @@ date_literal =
 
 //TODO: malformed_date_literal
 
-fixed_literal =
-	( '¤' | '@'[currency] )
-	dec{['_']dec}['.'dec{dec}].
-
-malformed_fixed_literal =
-	( ('¤'|'@'currency)[dec{dec|'_'}('_'|'.')]
-	| '@'[currency]dec{dec|'_'}("__"|".."){dec|'_'}
-	).
+fixed_literal = ( '\u00a4' | "@" currency ).
 
 integer_constant =
 	( "%"alNotX alpha{["_"]alnum}
@@ -2413,6 +2407,13 @@ NullCoalescingExpression (. ID(L"NullCoalescing", EXPR) .)
 =
 	TypeExpression [ "|?" NullCoalescingExpression ]
 .
+NumericExpression (. ID(L"Numeric", EXPR) .)
+=
+	[ ( "@" | fixed_literal ) ]
+	( integer_literal | real_literal )
+	[ "@" ]
+	[ IF (IsUnit()) UnitExpression ]
+.
 /*O*/
 ObjectName (. ID(L"ObjectName", STMT) .)
 =
@@ -2463,8 +2464,7 @@ PrimaryExpression (. ID(L"Primary", EXPR) .)
 =
 	( char_literal
 	| integer_constant
-	| ( integer_literal | real_literal ) [ IF (IsUnit()) UnitExpression ]
-	| fixed_literal
+	| NumericExpression
 	| DateTimeExpression
 	|
 		(. std::wstring s; .)
@@ -2488,7 +2488,6 @@ PrimaryExpression (. ID(L"Primary", EXPR) .)
 	| "Self"
 	| "#Null"
 	| malformed_char_literal     (. SemErr(L"Bad character constant"); .)
-	| malformed_fixed_literal    (. SemErr(L"Bad fixed constant"); .)
 	| malformed_integer_literal  (. SemErr(L"Bad integer constant"); .)
 	| malformed_real_literal     (. SemErr(L"Bad real constant"); .)
 	| malformed_string_literal   (. SemErr(L"Bad string constant"); .)
