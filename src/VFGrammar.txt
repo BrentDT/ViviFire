@@ -1605,12 +1605,23 @@ DimStatement<Modif &mods> (. ID(L"DimStatement", STMT) .)
 	DeclaratorList<NO_BITS>
 	SyncNewline<s_name>
 .
-DivFunction (. ID(L"Div", EXPR) .)
+DivisionFunction (. ID(L"Division", EXPR) .)
 =
-	"Div"
+	(. bool two_args = false; .)
+	(
+		"Div"
+	|
+		"Mod" (. two_args = true; .)
+	|
+		"Rem" (. two_args = true; .)
+	)
 	"(" EnclosedExpression
 	comma EnclosedExpression
-	[ comma EnclosedExpression ]
+	[
+		comma
+		(. if (two_args) SemErr(L"Too many arguments for MOD or REM"); .)
+		EnclosedExpression
+	]
 	")"
 .
 DoesClause (. ID(L"DoesClause", STMT) .)
@@ -2483,7 +2494,7 @@ PrimaryExpression (. ID(L"Primary", EXPR) .)
 		}
 	| PrimitiveType<YES_BITS>
 	| "(" EnclosedExpression ")"
-	| DivFunction
+	| DivisionFunction
 	| "Base"
 	| "Self"
 	| "#Null"
