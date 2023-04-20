@@ -793,7 +793,7 @@ ws = ctrl + '\u0020' + '\u00a0'.
 eol = n + r.
 notEOL = ANY - ctrl - eol.
 
-alpha = 'A' .. 'Z'.
+alpha = 'A' .. 'Z' + '\u00b5' /*Greek micro*/ + '\u03bc' /*Greek mu*/.
 alnum = alpha + '0' .. '9'.
 alNotX = alpha - 'X'.
 alNotHex = alpha - "ABCDEF".
@@ -876,7 +876,7 @@ date_literal =
 
 //TODO: malformed_date_literal
 
-fixed_literal = ( '\u00a4' | "@" currency ).
+fixed_literal = ( '\u00a4' /*currency sign*/ | "@" currency ).
 
 integer_constant =
 	( "%"alNotX alpha{["_"]alnum}
@@ -1054,6 +1054,9 @@ Xor         = "Xor".
 Yield       = "Yield".
 
 PRAGMAS
+
+bad_identifier = '\u00ce'. (.
+	Get(); SemErr(L"Invalid name caused by incorrect file encoding. Write the file again as \"UTF-8 with BOM\"."); .)
 
 LineContinuation = "_". (.
 	int next = scanner->Peek()->kind;
@@ -2728,6 +2731,7 @@ Statement (. ID(L"Statement", STMT) .)
 	|
 		(. mods.validate(); .)
 		SimpleStatement SyncNewline<s_name>
+
 	)
 .
 StringExpression<std::wstring &res> (. ID(L"String", EXPR) .)
@@ -3057,8 +3061,13 @@ UnitExpression (. ID(L"Unit", EXPR) .)
 .
 UnitOfMeasure (. ID(L"UnitOfMeasure", STMT) .)
 =
-	( identifier
-	| "(" identifier { [ "*" | "/" ] identifier } ")"
+	(
+		identifier
+	|
+		"("
+		identifier
+		{ [ "*" | "/" ] identifier }
+		")"
 	)
 .
 UnitParameter (. ID(L"UnitParameter", STMT) .)
