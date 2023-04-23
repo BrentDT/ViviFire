@@ -43,15 +43,43 @@ It is available only in the function construct.
 If not supplied, the default is zero.</dd>
 </dl>
 <h2>Instructions</h2>
-<p>TODO</p>
+<p>Most of the time, when you divide a number by zero, it is accidental.
+But there are times when you cannot prevent it.</p>
+<p>For example, physics calculations frequently have distances in the denominator.
+This can cause problems every time the distance goes to zero.
+But many times these calculations have no problems when the result of division by zero is zero.</p>
+<p>If you know that division by zero does not cause a problem, you can use <code class="kw">Div</code> as an alternative to &laquo;<code class="op">/</code>&raquo;.
+But if you are not sure, <code class="kw">Div</code> can cause problems that are not easy to find.</p>
+<h3>Operator construct</h3>
+<p>With the operator construct, you write the keyword <code class="kw">Div</code> between two numeric expressions.
+It tries to divide <code class="id">expression_1</code> by <code class="id">expression_2</code>.
+If <code class="id">expression_2</code> is not zero, <code class="kw">Div</code> operates the same as &laquo;<code class="op">/</code>&raquo;.
+But if <code class="id">expression_2</code> is zero, the result is zero.</p>
+<h3>Function construct</h3>
+<p>With the function construct, you first write <code class="kw">Div</code>.
+Then between parentheses (<code class="op">( )</code>, you write two or three expressions, with a comma (<code class="op">,</code>) between each.</p>
+It tries to divide <code class="id">expression_1</code> by <code class="id">expression_2</code>.
+If <code class="id">expression_2</code> is not zero, <code class="kw">Div()</code> operates the same as &laquo;<code class="op">/</code>&raquo;, but with a higher precedence.</p>
+<p>If <code class="id">expression_2</code> is zero and you did not supply <code class="id">expression_3</code>, the result is zero.
+But if you supplied <code class="id">expression_3</code>, its value becomes the result.
+All expressions must have the same data type.</p>
 <h3>Data types</h3>
-<p>If the two expressions are integers, they automatically convert to <code class="kw">Real</code>, and the result is <code class="kw">Real</code>.</p>
+<p>If the two expressions are integers smaller than <code class="kw">Int64</code>, they automatically convert to <code class="kw">Int64</code>.
+Then the result is also <code class="kw">Int64</code>.</p>
+<p>But if one of the expressions is <code class="kw">Int128</code>, the smaller one automatically converts to <code class="kw">Int128</code>.
+Then the result is also <code class="kw">Int128</code>.</p>
+<p>If one or two of the expressions are floating-point numbers smaller than <code class="kw">Real64</code>, they automatically convert to <code class="kw">Real64</code>.
+Then the result is also <code class="kw">Real64</code>.</p>
+<p>But if one of the expressions is <code class="kw">Real128</code>, the smaller one automatically converts to <code class="kw">Real128</code>.
+Then the result is also <code class="kw">Real128</code>.</p>
 <h2>Examples</h2>
 <p>TODO</p>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Div_Equals_Operator.html">Div= Operator</a></li>
 <li><a href="Slash_Operator.html">/ Operator</a></li>
+<li><a href="Mod_Operator.html">Mod Operator</a></li>
+<li><a href="Rem_Operator.html">Rem Operator</a></li>
 </ul>
 </main>
 <script src="common.js"></script>
