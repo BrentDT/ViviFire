@@ -1934,7 +1934,7 @@ GotoStatement (. ID(L"GotoStatement", STMT) .)
 	if (std::find(context.rbegin(), context.rend(), _Finally) != context.rend())
 	    SemErr(L"Cannot use GOTO CASE in FINALLY");
 	.)
-	"Case" ( "Else" | Expression )
+	"Case" ( "Else" | TolExpression )
 .
 /*H*/
 /*I*/
