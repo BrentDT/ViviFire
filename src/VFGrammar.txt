@@ -761,6 +761,11 @@ bool IsUnorderedInit() {
 	return ((k == _char_literal || k == _integer_constant || k == _integer_literal) && scanner->Peek()->kind == _colon_equals);
 }
 
+bool HasWhitespace() {
+	// Is true if there is something between current and next tokens.
+	return la->charPos > t->charPos + coco_string_length(t->val);
+}
+
 ///void ExpectEndNew(const wchar_t *tn) {
 ///	if (la->kind == _End) {
 ///		Get();
@@ -1143,7 +1148,10 @@ ArrayDimensionList (. ID(L"ArrayDimensionList", STMT) .)
 .
 AssignmentOperator (. ID(L"AssignmentOperator", STMT) .)
 =
-	[ concatenation | "+" | "-" | "*" | "/" | "Div" | "Mod" | "Rem" | "SHL" | "SHR" | "And" | "Or" | "Xor" ]
+	[
+		( concatenation | "+" | "-" | "*" | "/" | "Div" | "Mod" | "Rem" | "SHL" | "SHR" | "And" | "Or" | "Xor" )
+		(. if (HasWhitespace()) Err(L"Bad assignment operator"); .)
+	]
 	"="
 .
 AssignmentStatement (. ID(L"AssignmentStatement", STMT) .)
@@ -2423,9 +2431,15 @@ NullCoalescingExpression (. ID(L"NullCoalescing", EXPR) .)
 .
 NumericExpression (. ID(L"Numeric", EXPR) .)
 =
-	[ ( "@" | fixed_literal ) ]
+	[
+		( "@" | fixed_literal )
+		(. if (HasWhitespace()) Err(L"Bad fixed constant"); .)
+	]
 	( integer_literal | real_literal )
-	[ "@" ]
+	[
+		(. if (HasWhitespace()) Err(L"Bad fixed constant"); .)
+		"@"
+	]
 	[ IF (IsUnit()) UnitExpression ]
 .
 /*O*/
