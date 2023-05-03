@@ -2901,8 +2901,8 @@ SyncNewline<const wchar_t *name> (. ID(L"SyncNewline", STMT) .)
 	while (!errors->count // Try this to prevent too many errors.
 	    && !(la->kind == _EOF || la->kind == _line_break)) {
 		if (!msg) msg = coco_string_create_append(L"This symbol not expected in ", name);
-		Err(msg);
 		Get();
+		Err(msg);
 	}
 	coco_string_delete(msg);
 	.)
