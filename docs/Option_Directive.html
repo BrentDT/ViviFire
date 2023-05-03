@@ -37,7 +37,7 @@ And also lets you change how some functions operate.</p>
 <details open>
 <summary id="toc">Table of contents</summary>
 <ol class="notranslate" style="display: inline-block; columns: 2">
-<li><a href="#ArgByName">ArgByName</a></li>
+<li><a href="#Args">Args</a></li>
 <li><a href="#Charset">Charset</a></li>
 <li><a href="#Dim">Dim</a></li>
 <li><a href="#End">End</a></li>
@@ -56,12 +56,17 @@ And also lets you change how some functions operate.</p>
 </ol>
 </details>
 </nav>
-<h3 id="ArgByName" class="notranslate">ArgByName</h3>
-<h4><code>@Option ArgByName { Boolean | Literal }</code></h4>
+<h3 id="Args" class="notranslate">Args</h3>
+<h4><code>@Option Args ByName { Boolean | Literal }</code></h4>
 <p>Procedure calls that have one or more Booleans or literals for arguments can show a warning if not passed by name.
-The warning is applicable only if you supply two or more arguments to the procedure.
+The warning is applicable only if you supply two or more such arguments to the procedure.
 The warning has a level of <code>Warning4</code>.</p>
 <p>See <a href="Passing_Arguments_Position_Name.html">Passing Arguments by Position and by Name</a> for more information.</p>
+<h4><code>@Option Args Enclosed</code></h4>
+<p>You must write parentheses (<code class="op">( )</code>) around (1) arguments for procedure calls and (2) parameters for procedure declarations.
+Procedure declarations start with one of these keywords: <span class="kws"><code>Function</code>, <code>Method</code>, or <code>Sub</code></span>.
+You must supply empty parentheses if a procedure has no parameters.
+And if a procedure call does not have arguments, you must write empty parentheses or a question mark (<code class="op">?</code>).</p>
 <h3 id="Charset" class="notranslate">Charset</h3>
 <h4><code>@Option charset Latin</code></h4>
 <p>All names must use the Latin character set.
@@ -230,9 +235,11 @@ End&#10;</code></pre>
 </div>
 <h4><code>@Option Select [ No Case ]</code></h4>
 <p>You must not write the keyword <code class="kw">Case</code> after <code class="kw">Select</code> in all statements of the type <code class="kw">Select&hellip;Case</code>.</p>
-<h4><code>@Option Select Else</code></h4>
-<p>You must write the clause &ldquo;<code class="kw">Case Else</code>&rdquo; for all statements of the type <code class="kw">Select&hellip;Case</code>.
-This is to make sure that you do something for all possible values.
+<h4><code>@Option Select Strict</code></h4>
+<p>You must do something for all possible values of the test expressions of statements of the type <code class="kw">select&hellip;Case</code>.
+You can try to supply a sufficient number of values with the clause <code class="kw">Case</code>.
+But if that is not possible, you must supply the clause <code class="kw">Case Else</code>.
+This is the same as if you used the modifier <code class="at">@Strict</code> with all such statements.
 For example:</p>
 <div class="language-vivifire listing">
 <pre><code>Select minutes
@@ -244,7 +251,7 @@ Case Else
   Raise RangeError(minutes)
 End&#10;</code></pre>
 </div>
-<h4><code>@Option Select Else String</code></h4>
+<h4><code>@Option Select Strict String</code></h4>
 <p>You must write the clause &ldquo;<code class="kw">Case Else</code>&rdquo; for all statements of the type <code class="kw">Select&hellip;Case</code> that compare strings.
 But <code class="kw">Case Else</code> will not be mandatory for other data types.</p>
 <h3 id="String" class="notranslate">String</h3>
