@@ -50,6 +50,7 @@ And also lets you change how some functions operate.</p>
 <li><a href="#Select">Select</a></li>
 <li><a href="#String">String</a></li>
 <li><a href="#Test">Test</a></li>
+<li><a href="#Type">Type</a></li>
 <li><a href="#Unit">Unit</a></li>
 <li><a href="#Warning">Warning</a></li>
 <li><a href="#When">When</a></li>
@@ -285,6 +286,47 @@ x = 1 // expect-error {{Variable was not declared}} TBD
 
 Const _BAD_NAME = "The user name is not valid."
     ' expect-error {{Invalid Name}}&#10;</code></pre>
+</div>
+<h3 id="Type" class="notranslate">Type</h3>
+<h4><code>@Option Type Each [ Param | Var ]</code></h4>
+<p>You must specify a data type for each name in the given location.
+If you use <code>Type Each Param</code>, each parameter in a parameter list of a procedure must specify a data type.
+And if you use <code>Type Each Var</code>, each variable in a variable declaration must specify a data type.
+But if you do not supply a location (<code>Type Each</code>), you must specify a data type in all locations.</p>
+<p>You can specify a data type as follows:</p>
+<ul>
+<li>Type name: <code>name <kbd>As</kbd> Int16</code></li>
+<li>Unit name: <code>name <kbd>In</kbd> meters</code></li>
+<li>Type characters: <code>name%</code>, <code>name!</code>, <code>name@</code>, or <code>name$</code></li>
+<li>Inferred: <code>name = 42</code></li>
+</ul>
+<p>Without this directive, you can write code as follows:</p>
+<div class="language-vivifire listing">
+<pre><code>Sub Add(a, b As Int32) As Int32
+    Return a + b
+End Sub
+
+Var x, y, sum As Int32
+PromptInput "Enter first number: ", x
+PromptInput "Enter second number: ", y
+sum = Add(x, y)
+PrintLine "The sum of " &amp; x &amp; " and " &amp; y &amp; " is " &amp; sum &amp; "."&#10;</code></pre>
+</div>
+<p>With <code>Type Each Param</code> (or <code>Type Each</code>), The line that follows becomes an error.</p>
+<div class="language-vivifire listing">
+<pre><code>Sub Add(a, b As Int32) As Int32&#10;</code></pre>
+</div>
+<p>You must change it to the code that follows:</p>
+<div class="language-vivifire listing">
+<pre><code>Sub Add(a <ins>As Int32</ins>, b As Int32) As Int32&#10;</code></pre>
+</div>
+<p>With <code>Type Each Var</code> (or <code>Type Each</code>), the line that follows is a also an error.</p>
+<div class="language-vivifire listing">
+<pre><code>Var x, y, sum As Int32&#10;</code></pre>
+</div>
+<p>You must change it to the code that follows:</p>
+<div class="language-vivifire listing">
+<pre><code>Var x <ins>As Int32</ins>, y <ins>As Int32</ins>, sum As Int32&#10;</code></pre>
 </div>
 <h3 id="Unit" class="notranslate">Unit</h3>
 <h4><code>@Option Unit Full</code></h4>
