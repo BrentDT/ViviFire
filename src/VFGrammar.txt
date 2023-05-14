@@ -2431,13 +2431,26 @@ NullCoalescingExpression (. ID(L"NullCoalescing", EXPR) .)
 .
 NumericExpression (. ID(L"Numeric", EXPR) .)
 =
+	(.
+	static const wchar_t *s_msg = L"Bad fixed constant";
+	bool bFixed = false;
+	int line = la->line, col = la->col;
+	.)
 	[
 		( "@" | fixed_literal )
-		(. if (HasWhitespace()) Err(L"Bad fixed constant"); .)
+		(.
+		bFixed = true;
+		if (HasWhitespace()) Err(line, col, s_msg);
+		.)
 	]
-	( integer_literal | real_literal )
+	(
+		integer_literal
+	|
+		real_literal
+		(. if ( (bFixed || _at_sign == la->kind) && L'!' == t->val[coco_string_length(t->val) - 1] ) Err(line, col, s_msg); .)
+	)
 	[
-		(. if (HasWhitespace()) Err(L"Bad fixed constant"); .)
+		(. if (HasWhitespace()) Err(line, col, s_msg); .)
 		"@"
 	]
 	[ IF (IsUnit()) UnitExpression ]
