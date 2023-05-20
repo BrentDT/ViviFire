@@ -26,7 +26,8 @@
 <p>Declares the name of a structure and gives its implementation.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<pre><code>Struct struct_name [ type_list ] [ Is base_type ] [ Does trait_name ]&hellip;
+<pre><code>[ modifiers ] _
+Struct struct_name [ type_list ] [ Is base_type ] [ Does trait_name ]&hellip;
     [ Where generic_constraints ]
     &hellip;
     [ data_members ]
@@ -35,6 +36,14 @@ End [ Struct ]&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
+<dt><code class="id">modifiers</code></dt>
+<dd><p>Optional modifiers:</p>
+	<ul>
+	<li><code class="at">@Deprecated</code> &ndash; See <a href="Deprecated.html">@Deprecated</a>.</li>
+	<li><code class="at">@MustUse</code> &ndash; Code that calls a procedure that returns the structure type must use the result.
+	See <a href="MustUse.html">@MustUse</a>.</li>
+	</ul>
+</dd>
 <dt><code class="id">struct_name</code></dt>
 <dd>Mandatory name for the structure.</dd>
 <dt><code class="id">type_list</code></dt>
