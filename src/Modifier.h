@@ -23,14 +23,31 @@ struct mod_type {
 	int order = 0;
 };
 
+#define NAME_STRING_PAIRS \
+	X(Abstract, L"@ABSTRACT") \
+	X(Backed, L"@BACKED") \
+	X(Const, L"@CONST") \
+	X(Deprecated, L"@DEPRECATED") \
+	X(Flags, L"@FLAGS") \
+	X(Iterator, L"@ITERATOR") \
+	X(MustUse, L"@MUSTUSE") \
+	X(Open, L"@OPEN") \
+	X(Override, L"@OVERRIDE") \
+	X(ReadOnly, L"@READONLY") \
+	X(Shared, L"@SHARED") \
+	X(SI, L"@SI") \
+	X(Strict, L"@STRICT") \
+	X(Unique, L"@UNIQUE") \
+	X(WriteOnly, L"@WRITEONLY")
+
 class Modif {
 public:
+	#define X(name, str) name,
 	enum mods {
-		Abstract, Backed, Const, Deprecated, Flags,
-		Iterator, MustUse, Open, Override, ReadOnly,
-		Shared, SI, Strict, Unique, WriteOnly,
+		NAME_STRING_PAIRS
 		LAST
 	};
+	#undef X
 	
 	enum args { SI_default, SI_Binary, SI_Large, SI_Small };
 	
@@ -39,11 +56,11 @@ public:
 	} arg;
 
 private:
+	#define X(name, str) str,
 	const wchar_t *m_name[LAST] = {
-		L"@Abstract", L"@Backed", L"@Const", L"@Deprecated", L"@Flags",
-		L"@Iterator", L"MustUse", L"@Open", L"@Override", L"@ReadOnly",
-		L"@Shared", L"@SI", L"@Strict", L"@Unique", L"@WriteOnly"
+		NAME_STRING_PAIRS
 	};
+	#undef X
 
 	mod_type m_mods[LAST];
 	int m_count = 0;
