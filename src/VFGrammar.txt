@@ -2201,6 +2201,7 @@ Modifier<int &m, ModifArg &arg> (. ID(L"Modifier", STMT) .)
 =
 	(. m = Modif::LAST; .) // Sentinal.
 	"@"
+	(. if (HasWhitespace()) Err(L"Bad modifier"); .)
 	(
 		"Const" (. m = Modif::Const; .)
 	|
@@ -2450,7 +2451,7 @@ NumericExpression (. ID(L"Numeric", EXPR) .)
 		(. if ( (bFixed || _at_sign == la->kind) && L'!' == t->val[coco_string_length(t->val) - 1] ) Err(line, col, s_msg); .)
 	)
 	[
-		(. if (HasWhitespace()) Err(line, col, s_msg); .)
+		(. if (bFixed || HasWhitespace()) Err(line, col, s_msg); .)
 		"@"
 	]
 	[ IF (IsUnit()) UnitExpression ]
