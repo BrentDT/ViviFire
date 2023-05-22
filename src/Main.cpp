@@ -88,9 +88,43 @@ void PrintMemoryInfo ( DWORD processID ) {
 }
 #endif
 
-int main (int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
+	// Make sure we are set to use Unicode.
+	// Start code adapted from <https://stackoverflow.com/questions/57955871>.
+	fflush(stdout);
+#if defined _MSC_VER
+#   pragma region WIN_UNICODE_SUPPORT_MAIN
+#endif
+#if defined _WIN32
+	// change code page to UTF-8 UNICODE
+	if ( !IsValidCodePage(CP_UTF8) || !SetConsoleCP(CP_UTF8) || !SetConsoleOutputCP(CP_UTF8) ) {
+		return GetLastError();
+	}
+	
+	// change console font - post Windows Vista only
+	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_FONT_INFOEX cfie;
+	const auto sz = sizeof(CONSOLE_FONT_INFOEX);
+	ZeroMemory(&cfie, sz);
+	cfie.cbSize = sz;
+	cfie.dwFontSize.Y = 14;
+	wcscpy_s(cfie.FaceName,
+		L"Lucida Console");
+	SetCurrentConsoleFontEx(hStdOut,
+		false,
+		&cfie);
+		
+	// change file stream translation mode
 	_setmode(_fileno(stdout), _O_U16TEXT);
-
+	_setmode(_fileno(stderr), _O_U16TEXT);
+	_setmode(_fileno(stdin), _O_U16TEXT);
+#endif
+#if defined _MSC_VER
+#   pragma endregion
+#endif
+	std::ios_base::sync_with_stdio(false);
+	// End adapted code.
+ 
 	bool separate = separate_console();
 	
 	if (!args.Parse(argc, argv)) {

@@ -52,37 +52,37 @@ bool Args::Parse (int argc, char *argv[]) {
 					break;
 				default:
 				bad_flag:
-					fprintf(stderr, "Invalid switch '%s'.\nUse '-?' for help.", arg);
+					fwprintf(stderr, L"Invalid switch '%hs'.\nUse '-?' for help.", arg);
 					return false;
 				} // switch
 			} else if (file == NULL) {
 				// Doesn't look like a switch, assume it's a filename.
 				this->file = arg;
 			} else {
-				fprintf(stderr, "Cannot specify more than one file.");
+				fwprintf(stderr, L"Cannot specify more than one file.");
 				return false;
 			} // if
 		} // for
 	}
 	// If not enough args or show_help is true, display syntax.
 	if (argc < 2 || show_help) {
-		fprintf((show_help) ? stdout : stderr,
-		"ViviFire Test Parser by Brent D. Thorn, " NOW "\n"
-		"Syntax:\n"
-		"\tvf [-m] [-t] [-v[0-3]] file\n"
-		"Switches:\n"
-		"\t-m   Display memory usage\n"
-		"\t-t   Display time elapsed\n"
-		"\t-v0  Minimal verbosity; Errors only\n"
-		"\t-v1  Displays tokens and errors (default)\n"
-		"\t-v2  Displays statements, tokens, and errors\n"
-		"\t-v3  Maximum verbosity"
+		fwprintf((show_help) ? stdout : stderr,
+		L"ViviFire Test Parser by Brent D. Thorn, " NOW "\n"
+		L"Syntax:\n"
+		L"\tvf [-m] [-t] [-v[0-3]] file\n"
+		L"Switches:\n"
+		L"\t-m   Display memory usage\n"
+		L"\t-t   Display time elapsed\n"
+		L"\t-v0  Minimal verbosity; Errors only\n"
+		L"\t-v1  Displays tokens and errors (default)\n"
+		L"\t-v2  Displays statements, tokens, and errors\n"
+		L"\t-v3  Maximum verbosity"
 		);
 		return false;
 	}
 	// Just avout done, but make sure we've got a file.
 	if (file == NULL) {
-		fprintf(stderr, "No file specified.");
+		fwprintf(stderr, L"No file specified.");
 		return false;
 	}
 	return true;
