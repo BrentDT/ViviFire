@@ -2430,7 +2430,7 @@ NullCoalescingExpression (. ID(L"NullCoalescing", EXPR) .)
 =
 	TypeExpression [ "|?" NullCoalescingExpression ]
 .
-NumericExpression (. ID(L"Numeric", EXPR) .)
+NumericExpression<bool bMixedUnit> (. ID(L"Numeric", EXPR) .)
 =
 	(.
 	static const wchar_t *s_msg = L"Bad fixed constant";
@@ -2454,7 +2454,10 @@ NumericExpression (. ID(L"Numeric", EXPR) .)
 		(. if (bFixed || HasWhitespace()) Err(line, col, s_msg); .)
 		"@"
 	]
-	[ IF (IsUnit()) UnitExpression ]
+	[ IF (bMixedUnit || IsUnit())
+		UnitOfMeasure
+		[ NumericExpression<true> ]
+	]
 .
 /*O*/
 ObjectName (. ID(L"ObjectName", STMT) .)
@@ -2506,7 +2509,7 @@ PrimaryExpression (. ID(L"Primary", EXPR) .)
 =
 	( char_literal
 	| integer_constant
-	| NumericExpression
+	| NumericExpression<false>
 	| DateTimeExpression
 	|
 		(. std::wstring s; .)
@@ -3082,10 +3085,6 @@ UnitAlias (. ID(L"UnitAlias", STMT) .)
 		(. if (number > 0) SemErr(L"Name cannot have a plural part after 1 or 2"); .)
 		identifier
 	]
-.
-UnitExpression (. ID(L"Unit", EXPR) .)
-=
-	UnitOfMeasure  { ( integer_literal | real_literal ) UnitOfMeasure  }
 .
 UnitOfMeasure (. ID(L"UnitOfMeasure", STMT) .)
 =
