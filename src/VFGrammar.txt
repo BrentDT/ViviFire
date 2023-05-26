@@ -348,16 +348,19 @@ void Optional(int kind, option_type nOption = OPTION_DEFAULT) {
 	}
 }
 
-class param_type {
+class param_validator {
 	Parser *m_parser;
 	int m_parent;
+	int m_count = 0;
 	bool m_byref = false;
 	int m_optionals = 0;
 public:
-	param_type(Parser *parser, int parent): m_parser(parser), m_parent(parent) {}
-	void modifier(int kind = -1) {
-		switch (kind) {
-		case -1:
+	param_validator(Parser *parser, int parent): m_parser(parser), m_parent(parent) {}
+	void add(int modif = 0) {
+		m_count++;
+		if (_Set == m_parent && 2 == m_count) m_parser->SemErr(L"SET must have one parameter");
+		switch (modif) {
+		case 0:
 			m_byref = false;  // by value
 			break;
 		case _ByRef:
@@ -370,10 +373,13 @@ public:
 			break;
 		default:
 			#if defined(DEBUG)
-			m_parser->errors->Exception(L"Bad kind in param_type::modifier");
+			m_parser->errors->Exception(L"Bad kind in param_validator::modifier");
 			#endif
 			break;
 		}
+	}
+	void none() const {
+		if (_Set == m_parent) m_parser->SemErr(L"SET must have one parameter");
 	}
 	bool optional() const { return (m_optionals != 0); }
 };
@@ -1682,15 +1688,17 @@ EnclosedExpression (. ID(L"Enclosed", EXPR) .)
 .
 EnclosedParameterList<int parent> (. ID(L"EnclosedParameterList", STMT) .)
 =
-	(. param_type param(this, parent); .)
+	(. param_validator param(this, parent); .)
 	"(" [ OptionalNewline ]
-	[
+	(
 		FormalParameter<param>
 		{
 			WEAK comma [ OptionalNewline ]
 			FormalParameter<param>
 		}
-	]
+	|
+		(. param.none(); .)
+	)
 	")"
 .
 EnumMember (. ID(L"EnumMember", STMT) .)
@@ -1833,10 +1841,10 @@ FloatingPointType<int &tkn> (. ID(L"FloatingPointType", STMT) .)
 	(. tkn = la->kind; .)
 	( "Real32" | "Real64" | "Real128" )
 .
-FormalParameter<param_type &param> (. ID(L"FormalParameter", STMT) .)
+FormalParameter<param_validator &param> (. ID(L"FormalParameter", STMT) .)
 =
 	( FormalParameterModifier<param>
-	| (. param.modifier(); .)
+	| (. param.add(); .)
 	)
 	Name
 	[ '(' [ Rank ] ')' ]
@@ -1849,10 +1857,12 @@ FormalParameterList<int parent> (. ID(L"FormalParameterList", STMT) .)
 =
 	( EnclosedParameterList<parent> | UnenclosedParameterList<parent> )
 .
-FormalParameterModifier<param_type &param> (. ID(L"FormalParameterModifier", STMT) .)
+FormalParameterModifier<param_validator &param> (. ID(L"FormalParameterModifier", STMT) .)
 =
-	( "ByRef"     (. param.modifier(_ByRef); .)
-	| "Optional"  (. param.modifier(_Optional); .)
+	(
+		"ByRef"     (. param.add(_ByRef); .)
+	|
+		"Optional"  (. param.add(_Optional); .)
 	)
 .
 ForStatement (. ID(L"ForStatement", STMT) .)
@@ -2600,7 +2610,13 @@ PropertyStatement<Modif &mods> (. ID(L"PropertyStatement", STMT) .)
 			.)
 		]
 		[
-			"Set" [ FormalParameterList<_Set> ] SyncNewline<s_name>  //TODO: only one param
+			"Set"
+			(
+				FormalParameterList<_Set>
+			|
+				(. SemErr(L"SET must have one parameter"); .)
+			)
+			SyncNewline<s_name> 
 			(.
 			if (bIterator) context.push_back(_Yield);
 			context.push_back(_Property);
@@ -3064,7 +3080,7 @@ UnenclosedArgumentList (. ID(L"UnenclosedArgumentList", STMT) .)
 .
 UnenclosedParameterList<int parent> (. ID(L"UnenclosedParameterList", STMT) .)
 =
-	(. param_type param(this, parent); .)
+	(. param_validator param(this, parent); .)
 	FormalParameter<param>
 	{
 		WEAK comma [ OptionalNewline ]
