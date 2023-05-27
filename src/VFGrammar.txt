@@ -954,8 +954,8 @@ identifier =
 	( alpha{["_"]alnum}
 	// Use keywords, eg `Class`
 	| "`"alpha alnum{alnum}"`"
-	// Prevent misparsing "obj!name" as typed_identifier.
-	| alpha{["_"]alnum} CONTEXT ("!"alpha)
+	// Prevent misparsing "@modif@modif" & "obj!name" as typed_identifier.
+	| alpha{["_"]alnum} CONTEXT (("!"|"@")alpha)
 	).
 
 nullable_identifier =
