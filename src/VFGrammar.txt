@@ -2598,7 +2598,9 @@ PropertyStatement<Modif &mods> (. ID(L"PropertyStatement", STMT) .)
 	PropertySignature<mods, line, col>
 	[ IF (la->kind == _Get || la->kind == _Set)
 		[
-			"Get" Newline
+			"Get"
+			(. if (bWriteOnly) SemErr(L"Cannot have GET with @WriteOnly"); .)
+			Newline
 			(.
 			if (bIterator) context.push_back(_Yield);
 			context.push_back(_Property);
@@ -2611,21 +2613,16 @@ PropertyStatement<Modif &mods> (. ID(L"PropertyStatement", STMT) .)
 		]
 		[
 			"Set"
+			(. if (bIterator || bReadOnly) SemErr(L"Cannot have SET with @Iterator or @ReadOnly"); .)
 			(
 				FormalParameterList<_Set>
 			|
 				(. SemErr(L"SET must have one parameter"); .)
 			)
 			SyncNewline<s_name> 
-			(.
-			if (bIterator) context.push_back(_Yield);
-			context.push_back(_Property);
-			.)
+			(. context.push_back(_Property); .)
 			{ Statement }
-			(.
-			context.pop_back();
-			if (bIterator) context.pop_back();
-			.)
+			(. context.pop_back(); .)
 		]
 	(. if (la->kind != _End) Err(line, col, L"PROPERTY without END"); .)
 		"End"
