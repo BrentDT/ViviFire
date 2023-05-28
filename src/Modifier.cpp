@@ -72,4 +72,9 @@ void Modif::validate() const {
 	if (m_mods[ReadOnly].present && m_mods[WriteOnly].present) {
 		m_parser->Err(m_mods[WriteOnly].line, m_mods[WriteOnly].col, L"Cannot use @ReadOnly and @WriteOnly together");
 	}
+
+	// Iterator v WriteOnly
+	if (m_mods[Iterator].present && m_mods[WriteOnly].present) {
+		m_parser->Err(m_mods[WriteOnly].line, m_mods[WriteOnly].col, L"Cannot use @Iterator and @WriteOnly together");
+	}
 }
