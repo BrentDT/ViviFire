@@ -2285,25 +2285,33 @@ ModifiersClause<Modif &mods> (. ID(L"ModifiersClause", STMT) .)
 .
 Module (. ID(L"Module", STMT) .)
 =
-	(. bool bProcEntry = false; .)
+	(. int module_type = _Program; .)
 	[ Newline ]
-	(
-		"Program"
-		(.
-			module = new AST::Module(AST::Module::Program, t->line, t->col);
-			context.push_back(_Program);
-		.)
-		[ "=" (. bProcEntry = module->procStart = true; .) ]
-		identifier (. module->Name(t->val); .)
-	|
+	[
 		"Library"
 		(.
-			module = new AST::Module(AST::Module::Library, t->line, t->col);
-			context.push_back(_Library);
+		module_type = _Library;
+		module = new AST::Module(AST::Module::Library, t->line, t->col);
+		context.push_back(_Library);
 		.)
 		QualifiedName<_identifier>
-	)
-	SyncNewline<s_name>
+		SyncNewline<s_name>
+	|
+		"Program"
+		(.
+		module = new AST::Module(AST::Module::Program, t->line, t->col);
+		context.push_back(_Program);
+		.)
+		[ "=" (. module_type = _Sub; module->procStart = true; .) ]
+		identifier (. module->Name(t->val); .)
+		SyncNewline<s_name>
+	]
+	(.
+	if (module == nullptr) { // Default is program module.
+		module = new AST::Module(AST::Module::Program, la->line, la->col); // Use 'la' because 't' can be the dummy token.
+		context.push_back(_Program);
+	}
+	.)
 	{ IF (la->kind == _Where)
 		WhereStatement
 	}
@@ -2316,7 +2324,7 @@ Module (. ID(L"Module", STMT) .)
 		(
 			ModuleMember<mods>
 		|
-			ModuleStatement<bProcEntry, mods>
+			ModuleStatement<(module_type == _Sub), mods>
 		)
 	}
 .
