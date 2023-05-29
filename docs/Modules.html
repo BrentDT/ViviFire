@@ -24,42 +24,45 @@
 <p>Declares the name of a module, and identifies the variables, procedures, and events that it contains.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<pre><code>{ Program [ = ] module_name
-| Library module_name }
+<pre><code>[ Program [ = ] program_name
+| Library library_name ]
 
-[ Where attribute ]
+[ Where attribute = constant ]
 &hellip;
 
 [ statements ]&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
-<dt><code class="id">module_name</code></dt>
-<dd>Mandatory name for the module.</dd>
-<dd>When used with <code class="kw">Program =</code>, it specifies the name of the procedure that starts the program.</dd>
+<dt><code class="kw">Program</code></dt>
+<dd>Optional keyword that identifies the start of a program module.
+If you do not supply <code class="kw">Program</code> or <code class="kw">Library</code>, the default is <code class="kw">Program</code>.
+Then the program immediately runs the code in <code class="id">statements</code>.</dd>
+<dt><code class="id">program_name</code></dt>
+<dd>Mandatory after <code class="kw">Program</code>, the name of the program.
+ViviFire makes the program file with this name.
+If you do not use <code class="kw">Program</code> or <code class="kw">Library</code>, the name of the program is related to the name of the module file.</dd>
+<dd>If you put the operator <code class="op">=</code> before it, <code class="id">program_name</code> specifies the procedure that runs the program.</dd>
+<dt><code class="id">library_name</code></dt>
+<dd>Mandatory after <code class="kw">Library</code>, the name of the library.
+It can have one or more names with a dot (<code class="op">.</code>) between each.
+The sequence of names before the last one specify its namespace.</dd>
 <dt><code class="kw">Where</code></dt>
 <dd>Optional keyword you can use again and again.</dd>
 <dt><code class="id">attribute</code></dt>
-<dd>Necessary after <code class="kw">Where.</code>
-	<div class="language-vivifire syntax">
-	<h3>Attribute</h3>
-	<pre><code>attrib_name = { string_literal | version_literal }&#10;</code></pre>
-	</div>
-	<dl class="parts">
-	<dt><code class="id">attrib_name</code></dt>
-	<dd>A name.</dd>
-	<dt><code class="id">string_literal</code></dt>
-	<dd>Text between quotation marks, for example, <code>&quot;example text&quot;</code>.</dd>
-	<dt><code class="id">version_literal</code></dt>
-	<dd>Three or four groups of Decimal numbers with a dot (<code class="op">.</code>) between each group, for example, <code>1.2.3</code> or <code>12.34.56.789</code>.</dd>
-	</dl>
-</dd>
+<dd>Mandatory after <code class="kw">Where.</code>, the name of a module attribute.
+module attributes are pieces of metadata that you supply.
+You can see some attributes in the file properties of the program file.
+But you can also use them to select one library from several with the same name.</dd>
+<dt><code class="id">constant</code></dt>
+<dd>Mandatory literal value <!-- or constant expression --> related to an attribute.
+It can be a string or a version number.</dd>
 <dt><code class="id">statements</code></dt>
-<dd>Optional declarations and executable statements.</dd>
+<dd>Optional declarations and statements that can run.</dd>
 </dl>
 <h2>Instructions</h2>
-<p>After optional comments, one of the keywords <code class="kw">Program</code> or <code class="kw">Library</code> must start the code in a source file.
-The <dfn>program module</dfn>, which starts with <code class="kw">Program</code>, specifies where execution of the program starts.
+<p>After optional comments, one of the keywords <code class="kw">Program</code> or <code class="kw">Library</code> can start the code in a source file.
+The <dfn>program module</dfn>, which can start with <code class="kw">Program</code>, specifies where the program starts to run.
 A <dfn>library module</dfn>, which starts with <code class="kw">Library</code>, specifies code that you can only use from other program and library modules.</p>
 <h2>Examples</h2>
 <p>TODO</p>
