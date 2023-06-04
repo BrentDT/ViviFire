@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) {
 #if defined _MSC_VER
 #   pragma endregion
 #endif
-	std::ios_base::sync_with_stdio(false);
+	///std::ios_base::sync_with_stdio(false);
 	// End adapted code.
  
 	bool separate = separate_console();
