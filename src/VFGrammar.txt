@@ -1260,7 +1260,7 @@ CallStatement (. ID(L"CallStatement", STMT) .)
 		[ ArgumentList ]
 	|
 		SimpleExpression
-		///[ UnenclosedArgumentList ]///LL CONFLICTS
+		(. if (la->kind != _line_break && IsIdentifier(t->kind)) UnenclosedArgumentList(); .) //HACK: Hidden from grammar checker to prevent several warnings. Condition is possibly not sufficient.
 	)
 .
 CaseClause<case_type &clause> (. ID(L"CaseClause", STMT) .)
