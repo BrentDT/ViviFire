@@ -1244,21 +1244,24 @@ CallOrNew<int which, Modif *mods> (. ID(L"CallOrNew", STMT) .)
 CallStatement (. ID(L"CallStatement", STMT) .)
 =
 	"Call"
-	( QualifiedName<0>
-	|
+	( IF (la->kind == _Base && scanner->Peek()->kind != _dot)
 		"Base"
 		(.
 		if (std::find(context.rbegin(), context.rend(), _Constructor) == context.rend())
 		    SemErr(L"CALL BASE is available only in a CONSTRUCTOR");
 		.)
+		[ ArgumentList ]
 	|
 		"Constructor"
 		(.
 		if (std::find(context.rbegin(), context.rend(), _Constructor) == context.rend())
 		    SemErr(L"CALL CONSTRUCTOR is available only in a CONSTRUCTOR");
 		.)
+		[ ArgumentList ]
+	|
+		SimpleExpression
+		///[ UnenclosedArgumentList ]///LL CONFLICTS
 	)
-	[ ArgumentList ]
 .
 CaseClause<case_type &clause> (. ID(L"CaseClause", STMT) .)
 =
@@ -1534,7 +1537,15 @@ DeclareSignature<bool isAlias> (. ID(L"DeclareSignature", STMT) .)
 =
 	( "Function" | "Sub" )
 	Name
-	[ "Is" ( string_literal | QualifiedName<0> ) ]
+	[
+		"Is"
+		(. std::wstring qn; .)
+		(
+			string_literal (. qn += t->val; .)
+		|
+			QualifiedName<qn, 0>
+		)
+	]
 	[ DeclareParameterList ]
 .
 DeclareStatement<Modif &mods> (. ID(L"DeclareStatement", STMT) .)
@@ -1760,6 +1771,11 @@ EnumStatement<Modif &mods> (. ID(L"EnumStatement", STMT) .)
 	(. Optional(_Enum); .)
 	Newline
 .
+EventName (. ID(L"EventName", STMT) .)
+=
+	( identifier | "Base" | "Self" )
+	dot identifier
+.
 EventStatement (. ID(L"EventStatement", STMT) .)
 =
 	(. bool generic = false; .)
@@ -1898,7 +1914,7 @@ FunctionSignature<Modif &mods, int &line, int &col, bool &bodied, bool &generic>
 		)
 		[ WhereClause<_Function, generic> ]
 	|
-		"Does" QualifiedName<0>
+		"Does" identifier "." Name
 		(. bodied = false; .)
 	)
 	SyncNewline<s_name>
@@ -2040,7 +2056,7 @@ InUnitClause (. ID(L"InUnitClause", STMT) .)
 .
 IsExpression (. ID(L"IsExpression", EXPR) .)
 =
-	"Is" ( SimpleExpression | "Object" )
+	"Is" ( SimpleNonCallExpression | "Object" )
 .
 /*J*/
 /*K*/
@@ -2293,8 +2309,10 @@ Module (. ID(L"Module", STMT) .)
 		module_type = _Library;
 		module = new AST::Module(AST::Module::Library, t->line, t->col);
 		context.push_back(_Library);
+
+	std::wstring qn;
 		.)
-		QualifiedName<_identifier>
+		QualifiedName<qn, _identifier>
 		SyncNewline<s_name>
 	|
 		"Program"
@@ -2397,7 +2415,7 @@ NewBlockStatement (. ID(L"NewBlockStatement", STMT) .)
 	[
 		"Call"
 		[
-			QualifiedName<0> // Default is "Add".
+			SimpleNonCallExpression // Default is "Add".
 		]
 		[
 			CollectionInitializer
@@ -2639,12 +2657,17 @@ PropertyStatement<Modif &mods> (. ID(L"PropertyStatement", STMT) .)
 	]
 .
 /*Q*/
-QualifiedName<int limit> (. ID(L"QualifiedName", STMT) .)
+QualifiedName<std::wstring &qn, int limit> (. ID(L"QualifiedName", STMT) .)
 =
 	(. const wchar_t *msg = L"Namespace or type name expected"; .)
 	Name
-		(. if ((limit == _identifier || la->kind == _dot) && t->kind != _identifier) SemErr(msg); .)
-	{ dot Name  
+	(.
+	qn += t->val;
+	if ((limit == _identifier || la->kind == _dot) && t->kind != _identifier) SemErr(msg);
+	.)
+	{
+		dot  (. qn += L'.'; .)
+		Name   (. qn += t->val; .)
 		(. if (limit == _identifier && t->kind != _identifier) SemErr(msg); .)
 	}
 .
@@ -2672,7 +2695,7 @@ Rank (. ID(L"Rank", STMT) .)
 .
 ReDimClause (. ID(L"ReDimClause", STMT) .)
 =
-	QualifiedName<0>
+	SimpleNonCallExpression
 	"(" EnclosedExpression
 	{ comma EnclosedExpression }
 	")"
@@ -2698,13 +2721,21 @@ RequireLogic (. ID(L"RequireLogic", STMT) .)
 .
 RequireStatement (. ID(L"RequireStatement", STMT) .)
 =
+	(. std::wstring qn; .)
 	"Require"
-	QualifiedName<_identifier> [ "As" identifier ]
-	( { comma QualifiedName<_identifier> [ "As" identifier ] }
-	| "Where" RequireLogic
+	QualifiedName<qn, _identifier> [ "As" identifier ]
+	(
+		{ WEAK comma
+		(. qn.clear(); .)
+			QualifiedName<qn, _identifier>
+			[ "As" identifier ]
+		}
+		(. if (_Where == la->kind) Err(la->line, la->col, L"Cannot use WHERE after a list"); .)
+	|
+		"Where" RequireLogic
 	)
 	SyncNewline<s_name>
-	(. if (la->kind == _Where) Err(la->line, la->col, L"WHERE clause must be on the same logical line as REQUIRE"); .)
+	(. if (_Where == la->kind) Err(la->line, la->col, L"WHERE must be on the same logical line as REQUIRE"); .)
 .
 ReturnStatement (. ID(L"ReturnStatement", STMT) .)
 =
@@ -2742,7 +2773,7 @@ SelectStatement<Modif &mods> (. ID(L"SelectStatement", STMT) .)
 .
 SimpleExpression (. ID(L"Simple", EXPR) .)
 =
-	// Related: IdentifierStatement
+	// Related: IdentifierStatement, SimpleNonCallExpression.
 	PrimaryExpression
 	{
 		( dot   // Member access
@@ -2752,6 +2783,19 @@ SimpleExpression (. ID(L"Simple", EXPR) .)
 		Name [ TypeArgumentList ]
 	| "!" Name  // Dictionary access
 	| EnclosedArgumentList
+	}
+.
+SimpleNonCallExpression (. ID(L"SimpleNonCall", EXPR) .)
+=
+	// Related: IdentifierStatement, SimpleExpression.
+	PrimaryExpression
+	{
+		( dot   // Member access
+		| ".?"  // Null-conditional member access (eg "#obj.?proc?")
+		| "??"  // Method call with null-conditional member access (eg "#proc1??proc2?")
+		)
+		Name [ TypeArgumentList ]
+	| "!" Name  // Dictionary access
 	}
 .
 SimpleStatement (. ID(L"SimpleStatement", STMT) .)
@@ -2889,7 +2933,7 @@ SubSignature<Modif &mods, int &line, int &col, bool &bGeneric> (. ID(L"SubSignat
 	[
 		"Handles"
 		(. if (bReturns) SemErr(L"Event handlers cannot have a return type"); .)
-		QualifiedName<_identifier>
+		EventName
 	]
 	[
 		WhereClause<_Sub, bGeneric>
@@ -3143,7 +3187,9 @@ UnitStatement<Modif &mods> (. ID(L"UnitStatement", STMT) .)
 .
 UserType (. ID(L"UserType", STMT) .)
 =
-	QualifiedName<_identifier> [ TypeArgumentList ]
+	(. std::wstring name; .)
+	QualifiedName<name, _identifier>
+	[ TypeArgumentList ]
 .
 /*V*/
 ValueType (. ID(L"ValueType", STMT) .)
