@@ -15,6 +15,7 @@
 #include <cwctype>
 #include <map>
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <time.h>
 #include <vector>
@@ -425,12 +426,10 @@ std::wstring StringValue(wchar_t *s) {
 				else if (*p == L'_'); // Ignore underscore.
 				else goto named_constant;
 			}
-			try {
-				std::wstring res(1, (wchar_t)std::stoi(ws, nullptr, 2));
-				return res;
-			} catch (...) {
-				//TODO: out of range
-			}
+			int ch = std::stoi(ws, nullptr, 2);
+			if (ch > WCHAR_MAX) throw new std::out_of_range("Character code out of range");
+			std::wstring res(1, (wchar_t)ch);
+			return res;
 		}
 		case L'O': case L'o': { // Octal $O...
 			std::wstring ws;
@@ -439,12 +438,10 @@ std::wstring StringValue(wchar_t *s) {
 				else if (*p == L'_'); // Ignore underscore.
 				else goto named_constant;
 			}
-			try {
-				std::wstring res(1, (wchar_t)std::stoi(ws, nullptr, 8));
-				return res;
-			} catch (...) {
-				//TODO: out of range
-			}
+			int ch = std::stoi(ws, nullptr, 8);
+			if (ch > WCHAR_MAX) throw new std::out_of_range("Character code out of range");
+			std::wstring res(1, (wchar_t)ch);
+			return res;
 		}
 		case L'U': case L'u': case L'X': case L'x': { // Hexadecimal $U... or $X...
 			std::wstring ws;
@@ -453,12 +450,10 @@ std::wstring StringValue(wchar_t *s) {
 				else if (*p == L'_'); // Ignore underscore.
 				else goto named_constant;
 			}
-			try {
-				std::wstring res(1, (wchar_t)std::stoi(ws, nullptr, 16));
-				return res;
-			} catch (...) {
-				//TODO: out of range
-			}
+			int ch = std::stoi(ws, nullptr, 16);
+			if (ch > WCHAR_MAX) throw new std::out_of_range("Character code out of range");
+			std::wstring res(1, (wchar_t)ch);
+			return res;
 		}
 		default:
 		if (s[1] >= L'0' && s[1] <= L'9') {
@@ -468,12 +463,10 @@ std::wstring StringValue(wchar_t *s) {
 				else if (*p == L'_'); // Ignore underscore.
 				else goto named_constant;
 			}
-			try {
-				std::wstring res(1, (wchar_t)std::stoi(ws, nullptr, 10));
-				return res;
-			} catch (...) {
-				//TODO: out of range
-			}
+			int ch = std::stoi(ws, nullptr, 10);
+			if (ch > WCHAR_MAX) throw new std::out_of_range("Character code out of range");
+			std::wstring res(1, (wchar_t)ch);
+			return res;
 		}
 		named_constant:
 			return NamedString(s);
@@ -1260,9 +1253,7 @@ CallStatement (. ID(L"CallStatement", STMT) .)
 		[ ArgumentList ]
 	|
 		SimpleExpression
-
-		//HACK: Hidden from grammar checker to prevent several warnings. Condition is possibly not sufficient.
-		(. if (la->kind != _line_break && (IsIdentifier(t->kind) || t->kind == _right_bracket)) UnenclosedArgumentList(); .)
+		(. if (IsIdentifier(t->kind) && la->kind != _line_break) UnenclosedArgumentList(); .)
 	)
 .
 CaseClause<case_type &clause> (. ID(L"CaseClause", STMT) .)
@@ -2835,7 +2826,13 @@ Statement (. ID(L"Statement", STMT) .)
 StringExpression<std::wstring &res> (. ID(L"String", EXPR) .)
 =
 	(. const std::wstring sep(S_PATH_SEP); .)
-	( string_literal | string_constant ) (. res += StringValue(t->val); .)
+	( string_literal | string_constant )
+	(. try {
+	    res += StringValue(t->val);
+	} catch (std::out_of_range &e) {
+	    res += L"ERR";
+	}
+	.)
 	{ IF (la->kind == _string_constant || la->kind == _string_literal || la->kind == _slash || la->kind == _backslash)
 		[
 			"/"
@@ -2846,7 +2843,13 @@ StringExpression<std::wstring &res> (. ID(L"String", EXPR) .)
 			(. if (option.String_bk_slash == TERNARY2) SemErr(L"Must use slash because of @OPTION"); .)
 			(. res += sep; .)
 		]
-		( string_literal | string_constant ) (. res += StringValue(t->val); .)
+		( string_literal | string_constant )
+		(. try {
+		    res += StringValue(t->val);
+		} catch (std::out_of_range &e) {
+		    res += L"ERR";
+		}
+		.)
 	}
 	(. if (args.v >= Args::STMT) wprintf(L"\n[%ls]", res.c_str()); .) //TEMP
 .
