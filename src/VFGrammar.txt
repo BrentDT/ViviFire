@@ -693,6 +693,18 @@ bool IsAssignmentOp() {
 ///	return false;
 ///}
 
+bool IsDateTime() {
+	if (_time_literal == la->kind) return true;
+	if (_integer_literal == la->kind && la->val[0] != L'%') {
+		int sep = scanner->Peek()->kind;
+		if (sep != _slash && sep != _minus) return false;
+		if (_integer_literal == scanner->Peek()->kind && sep == scanner->Peek()->kind && _integer_literal == scanner->Peek()->kind) {
+			return true;
+		}
+	}
+	return false;
+}
+
 bool IsDeclareParameterList() {
 	if (la->kind == _left_paren) {
 		int k = scanner->Peek()->kind;
@@ -871,14 +883,6 @@ char_literal =
 
 malformed_char_literal =
 	'`'[char].
-
-date_literal =
-	dec{dec}
-	( "/"dec{dec}"/"dec{dec}  // yyyy/mm/dd
-	| "-"dec{dec}"-"dec{dec}  // yyyy-mm-dd
-	).
-
-//TODO: malformed_date_literal
 
 fixed_literal = ( '\u00a4' /*currency sign*/ | "@" currency ).
 
@@ -1385,7 +1389,7 @@ ConstantDeclarator (. ID(L"ConstantDeclarator", STMT) .)
 .
 ConstantValueError (. ID(L"ConstantValueError", STMT) .)
 =
-	( char_literal | date_literal | fixed_literal | integer_constant | integer_literal | null_literal
+	( char_literal | fixed_literal | integer_constant | integer_literal | null_literal
 	| real_literal | string_constant | string_literal | time_literal | version_literal
 	)
 	(. SemErr(L"Cannot use a constant value here"); .)
@@ -1475,8 +1479,13 @@ ConvertibleType (. ID(L"ConvertibleType", STMT) .)
 /*D*/
 DateTimeExpression (. ID(L"DateTime", EXPR) .)
 =
-	( date_literal [ time_literal ]
-	| time_literal
+	(
+		integer_literal
+		( "/" | "-" ) integer_literal
+		( "/" | "-" ) integer_literal
+		[ time_literal ]
+	|
+		time_literal
 	)
 .
 DeclarationStatement<Modif &mods> (. ID(L"DeclarationStatement", STMT) .)
@@ -2473,7 +2482,9 @@ NumericExpression<bool bMixedUnit> (. ID(L"Numeric", EXPR) .)
 		if (HasWhitespace()) Err(line, col, s_msg);
 		.)
 	]
-	(
+	( IF (IsDateTime())
+		DateTimeExpression
+	|
 		integer_literal
 	|
 		real_literal
@@ -2539,7 +2550,6 @@ PrimaryExpression (. ID(L"Primary", EXPR) .)
 	( char_literal
 	| integer_constant
 	| NumericExpression<false>
-	| DateTimeExpression
 	|
 		(. std::wstring s; .)
 		StringExpression<s>
