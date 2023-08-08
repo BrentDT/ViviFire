@@ -695,13 +695,14 @@ bool IsAssignmentOp() {
 
 bool IsDateTime() {
 	if (_time_literal == la->kind) return true;
-	if (_integer_literal == la->kind && la->val[0] != L'%') {
+	if (_integer_literal == la->kind && la->val[0] != L'%') { // Decimal literal.
 		int sep = scanner->Peek()->kind;
 		if (sep != _slash && sep != _minus) return false;
 		if (_integer_literal == scanner->Peek()->kind && sep == scanner->Peek()->kind && _integer_literal == scanner->Peek()->kind) {
 			return true;
 		}
 	}
+	scanner->ResetPeek();
 	return false;
 }
 
@@ -712,6 +713,7 @@ bool IsDeclareParameterList() {
 		if (k == _Optional) k = scanner->Peek()->kind;
 		return (k == _integer_literal);
 	}
+	scanner->ResetPeek();
 	return false;
 }
 
@@ -734,7 +736,7 @@ bool IsNamedArgument() {
 		    L"The argument does an unusual test for equality (=). Possibly you want a named argument (:=).");
 		return false;
 	}
-
+	scanner->ResetPeek();
 	return (_colon_equals == next);
 }
 
@@ -757,7 +759,11 @@ bool IsPropertySelf() {
 }
 
 bool IsPropertyWithParam() {
-	return (IsIdentifier(la->kind) && scanner->Peek()->kind == _left_paren && IsIdentifier(scanner->Peek()->kind));
+	if (IsIdentifier(la->kind) && scanner->Peek()->kind == _left_paren && IsIdentifier(scanner->Peek()->kind)) {
+		return true;
+	}
+	scanner->ResetPeek();
+	return false;
 	// FIXME: Possible param modifier?
 }
 
