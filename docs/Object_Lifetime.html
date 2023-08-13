@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Object Lifetime - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Object_Lifetime.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Programming_Guide.html">Programming Guide</a></li>
+<li><a href="Language_Features.html">Language Features</a></li>
+<li><a rel="parent" href="Objects_and_Classes.html">Objects and Classes</a></li>
+</ul>
+</nav>
+<main id="stub">
+<h1 id="top">Object Lifetime</h1>
+<p>An object (an instance of a Class) is made with Statements that use one of the keywords <span Class="kws"><code>Dim</code>, <code>Var</code>, or <code>New</code></span>.
+Frequently Objects must do some tasks and/or have some initial state before they can be used.
+Examples of tasks are to open files and to connect to databases.
+ViviFire lets you control how new Objects get initialized with special procedures known as constructors.</p>
+<p>When an Object goes out of scope, it gets erased by the runtime.
+ViviFire lets you control how Objects are erased with special procedures known as Destructors.</p>
+<h2>Using constructors and destructors</h2>
+<p>constructors and destructors control how Objects are made and erased.
+Constructors start with the keyword <code Class="kw">Constructor</code>.
+And destructors start with the keyword <code Class="kw">Destructor</code>. </p>
+<h3><code>constructor</code> procedures</h3>
+<p>TODO</p>
+<h3><code>destructor</code> procedures</h3>
+<p>TODO</p>
+<h3><code>constructor</code> and <code>destructor</code> procedures in a Class hierarchy</h3>
+<p>TODO</p>
+<h2>Garbage Collection</h2>
+<p>TODO</p>
+<h2>See also</h2>
+<ul Class="articles">
+<li><a href="Call_Base_Statement.html">Call Base Statement</a></li>
+<li><a href="Call_Constructor_Statement.html">Call Constructor Statement</a></li>
+<li><a href="Constructor_Statement.html">Constructor Statement</a></li>
+<li><a href="Destructor_Statement.html">Destructor Statement</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>
