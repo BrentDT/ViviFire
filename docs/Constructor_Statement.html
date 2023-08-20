@@ -26,30 +26,36 @@
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <h3>Usual construct</h3>
-<pre><code>Constructor [ parameter_list ]
+<pre><code>[ @Deprecated ] _
+Constructor [ parameter_list ]
     [ statements ]
 End [ Constructor ]&#10;</code></pre>
 <h3>Var construct</h3>
-<pre><code>Constructor { Dim | Var }
-    statements
+<pre><code>[ @Deprecated ] _
+Constructor { Dim | Var } parameter_list
+    [ statements ]
 End [ Constructor ]&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
+<dt><code class="at">@Deprecated</code></dt>
+<dd>Optional modifier.
+See <a href="Deprecated.html">@Deprecated</a> for more information.</dd>
 <dt><code class="kw">Dim</code></dt>
 <dd>Used with the &ldquo;Var construct&rdquo;.
-Specifies that variables declared in <code>statements</code> are (1) parameters and (2) members of the parent construct.
+Specifies that variables declared in <code>parameter_list</code> are members of the parent construct.
 The arguments that you supply automatically assign values to the members.
-Such a constructor must come before usual constructors.</dd>
+Such constructors must come before usual constructors.</dd>
 <dt><code class="kw">Var</code></dt>
 <dd>Same as <code class="kw">Dim</code>.</dd>
 <dt><code class="id">parameter_list</code></dt>
 <dd>Optional in the usual construct.
 See <a href="Parameter_List.html">Parameter List</a> for more information.</dd>
-<dd>Not permitted in the Var construct.</dd>
+<dd>Mandatory in the Var construct.
+The parameters become members of the parent construct.
+You can supply a default value with the operator &laquo;<code Class="op">=</code>&raquo;.</dd>
 <dt><code class="id">statements</code></dt>
-<dd>Optional in the usual construct &ndash; Executable statements.</dd>
-<dd>Mandatory in the Var construct &ndash; One or more variable declaration statements.</dd>
+<dd>Optional statements.</dd>
 <dt><code class="kw">End</code></dt>
 <dd>Completes the statement.
 You can also use <code class="kw">End Constructor</code>.</dd>
@@ -65,11 +71,13 @@ They come after a possible data section and before a possible destructor or othe
 Statements you put in this section execute before <code class="kw">Constructor</code>.</p>
 <h3>Var construct</h3>
 <p>Constructors with the <dfn>Var construct</dfn> start with the line <code class="kw">Constructor Var</code> or <code class="kw">Constructor Dim</code>.
-Such constructors can contain only variable declaration statements.
-Each variable declaration also becomes a parameter to the constructor.
+Such constructors must have one or more parameters.
+Each parameter becomes a field of its parent object.
 You must put all such constructors before all of the usual constructors.</p>
-<p>If you make a class with one or more constructors with the Var construct, you must call all of them from all other constructors.
-You use the statement <code class="kw">Call Constructor</code>.</p>
+<p>If you make an object with one or more constructors with the Var construct, ViviFire automatically calls all other such constructors with default values.
+You can specify different default values with parameter initializers.
+You do this with the operator <code Class="op">=</code> written between the parameter declarator and a constant value.
+Alternatively, you can use the statement <code class="kw">Call Constructor</code>.</p>
 <h3>Permitted parents</h3>
 <ul class="articles">
 <li><a href="Class_Statement.html">Class</a></li>

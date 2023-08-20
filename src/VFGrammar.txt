@@ -1463,10 +1463,11 @@ ConstructorStatement<Modif &mods> (. ID(L"ConstructorStatement", STMT) .)
 		DimOrVar
 		(. var_construct = true; .)
 	]
-	[
-		(. if (var_construct) Err(la->line, la->col, L"CONSTRUCTOR VAR cannot have a parameter list"); .)
+	(
 		FormalParameterList<_Constructor>
-	]
+	|
+		(. if (var_construct) Err(L"CONSTRUCTOR DIM/VAR must have a parameter list"); .)
+	)
 	SyncNewline<s_name>
 	(. context.push_back(_Constructor); .)
 	(. if (var_construct) context.push_back(_Var); .)
