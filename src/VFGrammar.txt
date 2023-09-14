@@ -3025,7 +3025,7 @@ TolExpression (. ID(L"TolExpr", EXPR) .)
 =
 	Expression
 	[
-		"Tol" real_literal
+		"Tol" [ real_literal ]
 		[
 			LogicalOperator
 			(. SemErr(L"Cannot have expression after TOL clause"); .)
