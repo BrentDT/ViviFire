@@ -22,30 +22,35 @@
 </nav>
 <main>
 <h1 id="top"><code>Tol</code> Clause</h1>
-<p>Specifies how much error tolerance to use in a comparison.</p>
+<p>Compares floating-point values with tolerance to rounding errors.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<pre><code>comparison Tol tolerance&#10;</code></pre>
+<pre><code>comparison Tol [ tolerance ]&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="id">comparison</code></dt>
-<dd>An expression that uses one or more comparison operators.
+<dd>Mandatory expression that uses one or more comparison operators.
 Usually the tolerance applies to all comparisons in the given expression.
 But you can select which comparisons use the tolerance with the symbol <code class="op">~</code> (tilde) written before the comparison operators.</dd>
 <dt><code class="id">tolerance</code></dt>
-<dd>The largest floating-point value that two values can be different, but show as equal.</dd>
+<dd>Optional floating-point literal used to calculate how near two values must compare to be equal.</dd>
+<dd>The default is <code class="num">1E-15</code>.</dd>
 </dl>
 <h2>Instructions</h2>
 <p>The clause <code class="kw">Tol</code> tries to give you a solution to a problem with floating-point calculations.
 Each time you use floating-point values in a calculation, it can cause more and more rounding errors.
 These errors can cause failures in comparisons of equality and inequality.</p>
-<p>When you supply an expression with Tol, you must give a tolerance value, written as a floating-point literal.
-The typical tolerance is a very small number, for example, <code class="num">0.000001</code> or <code class="num">1E-6</code>.
+<p>When you supply an expression with Tol, you can give a tolerance value, written as a floating-point literal.
+The typical tolerance is a very small number.
+The default is <code class="num">0.000000000000001</code> or <code class="num">1E-15</code>.
 All applicable comparisons in the expression change how they are calculated.
-For example, the equality test becomes the test if the absolute value of the difference is less than or equal to the tolerance.
 The table that follows gives all the equivalent expressions.</p>
-<table class="language-vivifire">
+<style media="all and (max-width: 65ch)">
+	#t1 td:nth-of-type(1):before { content: "With Tol"; }
+	#t1 td:nth-of-type(2):before { content: "Without Tol"; }
+</style>
+<table id="t1" class="language-vivifire wide">
 <caption>Equivalent expressions</caption>
 <thead>
 <tr>
@@ -55,31 +60,34 @@ The table that follows gives all the equivalent expressions.</p>
 </thead>
 <tbody>
 <tr>
-	<td><pre><code>x = y Tol 1E-6</code></pre></td>
-	<td><pre><code>Math.Abs(x - y) &lt;= 1E-6</code></pre></td>
+	<td><pre><code>x = y Tol&#10;</code></pre></td>
+	<td><pre><code>Math.Abs(x - y) &lt;= Math.Max(Math.Abs(x), Math.Abs(y)) * 1E-15&#10;</code></pre></td>
 </tr>
 <tr>
-	<td><pre><code>x &lt;&gt; y Tol 1E-6</code></pre></td>
-	<td><pre><code>Math.Abs(x - y) &gt; 1E-6</code></pre></td>
+	<td><pre><code>x &lt;&gt; y Tol&#10;</code></pre></td>
+	<td><pre><code>Math.Abs(x - y) &gt; Math.Max(Math.Abs(x), Math.Abs(y)) * 1E-15&#10;</code></pre></td>
 </tr>
 <tr>
-	<td><pre><code>x &lt;= y Tol 1E-6</code></pre></td>
-	<td><pre><code>(x - y) &lt;= 1E-6</code></pre></td>
+	<td><pre><code>x &lt;= y Tol&#10;</code></pre></td>
+	<td><pre><code>Math.Abs(x - y) &lt;= Math.Max(Math.Abs(x), Math.Abs(y)) * 1E-15 Or Else x &lt; y&#10;</code></pre></td>
 </tr>
 <tr>
-	<td><pre><code>x &gt;= y Tol 1E-6</code></pre></td>
-	<td><pre><code>(x - y) &gt;= -1E-6</code></pre></td>
+	<td><pre><code>x &gt;= y Tol&#10;</code></pre></td>
+	<td><pre><code>Math.Abs(x - y) &lt;= Math.Max(Math.Abs(x), Math.Abs(y)) * 1E-15 Or Else x &gt; y&#10;</code></pre></td>
 </tr>
 <tr>
-	<td><pre><code>x &lt; y Tol 1E-6</code></pre></td>
-	<td><pre><code>(x - y) &lt; -1E-6</code></pre></td>
+	<td><pre><code>x &lt; y Tol&#10;</code></pre></td>
+	<td><pre><code>Math.Abs(x - y) &gt; Math.Max(Math.Abs(x), Math.Abs(y)) * 1E-15 And Then x &lt; y&#10;</code></pre></td>
 </tr>
 <tr>
-	<td><pre><code>x &gt; y Tol 1E-6</code></pre></td>
-	<td><pre><code>(x - y) &gt; 1E-6</code></pre></td>
+	<td><pre><code>x &gt; y Tol&#10;</code></pre></td>
+	<td><pre><code>Math.Abs(x - y) &gt; Math.Max(Math.Abs(x), Math.Abs(y)) * 1E-15 And Then x &gt; y&#10;</code></pre></td>
 </tr>
 </tbody>
 </table>
+<p class="note">Note:
+Comparisons with tolerance are always slower than the usual comparisons.
+If performance is important, try to use only <code class="op">=</code> or <code class="op">&lt;&gt;</code>.</p>
 <h2>Mixing comparisons with and without tolerances</h2>
 <p>You can have comparisons with and without tolerances in one expression.
 But only comparisons that have a floating-point value are applicable.</p>
@@ -91,7 +99,18 @@ For example, <span class="ops"><code>~=</code>, <code>~&lt;&gt;</code>, <code>~&
 It is also an error to write a tilde on a comparison that does not compare floating-point values.
 But you can also use the tilde to show always which are floating-point comparisons.</p>
 <h2>Examples</h2>
-<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>Sub test a, b As Real64
+    PrintLine a &amp; " = " &amp; b &amp; " is " &amp; _
+        If a = b Tol Then "true" Else "false"
+End
+
+test 1000000000000.01, 1000000000000.011
+test 100.01, 100.011&#10;</code></pre>
+<div>Output:</div>
+<pre><samp>1000000000000.01 = 1000000000000.011 is true
+100.01 = 100.011 is false&#10;</samp></pre>
+</div>
 <h2>Applies to</h2>
 <ul class="articles">
 <li><a href="Comparison_Operators.html">Comparison Operators</a></li>
