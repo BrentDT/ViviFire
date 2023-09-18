@@ -1386,6 +1386,7 @@ ConcatenationExpression (. ID(L"Concatenation", EXPR) .)
 ConditionalExpression (. ID(L"Conditional", EXPR) .)
 =
 	"If" EnclosedExpression
+	"Then" EnclosedExpression
 	"Else" EnclosedExpression
 .
 ConstantDeclarator (. ID(L"ConstantDeclarator", STMT) .)
@@ -1703,7 +1704,12 @@ EnclosedArgumentList (. ID(L"EnclosedArgumentList", STMT) .)
 .
 EnclosedExpression (. ID(L"Enclosed", EXPR) .)
 =
-	LogicalExpression [ ConditionalExpression ]
+	( IF (_If == la->kind)
+		(. if (t->kind != _left_paren) Err(la->line, la->col, L"IF-THEN-ELSE must be between parentheses"); .)
+		ConditionalExpression
+	|
+		LogicalExpression
+	)
 .
 EnclosedParameterList<int parent> (. ID(L"EnclosedParameterList", STMT) .)
 =
@@ -2575,6 +2581,11 @@ PrimaryExpression (. ID(L"Primary", EXPR) .)
 		}
 	| PrimitiveType<YES_BITS>
 	| "(" EnclosedExpression ")"
+	|
+		"If"
+		(. Err(L"IF-THEN-ELSE must be between parentheses"); .)
+		// Get past most of the garbage. Assumes an otherwise well-formed conditional expression.
+		SYNC "Else" PrimaryExpression
 	| DivisionFunction
 	| "Base"
 	| "Self"
