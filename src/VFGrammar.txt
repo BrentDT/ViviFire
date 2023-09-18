@@ -1383,10 +1383,9 @@ ConcatenationExpression (. ID(L"Concatenation", EXPR) .)
 ///=
 ///	ComparisonOperator "Is" NullCoalescingExpression
 ///.
-ConditionalExpression
+ConditionalExpression (. ID(L"Conditional", EXPR) .)
 =
 	"If" EnclosedExpression
-	"Then" EnclosedExpression
 	"Else" EnclosedExpression
 .
 ConstantDeclarator (. ID(L"ConstantDeclarator", STMT) .)
@@ -1704,7 +1703,7 @@ EnclosedArgumentList (. ID(L"EnclosedArgumentList", STMT) .)
 .
 EnclosedExpression (. ID(L"Enclosed", EXPR) .)
 =
-	LogicalExpression
+	LogicalExpression [ ConditionalExpression ]
 .
 EnclosedParameterList<int parent> (. ID(L"EnclosedParameterList", STMT) .)
 =
@@ -1843,8 +1842,6 @@ Expression (. ID(L"Expression", EXPR) .)
 =
 	(
 		EnclosedExpression
-	|
-		ConditionalExpression
 	|
 		LambdaExpression
 	)
@@ -2121,7 +2118,11 @@ LambdaSub<int line, int col> (. ID(L"LambdaSub", STMT) .)
 .
 LogicalExpression (. ID(L"Logical", EXPR) .)
 =
-	ComparisonExpression { LogicalOperator ComparisonExpression }
+	ComparisonExpression
+	{
+		LogicalOperator
+		ComparisonExpression
+	}
 .
 LogicalOperator (. ID(L"LogicalOperator", STMT) .)
 =
