@@ -1854,7 +1854,7 @@ Expression (. ID(L"Expression", EXPR) .)
 	(.
 	if (la->kind == _right_paren) {
 		Get();
-		SemErr(L"Parentheses do not agree");
+		SemErr(L"More right parentheses than left parentheses");
 	}
 	.)
 .
@@ -2580,7 +2580,11 @@ PrimaryExpression (. ID(L"Primary", EXPR) .)
 			]
 		}
 	| PrimitiveType<YES_BITS>
-	| "(" EnclosedExpression ")"
+	|
+		"(" (. int line = t->line, col = t->col; .)
+		EnclosedExpression
+		(. if (la->kind != _right_paren) Err(line, col, L"More left parentheses than right parentheses"); .)
+		")"
 	|
 		"If"
 		(. Err(L"IF-THEN-ELSE must be between parentheses"); .)
