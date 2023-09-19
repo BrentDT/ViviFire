@@ -79,7 +79,7 @@ This is because you must give the nullable expression two times.</li>
 <p>What follows is the equivalent to the example above without the null-conditional operator.</p>
 <div class="language-vivifire listing">
 <pre><code>Var PageTitle As String =
-    If #SuppliedTitle Is Object Then #SuppliedTitle Else "Default Title"&#10;</code></pre>
+    (If #SuppliedTitle Is Object Then #SuppliedTitle Else "Default Title")&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">

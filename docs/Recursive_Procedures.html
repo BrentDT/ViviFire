@@ -27,7 +27,7 @@ But know that a loop construct usually can do the same work more satisfactorily.
 <p>The procedure that follows uses recursion to calculate the factorial of its initial argument.</p>
 <div class="language-vivifire listing">
 <pre><code>Function factorial(n As Int32) As Int32
-    Return If n &lt;= 1 Then 1 Else n * factorial(n - 1)
+    Return (If n &lt;= 1 Then 1 Else n * factorial(n - 1))
 End Function&#10;</code></pre>
 </div>
 <h2>Instructions</h2>

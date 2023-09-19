@@ -102,7 +102,7 @@ But you can also use the tilde to show always which are floating-point compariso
 <div class="language-vivifire listing">
 <pre><code>Sub test a, b As Real64
     PrintLine a &amp; " = " &amp; b &amp; " is " &amp; _
-        If a = b Tol Then "true" Else "false"
+        (If a = b Tol Then "true" Else "false")
 End
 
 test 1000000000000.01, 1000000000000.011

@@ -25,7 +25,7 @@
 <p>Selects one of two expressions to calculate because of a condition.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<pre><code>If condition Then true_result Else false_result&#10;</code></pre>
+<pre><code>( If condition Then true_result Else false_result )&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
@@ -39,18 +39,19 @@ When <code class="id">condition</code> is true, it becomes the result of the con
 When <code class="id">condition</code> is false, it becomes the result of the conditional expression.</dd>
 </dl>
 <h2>Instructions</h2>
-<p>The conditional operator can look almost the same as the statement <code class="kw">If&hellip;Else</code>.
-But the operator evaluates expressions, not statements.</p>
+<p>The conditional operator has a syntax almost the same as the statement <code class="kw">If&hellip;Else</code>.
+But the operator evaluates expressions, not statements.
+And parentheses (<code class="op">( )</code>) at the start and end are mandatory.</p>
 <p>When <code class="id">condition</code> is true, <code class="id">true_result</code> evaluates and its value becomes the result of the operation.
 Thus <code class="id">false_result</code> does not evaluate.</p>
-<p>When <code class="id">condition</code> is false, <code class="id">false_result</code> evaluates and its value becomes the result of the operation.
+<p>But when <code class="id">condition</code> is false, <code class="id">false_result</code> evaluates and its value becomes the result of the operation.
 Thus <code class="id">true_result</code> does not evaluate.</p>
 <p>Usually, <code class="id">true_result</code> and <code class="id">false_result</code> must be compatible data types.
 But they can be different types if, for example, the outer expression can accept more than one data type, an overloaded method.</p>
 <h2 id="Examples">Examples</h2>
 <div class="language-vivifire listing">
 <pre><code>Function FootOrFeet(dist As Real) As String
-    Return If dist = 1.0 Then "foot" Else "feet"
+    Return (If dist = 1.0 Then "foot" Else "feet")
 End Function&#10;</code></pre>
 </div>
 <h2>See also</h2>
