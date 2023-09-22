@@ -35,7 +35,7 @@ The part of the procedure call that gives the arguments is known as the <dfn>arg
 <p>TODO</p>
 <div class="language-vivifire listing">
 <pre><code>' Declare some variables.
-Var x, y, z As Real
+Var x, y, z As Real64
 
 ' Call 1: argument is a literal.
 x = SquareRoot(1296.0)
@@ -46,7 +46,7 @@ y = SquareRoot(x)
 ' Call 3: argument is an expression.
 z = SquareRoot(x + y)
 
-Function SquareRoot(number As Real) As Real
+Function SquareRoot(number As Real64) As Real64
     ' SquareRoot is the name of the procedure.
     ' number is the only parameter.
     ' SquareRoot also holds the return value.
