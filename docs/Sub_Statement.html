@@ -26,12 +26,14 @@
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <h3>Usual construct</h3>
-<pre><code>[ modifiers ] Sub procedure_name [ type_list ] [ parameter_list ] [ return_type ]
+<pre><code>[ modifiers ] _
+Sub procedure_name [ type_list ] [ parameter_list ] [ return_type ]
     [ Where generic_constraints ]
     [ statements ]
 End [ Sub ]&#10;</code></pre>
 <h3>Event-handler construct</h3>
-<pre><code>[ modifiers ] Sub procedure_name [ type_list ] [ parameter_list ] Handles event_name
+<pre><code>[ modifiers ] _
+Sub procedure_name [ type_list ] [ parameter_list ] Handles event_name
     [ Where generic_constraints ]
     [ statements ]
 End [ Sub ]&#10;</code></pre>
@@ -41,12 +43,16 @@ End [ Sub ]&#10;</code></pre>
 <dt><code class="id">modifiers</code></dt>
 <dd>Optional
 	<ul>
-	<li><code class="at">@Iterator</code> &ndash; Specifies that the procedure implements the iterator pattern.
+	<li><Code class="at">@Const</Code> &ndash; The procedure can run at compile-time.
+	This puts many limits on the procedure.
+	See <a href="Const_Directive.html"><Code>@Const</Code></a>.</li>
+	<li><code class="at">@Iterator</code> &ndash; The procedure implements the iterator pattern.
 	The procedure must have a return type.
-	See <a href="Iterator.html">@Iterator</a>.</li>
-	<li><code class="at">@MustUse</code> &ndash; Code that calls the procedure must use the result.
-	See <a href="MustUse.html">@MustUse</a>.</li>
-	<li><code class="at">@Shared</code> &ndash; Specifies that the procedure is a member of its container, and not an instance of that container.</li>
+	See <a href="Iterator.html"><Code>@Iterator</Code></a>.</li>
+	<li><code class="at">@MustUse</code> &ndash; Code that calls the procedure must use the return value.
+	See <a href="MustUse.html"><Code>@MustUse</Code></a>.</li>
+	<li><code class="at">@Shared</code> &ndash; The procedure is a member of its container, and not an instance of that container.
+	See <a href="Shared.html"><Code>@Shared</Code></a>.</li>
 	</ul>
 </dd>
 <dt><code class="id">procedure_name</code></dt>
