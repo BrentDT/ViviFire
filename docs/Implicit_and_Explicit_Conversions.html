@@ -2,7 +2,7 @@
 <html lang="en-US" dir="ltr">
 <head>
 <meta charset="utf-8">
-<title>Automatic and Non-Automatic Conversions - The ViviFire Programming Language</title><!-- Was: Implicit and Explicit Conversions -->
+<title>Automatic and Special Conversions - The ViviFire Programming Language</title><!-- Was: Implicit and Explicit Conversions -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="common.css" type="text/css">
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Implicit_and_Explicit_Conversions.html">
@@ -22,18 +22,19 @@
 </ul>
 </nav>
 <main>
-<h1 id="top">Automatic and Non-Automatic Conversions</h1>
+<h1 id="top">Automatic and Special Conversions</h1>
 <p>An <dfn>automatic conversion</dfn> lets the compiler change a data type automatically.
 No special syntax is necessary.
 In the example that follows, ViviFire automatically changes the value of <code>k</code> to a floating-point value, then assigns that to <code>q</code>.</p>
 <div class="language-vivifire listing">
-<pre><code>Dim k As Int32
-Dim q As Real64
-' Int32 widens to Real64
+<pre><code>Var k As Int32
+Var q As Real64
+
+' Int32 can change to the wider Real64.
 k = 321
 q = k&#10;</code></pre>
 </div>
-<p>A <dfn>non-automatic conversion</dfn> uses an operator to change a data type to a different one.
+<p>A special conversion (also known as a <dfn>type casting</dfn> or <dfn>type coercion</dfn>) uses an operator to change a data type to a different one.
 ViviFire supplies two such operators, <code class="kw">As</code> and <code class="kw">In</code>, which change an expression to the necessary data type.</p>
 <p>The example below continues from the example before.
 The value of <code>q</code> is changed to <code class="kw">Int32</code>, then assigned to <code>k</code>.</p>
@@ -43,7 +44,7 @@ q = Math.Sqrt(q)
 k = q As Int32
 ' k has the value 18 (rounded square root of 321).&#10;</code></pre>
 </div>
-<h2>As operator</h2>
+<h2><code>As</code> operator</h2>
 <table>
 <thead>
 <tr><th>Initial type</th>
@@ -67,10 +68,16 @@ k = q As Int32
 <li>Must have a type conversion constructor.</li>
 <li>Must have a type conversion method.</li>
 </ol>
-<h2>In operator</h2>
+<h2><code>In</code> operator</h2>
 <p>The operator <code class="kw">In</code> can change a numeric expression to a unit of measure.
 If the expression is a unit of measure, it can change it to a different unit from the same base unit.
 All units of measure are stored as floating-point types.</p>
+<div class="language-vivifire listing">
+<pre><code>Var size = q In metres
+
+' But IN is not necessary if the expression is a literal number.
+size = 5.0 cm&#10;</code></pre>
+</div>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="As_Operator.html">As Operator</a></li>
