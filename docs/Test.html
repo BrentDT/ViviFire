@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>@Test - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/Test.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a rel="parent" href="Modifiers.html">Modifiers</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top"><code>@Test</code></h1>
+<p>Identifies a Procedure as a unit test.</p>
+<h2>Syntax</h2>
+<div class="language-vivifire syntax">
+<pre><code>@Test [ IGNORE ]&#10;</code></pre>
+</div>
+<h2>Parts</h2>
+<dl class="parts">
+<dt><code class="nkw">IGNORE</code></dt>
+<dd>Optional identifier specifies that the unit test that follows is not always necessary.</dd>
+</dl>
+<h2>Instructions</h2>
+<p>You use the Modifier <code class="at">@Test</code> to write unit tests.
+A <dfn>unit test</dfn> is a Procedure to do one test on a small block of code.
+The code (typically methods and other Procedures) all must be correct.</p>
+<p>If you write the identifier <code class="nkw">IGNORE</code> after <code class="at">@Test</code>, the related unit test is usually ignored.
+Usually you do this for tests that run for a very long time.
+But if you supply the command line switch TBD, such tests will be included.</p>
+<p>The Procedure usually uses the object method <code>#Debug.Assert()</code> to do its test.</p>
+<h3>Rules</h3>
+<ul>
+<li>The Procedure must not have parameters.</li>
+<li>The Procedure must not have a return type.</li>
+</ul>
+<h2>Applies to</h2>
+<ul>
+<li><a href="Sub_Statement.html"><code class="kw">Sub</code></a></li>
+</ul>
+<h2>Examples</h2>
+<div class="language-vivifire listing">
+<pre><code>Class Adder
+    method Add(a As Int32, b As Int32) As Int32
+        Return a + b
+    End
+End Class&#10;</code></pre>
+<pre><code>@Test Sub Add1and1
+    New Adder obj
+    #Debug.Assert obj.Add(1, 1) = 2
+End
+
+@Test Sub AddNegatives
+    New Adder obj
+    #Debug.Assert obj.Add(-1, -1) = -2
+End&#10;</code></pre>
+</div>
+<h2>See also</h2>
+<ul class="articles">
+<li><a href="Debug_Object.html"><code>#Debug</code> Object</a></li>
+<li><a href="Option_Directive.html"><code>@Option</code> Directive</a></li>
+</ul>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>
