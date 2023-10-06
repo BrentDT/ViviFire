@@ -37,6 +37,7 @@ struct mod_type {
 	X(Shared, L"@SHARED") \
 	X(SI, L"@SI") \
 	X(Strict, L"@STRICT") \
+	X(Test, L"@TEST") \
 	X(Unique, L"@UNIQUE") \
 	X(WriteOnly, L"@WRITEONLY")
 
@@ -49,10 +50,12 @@ public:
 	};
 	#undef X
 	
-	enum args { SI_default, SI_Binary, SI_Large, SI_Small };
+	enum si_args { SI_default, SI_Binary, SI_Large, SI_Small };
+	enum test_args { Test_default, Test_Ignore };
 	
 	typedef union arg {
-		args si_arg;
+		si_args si_arg;
+		test_args test_arg;
 	} arg;
 
 private:

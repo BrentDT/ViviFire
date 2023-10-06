@@ -47,12 +47,12 @@ void Modif::validate() const {
 	for (int m = 0; m < LAST; m++) {
 		if (m_mods[m].present && !m_mods[m].allowed) {
 			wchar_t *msg = coco_string_create_append(m_name[m], L" is not permitted here");
-			m_parser->errors->Error(m_mods[m].line, m_mods[m].col, msg);
+			m_parser->Err(m_mods[m].line, m_mods[m].col, msg);
 			coco_string_delete(msg);
 		}
 	}
 
-	// Abstract v any except Deprecated, ReadOnly, or WriteOnly
+	// Abstract v any except Deprecated, ReadOnly, or WriteOnly.
 	if (m_mods[Abstract].present && m_count > 1) {
 		for (int m = 0; m < LAST; m++) {
 			switch (m) {
@@ -61,20 +61,25 @@ void Modif::validate() const {
 			default:
 				if (m_mods[m].present) {
 					wchar_t *msg = coco_string_create_append(L"Cannot use @Abstract with ", m_name[m]);
-					m_parser->errors->Error(m_mods[m].line, m_mods[m].col, msg);
+					m_parser->Err(m_mods[m].line, m_mods[m].col, msg);
 					coco_string_delete(msg);
 				}
 			}
 		}
 	}
 
-	// ReadOnly v WriteOnly
+	// ReadOnly v WriteOnly.
 	if (m_mods[ReadOnly].present && m_mods[WriteOnly].present) {
 		m_parser->Err(m_mods[WriteOnly].line, m_mods[WriteOnly].col, L"Cannot use @ReadOnly and @WriteOnly together");
 	}
 
-	// Iterator v WriteOnly
+	// Iterator v WriteOnly.
 	if (m_mods[Iterator].present && m_mods[WriteOnly].present) {
 		m_parser->Err(m_mods[WriteOnly].line, m_mods[WriteOnly].col, L"Cannot use @Iterator and @WriteOnly together");
+	}
+
+	// Test v any.
+	if (m_mods[Test].present && m_count > 1) {
+		m_parser->Err(m_mods[Test].line, m_mods[Test].col, L"Cannot use @TEST with other modifiers");
 	}
 }

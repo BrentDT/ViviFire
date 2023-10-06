@@ -2290,6 +2290,17 @@ Modifier<int &m, ModifArg &arg> (. ID(L"Modifier", STMT) .)
 			} else
 			if (Matches(L"Strict")) m = Modif::Strict;
 			break;
+		case L'T': case L't':
+			if (Matches(L"Test")) {
+				m = Modif::Test;
+				if (_identifier == la->kind) {
+					Get();
+					arg.test_arg = Modif::Test_default;
+					if (Matches(L"IGNORE")) arg.test_arg = Modif::Test_Ignore;
+					else Err(t->line, t->col, L"Unknown identifier after @TEST");
+				}
+			}
+			break;
 		case L'U': case L'u':
 			if (Matches(L"Unique")) m = Modif::Unique;
 			break;
@@ -2990,6 +3001,7 @@ SubStatement<Modif &mods> (. ID(L"SubStatement", STMT) .)
 	bool bIterator = mods.allow(Modif::Iterator);
 	bool bMustUse  = mods.allow(Modif::MustUse);
 	bool bShared   = mods.allow(Modif::Shared);
+	mods.allow(Modif::Test);
 	mods.validate();
 
 	int line, col;
