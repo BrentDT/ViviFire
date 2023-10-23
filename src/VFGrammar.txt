@@ -54,7 +54,6 @@ std::vector<int> context;
 // Some enumeration types.
 enum case_type { CASE_ZERO, CASE_EXPR, CASE_ELSE };
 enum option_type { OPTION_DEFAULT, WITH_THEN, WITHOUT_THEN };
-enum select_type { SELECT_DEFAULT, SELECT_ELSE, SELECT_ELSE_STRING };
 enum ternary { TERNARY0, TERNARY1, TERNARY2, YES = TERNARY1, NO = TERNARY2 };
 
 // Aliases for 'true' and 'false'.
@@ -65,32 +64,43 @@ enum { POSTCONDITIONAL, PRECONDITIONAL };
 typedef std::map<std::wstring, int> when_map;
 
 // Hold options for the directive '@OPTION'.
-struct tag_option {
+struct Option {
 	Parser*     parser;
-	bool        arg_by_name_bool = false;
-	bool        arg_by_name_lit = false;
-	bool        charset_latin   = false; // TODO: swap in a different scanner.
-	ternary     Dim_or_Var      = TERNARY0;
-	ternary     End_block       = TERNARY0;
-	ternary     End_For_id      = TERNARY0;
-	bool        Enum_id         = false;
-	bool        Enum_Is         = false;
-	bool        Enum_equals     = false;
-	ternary     If_Then         = TERNARY0;
-	bool        If_End          = false;
-	bool        last            = false;
-	bool        Mod_floored     = false;
-	bool        New             = false;
-	bool        Optional_equals = false;
-	ternary     Select_Case     = TERNARY0;
-	select_type Select_Else     = SELECT_DEFAULT;
-	ternary     String_bk_slash = TERNARY0;
-	bool        test            = false;
-	bool        unit_full       = false;
-	short       warning         = 4;
-	short       warning_error   = 0;
-	ternary     When_Each_Else  = TERNARY0;
-	bool        When_Begin_id   = false;
+	enum class ByName { DEFAULT, Boolean, Literal };
+	ByName     args_byname         = ByName::DEFAULT; // Arg ByName { Boolean | Literal }
+	bool        args_enclosed      = false;    // Args Enclosed
+	bool        charset_latin      = false;    // Charset Latin
+	ternary     Dim_or_Var         = TERNARY0; // { Dim | Var }
+	ternary     End_block          = TERNARY0; // End [ Block | No Block ]
+	ternary     End_For_id         = TERNARY0; // End For [ ID | No ID ]
+	bool        Enum_id            = false;    // Enum ID
+	bool        Enum_Is            = false;    // Enum Is
+	bool        Enum_equals        = false;    // Enum Equals
+	ternary     If_Then            = TERNARY0; // If [ Then | No Then ]
+	bool        If_End             = false;    // If End
+	bool        last               = false;    // Last
+	bool        Mod_floored        = false;    // Mod Floored
+	bool        New                = false;    // New
+	bool        Optional_equals    = false;    // Optional Equals
+	ternary     Select_Case        = TERNARY0; // Select [ Case | No Case ]
+	enum class Strict { DEFAULT, Strict, String };
+	Strict      Select_strict      = Strict::DEFAULT; // Select Strict [ String ]
+	enum class Slash { DEFAULT, Fore, Back };
+	Slash       String_slash       = Slash::DEFAULT; // String { Backslash | Slash }
+	ternary     test_unit_or_comp  = TERNARY0; // Test [ Compiler ]
+	enum class Each { DEFAULT, Each, Param, Var };
+	Each        type_each          = Each::DEFAULT; // Type Each [ Param | Var ]
+	bool        unit_full          = false;    // Unit Full
+	short       warning            = 4;        // Warning[1-5]
+	short       warning_error      = 0;        // Warning[1-5] Error
+	ternary     When_Each_or_Else  = TERNARY0; // When { Each | Else }
+	bool        When_Begin_id      = false;    // When Begin ID
+
+	bool match(const int kind) {
+		if (kind != parser->la->kind) return false;
+		parser->Get();
+		return true;
+	}
 
 	bool match(const wchar_t *s) {
 		return parser->Match(s);
@@ -135,10 +145,15 @@ struct tag_option {
 			break;
 		case _End:
 			parser->Get();
-			if (_For == parser->la->kind) { // End For
-				parser->Get();
-				optional_no(_identifier, s_id);
-				End_For_id = NO; // @Option End For [ no id ]
+			if (match(_For)) { // End For
+				if (match(s_id)) {
+					End_For_id = YES; // @Option End For ID
+					break;
+				} else {
+					optional_no(_identifier, s_id);
+					End_For_id = NO; // @Option End For [ no id ]
+					break;
+				}
 			} else if (match(s_block)) {
 				End_block = YES; // @Option End Block
 			} else {
@@ -150,8 +165,7 @@ struct tag_option {
 			parser->Get();
 			if (match(s_id)) {
 				Enum_id = true;           // @Option Enum ID
-			} else if (parser->la->kind == _Is) {
-				parser->Get();
+			} else if (match(_Is)) {
 				Enum_Is = true;  // @Option Enum Is
 			} else if (match(s_equals)) {
 				Enum_equals = true; // @Option Enum Equals
@@ -159,11 +173,9 @@ struct tag_option {
 			break;
 		case _If:
 			parser->Get();
-			if (_End == parser->la->kind) {
-				parser->Get();
+			if (match(_End)) {
 				If_End = true; // @Option If End
-			} else if (_Then == parser->la->kind) {
-				parser->Get();
+			} else if (match(_Then)) {
 				If_Then = YES;                    // @Option If Then
 			} else {
 				optional_no(_Then);
@@ -188,17 +200,14 @@ struct tag_option {
 			break;
 		case _Select:
 			parser->Get();
-			if (_Else == parser->la->kind) {
-				parser->Get();
-				if (_String == parser->la->kind) {
-					parser->Get();
-					Select_Else = SELECT_ELSE_STRING; // @Option SELECT ELSE STRING
+			if (match(L"strict")) {
+				if (match(_String)) {
+					Select_strict = Strict::String; // @Option Select Strict String
 				} else {
-					Select_Else = SELECT_ELSE; // @Option SELECT ELSE
+					Select_strict = Strict::Strict; // @Option Select Strict
 				}
-			} else if (_Case == parser->la->kind) {
-				parser->Get();
-				Select_Case = YES;                      // @Option SELECT CASE
+			} else if (match(_Case)) {
+				Select_Case = YES;                      // @Option Select Case
 			} else {
 				optional_no(_Case);
 				Select_Case = NO; // @Option Select [ No Case ]
@@ -207,9 +216,9 @@ struct tag_option {
 		case _String:
 			parser->Get();
 			if (match(L"backslash")) {
-				String_bk_slash = TERNARY1; // @Option String Backslash
+				String_slash = Slash::Back; // @Option String Backslash
 			}else if (match(L"slash")) {
-				String_bk_slash = TERNARY2; // @Option String Slash
+				String_slash = Slash::Fore; // @Option String Slash
 			} else goto bad_option;
 			break;
 		case _Unit:
@@ -220,37 +229,58 @@ struct tag_option {
 			break;
 		case _When:
 			parser->Get();
-			if (_Each == parser->la->kind) {
-				parser->Get();
-				When_Each_Else = TERNARY1; // @Option When Each
-			} else if (_Else == parser->la->kind) {
-				parser->Get();
-				When_Each_Else = TERNARY2; // @Option When Else
-			} else if (_Begin == parser->la->kind) {
-				parser->Get();
-				if (match(s_id)) {
-					When_Begin_id = true; // @Option When Begin ID
-				} else goto bad_option;
+			if (match(_Each)) {
+				When_Each_or_Else = TERNARY1; // @Option When Each
+			} else if (match(_Else)) {
+				When_Each_or_Else = TERNARY2; // @Option When Else
+			} else if (match(_Begin)) {
+				if (!match(s_id)) goto bad_option;
+				When_Begin_id = true; // @Option When Begin ID
 			} else goto bad_option;
 			break;
 		case _identifier: {
 			// For each addition, remember to "break" when correct.
 			int len = coco_string_length(parser->la->val);
-			if (9 == len && match(L"argbyname")) {
-				if (_Boolean == parser->la->kind) {
-					parser->Get();
-					arg_by_name_bool = true; // @Option ArgByName Boolean
-					break;
-				} else if (match(L"literal")) {
-					arg_by_name_lit = true; // @Option ArgByName Literal
+			if (4 == len && match(L"args")) {
+				if (match(L"byname")) {
+					if (match(_Boolean)) {
+						args_byname = ByName::Boolean; // @Option Args ByName Boolean
+						break;
+					} else if (match(L"literal")) {
+						args_byname = ByName::Literal; // @Option Args ByName Literal
+						break;
+					}
+				} else if (match(L"enclosed")) {
+					args_enclosed = true; // @Option Args Enclosed
 					break;
 				}
+			} else if (7 == len && match(L"charset")) {
+				if (!match(L"latin")) goto bad_option;
+				charset_latin = true; // @Option Charset Latin
+				// TODO: swap in a different scanner.
+				break;
 			}else if (4 == len && match(L"last")) {
 				last = true; // @Option Last
 				break;
 			} else if (4 == len && match(L"test")) {
-				test = true; // @Option Test
+				if (match(L"compiler")) {
+					test_unit_or_comp = TERNARY2; // @Option Test Compiler
+				} else {
+					test_unit_or_comp = TERNARY1; // @Option Test
+				}
 				break;
+			} else if (4 == len && match(L"type")) {
+				if (!match(_Each)) goto bad_option;
+				if (match(L"param")) {
+					type_each = Each::Param; // @Option Type Each Param
+					break;
+				} else if (match(_Var)) {
+					type_each = Each::Var; // @Option Type Each Var
+					break;
+				} else {
+					type_each = Each::Each; // @Option Type Each
+					break;
+				}
 			} else if (len >= 7 && left_match(s_warning)) {
 				short level = (short)parser->t->val[coco_string_length(s_warning)]; // Valid: '\0', '1', '2', '3', '4', & '5'.
 				if (level == 0) {
@@ -276,11 +306,14 @@ struct tag_option {
 		if (parser->la->kind != _line_break && parser->la->kind != _EOF) goto bad_option;
 	}
 
-} option = { /* parser */ this };
+};
 
-// Parse elements that are usually optional, but can become mandatory by '@OPTION'.
-// Param 'nOption' can give more context.
+Option option = { /* parser */ this };
+
 void Optional(int kind, option_type nOption = OPTION_DEFAULT) {
+	// Parse elements that are usually optional, but can become mandatory by '@OPTION'.
+	// Param 'nOption' can give more context.
+
 	switch (kind) {
 	case _Case:  // Select [ Case ]
 		if (la->kind == _Case) {
@@ -1086,7 +1119,7 @@ atWarn   = "@Warn"{notEOL}. //TODO
 // Comments
 
 InlineComment = ("'"|"//"){notEOL}. (.
-	if (option.test) ParseInlineComment(); .)
+	if (option.test_unit_or_comp == TERNARY2) ParseInlineComment(); .)
 
 MidlineComment = "/'"{"#"|alnum|"_"|"."|"-"|"/"|":"|sigil}"'/".
 
@@ -2804,7 +2837,7 @@ SelectStatement<Modif &mods> (. ID(L"SelectStatement", STMT) .)
 	(. if (la->kind != _End) Err(line, col, L"SELECT without END"); .)
 	"End"
 		(. if (clause == CASE_ZERO) SemErr(L"SELECT must have a minimum of one CASE"); .)
-		(. if (option.Select_Else == SELECT_ELSE && clause != CASE_ELSE) SemErr(L"SELECT must have CASE ELSE because of @OPTION"); .)
+		//TODO: if ((bStrict || option.Select_strict != Option::Strict::DEFAULT) ...
 	(. Optional(_Select); .)
 	Newline
 .
@@ -2880,11 +2913,11 @@ StringExpression<std::wstring &res> (. ID(L"String", EXPR) .)
 	{ IF (la->kind == _string_constant || la->kind == _string_literal || la->kind == _slash || la->kind == _backslash)
 		[
 			"/"
-			(. if (option.String_bk_slash == TERNARY1) SemErr(L"Must use backslash because of @OPTION"); .)
+			(. if (option.String_slash == Option::Slash::Back) SemErr(L"Must use backslash because of @OPTION"); .)
 			(. res += sep; .)
 		|
 			"\\"
-			(. if (option.String_bk_slash == TERNARY2) SemErr(L"Must use slash because of @OPTION"); .)
+			(. if (option.String_slash == Option::Slash::Fore) SemErr(L"Must use slash because of @OPTION"); .)
 			(. res += sep; .)
 		]
 		( string_literal | string_constant )
@@ -3252,9 +3285,9 @@ WhenStatement<bool isPreconditional, when_map &whens> (. ID(L"WhenStatement", ST
 	"When"
 	( identifier
 	| "Each"
-		(. if (option.When_Each_Else == TERNARY2) SemErr(L"Must use ELSE because of @OPTION"); .)
+		(. if (option.When_Each_or_Else == TERNARY2) SemErr(L"Must use ELSE because of @OPTION"); .)
 	| "Else" // Equivalent to "Each".
-		(. if (option.When_Each_Else == TERNARY1) SemErr(L"Must use EACH because of @OPTION"); .)
+		(. if (option.When_Each_or_Else == TERNARY1) SemErr(L"Must use EACH because of @OPTION"); .)
 	)
 	(.
 	int kind = t->kind;
