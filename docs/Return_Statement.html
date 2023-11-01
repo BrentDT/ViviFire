@@ -25,35 +25,34 @@
 <p>Moves execution back to the code that called a procedure.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<h3>Non-function construct</h3>
 <pre><code>Return&#10;</code></pre>
-<h3>Function construct</h3>
+<div>or</div>
 <pre><code>Return expression&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="id">expression</code></dt>
-<dd>For a function construct, mandatory value to return to the caller.</dd>
+<dd>The value to return to the caller.</dd>
+<dd>Mandatory for all procedures of the types <span class="kws"><code>Function</code> and <code>Get</code>, and procedures <code>Method</code> and <code>Sub</code></span> with a return type.</dd>
 </dl>
 <h2>Instructions</h2>
-<p>In procedures of the types <span class="kws"><code>Sub</code> and <code>Set</code> (<code>Property</code>), <code>Return</code> is the same as <code>Exit Sub</code> or <code>Exit Property</code></span>.
+<p>In all procedures of the type <span class="kws"><code>Set</code> and procedures of <code>Method</code> and <code>Sub</code> without a return type, <code>Return</code> is the same as <code>Exit Property</code>, <code>Exit Method</code> or <code>Exit Sub</code></span>.
 You must not supply <code class="id">expression</code>.</p>
-<p>In procedures of the types <span class="kws"><code>Function</code> and <code>Get</code> (<code>Property</code>)</span>, <code class="kw">Return</code> must include <code class="id">expression</code>.
+<p>In all procedures of the types <span class="kws"><code>Function</code> and <code>Get</code> and procedures of <code>Method</code> and <code>Sub</code> with a return type, <code >Return</code></span> must include <code class="id">expression</code>.
 The data type of <code class="id">expression</code> must be compatible with the return type of the procedure.
-As an alternative, you can assign <code class="id">expression</code> to the name of the procedure, then use <code class="kw">Exit Function</code> or <code class="kw">Exit Property</code>.</p>
-<!-- TODO: Method -->
+As an alternative, you can assign <code class="id">expression</code> to the name of the procedure, then use <span class="kws"><code>Exit Function</code>, <code>Exit Property</code>, <code>Exit Method</code>, or <code class="kw">Exit Sub</code></span>.</p>
 <p>If you put <span class="kws"><code>Return</code> in a block of the types <code>Try</code> or <code>Catch</code> that also includes a block <code>Finally</code></span>, <code class="kw">Return</code> causes <code class="kw">Finally</code> to execute.
 And if <code class="kw">Return</code> includes <code class="id">expression</code>, it gets calculated after <code class="kw">End Try</code>.
 <code class="kw">Return</code> is not permitted in blocks of the type <code class="kw">Finally</code>.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
 <pre><code>Method RelativeTime(sec As Int32) As String
-    If sec < 2*60 Return "seconds"
-    If sec < 2*60*60 Return "minutes"
-    If sec < 2*24*60*60 Return "hours"
-    If sec < 2*7*24*60*60 Return "days"
-    If sec < 2*30*24*60*60 Return "weeks"
-    If sec < 2*365*24*60*60 Return "months"
+    If sec < 2*60 Then Return "seconds"
+    If sec < 2*60*60 Then Return "minutes"
+    If sec < 2*24*60*60 Then Return "hours"
+    If sec < 2*7*24*60*60 Then Return "days"
+    If sec < 2*30*24*60*60 Then Return "weeks"
+    If sec < 2*365*24*60*60 Then Return "months"
     Return "years"
 End Method&#10;</code></pre>
 </div>
@@ -65,6 +64,7 @@ End Method&#10;</code></pre>
 <li><a href="Property_Statement.html">Property Statement</a></li>
 <li><a href="Sub_Statement.html">Sub Statement</a></li>
 <li><a href="Try_Catch_Finally_Statement.html">Try&hellip;Catch&hellip;Finally Statement</a></li>
+<li><a href="Yield_Statement.html">Yield Statement</a></li>
 </ul>
 </main>
 <script src="common.js"></script>
