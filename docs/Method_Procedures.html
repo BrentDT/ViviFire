@@ -25,11 +25,11 @@
 <p>A <dfn>method procedure</dfn> is a sequence of ViviFire statements between the lines <code class="kw">Method</code> and <code class="kw">End</code>.</p>
 <p>The Method procedure does a task, then returns control to the calling code (known as the "caller").
 When it returns, the procedure returns a value to the caller.</p>
-<p>Each time code calls the procedure, its statements execute.
-Execution starts with the first executable statement after the line <code class="kw">Method</code>.
-Execution usually continues until the line <code class="kw">End</code>.
+<p>Each time code calls the procedure, its statements run.
+It starts to run code with the first statement after the line <code class="kw">Method</code>.
+It usually continues until the line <code class="kw">End</code>.
 But one of two statements can stop it: <code class="kw">Exit Method</code> or <code class="kw">Return</code>.</p>
-<p>You can make method procedures in modules, classes, objects, and traits.
+<p>You can make method procedures in libraries, classes, objects, and traits.
 It is public, thus it can be called from all other code.</p>
 <p>A method procedure can use arguments, for example, constants, variables, or expressions, which the caller passes to it.</p>
 <h2>Declaration syntax</h2>

@@ -22,7 +22,7 @@
 </nav>
 <main>
 <h1 id="top"><code>Do&hellip;Loop</code> Statement</h1>
-<p>Executes a sequence of statements while a given condition is true, or until a condition becomes true.</p>
+<p>Runs a sequence of statements while a given condition is true, or until a condition becomes true.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <h3>Pre-condition construct</h3>
@@ -40,40 +40,40 @@ Loop { While | Until } condition&#10;</code></pre>
 <dd>Mandatory start of the statement.</dd>
 <dt><code class="kw">While</code></dt>
 <dd>Mandatory unless you use <code class="kw">Until</code>.
-The loop executes <code class="id">statements</code> until <code class="id">condition</code> becomes false.</dd>
+The loop runs <code class="id">statements</code> until <code class="id">condition</code> becomes false.</dd>
 <dt><code class="kw">Until</code></dt>
 <dd>Mandatory unless you use <code class="kw">While</code>.
-The loop executes <code class="id">statements</code> until <code class="id">condition</code> becomes true.</dd>
+The loop runs <code class="id">statements</code> until <code class="id">condition</code> becomes true.</dd>
 <dt><code class="id">condition</code></dt>
 <dd>Mandatory Boolean expression.</dd>
 <dt><code class="id">statements</code></dt>
 <dd>Optional one or more statements between <code class="kw">Do</code> and <code class="kw">Loop</code>.
-These execute while <code class="id">condition</code> is true, or until <code class="id">condition</code> becomes true.</dd>
+These run while <code class="id">condition</code> is true, or until <code class="id">condition</code> becomes true.</dd>
 <dd>The alternative is two or more groups of statements.
-The first group starts with <code class="kw">Begin</code>, and executes the same as specified above.
-The subsequent groups start with <code class="kw">When</code>, and execute when (1) the statements after <code class="kw">Begin</code> cannot start, or (2) after they complete.
+The first group starts with <code class="kw">Begin</code>, and runs the same as specified above.
+The subsequent groups start with <code class="kw">When</code>, and run when (1) the statements after <code class="kw">Begin</code> cannot start, or (2) after they complete.
 See the <a href="#When_statements">When statements section</a> for more information.</dd>
 <dt><code class="kw">Loop</code></dt>
 <dd>Completes the statement.</dd>
 </dl>
 <h2>Instructions</h2>
-<p>Use <code class="kw">Do&hellip;Loop</code> when you must execute one or more statements again and again.
-It is recommended when you cannot be sure how many times the statements must execute.
+<p>Use <code class="kw">Do&hellip;Loop</code> when you must run one or more statements again and again.
+It is recommended when you cannot be sure how many times the statements must run.
 Control is connected with the Boolean <code class="id">condition</code> that you supply.
 The pre-condition construct is equivalent to the statement <code class="kw">While</code>, but <code class="kw">Do&hellip;Loop</code> is more flexible.
-If you must execute the statements a known number of times, the statement <code class="kw">For</code> can give better performance.</p>
-<h3>Usual pre-conditional execution</h3>
+If you must run the statements a known number of times, the statement <code class="kw">For</code> can give better performance.</p>
+<h3>Usual pre-conditional operation</h3>
 <p>TODO</p>
-<h3>Usual post-conditional execution</h3>
+<h3>Usual post-conditional operation</h3>
 <p>TODO</p>
 <h3>Exit Do</h3>
-<p>The statement <code class="kw">Exit Do</code> can stop the execution of <code class="kw">Do&hellip;Loop</code>.
+<p>The statement <code class="kw">Exit Do</code> can stop the operation of <code class="kw">Do&hellip;Loop</code>.
 <code class="kw">Exit Do</code> immediately moves control to the statement after <code class="kw">Loop</code>.</p>
 <h3 id="When_statements">When statements</h3>
 <p>To find if a loop with <code class="kw">Do While</code> completed because <code class="id">condition</code> became false, use the statement <code>When Done</code>.</p>
-<p>To find if a loop with <code class="kw">Do While</code> was not executed because <code class="id">condition</code> was initially false, use the statement <code>When None</code>.</p>
+<p>To find if a loop with <code class="kw">Do While</code> was not run because <code class="id">condition</code> was initially false, use the statement <code>When None</code>.</p>
 <p>The post-condition construct does not let you use <code>When None</code>.
-The statements always execute a minimum of one time, because the condition comes last.</p>
+The statements always run a minimum of one time, because the condition comes last.</p>
 <p>See <a href="Begin_When_Statements.html">Begin&hellip;When Statements</a> for more information.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">

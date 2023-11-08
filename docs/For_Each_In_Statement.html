@@ -22,7 +22,7 @@
 </nav>
 <main>
 <h1 id="top"><code>For Each</code> Statement</h1>
-<p>Executes a sequence of statements for each item in a data structure.</p>
+<p>Runs a sequence of statements for each item in a data structure.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <pre><code >For Each element [ As type ] In group
@@ -40,10 +40,10 @@ End [ For ]&#10;</code></pre>
 <dd>Mandatory collection object, string expression, or array literal.</dd>
 <dt><code class="id">statements</code></dt>
 <dd>Optional One or more statements between the lines that start with <code class="kw">For Each</code> and <code class="kw">End</code>.
-These execute one time for each item in a collection.</dd>
+These run one time for each item in a collection.</dd>
 <dd>The alternative is two or more groups of statements.
-The initial group starts with <code class="kw">Begin</code>, and executes the same as specified above.
-The subsequent groups start with <code class="kw">When</code>, and execute when the group after <code class="kw">Begin</code> cannot start, or after it completes.
+The initial group starts with <code class="kw">Begin</code>, and runs the same as specified above.
+The subsequent groups start with <code class="kw">When</code>, and run when the group after <code class="kw">Begin</code> cannot start, or after it completes.
 See the section <a href="#When_statements">When statements</a> for more information.</dd>
 <dt><code class="kw">End</code></dt>
 <dd>Completes the statement.
@@ -53,20 +53,20 @@ See <a href="Option_Directive.html">@Option Directive</a> for more information.<
 </dl>
 <h2>Instructions</h2>
 <p><code class="kw">End For</code> is not the same as <a href="Exit_Statement.html"><code>Exit For</code></a>.</p>
-<p>Use the construct <code class="kw">For Each</code> when you must execute one or more statements again and again.
-It is recommended when you must execute statements for each item in a collection.
+<p>Use the construct <code class="kw">For Each</code> when you must run one or more statements again and again.
+It is recommended when you must run statements for each item in a collection.
 Other loop constructs are possibly more flexible.
 See the <a href="#See_also">See also</a> section below for more information.</p>
-<h2>Usual execution</h2>
+<h2>Usual operation</h2>
 <p>TODO</p>
 <h2><code>Exit For</code></h2>
 <p>The statement <code class="kw">Exit For</code> can stop this type of loop.
-<code class="kw">Exit For</code> immediately moves execution to the statement after <code class="kw">End</code>.</p>
+<code class="kw">Exit For</code> immediately runs the statement after <code class="kw">End</code>.</p>
 <p><code class="kw">Exit</code> can also stop more than one nested loop.
 You can use the statement &laquo;<code class="kw">Exit For, For</code>&raquo; in the inner loop to stop two loops.</p>
 <h2 id="When_statements"><code>When</code> statements</h2>
 <p>To find if a loop of this type completed because it went through all of the items, use <code>When DONE</code>.
-To find if a loop of this type did not execute because <code class="id">group</code> is null or empty, use <code>When NONE</code>.
+To find if a loop of this type did not run because <code class="id">group</code> is null or empty, use <code>When NONE</code>.
 See <a href="Begin_When_Statements.html">Begin&hellip;When Statements</a> for more information.</p>
 <h2>Examples</h2>
 <h3>Elements in an array literal</h3>
@@ -84,9 +84,9 @@ End For&#10;</code></pre>
 </div>
 <h2 id="See_also">See also</h2>
 <ul class="articles">
-<li><a href="Do_Loop_Statement.html">Doo...Loop Statement</a> &ndash; Executes given a pre-condition or a post-condition.</li>
-<li><a href="For_To_Statement.html">For Statement</a> &ndash; Execution through a range of values.</li>
-<li><a href="While_Statement.html">While Statement</a> &ndash; Executes given a pre-condition.</li>
+<li><a href="Do_Loop_Statement.html">Doo...Loop Statement</a> &ndash; runs code given a pre-condition or a post-condition.</li>
+<li><a href="For_To_Statement.html">For Statement</a> &ndash; Runs through a range of values.</li>
+<li><a href="While_Statement.html">While Statement</a> &ndash; Runs code given a pre-condition.</li>
 <li><a href="Yield_Statement.html">Yield Statement</a></li>
 <li><a href="Iterator.html">@Iterator</a></li>
 <li><a href="Iterators.html">Iterators</a></li>
