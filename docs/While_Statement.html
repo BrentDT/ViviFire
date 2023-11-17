@@ -22,7 +22,7 @@
 </nav>
 <main>
 <h1 id="top"><code>While</code> Statement</h1><!-- STE -->
-<p>Executes a sequence of statements while a given condition is true.</p>
+<p>Runs a sequence of statements while a given condition is true.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <pre><code>While condition
@@ -32,13 +32,13 @@ End [ While ]&#10;</code></pre>
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="id">condition</code></dt>
-<dd>Mandatory expression of the type <code class="kw">Boolean</code>.</dd>
+<dd>Mandatory Boolean expression.</dd>
 <dt><code class="id">statements</code></dt>
-<dd>Optional one or more executable statements.
-They execute while <code class="id">condition</code> is true.</dd>
-<dd>The alternative is two or more groups of statements.
-The first group starts with <code class="kw">Begin</code>, and executes the same as specified above.
-The subsequent groups start with <code class="kw">When</code>, and execute after the end of the loop.
+<dd>Optional one or more statements.
+They run while <code class="id">condition</code> is true.</dd>
+<dd>The alternative is two or more blocks of statements.
+The first block starts with <code class="kw">Begin</code>, and runs the same as given above.
+The subsequent blocks start with <code class="kw">When</code>, and run after the loop stops.
 See <a href="#When_statements"><code>When</code> statements</a> below for more information.</dd>
 <dt><code class="kw">End</code></dt>
 <dd>Completes the statement.
@@ -48,24 +48,24 @@ See <a href="Option_Directive.html"><code>@Option</code> Directive</a> for more 
 </dl>
 <h2>Instructions</h2><!-- STE -->
 <p><code class="kw">End While</code> is not the same as <a href="Exit_Statement.html"><code class="kw">Exit While</code></a>.</p>
-<p>Use the construct <code class="kw">While</code> when you must execute one or more statements again and again.
-It is recommended when you cannot be sure how many times the statements must execute.
+<p>Use the construct <code class="kw">While</code> when you must run one or more statements again and again.
+It is recommended when you cannot be sure how many times the statements must run.
 Control is connected with the Boolean <code class="id">condition</code> after <code class="kw">While</code>.
 Other loop constructs are possibly more flexible or can give better performance.
 See the <a href="#See_also">See also section</a> below for more information.</p>
-<h3>Usual execution</h3><!-- STE -->
-<p>If <code class="id">condition</code> is true, <code class="id">statements</code> execute.
+<h3>Usual operation</h3>
+<p>If <code class="id">condition</code> is true, <code class="id">statements</code> run.
 After <code class="kw">End</code>, control moves back to <code class="kw">While</code>, where <code class="id">condition</code> calculates again.
-If <code class="id">condition</code> stays true, <code class="id">statements</code> continue to execute.
-If it becomes false, control moves to the statement after <code class="kw">End</code>.</p>
-<p><code class="kw">While</code> always calculates <code class="id">condition</code> before <code class="id">statements</code> execute.
-If <code class="id">condition</code> is initially false, <code class="id">statements</code> do not execute.</p>
+While <code class="id">condition</code> stays true, <code class="id">statements</code> continue to run.
+But when it becomes false, control moves to the statement after <code class="kw">End</code>.</p>
+<p><code class="id">condition</code> always calculates before <code class="id">statements</code> run.
+But if <code class="id">condition</code> is initially false, <code class="id">statements</code> do not run.</p>
 <h3><code>Exit While</code></h3>
-<p>The statement <a href="Exit_Statement.html"><code class="kw">Exit While</code></a> can stop <code class="kw">While</code>.
+<p>The statement <a href="Exit_Statement.html"><code>Exit While</code></a> can stop <code class="kw">While</code>.
 <code class="kw">Exit While</code> immediately moves control to the statement after <code class="kw">End</code>.</p>
 <h3 id="When_statements"><code>When</code> statements</h3>
-<p>To find if <code class="kw">While</code> completed because <code class="id">condition</code> became false, use <code>When Done</code>.</p>
-<p>To find if <code class="kw">While</code> was not executed because <code class="id">condition</code> was initially false, use <code>When None</code>.</p>
+<p>To find if <code class="kw">While</code> completed because <code class="id">condition</code> became false, use <code>When DONE</code>.</p>
+<p>To find if <code class="kw">While</code> was not executed because <code class="id">condition</code> was initially false, use <code>When NONE</code>.</p>
 <p>See <a href="Begin_When_Statements.html"><code>Begin&hellip;When</code> Statements</a> for more information.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
