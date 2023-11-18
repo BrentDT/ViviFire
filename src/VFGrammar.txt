@@ -94,7 +94,7 @@ struct Option {
 	short       warning            = 4;        // Warning[1-5]
 	short       warning_error      = 0;        // Warning[1-5] Error
 	ternary     When_Each_or_Else  = TERNARY0; // When { Each | Else }
-	bool        When_Begin_id      = false;    // When Begin ID
+	bool        When_id            = false;    // When ID
 
 	bool match(const int kind) {
 		if (kind != parser->la->kind) return false;
@@ -233,9 +233,8 @@ struct Option {
 				When_Each_or_Else = TERNARY1; // @Option When Each
 			} else if (match(_Else)) {
 				When_Each_or_Else = TERNARY2; // @Option When Else
-			} else if (match(_Begin)) {
-				if (!match(s_id)) goto bad_option;
-				When_Begin_id = true; // @Option When Begin ID
+			} else if (match(s_id)) {
+				When_id = true; // @Option When ID
 			} else goto bad_option;
 			break;
 		case _identifier: {
@@ -2178,12 +2177,11 @@ LoopControlVariable (. ID(L"LoopControlVariable", STMT) .)
 .
 LoopBody<bool isPreconditional> (. ID(L"LoopBody", STMT) .)
 =
-	(
-		Statement { Statement }
-	|
+	( IF (la->kind == _Exit)
 		(. when_map whens; .)
-		"Begin"
+		"Exit"
 		(. int begin_l = t->line, begin_c = t->col; .)
+		"When"
 		[
 			identifier
 			(.
@@ -2210,6 +2208,8 @@ LoopBody<bool isPreconditional> (. ID(L"LoopBody", STMT) .)
 		WhenStatement<isPreconditional, whens>
 		{ WhenStatement<isPreconditional, whens> }
 		// TODO: if @Option When id Begin id, make sure labels agree with whens.
+	|
+		Statement { Statement }
 	)
 .
 /*M*/
@@ -3283,10 +3283,15 @@ ValueType (. ID(L"ValueType", STMT) .)
 WhenStatement<bool isPreconditional, when_map &whens> (. ID(L"WhenStatement", STMT) .)
 =
 	"When"
-	( identifier
-	| "Each"
+	(
+		"Begin"
+	|
+		identifier
+	|
+		"Each"
 		(. if (option.When_Each_or_Else == TERNARY2) SemErr(L"Must use ELSE because of @OPTION"); .)
-	| "Else" // Equivalent to "Each".
+	|
+		"Else" // Equivalent to "Each".
 		(. if (option.When_Each_or_Else == TERNARY1) SemErr(L"Must use EACH because of @OPTION"); .)
 	)
 	(.
@@ -3296,15 +3301,16 @@ WhenStatement<bool isPreconditional, when_map &whens> (. ID(L"WhenStatement", ST
 	std::wstring id(val);
 	std::transform(id.begin(), id.end(), id.begin(), std::towupper);
 	switch ((whens[id] += 2)) {
-	case 2: // Label not in Begin.
-		if (option.When_Begin_id && kind == _identifier) {
-			SemErr(L"WHEN label must be declared with BEGIN because of @OPTION");
+	case 2: // Label not in Exit When.
+		if (option.When_id && kind == _identifier) {
+			SemErr(L"WHEN label must be declared at EXIT WHEN because of @OPTION");
 		}
 		break;
 	case 3: // Label in Begin and When.
 		break;
 	default: // Duplicate.
 		if (kind == _identifier) SemErr(L"Loop cannot have more than one WHEN with the same label");
+		else if (kind == _Begin) SemErr(L"Loop cannot have more than one WHEN BEGIN");
 		else SemErr(L"Loop cannot have more than one WHEN EACH or WHEN ELSE");
 		break;
 	}
