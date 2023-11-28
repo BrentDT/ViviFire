@@ -50,7 +50,7 @@ The loop runs <code class="id">statements</code> until <code class="id">conditio
 <dd>Optional one or more statements between <code class="kw">Do</code> and <code class="kw">Loop</code>.
 These run while <code class="id">condition</code> is true, or until <code class="id">condition</code> becomes true.</dd>
 <dd>The alternative is two or more groups of statements.
-The first group starts with <code class="kw">Begin</code>, and runs the same as specified above.
+The first group starts with <code class="kw">Exit When</code>, and runs the same as specified above.
 The subsequent groups start with <code class="kw">When</code>, and run when (1) the statements after <code class="kw">Begin</code> cannot start, or (2) after they complete.
 See the <a href="#When_statements">When statements section</a> for more information.</dd>
 <dt><code class="kw">Loop</code></dt>
@@ -74,7 +74,7 @@ If you must run the statements a known number of times, the statement <code clas
 <p>To find if a loop with <code class="kw">Do While</code> was not run because <code class="id">condition</code> was initially false, use the statement <code>When None</code>.</p>
 <p>The post-condition construct does not let you use <code>When None</code>.
 The statements always run a minimum of one time, because the condition comes last.</p>
-<p>See <a href="Begin_When_Statements.html">Begin&hellip;When Statements</a> for more information.</p>
+<p>See <a href="Begin_When_Statements.html">Exit When Clause</a> for more information.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
 <pre><code>Do While

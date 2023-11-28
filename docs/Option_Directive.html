@@ -366,34 +366,35 @@ An example follows.</p>
 </div>
 <h3 id="When" class="notranslate">When</h3>
 <h4><code>@Option When Each</code></h4>
-<p>You must write <code class="kw">When Each</code>, and not <code class="kw">When Else</code>, for statements of the type <code class="kw">Begin&hellip;When</code>.
+<p>You must write <code class="kw">When Each</code>, and not <code class="kw">When Else</code>, for statements in the block <code class="kw">Exit When</code>.
 For example:</p>
 <div class="language-vivifire listing">
 <pre><code>While condition
-Begin
+Exit When
     ' ...
 When Each
     ' ...
 End&#10;</code></pre>
 </div>
 <h4><code>@Option When Else</code></h4>
-<p>You must write <code class="kw">When Else</code>, and not <code class="kw">When Each</code>, for statements of the type <code class="kw">Begin&hellip;When</code>.
+<p>You must write <code class="kw">When Else</code>, and not <code class="kw">When Each</code>, for statements in the block <code class="kw">Exit When</code>.
 For example:</p>
 <div class="language-vivifire listing">
 <pre><code>While condition
-Begin
+Exit When
     ' ...
 When Else
     ' ...
 End&#10;</code></pre>
 </div>
-<h4><code>@Option When Begin ID</code></h4>
-<p>You must write all the labels that are after each <code class="kw">When</code> (in a loop) also after <code class="kw">Begin</code>.
+<h4><code>@Option When ID</code></h4>
+<p>You must write all the labels that are after each <code class="kw">When</code> (in a loop) also after <code class="kw">Exit When</code>.
 Thus it becomes an error not to supply this list.
 For example:</p>
 <div class="language-vivifire listing">
 <pre><code>While NextResult?
-Begin found ' mandatory
+Exit When found ' mandatory
+When Each
     ' ...
 When found
     ' ...
@@ -401,10 +402,10 @@ End&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles" style="display: inline-block; columns: 2">
-<li><a href="Begin_When_Statements.html">Begin&hellip;When Statements</a></li>
 <li><a href="Constructor_Statement.html">Constructor Statement</a></li>
 <li><a href="Dim_Statement.html">Dim Statement</a></li>
 <li><a href="Enum_Statement.html">Enum Statement</a></li>
+<li><a href="Begin_When_Statements.html">Exit When Clause</a></li>
 <li><a href="For_Each_In_Statement.html">For Each Statement</a></li>
 <li><a href="For_To_Statement.html">For Statement</a></li>
 <li><a href="If_Then_Else_Statement.html">If&hellip;Else Statement</a></li>

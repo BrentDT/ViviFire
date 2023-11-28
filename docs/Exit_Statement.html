@@ -38,10 +38,12 @@
 <span class="kws"><code>Do</code>, <code>For</code>, or <code>While</code></span>.
 You can write a comma between each loop keyword to make a list.</dd>
 <dt><code class="id">identifier</code></dt>
-<dd>An identifier that is the same as one that you gave in the line <code class="kw">Begin</code> of <code class="kw">Begin&hellip;When</code>.</dd>
+<dd>An identifier that is the same as one given in a block that starts with <code class="kw">When</code>.
+You can use this construct only after <code class="kw">Exit When</code>.</dd>
 <dt><code class="kw">Exit Program</code></dt>
-<dd>Immediately stops the program module.
-Control returns to the process that started the program.</dd>
+<dd>Immediately stops the program.
+Control returns to the process that started the program.
+You can use this construct only in a module of type <code class="kw">Program</code>.</dd>
 <dt><code class="id">exit_code</code></dt>
 <dd>Optional integer value.
 The default value is zero (0).</dd>
@@ -66,37 +68,7 @@ The procedure returns the value of the variable with the same name as the proced
 Execution returns to the line that called the procedure, if there are more procedures to call.
 The procedure returns the value of the variable with the same name as the procedure.</p>
 <p><code class="kw">Exit While</code> immediately stops a loop of type <code class="kw">While</code>.
-Execution continues with the line after <code class="kw">End While</code>.</p><h3>With Begin&hellip;When</h3>
-<p>You must be careful when you use <code class="kw">Exit</code> in <code class="kw">Begin&hellip;When</code>.
-This construct lets you catch when a loop completes correctly.
-When you use <code class="kw">Exit</code> with <code>keyword_list</code> to stop a loop, <code>When Done</code> and <code>When Else</code> are ignored.</p>
-<p>You use <code>Exit identifier</code> to stop a loop and move execution to the line <code class="kw">When</code> with the given <code>identifier</code>.</p>
-<h3>With nested structures</h3>
-<p>When <code class="kw">Exit</code> is used in nested structures of the same type (for example, two <code class="kw">For</code> loops), <code class="kw">Exit</code> moves out of the most inner structure and gives control to the next higher level.
-If you must move out of more than one level, you can write each structure's keyword in sequence, with a comma between each one.
-See the example below.</p>
-<h2>Examples</h2>
-<h3>Begin&hellip;When</h3>
-<div class="language-vivifire listing">
-<pre><code>For Each name$ In names$()
-  Begin found
-    If name$ = match$ Then Exit found
-  When found
-    PrintLine "Match found."
-  When DONE
-    PrintLine "No matches found."
-End For&#10;</code></pre>
-</div>
-<h3>Nested For loops</h3>
-<div class="language-vivifire listing">
-<pre><code>For i = 0 To 9
-    For j = 0 To 9
-        ' If element is zero, exit the two loops.
-        If array(i, j) = 0 Then Exit For, For
-    End For
-End For&#10;</code></pre>
-</div>
-<h3>Exit Program</h3>
+Execution continues with the line after <code class="kw">End While</code>.</p><h3>Exit Program</h3>
 <p><code class="kw">Exit Program</code> causes the program to stop.
 Control returns to the operating system or another parent program that started it.</p>
 <p>Your program can return an integer value to show failure with <code class="id">exit_code</code>.
@@ -109,9 +81,39 @@ For most operating systems, this value is zero (0).</li>
 For most operating systems, this value is one (1).</li>
 </ul>
 <p>We recommend that you use these constants for code portability.</p>
+<h3>Using <code>Exit</code> with <code>Exit When</code></h3>
+<p>You must be careful when you use <code class="kw">Exit</code> in the block <code class="kw">Exit When</code>.
+This construct lets you do something when a loop completes.
+When you use <code class="kw">Exit</code> with <code class="id">keyword_list</code> to stop a loop, <code>When Done</code> and <code>When Each</code> or <code>When Else</code> are ignored.</p>
+<p>You use <code>Exit identifier</code> to stop a loop and move execution to the line <code class="kw">When</code> with the same identifier.</p>
+<h3>With nested structures</h3>
+<p>When <code class="kw">Exit</code> is used in nested structures of the same type (for example, two <code class="kw">For</code> loops), <code class="kw">Exit</code> moves out of the most inner structure and gives control to the next higher level.
+If you must move out of more than one level, you can write each structure's keyword in sequence, with a comma between each one.
+See the example below.</p>
+<h2>Examples</h2>
+<h3><code>Exit When</code></h3>
+<div class="language-vivifire listing">
+<pre><code>For Each name$ In names$()
+Exit When found
+    If name$ = match$ Then Exit found
+When found
+    PrintLine "Match found."
+When DONE
+    PrintLine "No matches found."
+End For&#10;</code></pre>
+</div>
+<h3>Nested For loops</h3>
+<div class="language-vivifire listing">
+<pre><code>For i = 0 To 9
+    For j = 0 To 9
+        ' If element is zero, exit the two loops.
+        If array(i, j) = 0 Then Exit For, For
+    End For
+End For&#10;</code></pre>
+</div>
 <h2>See also</h2>
 <ul class="articles">
-<li><a href="Begin_When_Statements.html">Begin&hellip;When Statements</a></li>
+<li><a href="Begin_When_Statements.html">Exit When Clause</a></li>
 <li><a href="Constructor_Statement.html">Constructor Statement</a></li>
 <li><a href="Do_Loop_Statement.html">Do&hellip;Loop Statement</a></li>
 <li><a href="For_Each_In_Statement.html">For Each Statement</a></li>
