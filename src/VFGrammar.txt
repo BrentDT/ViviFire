@@ -1238,9 +1238,8 @@ BitShiftExpression (. ID(L"BitShift", EXPR) .)
 =
 	UnaryExpression { ( "SHL" | "SHR" ) UnaryExpression }
 .
-Block<int &tkn> (. ID(L"Block", STMT) .)
+Block (. ID(L"Block", STMT) .)
 =
-	(. tkn = la->kind; .)
 	( "Constructor" | "Do" | "For" | "Function" | "Method" | "Property" | "Sub" | "While" )
 .
 BlockStatement<Modif &mods> (. ID(L"BlockStatement", STMT) .)
@@ -1842,11 +1841,11 @@ ExitStatement (. ID(L"ExitStatement", STMT) .)
 	(
 		identifier
 		(.
-		if (std::find(context.rbegin(), context.rend(), _Begin) == context.rend())
-		    SemErr(L"EXIT label without BEGIN...WHEN");
+		if (std::find(context.rbegin(), context.rend(), _When) == context.rend())
+		    SemErr(L"EXIT label without EXIT WHEN");
 		.)
 	|
-		Block<kind>
+		Block (. kind = t->kind; .)
 		(.
 		auto it = std::find(context.rbegin(), context.rend(), kind);
 		if (it == context.rend())
@@ -1857,7 +1856,7 @@ ExitStatement (. ID(L"ExitStatement", STMT) .)
 		.)
 		{
 			WEAK comma
-			Block<kind>
+			Block (. kind = t->kind; .)
 			(.
 			it = std::find(++it, context.rend(), kind);
 			if (it == context.rend())
@@ -2177,10 +2176,9 @@ LoopControlVariable (. ID(L"LoopControlVariable", STMT) .)
 .
 LoopBody<bool isPreconditional> (. ID(L"LoopBody", STMT) .)
 =
-	( IF (la->kind == _Exit)
+	( IF (la->kind == _Exit && scanner->Peek()->kind == _When)
 		(. when_map whens; .)
-		"Exit"
-		(. int begin_l = t->line, begin_c = t->col; .)
+		"Exit" (. int line = t->line, col = t->col; .)
 		"When"
 		[
 			identifier
@@ -2202,13 +2200,22 @@ LoopBody<bool isPreconditional> (. ID(L"LoopBody", STMT) .)
 			}
 		]
 		SyncNewline<s_name>
-		(. context.push_back(_Begin); .)
+		(. context.push_back(_When); .)
 		{ Statement }
 		(. context.pop_back(); .)
 		WhenStatement<isPreconditional, whens>
 		{ WhenStatement<isPreconditional, whens> }
-		// TODO: if @Option When id Begin id, make sure labels agree with whens.
+		// TODO: if @Option When ID, make sure labels agree with When's.
 	|
+		(.
+		if (la->kind == _Exit) {
+			Err(la->line, la->col, L"EXIT cannot be first in loop");
+			ExitStatement();
+			SyncNewline(s_name);
+			// Return if EXIT was the only statement.
+			if (la->kind == _End || la->kind == _Loop) return;
+		}
+		.)
 		Statement { Statement }
 	)
 .
@@ -3306,7 +3313,7 @@ WhenStatement<bool isPreconditional, when_map &whens> (. ID(L"WhenStatement", ST
 			SemErr(L"WHEN label must be declared at EXIT WHEN because of @OPTION");
 		}
 		break;
-	case 3: // Label in Begin and When.
+	case 3: // Label in Exit When and When.
 		break;
 	default: // Duplicate.
 		if (kind == _identifier) SemErr(L"Loop cannot have more than one WHEN with the same label");
