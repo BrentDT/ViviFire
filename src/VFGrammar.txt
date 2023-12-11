@@ -2207,15 +2207,13 @@ LoopBody<bool isPreconditional> (. ID(L"LoopBody", STMT) .)
 		{ WhenStatement<isPreconditional, whens> }
 		// TODO: if @Option When ID, make sure labels agree with When's.
 	|
-		(.
-		if (la->kind == _Exit) {
-			Err(la->line, la->col, L"EXIT cannot be first in loop");
-			ExitStatement();
-			SyncNewline(s_name);
+		[ IF (la->kind == _Exit)
+			(. Err(la->line, la->col, L"EXIT cannot be first statement in loop. Possibly you wanted EXIT WHEN."); .)
+			ExitStatement
+			SyncNewline<s_name>
 			// Return if EXIT was the only statement.
-			if (la->kind == _End || la->kind == _Loop) return;
-		}
-		.)
+			(. if (la->kind == _End || la->kind == _Loop) return; .)
+		]
 		Statement { Statement }
 	)
 .
