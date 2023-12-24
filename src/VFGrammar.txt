@@ -2447,7 +2447,51 @@ MultiplicativeExpression (. ID(L"Multiplicative", EXPR) .)
 .
 MultiplicativeOperator (. ID(L"MultiplicativeOperator", STMT) .)
 =
-	( '*' | '/' | "Div" | "Mod" | "Rem" )
+	(.
+	static int s_mod_line = 0, s_rem_line = 0, s_col = 0;
+	static const int WARNED = -1; // Invalid line number used as a flag.
+	.)
+	(
+		"*"
+	|
+		"/"
+	|
+		"Div"
+	|
+		"Mod"
+		(.
+		if (0 == s_mod_line) {
+			s_mod_line = t->line;
+			if (0 == s_rem_line) {
+				s_col = t->col;
+			} else if (!option.Mod_floored) {
+				Warn(s_rem_line, s_col, L"You used REM here...");
+				Warn(s_mod_line, t->col,
+					L"And you used MOD here, although they are the same operation."
+					L" Possibly you want the directive @OPTION MOD FLOORED?"
+				);
+				s_mod_line = s_rem_line = WARNED; // Prevent more warnings.
+			}
+		}
+		.)
+	|
+		"Rem"
+		(.
+		if (0 == s_rem_line) {
+			s_rem_line = t->line;
+			if (0 == s_mod_line) {
+				s_col = t->col;
+			} else if (!option.Mod_floored) {
+				Warn(s_mod_line, s_col, L"You used MOD here...");
+				Warn(s_rem_line, t->col,
+					L"And you used REM here, although they are the same operation."
+					L" Possibly you want the directive @OPTION MOD FLOORED?"
+				);
+				s_mod_line = s_rem_line = WARNED; // Prevent more warnings.
+			}
+		}
+		.)
+	)
 .
 /*N*/
 Name (. ID(L"Name", STMT) .)
