@@ -8,6 +8,8 @@ RewriteEngine On
 RewriteBase /ViviFire/docs/
 
 RewriteRule ^(index\.html|newest\.php)$ index.php [R=301,L]
+# Dec 2023
+RewriteRule ^ViviFire_from_the_Beginning\.html$ ViviFire_from_Start.html [R=301,L]
 
 # Implicit_and_Explicit_Conversions.html Automatic-and-Non-Automatic-Conversions
 # Troubleshooting_Data_Types.html Data-Type-Troubleshooting
@@ -16,7 +18,6 @@ RewriteRule ^(index\.html|newest\.php)$ index.php [R=301,L]
 # Call_Event_Statement.html Raise-Event-Statement
 # If_Then_Else_Directives.html If-Directive
 # If_Then_Else_Statement.html If-Statement
-# ViviFire_from_the_Beginning.html ViviFire-from-the-Start
 # Typographic_Conventions.html Typography-Used-by-This-Manual
 # For_To_Statement.html For-Statement
 # For_Each_In_Statement.html For-Each-Statement
