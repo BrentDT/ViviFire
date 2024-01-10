@@ -844,7 +844,7 @@ t = '\t'.
 
 ctrl = '\u0000' .. '\u001f'.
 ws = ctrl + '\u0020' + '\u00a0'.
-eol = n + r.
+eol = n + r + /*VT*/ '\u000b' + /*FF*/ '\u000c' + /*LS*/ '\u2028' + /*PS*/ '\u2029'.
 notEOL = ANY - ctrl - eol.
 
 alpha = 'A' .. 'Z' + '\u00b5' /*Greek micro*/ + '\u03bc' /*Greek mu*/.
