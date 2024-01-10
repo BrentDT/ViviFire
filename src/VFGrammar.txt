@@ -2438,7 +2438,9 @@ ModuleStatement<bool bProcEntry, Modif &mods> (. ID(L"ModuleStatement", STMT) .)
 		BlockStatement<mods>
 	|
 		(. mods.validate(); .)
-		SimpleStatement SyncNewline<s_name>
+		SimpleStatement
+		{ ";" SimpleStatement }
+		SyncNewline<s_name>
 	)
 .
 MultiplicativeExpression (. ID(L"Multiplicative", EXPR) .)
@@ -2945,8 +2947,9 @@ Statement (. ID(L"Statement", STMT) .)
 		DeclarationStatement<mods>
 	|
 		(. mods.validate(); .)
-		SimpleStatement SyncNewline<s_name>
-
+		SimpleStatement
+		{ ";" SimpleStatement }
+		SyncNewline<s_name>
 	)
 .
 StringExpression<std::wstring &res> (. ID(L"String", EXPR) .)
