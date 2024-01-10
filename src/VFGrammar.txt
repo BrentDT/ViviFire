@@ -2058,6 +2058,7 @@ IfStatement (. ID(L"IfStatement", STMT) .)
 			(. if (option.If_End) SemErr(L"IF must use block construct because of @OPTION"); .)
 			( SimpleStatement | SimpleStatementError )
 			[ "Else" ( SimpleStatement | SimpleStatementError ) ]
+			(. if (_semicolon == la->kind) Err(la->line, la->col, L"Cannot have more than one statement after THEN or ELSE"); .)
 		)
 	|
 		IfBlockStatement<line, col, WITHOUT_THEN>
