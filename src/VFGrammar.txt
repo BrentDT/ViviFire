@@ -1130,24 +1130,42 @@ ViviFire (. ID(L"ViviFire", STMT) .)
 	Module
 
 	// Catch errors in block statements.
-	[ "Begin"        (. SemErr(L"BEGIN without NEW or loop"); .)
-	| "Case"         (. SemErr(L"CASE without SELECT"); .)
-	| "Catch"        (. SemErr(L"CATCH without TRY"); .)
-	| "Constructor"  (. SemErr(L"CONSTRUCTOR without CLASS"); .)
-	| "Destructor"   (. SemErr(L"DESTRUCTOR without CLASS"); .)
-	| "Get"          (. SemErr(L"GET without PROPERTY"); .)
-	| "Else"         (. SemErr(L"ELSE without IF"); .)
-	| "End"          (. SemErr(L"END without start"); .)
-	| "Finally"      (. SemErr(L"FINALLY without TRY"); .)
-	| "Loop"         (. SemErr(L"LOOP without DO"); .)
-	| "Rem"          (. SemErr(L"REM is not a comment. Try ' or //"); .)
-	| "Require"      (. SemErr(L"REQUIRE must come before statements"); .)
-	| "Set"          (. SemErr(L"SET without PROPERTY"); .)
-	| "Then"         (. SemErr(L"THEN without IF"); .)
-	| "Until"        (. SemErr(L"UNTIL without DO or LOOP"); .)
-	| "When"         (. SemErr(L"WHEN without BEGIN"); .)
-	| "Where"        (. SemErr(L"WHERE is not permitted here"); .)
-	| ConstantValueError
+	[
+		"Begin" (. SemErr(L"BEGIN without NEW or WHEN"); .)
+	|
+		"Case" (. SemErr(L"CASE without SELECT"); .)
+	|
+		"Catch" (. SemErr(L"CATCH without TRY"); .)
+	|
+		"Constructor" (. SemErr(L"CONSTRUCTOR without CLASS or STRUCT"); .)
+	|
+		"Destructor" (. SemErr(L"DESTRUCTOR without CLASS"); .)
+	|
+		"Get" (. SemErr(L"GET without PROPERTY"); .)
+	|
+		"Else" (. SemErr(L"ELSE without IF"); .)
+	|
+		"End" (. SemErr(L"END without start"); .)
+	|
+		"Finally" (. SemErr(L"FINALLY without TRY"); .)
+	|
+		"Loop" (. SemErr(L"LOOP without DO"); .)
+	|
+		"Rem" (. SemErr(L"REM is not a comment. Try ' or //"); .)
+	|
+		"Require" (. SemErr(L"REQUIRE must be before statements"); .)
+	|
+		"Set" (. SemErr(L"SET without PROPERTY"); .)
+	|
+		"Then" (. SemErr(L"THEN without IF"); .)
+	|
+		"Until" (. SemErr(L"UNTIL without DO or LOOP"); .)
+	|
+		"When" (. SemErr(L"WHEN without EXIT WHEN"); .)
+	|
+		"Where" (. SemErr(L"WHERE is not permitted here"); .)
+	|
+		ConstantValueError
 	]
 
 	EOF
