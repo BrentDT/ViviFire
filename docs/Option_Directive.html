@@ -57,6 +57,7 @@ And also lets you change how some functions operate.</p>
 </ol>
 </details>
 </nav>
+<section aria-labelledby="Args">
 <h3 id="Args" class="notranslate">Args</h3>
 <h4><code>@Option Args ByName { Boolean | Literal }</code></h4>
 <p>Procedure calls that have one or more Booleans or literals for arguments can show a warning if not passed by name.
@@ -68,10 +69,14 @@ The warning has a level of <code>Warning4</code>.</p>
 Procedure declarations start with one of these keywords: <span class="kws"><code>Function</code>, <code>Method</code>, or <code>Sub</code></span>.
 You must supply empty parentheses if a procedure has no parameters.
 And if a procedure call does not have arguments, you must write empty parentheses or a question mark (<code class="op">?</code>).</p>
+</section>
+<section aria-labelledby="Charset">
 <h3 id="Charset" class="notranslate">Charset</h3>
 <h4><code>@Option charset Latin</code></h4>
 <p>All names must use the Latin character set.
 That is letters (&lsquo;A&rsquo; thru &lsquo;Z&rsquo;), digits (&lsquo;0&rsquo; thru &lsquo;9&rsquo;), and underscores (&lsquo;_&rsquo;).</p>
+</section>
+<section aria-labelledby="Dim">
 <h3 id="Dim" class="notranslate">Dim</h3>
 <h4><code>@Option Dim</code></h4>
 <p>You must start a variable declaration with <code class="kw">Dim</code>, and not <code class="kw">Var</code>.
@@ -85,6 +90,8 @@ For example:</p>
 <div class="language-vivifire listing">
 <pre><code>Var x As Int32&#10;</code></pre>
 </div>
+</section>
+<section aria-labelledby="End">
 <h3 id="End" class="notranslate">End</h3>
 <h4><code>@Option End Block</code></h4>
 <p>You must write <code class="kw">End</code> plus the block type.
@@ -120,6 +127,8 @@ For example:</p>
   ' ...
 End For&#10;</code></pre>
 </div>
+</section>
+<section aria-labelledby="Enum">
 <h3 id="Enum" class="notranslate">Enum</h3>
 <h4><code>@Option Enum ID</code></h4>
 <p>You must give a name to all statements of the type <code class="kw">Enum</code>.
@@ -146,6 +155,8 @@ For example:</p>
   second = 2
 End&#10;</code></pre>
 </div>
+</section>
+<section aria-labelledby="If">
 <h3 id="If" class="notranslate">If</h3>
 <h4><code>@Option If Then</code></h4>
 <p>You must write <code class="kw">Then</code> with all statements of the type <code class="kw">If&hellip;Else</code>.
@@ -171,9 +182,13 @@ End&#10;</code></pre>
 <p>You must complete statements of the type <code class="kw">If&hellip;Else</code> with <code class="kw">End</code> or <code class="kw">End If</code>.
 If you use &ldquo;<code>@Option End Block</code>&rdquo;, you must write <code class="kw">End If</code>.
 Thus, use of the one-line construct becomes an error.</p>
+</section>
+<section aria-labelledby="Last">
 <h3 id="Last" class="notranslate">Last</h3>
 <h4><code>@Option Last</code></h4>
 <p>No more directives of the type <code class="at">@Option</code> are permitted after this one.</p>
+</section>
+<section aria-labelledby="Mod">
 <h3 id="Mod" class="notranslate">Mod</h3>
 <h4><code>@Option Mod Floored</code></h4>
 <p>Changes how the operators <code class="kw">Mod</code> and <code class="op">Mod=</code> operate.
@@ -203,6 +218,8 @@ This alternative operation is known as <dfn>floored modulo</dfn>.</p>
 	<td><samp>-1</samp></td></tr>
 </tbody>
 </table>
+</section>
+<section aria-labelledby="New">
 <h3 id="New" class="notranslate">New</h3>
 <h4><code>@Option New</code></h4>
 <p>You must start <code class="kw">New</code> Statements with <code class="kw">New</code>.
@@ -216,6 +233,8 @@ Begin
   ' ...
 End New&#10;</code></pre>
 </div>
+</section>
+<section aria-labelledby="Optional">
 <h3 id="Optional" class="notranslate">Optional</h3>
 <h4><code>@Option Optional Equals</code></h4>
 <p>You must give a value to an optional parameter with the operator &ldquo;<code class="op">=</code>&rdquo;.
@@ -225,6 +244,8 @@ For example:</p>
   ' ...
 End&#10;</code></pre>
 </div>
+</section>
+<section aria-labelledby="Select">
 <h3 id="Select" class="notranslate">Select</h3>
 <h4><code>@Option Select Case</code></h4>
 <p>You must write <code class="kw">Select Case</code> in all statements of the type <code class="kw">Select&hellip;Case</code>.
@@ -255,6 +276,8 @@ End&#10;</code></pre>
 <h4><code>@Option Select Strict String</code></h4>
 <p>You must write the clause &ldquo;<code class="kw">Case Else</code>&rdquo; for all statements of the type <code class="kw">Select&hellip;Case</code> that compare strings.
 But <code class="kw">Case Else</code> will not be mandatory for other data types.</p>
+</section>
+<section aria-labelledby="String">
 <h3 id="String" class="notranslate">String</h3>
 <h4><code>@Option String Backslash</code></h4>
 <p>You must write a path string with backslashes, not slashes.
@@ -268,6 +291,8 @@ For example:</p>
 <div class="language-vivifire listing">
 <pre><code>Const BITMAP_DIR = &quot;media&quot;/&quot;bmp&quot;&#10;</code></pre>
 </div>
+</section>
+<section aria-labelledby="Test">
 <h3 id="Test" class="notranslate">Test</h3>
 <h4><code>@Option Test</code></h4>
 <p>The module contains only unit tests.
@@ -290,13 +315,17 @@ x = 1 // expect-error {{Variable was not declared}} TBD
 Const _BAD_NAME = "The user name is not valid."
     ' expect-error {{Invalid Name}}&#10;</code></pre>
 </div>
+</section>
+<section aria-labelledby="Type">
 <h3 id="Type" class="notranslate">Type</h3>
-<h4><code>@Option Type Each [ Param | Var ]</code></h4>
-<p>You must specify a data type for each name in the given location.
-If you use <code>Type Each Param</code>, each parameter in a parameter list of a procedure must specify a data type.
-And if you use <code>Type Each Var</code>, each variable in a variable declaration must specify a data type.
-But if you do not supply a location (<code>Type Each</code>), you must specify a data type in all locations.</p>
-<p>You can specify a data type as follows:</p>
+<h4><code>@Option Type { Each | Param | Var }</code></h4>
+<p>You must supply a data type for each name in the given location.</p>
+<ul>
+<li><code>Type Param</code> &ndash; Each parameter in a parameter list of a procedure must have a data type.</li>
+<li><code>Type Var</code> &ndash; Each variable in a variable declaration must have a data type.</li>
+<li><code>Type Each</code> &ndash; All parameters and variables must have a Data Type.</li>
+</ul>
+<p>You can supply the data type as follows:</p>
 <ul>
 <li>Type name: <code>name <kbd>As</kbd> Int16</code></li>
 <li>Unit name: <code>name <kbd>In</kbd> meters</code></li>
@@ -315,7 +344,7 @@ PromptInput "Enter second number: ", y
 sum = Add(x, y)
 PrintLine "The sum of " &amp; x &amp; " and " &amp; y &amp; " is " &amp; sum &amp; "."&#10;</code></pre>
 </div>
-<p>With <code>Type Each Param</code> (or <code>Type Each</code>), The line that follows becomes an error.</p>
+<p>With <code>Type Param</code> (or <code>Type Each</code>), The line that follows becomes an error.</p>
 <div class="language-vivifire listing">
 <pre><code>Sub Add(a, b As Int32) As Int32&#10;</code></pre>
 </div>
@@ -323,7 +352,7 @@ PrintLine "The sum of " &amp; x &amp; " and " &amp; y &amp; " is " &amp; sum &am
 <div class="language-vivifire listing">
 <pre><code>Sub Add(a <ins>As Int32</ins>, b As Int32) As Int32&#10;</code></pre>
 </div>
-<p>With <code>Type Each Var</code> (or <code>Type Each</code>), the line that follows is a also an error.</p>
+<p>With <code>Type Var</code> (or <code>Type Each</code>), the line that follows is a also an error.</p>
 <div class="language-vivifire listing">
 <pre><code>Var x, y, sum As Int32&#10;</code></pre>
 </div>
@@ -331,10 +360,14 @@ PrintLine "The sum of " &amp; x &amp; " and " &amp; y &amp; " is " &amp; sum &am
 <div class="language-vivifire listing">
 <pre><code>Var x <ins>As Int32</ins>, y <ins>As Int32</ins>, sum As Int32&#10;</code></pre>
 </div>
+</section>
+<section aria-labelledby="Unit">
 <h3 id="Unit" class="notranslate">Unit</h3>
 <h4><code>@Option Unit Full</code></h4>
 <p>You must write the full names of units of measure.
 Thus &ldquo;kilometer&rdquo; is correct syntax, but &ldquo;km&rdquo; is incorrect.</p>
+</section>
+<section aria-labelledby="Warning">
 <h3 id="Warning" class="notranslate">Warning</h3>
 <h4><code>@Option Warning[1-5]</code></h4>
 <table>
@@ -364,6 +397,8 @@ An example follows.</p>
 <pre><code>@Option Warning1 Error
 @Option Warning5&#10;</code></pre>
 </div>
+</section>
+<section aria-labelledby="When">
 <h3 id="When" class="notranslate">When</h3>
 <h4><code>@Option When Each</code></h4>
 <p>You must write <code class="kw">When Each</code>, and not <code class="kw">When Else</code>, for statements in the block <code class="kw">Exit When</code>.
@@ -400,6 +435,7 @@ When found
     ' ...
 End&#10;</code></pre>
 </div>
+</section>
 <h2>See also</h2>
 <ul class="articles" style="display: inline-block; columns: 2">
 <li><a href="Constructor_Statement.html">Constructor Statement</a></li>

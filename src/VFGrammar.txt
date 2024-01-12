@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2023 Brent D. Thorn
+ * Copyright 2024 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.com/.
  *
@@ -89,7 +89,7 @@ struct Option {
 	Slash       String_slash       = Slash::DEFAULT; // String { Backslash | Slash }
 	ternary     test_unit_or_comp  = TERNARY0; // Test [ Compiler ]
 	enum class Each { DEFAULT, Each, Param, Var };
-	Each        type_each          = Each::DEFAULT; // Type Each [ Param | Var ]
+	Each        type_each          = Each::DEFAULT; // Type { Each | Param | Var }
 	bool        unit_full          = false;    // Unit Full
 	short       warning            = 4;        // Warning[1-5]
 	short       warning_error      = 0;        // Warning[1-5] Error
@@ -269,17 +269,16 @@ struct Option {
 				}
 				break;
 			} else if (4 == len && match(L"type")) {
-				if (!match(_Each)) goto bad_option;
-				if (match(L"param")) {
-					type_each = Each::Param; // @Option Type Each Param
-					break;
-				} else if (match(_Var)) {
-					type_each = Each::Var; // @Option Type Each Var
-					break;
-				} else {
+				if (match(_Each)) {
 					type_each = Each::Each; // @Option Type Each
 					break;
-				}
+				}else if (match(L"param")) {
+					type_each = Each::Param; // @Option Type Param
+					break;
+				} else if (match(_Var)) {
+					type_each = Each::Var; // @Option Type Var
+					break;
+				} else goto bad_option;
 			} else if (len >= 7 && left_match(s_warning)) {
 				short level = (short)parser->t->val[coco_string_length(s_warning)]; // Valid: '\0', '1', '2', '3', '4', & '5'.
 				if (level == 0) {
