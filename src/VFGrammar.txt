@@ -437,14 +437,22 @@ std::wstring StringValue(wchar_t *s) {
 
 	if (s[0] == L'_') s++; // Ignore leading underscore.
 
-	if (s[0] == L'"') { // Quoted string literal.
-		// Remove unnecessary quotes.
+	bool interpolated = false;
+
+	// Quoted string literal.
+	if ( (s[0] == L'"')
+	|| (interpolated = (s[0] == L'$' && s[1] == L'"')) ) {
+		// Remove '$' and unnecessary quotes.
 		std::wstring res;
+		if (interpolated) s++; // Move past '$'.
 		for (wchar_t *p = s + 1; *p; p++) {
 			if (*p != L'"') res += *p;
 			else if (p[1] == L'"') res += *p++; // Two quotes become one.
 			// End quote is skipped automatically.
 		}
+
+		// TODO: Parse interpolated string.
+
 		return res;
 	} else if (s[0] == L'$') { // String constant.
 		// Handle character codes. Make sure to return if valid.
@@ -964,13 +972,14 @@ string_constant =
 	'$'alnum{['_']alnum}.
 
 string_literal =
-	['_']          // continuation
+	["_"]          // continuation
+	["$"]          // interpolated string (eg $"Hello {name}!")
 	'"'{str}'"'    // usual string
 	{'"'{str}'"'}  // double quotes
 	.
 
 malformed_string_literal =
-	["_"]'"'{str}{'"''"'{str}}.
+	["_"]["$"]'"'{str}{'"''"'{str}}.
 
 time_literal =
 	dec{dec}":"dec{dec}[":"dec{dec}["."dec{dec}]].
