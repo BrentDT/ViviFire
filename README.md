@@ -1,15 +1,15 @@
 # The ViviFire Programming Language
 
-ViviFire is a brand new open-source programming language with modern features
-and a familiar syntax.  It offers object-oriented programming with genericity
-and traits, modularity, units of measure, and more.
+ViviFire is a new open-source programming language with modern features and
+a familiar syntax.  Its features include object-oriented, functional,
+declarative and modular programming, generics, traits, units of measure, and
+more.
 
-Currently, ViviFire is at an alpha stage of development.  The language is still
-evolving, and may change dramatically before it's complete.  If you are
-interested in how a language is created, join us and help make it great!
+ViviFire is alpha software.  The language is not stable.  It can change very
+frequently and quickly before it becomes stable.
 
-The source code for ViviFire is released under the MIT license.
-The documentation is released under Creative Commons CC0 (public domain).
+The source code for ViviFire is released under the MIT license.  And the
+documentation is released under Creative Commons CC0 (public domain).
 
 To learn more about the language, [visit the home page](http://vivifire.com).
 
@@ -42,7 +42,7 @@ Begin
         .OnClick = Sub
             @Shared Var count As Int32
             count += 1
-            text.Caption = "Clicked " & count & " times."
+            text.Caption = $"Clicked {count} times."
         End
     End
 End
