@@ -39,8 +39,8 @@ You must use <code class="kw">Yield</code> in a method or <code class="kw">Get</
 An <dfn>iterator</dfn> is a procedure that does special iterations through a collection.</p>
 <p>The statement <code class="kw">For Each</code> consumes data from an iterator.
 Each iteration of the loop calls the iterator procedure.
-While in the procedure, <code class="kw">Yield</code> returns <code class="id">expression</code> and stores the location where execution stopped.
-Execution starts again from that location with a subsequent call to the iterator.</p>
+While in the procedure, <code class="kw">Yield</code> returns <code class="id">expression</code> and stores the location where it stopped.
+Control starts again from that location with a subsequent call to the iterator.</p>
 <p>The data type of <code class="id">expression</code> must be compatible with the return type of the procedure.</p>
 <p>You can use one of the statements <span class="kws"><code>Exit Method</code>, <code>Exit Property</code>, or <code>Return</code></span> to stop the iterator.</p>
 <h2>Iterator procedures</h2>

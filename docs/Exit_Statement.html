@@ -50,25 +50,25 @@ The default value is zero (0).</dd>
 </dl>
 <h2>Instructions</h2>
 <p><code class="kw">Exit Constructor</code> immediately stops a procedure of type <code class="kw">Constructor</code>.
-Execution returns to the line that called the procedure, if there are more procedures to call.</p>
+Control returns to the line that called the procedure, if there are more procedures to call.</p>
 <p><code class="kw">Exit Do</code> immediately stops a loop of type <code class="kw">Do&hellip;Loop</code>.
-Execution continues with the line after <code class="kw">Loop</code>.</p>
+Control continues with the line after <code class="kw">Loop</code>.</p>
 <p><code class="kw">Exit For</code> immediately stops a loop of types <code class="kw">For</code> or <code class="kw">For Each</code>.
-Execution continues with the line after <code class="kw">End For</code>.</p>
+Control continues with the line after <code class="kw">End For</code>.</p>
 <p><code class="kw">Exit Function</code> immediately stops a procedure of type <code class="kw">Function</code>.
-Execution returns to the line that called the procedure, if there are more procedures to call.
+Control returns to the line that called the procedure, if there are more procedures to call.
 The procedure returns the value of the variable with the same name as the procedure.</p>
 <p><code class="kw">Exit Method</code> immediately stops a procedure of type <code class="kw">Method</code>.
-Execution returns to the line that called the procedure, if there are more procedures to call.
+Control returns to the line that called the procedure, if there are more procedures to call.
 The procedure returns the value of the variable with the same name as the procedure.</p>
 <p><code class="kw">Exit Property</code> immediately stops a procedure of type <code class="kw">Property</code>.
-Execution returns to the line that called the procedure, if there are more procedures to call.
+Control returns to the line that called the procedure, if there are more procedures to call.
 The procedure returns the value of the variable with the same name as the procedure.</p>
 <p><code class="kw">Exit Sub</code> immediately stops a procedure of type <code class="kw">Sub</code>.
-Execution returns to the line that called the procedure, if there are more procedures to call.
+Control returns to the line that called the procedure, if there are more procedures to call.
 The procedure returns the value of the variable with the same name as the procedure.</p>
 <p><code class="kw">Exit While</code> immediately stops a loop of type <code class="kw">While</code>.
-Execution continues with the line after <code class="kw">End While</code>.</p><h3>Exit Program</h3>
+Control continues with the line after <code class="kw">End While</code>.</p><h3>Exit Program</h3>
 <p><code class="kw">Exit Program</code> causes the program to stop.
 Control returns to the operating system or another parent program that started it.</p>
 <p>Your program can return an integer value to show failure with <code class="id">exit_code</code>.
@@ -84,8 +84,8 @@ For most operating systems, this value is one (1).</li>
 <h3>Using <code>Exit</code> with <code>Exit When</code></h3>
 <p>You must be careful when you use <code class="kw">Exit</code> in the block <code class="kw">Exit When</code>.
 This construct lets you do something when a loop completes.
-When you use <code class="kw">Exit</code> with <code class="id">keyword_list</code> to stop a loop, <code>When Done</code> and <code>When Each</code> or <code>When Else</code> are ignored.</p>
-<p>You use <code>Exit identifier</code> to stop a loop and move execution to the line <code class="kw">When</code> with the same identifier.</p>
+When you use <code class="kw">Exit</code> with <code class="id">keyword_list</code> to stop a loop, <code>When DONE</code> and <code>When Each</code> or <code>When Else</code> are ignored.</p>
+<p>You use <code>Exit identifier</code> to stop a loop and move control to the line <code class="kw">When</code> with the same identifier.</p>
 <h3>With nested structures</h3>
 <p>When <code class="kw">Exit</code> is used in nested structures of the same type (for example, two <code class="kw">For</code> loops), <code class="kw">Exit</code> moves out of the most inner structure and gives control to the next higher level.
 If you must move out of more than one level, you can write each structure's keyword in sequence, with a comma between each one.

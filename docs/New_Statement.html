@@ -26,7 +26,7 @@
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <pre><code>[ @Shared ] [ New ] class_name object_name [ , argument_list ]
-[ Begin [ default_type  |  Call [ method_name ] [ initializer ] ]
+[ Begin [ default_type | Call [ method_name ] [ initializer ] ]
     [ statements ]
 End [ New | class_name ] ]&#10;</code></pre>
 </div>
@@ -141,7 +141,7 @@ Menu FileMenu, "&File", "&amp;Open...", DoOpen, |, "E&amp;xit", DoExit&#10;</cod
 <hr>
 <p>Then we re-write the example as a block construct.
 It starts the same as before, until we get to the first command.
-Before the commands, we must write the keyword Begin on one line.
+Before the commands, we must write the keyword <code class="kw">Begin</code> on one line.
 Then we write each item on separate lines.
 The vertical bar can have hyphens after it without limits.
 Then we write <code class="kw">End New</code> to complete the statement.</p>
@@ -177,7 +177,7 @@ The class <code>List</code> has a method (<code>Add</code>) to add one item at a
 We write <code>Add</code> after <code class="kw">Begin Call</code> to give the method to call for each item in an array.
 (Although we give it here, this name is not necessary because <code>Add</code> is the default.)
 We supply the items in an array initializer.
-The initializer must be on the same line that starts with Begin.
+The initializer must be on the same line that starts with <code class="kw">Begin</code>.
 We can use the automatic line continuation of braces and commas to make the code easier to read.</p>
 <div class="language-vivifire listing">
 <pre><code>List[String] fruits

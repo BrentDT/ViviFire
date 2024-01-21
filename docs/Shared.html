@@ -28,8 +28,8 @@
 Usually each instance keeps a different copy.
 With <code class="at">@Shared</code>, you can make a variable that all instances of a class have access to, but other code cannot.</p>
 <p>When you declare a local variable with <code class="at">@Shared</code> in a procedure, it keeps its value between procedure calls.
-Usually a local variable releases its memory when execution in the scope completes.
-With <code class="at">@Shared</code>, the next time your code calls the procedure, the variable is not initialized again, and keeps the same value.</p>
+Usually a local variable releases its memory when control moves out of the scope.
+With <code class="at">@Shared</code>, the next time your code calls the procedure, the variable is not initialized again, but keeps the same value.</p>
 <h2>You must know</h2>
 <dl>
 <dt>Declaration context</dt>

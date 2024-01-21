@@ -25,7 +25,7 @@
 <h2 id="Methods">Methods</h2>
 <dl class="language-vivifire listing">
 <dt><pre><code>Method Assert ( test As Boolean, Optional message As String )</code></pre></dt>
-<dd>Causes the debugger to stop execution, only if <code>test</code> is false.
+<dd>Causes the debugger to stop the program if <code>test</code> is false.
 If <code>test</code> is false and <code>message</code> is not supplied, the output includes the supplied expression code.
 But, if you supply <code>message</code>, that shows when <code>test</code> is false.</dd>
 <dt><pre><code>Method Log ( message As String, Optional level As LogLevels = ALL )</code></pre></dt>
@@ -41,7 +41,7 @@ Method PrintLine ( message As String )</code></pre></dt>
 <dd>Shows some text in the debugger.
 Typically this is the value of a variable, to make sure it is correct.</dd>
 <dt><pre><code>Method Stop&#10;</code></pre></dt>
-<dd>Causes the debugger to stop execution, almost the same as a breakpoint.</dd>
+<dd>Causes the debugger to stop the program, almost the same as a breakpoint.</dd>
 </dl>
 <h2>Instructions</h2>
 <p>Only debug builds cause <code>#Debug</code> to operate fully.

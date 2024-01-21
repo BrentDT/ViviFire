@@ -37,14 +37,14 @@
 <dd>Optional floating-point expression.
 See <a href="Tol_Clause.html">Tol Clause</a> for more information.</dd>
 <dt><code class="kw">Else</code></dt>
-<dd>Causes execution to move to <code class="kw">Case Else</code>.</dd>
+<dd>Causes control to move to <code class="kw">Case Else</code>.</dd>
 </dl>
 <h2>Instructions</h2>
-<p><code class="kw">GoTo Case</code> typically causes the construct <code class="kw">Select</code> to execute again with a different test expression.
+<p><code class="kw">GoTo Case</code> typically causes the construct <code class="kw">Select</code> to run again with a different test expression.
 Each <code class="kw">Case</code> calculates again, until a test is true.
-Then its related block executes.</p>
-<p>If no expressions of <code class="kw">Case</code> are true, or you use <code class="kw">GoTo Case Else</code>, execution moves to the block after <code class="kw">Case Else</code>, if there is one.
-But if there is no <code class="kw">Case Else</code>, execution moves to the statement after <code class="kw">End Select</code>.</p>
+Then its related block runs.</p>
+<p>If no expressions of <code class="kw">Case</code> are true, or you use <code class="kw">GoTo Case Else</code>, control moves to the block after <code class="kw">Case Else</code>, if there is one.
+But if there is no <code class="kw">Case Else</code>, control moves to the statement after <code class="kw">End Select</code>.</p>
 <p>You can put <code class="kw">GoTo Case</code> only in a block made with <code class="kw">Case</code>.
 And <code class="kw">GoTo Case</code> can move to a block only at the same level.</p>
 <p><code class="kw">GoTo Case</code> used with nested constructs can cause logic errors.
