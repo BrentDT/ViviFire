@@ -48,7 +48,7 @@ An example follows.</p>
 <pre><code>x = 42&#10;</code></pre>
 </div>
 <p>Here the assignment statement stores the literal value 42 in the variable x.</p>
-<h3>Eligible elements</h3>
+<h3>L-values and r-values</h3>
 <p>TODO</p>
 <h3>Data types and conversions</h3>
 <p>TODO</p>
@@ -76,7 +76,21 @@ x := y := z := 0.0&#10;</code></pre>
 </div>
 <p class="note">Note: You also can use the operator <code class="op">:=</code> in arguments passed to procedures.
 See <a href="Parameter_List.html">Parameter List</a> for more information.</p>
-<h2>Statements divided into many lines</h2>
+<h2>Putting many statements on one line</h2>
+<p>You can write two or more statements on one line.
+You put the semicolon symbol (<code class="op">;</code>) between each one-line statement.
+An example follows:</p>
+<div class="language-vivifire listing">
+<pre><code>total += subtotal(row) <strong>;</strong> Print total&#10;</code></pre>
+</div>
+<p>Each statement in a line must be a one-line statement.
+Compound statements, which include loops and procedures, are not applicable.
+And compound statements with a one-line construct (<code class="kw">If&hellip;Else</code> and <code class="kw">New</code>) are also not applicable.
+For a list of the one-line statements, see <a href="If_Then_Else_Statement.html#one-line-construct">If&hellip;Else Statement &sect;&nbsp;One-line construct</a>.</p>
+<p class="note">Note:
+This syntax can make code that is not easy to read, which can cause increased maintenance time.
+Thus, we recommend that you keep lines to one statement each.</p>
+<h2>Dividing one statement into many lines</h2>
 <p>Most statements are short, but can become too long to read easily.
 You can divide a long statement into two or more lines of code.
 You write a space and an underscore (<code class="op">_</code>) before the end-of-line.</p>
