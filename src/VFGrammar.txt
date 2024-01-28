@@ -430,39 +430,77 @@ bool Matches(const wchar_t *s) {
 	return (_wcsicmp(s, t->val) == 0);
 }
 
-std::wstring StringValue(wchar_t *s) {
+std::wstring StringValue(wchar_t *pStrToken) {
 	// Returns the string value of a string literal or constant.
-	assert(s != nullptr);
-	assert(s[0] == L'"' || s[0] == L'_' || s[0] == L'$');
+	assert(pStrToken != nullptr);
+	assert(pStrToken[0] == L'"' || pStrToken[0] == L'_' || pStrToken[0] == L'$');
 
-	if (s[0] == L'_') s++; // Ignore leading underscore.
+	if (*pStrToken == L'_') pStrToken++; // Ignore leading underscore.
 
 	bool interpolated = false;
 
 	// Quoted string literal.
-	if ( (s[0] == L'"')
-	|| (interpolated = (s[0] == L'$' && s[1] == L'"')) ) {
+	if ( (pStrToken[0] == L'"')
+	|| (interpolated = (pStrToken[0] == L'$' && pStrToken[1] == L'"')) ) {
 		// Remove '$' and unnecessary quotes.
 		std::wstring res;
-		if (interpolated) s++; // Move past '$'.
-		for (wchar_t *p = s + 1; *p; p++) {
-			if (*p != L'"') res += *p;
-			else if (p[1] == L'"') res += *p++; // Two quotes become one.
-			// End quote is skipped automatically.
-		}
 
-		// TODO: Parse interpolated string.
+		if (!interpolated) {
+			for (wchar_t *pChar = pStrToken + 1; *pChar; pChar++) {
+				if (*pChar != L'"') res += *pChar;
+				else if (pChar[1] == L'"') res += *pChar++; // Two quotes become one.
+				// End quote is skipped automatically.
+			}
+		} else {
+			// Interpolated string.
+			std::string tempStr;
+			int nBraces = 0;
+
+			for (wchar_t *pChar = pStrToken + 2; *pChar; pChar++) {
+				switch (*pChar) {
+				case L'{': 
+					if (pChar[1] == L'{') pChar++; // Two braces become one.
+					else if (nBraces++ > 0) tempStr += *pChar; // Interpolation includes a brace.
+					if (nBraces == 0) res += *pChar;
+					break;
+				case L'"':
+					if (pChar[1] == L'"' || pChar[1] == L'\0') pChar++; // Two quotes become one.
+					if (nBraces > 0) tempStr += *pChar; // Interpolation includes a quote.
+					else if (nBraces == 0) res += *pChar;
+					break;
+				case L'}':
+					if (pChar[1] == L'}') pChar++; // Two braces become one.
+					if (nBraces == 0) res += *pChar;
+					else if (--nBraces == 0) {
+						// Parse the interpolated expression.
+						std::unique_ptr<Scanner> tempScanner(new Scanner((unsigned char *) tempStr.c_str(), tempStr.length()));
+						std::unique_ptr<Parser> tempParser(new Parser(tempScanner.get()));
+
+						tempParser->ParseInterpolated(this);
+
+						tempStr.clear();
+					} else if (nBraces > 0) tempStr += *pChar; // Interpolation includes a brace.
+					break;
+				default:
+					if (nBraces > 0) tempStr += *pChar;
+						else res += *pChar;
+						break;
+				} // switch
+			} // for
+			if (nBraces > 0) SemErr(L"More left braces than right");
+			else if (nBraces < 0) SemErr(L"More right braces than left");
+		} // if
 
 		return res;
-	} else if (s[0] == L'$') { // String constant.
+	} else if (*pStrToken == L'$') { // String constant.
 		// Handle character codes. Make sure to return if valid.
 		// Named constants are handled after these.
-		switch (s[1]) {
+		switch (pStrToken[1]) {
 		case L'B': case L'b': { // Binary $B...
 			std::wstring ws;
-			for (wchar_t *p = s + 2; *p; p++) {
-				if (*p == L'0' || *p == L'1') ws += *p;
-				else if (*p == L'_'); // Ignore underscore.
+			for (wchar_t *pChar = pStrToken + 2; *pChar; pChar++) {
+				if (*pChar == L'0' || *pChar == L'1') ws += *pChar;
+				else if (*pChar == L'_'); // Ignore underscore.
 				else goto named_constant;
 			}
 			int ch = std::stoi(ws, nullptr, 2);
@@ -472,9 +510,9 @@ std::wstring StringValue(wchar_t *s) {
 		}
 		case L'O': case L'o': { // Octal $O...
 			std::wstring ws;
-			for (wchar_t *p = s + 2; *p; p++) {
-				if (*p >= L'0' && *p <= L'7') ws += *p;
-				else if (*p == L'_'); // Ignore underscore.
+			for (wchar_t *pChar = pStrToken + 2; *pChar; pChar++) {
+				if (*pChar >= L'0' && *pChar <= L'7') ws += *pChar;
+				else if (*pChar == L'_'); // Ignore underscore.
 				else goto named_constant;
 			}
 			int ch = std::stoi(ws, nullptr, 8);
@@ -484,9 +522,9 @@ std::wstring StringValue(wchar_t *s) {
 		}
 		case L'U': case L'u': case L'X': case L'x': { // Hexadecimal $U... or $X...
 			std::wstring ws;
-			for (wchar_t *p = s + 2; *p; p++) {
-				if (*p >= L'0' && *p <= L'9' || *p >= L'A' && *p <= L'F' || *p >= L'a' && *p <= L'f') ws += *p;
-				else if (*p == L'_'); // Ignore underscore.
+			for (wchar_t *pChar = pStrToken + 2; *pChar; pChar++) {
+				if (*pChar >= L'0' && *pChar <= L'9' || *pChar >= L'A' && *pChar <= L'F' || *pChar >= L'a' && *pChar <= L'f') ws += *pChar;
+				else if (*pChar == L'_'); // Ignore underscore.
 				else goto named_constant;
 			}
 			int ch = std::stoi(ws, nullptr, 16);
@@ -495,11 +533,11 @@ std::wstring StringValue(wchar_t *s) {
 			return res;
 		}
 		default:
-		if (s[1] >= L'0' && s[1] <= L'9') {
+		if (pStrToken[1] >= L'0' && pStrToken[1] <= L'9') {
 			std::wstring ws;
-			for (wchar_t *p = s + 1; *p; p++) {
-				if (*p >= L'0' && *p <= L'9') ws += *p;
-				else if (*p == L'_'); // Ignore underscore.
+			for (wchar_t *pChar = pStrToken + 1; *pChar; pChar++) {
+				if (*pChar >= L'0' && *pChar <= L'9') ws += *pChar;
+				else if (*pChar == L'_'); // Ignore underscore.
 				else goto named_constant;
 			}
 			int ch = std::stoi(ws, nullptr, 10);
@@ -508,7 +546,7 @@ std::wstring StringValue(wchar_t *s) {
 			return res;
 		}
 		named_constant:
-			return NamedString(s);
+			return NamedString(pStrToken);
 		}
 	}
 	return std::wstring(L"ERR"); // TEMP
@@ -822,20 +860,18 @@ bool HasWhitespace() {
 	return la->charPos > t->charPos + coco_string_length(t->val);
 }
 
-///void ExpectEndNew(const wchar_t *tn) {
-///	if (la->kind == _End) {
-///		Get();
-///		if (tn == NULL && la->kind != _New) {
-///			Err(L"End New expected");
-///			return;
-///		}
-///		else if (tn != NULL && wcscmp(tn, la->val) != 0) {
-///			Err(L"End %ls expected"); // FIXME: show ident
-///			return;
-///		}
-///	}
-///	Get();
-///}
+void ParseInterpolated(Parser *parseRoot) {
+	// Partial duplicate of `Parser::Parse()`.
+	t = NULL;
+	la = dummyToken = new Token();
+	la->val = coco_string_create(L"Dummy Token");
+	Get();
+
+	Expression();
+	Expect(0);
+
+	parseRoot->errors->count += errors->count;
+}
 
 IGNORECASE
 
