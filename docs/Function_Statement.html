@@ -26,12 +26,14 @@
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <h3>Usual construct</h3>
-<pre><code>[ modifiers ] Function function_name [ type_list ] [ parameter_list ] [ return_type ]
+<pre><code>[ modifiers ] _
+Function function_name [ type_list ] [ parameter_list ] [ return_type ]
     [ Where generic_constraints ]
     [ statements ]
 End [ Function ]&#10;</code></pre>
 <h3>Name-change construct</h3>
-<pre><code>[ modifiers ] Function function_name Does trait_name . supplied_name&#10;</code></pre>
+<pre><code>[ modifiers ] _
+Function function_name Does trait_name . supplied_name&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
@@ -46,18 +48,20 @@ End [ Function ]&#10;</code></pre>
 <dt><code class="id">function_name</code></dt>
 <dd>Mandatory name for the function.</dd>
 <dt><code class="id">type_list</code></dt>
-<dd>Optional in the usual construct.
+<dd>Optional one or more names with a comma between each, all between brackets (<code class="op">[ ]</code>).
 See <a href="Type_List.html">Type List</a> for more information.</dd>
 <dd>Not permitted in the name-change construct.</dd>
 <dt><code class="id">parameter_list</code></dt>
 <dd>Optional in the usual construct.
-One or more local variables, with a comma between each.
+One or more local variables with a comma between each.
 The caller gives them their values.
 The modifier <code class="kw">ByRef</code> is not permitted.
 See <a href="Parameter_List.html">Parameter List</a> for more information.</dd>
 <dd>Not permitted in the name-change construct.</dd>
 <dt><code class="id">return_type</code></dt>
-<dd>Optional in the usual construct.</dd>
+<dd>Optional if <code class="id">function_name</code> has a type character.
+See <a href="Type_Characters.html">Type Characters</a> for more information.</dd>
+<dd>Mandatory if <code class="id">function_name</code> does not have a type character.</dd>
 <dd>Not permitted in the name-change construct.</dd>
 <dd>
 	<div class="language-vivifire syntax">
@@ -81,7 +85,7 @@ See <a href="Parameter_List.html">Parameter List</a> for more information.</dd>
 <dt><code class="kw">End</code></dt>
 <dd>Completes the statement.
 You can also use <code class="kw">End Function</code>.</dd>
-<dd>You can make one of these mandatory with the directive <code class="at">@Option End</code>.
+<dd>You can change this part of the syntax.
 See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
 <dd>Not permitted in the name-change construct.</dd>
 <dt><code class="id">trait_name</code></dt>
@@ -91,6 +95,28 @@ See <a href="Option_Directive.html">@Option Directive</a> for more information.<
 </dl>
 <h2>Instructions</h2>
 <p><code class="kw">End Function</code> is not the same as <a href="Exit_Statement.html"><code>Exit Function</code></a>.</p>
+<p>A function is a type of procedure that has many limits.
+It is at the core of <dfn>functional programming</dfn>.
+These limits include:</p>
+<ul>
+<li>Its access level is <dfn>private</dfn>.
+Only procedures in the same container can call it.
+External code cannot directly call a function.</li>
+<li>A function is <dfn>constant</dfn>.
+It does not have access to and cannot change non-local state.
+Thus you cannot use the modifier <Code class="at">@Shared</Code> on variables in a function.
+And you cannot use the modifier <Code class="kw">ByRef</Code> on parameters.</li>
+<li>Code in a function can call only constant procedures.
+Constant procedures include other functions and procedures with the modifier <Code class="at">@Const</Code>.</li>
+<li>A function must Return a value.</li>
+</ul>
+<p>A function has the qualities that follow:</p>
+<ul>
+<li>It can run at compile-time.</li>
+<li>It lets the compiler make better machine code.</li>
+<li>It lets you do concurrency more safely.</li>
+</ul>
+
 <h2>Defining a function</h2>
 <p>You can put a function only in a class, structure, trait, or module.
 You cannot put a function in a different procedure, or in a loop.</p>

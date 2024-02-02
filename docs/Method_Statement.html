@@ -27,14 +27,16 @@
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <h3>Usual construct</h3>
-<pre><code>[ modifiers ] Method method_name [ type_list ] [ parameter_list ] [ return_type ]
+<pre><code>[ modifiers ] _
+Method method_name [ type_list ] [ parameter_list ] [ return_type ]
     [ Where generic_constraints ]&hellip;
     [ statements ]
 End [ Method ]&#10;</code></pre>
 <h3>Abstract construct</h3>
 <pre><code>@Abstract Method method_name [ parameter_list ]&#10;</code></pre>
 <h3>Name-change construct</h3>
-<pre><code>[ modifiers ] Method method_name Does trait_name.supplied_name&#10;</code></pre>
+<pre><code>[ modifiers ] _
+Method method_name Does trait_name . supplied_name&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
@@ -65,7 +67,7 @@ End [ Method ]&#10;</code></pre>
 <dt><code class="id">method_name</code></dt>
 <dd>Mandatory name for the method.</dd>
 <dt><code class="id">type_list</code></dt>
-<dd>Optional.
+<dd>Optional one or more names with a comma between each, all between brackets (<Code Class="op">[ ]</Code>).
 See <a href="Type_List.html">Type List</a> for more information.</dd>
 <dd>Not permitted in the name-change construct.</dd>
 <dt><code class="id">parameter_list</code></dt>
@@ -80,7 +82,9 @@ See <a href="Parameter_List.html">Parameter List</a> for more information.</dd>
 <dd>
 	<div class="language-vivifire syntax">
 	<h3>Return type</h3>
-	<pre><code>{ As type } | { In unit }&#10;</code></pre>
+	<pre><code>As type&#10;</Code></pre>
+	<div>or</div>
+	<pre><Code>In unit&#10;</code></pre>
 	</div>
 	<dl class="parts">
 	<dt><code class="id">type</code></dt>
