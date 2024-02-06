@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2023 Brent D. Thorn
+ * Copyright 2024 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.com/.
  *
@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) {
 	if (!args.Parse(argc, argv)) {
 		if (separate) {
 			wprintf(L"\nPress Enter to close... ");
-			getchar();
+			wscanf(L"%*0c"); // Get char.
 		}
 		return 1;
 	}

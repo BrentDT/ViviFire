@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2023 Brent D. Thorn
+ * Copyright 2024 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.com/.
  *
@@ -67,16 +67,21 @@ bool Args::Parse (int argc, char *argv[]) {
 	// If not enough args or show_help is true, display syntax.
 	if (argc < 2 || show_help) {
 		fwprintf((show_help) ? stdout : stderr,
-		L"ViviFire Test Parser by Brent D. Thorn, " NOW "\n"
+		L"ViviFire Test Parser by Brent D. Thorn, " NOW L"\n\n"
+
 		L"Syntax:\n"
-		L"\tvf [-m] [-t] [-v[0-3]] file\n"
+		L"\tvf [-m] [-t] [-v[0-3]] sourcefile\n\n"
+
 		L"Switches:\n"
 		L"\t-m   Display memory usage\n"
 		L"\t-t   Display time elapsed\n"
 		L"\t-v0  Minimal verbosity; Errors only\n"
 		L"\t-v1  Displays tokens and errors (default)\n"
 		L"\t-v2  Displays statements, tokens, and errors\n"
-		L"\t-v3  Maximum verbosity"
+		L"\t-v3  Maximum verbosity\n\n"
+
+		L"You can find new releases and documentation at the official home page:\n"
+		L"http://vivifire.com\n"
 		);
 		return false;
 	}
