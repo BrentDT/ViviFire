@@ -435,32 +435,33 @@ std::wstring StringValue(wchar_t *pStrToken) {
 	assert(pStrToken != nullptr);
 	assert(pStrToken[0] == L'"' || pStrToken[0] == L'_' || pStrToken[0] == L'$');
 
-	if (*pStrToken == L'_') pStrToken++; // Ignore leading underscore.
-
+	wchar_t *pStart = &pStrToken[(*pStrToken == L'_') ? 1 : 0]; // Ignore underscore.
 	bool interpolated = false;
 
 	// Quoted string literal.
-	if ( (pStrToken[0] == L'"')
-	|| (interpolated = (pStrToken[0] == L'$' && pStrToken[1] == L'"')) ) {
-		// Remove '$' and unnecessary quotes.
+	if ( (*pStart == L'"')
+	|| (interpolated = (pStart[0] == L'$' && pStart[1] == L'"')) ) {
 		std::wstring res;
 
+		// Remove '$' and unnecessary quotes.
 		if (!interpolated) {
-			for (wchar_t *pChar = pStrToken + 1; *pChar; pChar++) {
+			// Usual string (eg "Hello, world!").
+			for (wchar_t *pChar = pStart + 1; *pChar; pChar++) {
 				if (*pChar != L'"') res += *pChar;
 				else if (pChar[1] == L'"') res += *pChar++; // Two quotes become one.
 				// End quote is skipped automatically.
 			}
 		} else {
-			// Interpolated string.
+			// Interpolated string (eg $"Hello, {name}!").
 			std::string tempStr;
 			int nBraces = 0;
 
-			for (wchar_t *pChar = pStrToken + 2; *pChar; pChar++) {
+			for (wchar_t *pChar = pStart + 2; *pChar; pChar++) {
 				switch (*pChar) {
 				case L'{': 
 					if (pChar[1] == L'{') pChar++; // Two braces become one.
-					else if (nBraces++ > 0) tempStr += *pChar; // Interpolation includes a brace.
+					else if (++nBraces == 1) pStart = pChar + 1; // Start of interpolated expression.
+					else if (nBraces > 0) tempStr += *pChar; // Interpolation includes a brace.
 					if (nBraces == 0) res += *pChar;
 					break;
 				case L'"':
@@ -473,10 +474,11 @@ std::wstring StringValue(wchar_t *pStrToken) {
 					if (nBraces == 0) res += *pChar;
 					else if (--nBraces == 0) {
 						// Parse the interpolated expression.
+						tempStr += '}'; // Use in place of EOF.
 						std::unique_ptr<Scanner> tempScanner(new Scanner((unsigned char *) tempStr.c_str(), tempStr.length()));
 						std::unique_ptr<Parser> tempParser(new Parser(tempScanner.get()));
 
-						tempParser->ParseInterpolated(this);
+						tempParser->ParseInterpolated(this, pStart - pStrToken);
 
 						tempStr.clear();
 					} else if (nBraces > 0) tempStr += *pChar; // Interpolation includes a brace.
@@ -860,15 +862,16 @@ bool HasWhitespace() {
 	return la->charPos > t->charPos + coco_string_length(t->val);
 }
 
-void ParseInterpolated(Parser *parseRoot) {
+void ParseInterpolated(Parser *parseRoot, int col_offset) {
 	// Partial duplicate of `Parser::Parse()`.
 	t = NULL;
 	la = dummyToken = new Token();
 	la->val = coco_string_create(L"Dummy Token");
+	errors->SetDelta(parseRoot->t->line, parseRoot->t->col + col_offset);
 	Get();
 
 	Expression();
-	Expect(0);
+	Expect(_right_brace);
 
 	parseRoot->errors->count += errors->count;
 }
