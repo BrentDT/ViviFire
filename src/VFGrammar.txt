@@ -430,6 +430,37 @@ bool Matches(const wchar_t *s) {
 	return (_wcsicmp(s, t->val) == 0);
 }
 
+std::string wchar_to_UTF8(wchar_t in) {
+	// Adapted from <https://stackoverflow.com/questions/148403>.
+	std::string out;
+	unsigned int codepoint = 0;
+	if (in >= 0xd800 && in <= 0xdbff) {
+		codepoint = ((in - 0xd800) << 10) + 0x10000;
+	} else {
+		if (in >= 0xdc00 && in <= 0xdfff)
+			codepoint |= in - 0xdc00;
+		else
+			codepoint = in;
+
+		if (codepoint <= 0x7f) {
+			out.append(1, static_cast<char>(codepoint));
+		} else if (codepoint <= 0x7ff) {
+			out.append(1, static_cast<char>(0xc0 | ((codepoint >> 6) & 0x1f)));
+			out.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));
+		} else if (codepoint <= 0xffff) {
+			out.append(1, static_cast<char>(0xe0 | ((codepoint >> 12) & 0x0f)));
+			out.append(1, static_cast<char>(0x80 | ((codepoint >> 6) & 0x3f)));
+			out.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));
+		} else {
+			out.append(1, static_cast<char>(0xf0 | ((codepoint >> 18) & 0x07)));
+			out.append(1, static_cast<char>(0x80 | ((codepoint >> 12) & 0x3f)));
+			out.append(1, static_cast<char>(0x80 | ((codepoint >> 6) & 0x3f)));
+			out.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));
+		}
+	}
+	return out;
+}
+
 std::wstring StringValue(wchar_t *pStrToken) {
 	// Returns the string value of a string literal or constant.
 	assert(pStrToken != nullptr);
@@ -453,7 +484,7 @@ std::wstring StringValue(wchar_t *pStrToken) {
 			}
 		} else {
 			// Interpolated string (eg $"Hello, {name}!").
-			std::string tempStr;
+			std::string tempStr{'\xEF', '\xBB', '\xBF'}; // Initialized with UTF-8 BOM.
 			int nBraces = 0;
 
 			for (wchar_t *pChar = pStart + 2; *pChar; pChar++) {
@@ -461,12 +492,12 @@ std::wstring StringValue(wchar_t *pStrToken) {
 				case L'{': 
 					if (pChar[1] == L'{') pChar++; // Two braces become one.
 					else if (++nBraces == 1) pStart = pChar + 1; // Start of interpolated expression.
-					else if (nBraces > 0) tempStr += *pChar; // Interpolation includes a brace.
+					else if (nBraces > 0) tempStr += '{'; // Interpolation includes a brace.
 					if (nBraces == 0) res += *pChar;
 					break;
 				case L'"':
 					if (pChar[1] == L'"' || pChar[1] == L'\0') pChar++; // Two quotes become one.
-					if (nBraces > 0) tempStr += *pChar; // Interpolation includes a quote.
+					if (nBraces > 0) tempStr += '"'; // Interpolation includes a quote.
 					else if (nBraces == 0) res += *pChar;
 					break;
 				case L'}':
@@ -481,10 +512,10 @@ std::wstring StringValue(wchar_t *pStrToken) {
 						tempParser->ParseInterpolated(this, pStart - pStrToken);
 
 						tempStr.clear();
-					} else if (nBraces > 0) tempStr += *pChar; // Interpolation includes a brace.
+					} else if (nBraces > 0) tempStr += '}'; // Interpolation includes a brace.
 					break;
 				default:
-					if (nBraces > 0) tempStr += *pChar;
+					if (nBraces > 0) tempStr += wchar_to_UTF8(*pChar);
 						else res += *pChar;
 						break;
 				} // switch
