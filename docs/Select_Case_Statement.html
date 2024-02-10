@@ -26,7 +26,7 @@
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <pre><code>[ @Strict ] _
-Select [ Case ] test_expression [ Tol tolerance ]
+Select [ Case ] test_expression [ tolerance ]
     Case expression_list
         [ statements ]
     &hellip;
@@ -41,10 +41,14 @@ End [ Select ]&#10;</code></pre>
 <dd><code class="id">test_expression</code> can be an enumeration type (declared with <code class="kw">Enum</code>) that also has the modifier <code class="at">@Strict</code>.
 If it does, you must use all the constants with the equality construct, and without <code class="kw">Case Else</code>.
 Other data types put no such limits on the syntax.</dd>
+<dt><code class="kw">Case</code></dt>
+<dd>Usually optional keyword after <code class="kw">Select</code>.
+It becomes mandatory if you use the directive <code>@Option Select Case</code>.</dd>
+<dd>mandatory keyword that starts each of the subsequent blocks.</dd>
 <dt><code class="id">test_expression</code></dt>
 <dd>Mandatory expression of an <a href="Elementary_Data_Types.html">elementary data type</a>.</dd>
 <dt><code class="id">tolerance</code></dt>
-<dd>Optional floating-point constant specifies the tolerance for rounding errors when values are compared.
+<dd>Optional floating-point constant (after the keyword <code class="kw">Tol</code>) that gives the tolerance for rounding errors when values are compared.
 See <a href="Tol_Clause.html">Tol Clause</a> for more information.</dd>
 <dt><code class="id">expression_list</code></dt>
 <dd><p>Mandatory after <code class="kw">Case</code>, one or more expressions for tests with <code class="id">test_expression</code> with a comma between each.
@@ -78,13 +82,13 @@ Then the statement after <code class="kw">End Select</code> runs.
 If more than one expression can agree, only the first one that agrees runs.</p>
 <p>The line <code class="kw">Case Else</code> is related to the block <code class="id">else_statements</code>.
 This block runs only when <code class="id">test_expression</code> agreed with none of the sets of expressions that came before it.
-Although not mandatory, we recommend that you supply <code class="kw">Case Else</code> if unusual values of <code class="id">test_expression</code> are possible.
+Although usually not mandatory, we recommend that you supply <code class="kw">Case Else</code> if unusual values of <code class="id">test_expression</code> are possible.
 If none of the blocks that start with <code class="kw">Case</code> ran, the statement after <code class="kw">End</code> runs.</p>
 <h3>Changes in syntax with <code>@Option</code></h3>
 <p>There are three areas where you can change the syntax of the statement:</p>
 <ul>
 <li><code>@Option Select Case</code> and <code>@Option Select</code></li>
-<li><code>@Option Select Else</code> and <code>@Option Select Else String</code></li>
+<li><code>@Option Select Strict</code> and <code>@Option Select Strict String</code></li>
 <li><code>@Option End Block</code> and <code>@Option End</code></li>
 </ul>
 <p>See <a href="Option_Directive.html">@Option Directive</a> for more information.</p>
@@ -105,6 +109,23 @@ For num = 1 To 100
         PrintLine num
     End Select
 End For&#10;</code></pre>
+<div>Output:</div>
+<pre><samp>1
+2
+fizz
+4
+buzz
+fizz
+7
+8
+fizz
+buzz
+11
+fizz
+13
+14
+fizzbuzz
+...</samp></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
