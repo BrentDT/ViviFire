@@ -31,14 +31,6 @@ p.note {
 	margin-right: 0.5em;
 	padding: 0.5em;
 }
-table.info {
-	background-color: #eef;
-	font-size: 95%;
-}
-table.warn {
-	background-color: #ffe;
-	font-size: 105%;
-}
 tbody th {
 	text-align: left;
 	vertical-align: top;
@@ -134,6 +126,9 @@ nav ul, ul.articles {
 	margin-left: 0;
 	padding-left: 0;
 }
+.articles code {
+	font-family: inherit;
+}
 .token.rem {
 	color: #555;
 	font-style: italic;
@@ -158,11 +153,11 @@ dt kbd, kbd.kw, kbd.mod, .kws kbd {
 	font-weight: bold;
 }
 .token.num, .token.char, .token.fixed, .token.date, dt .num {
-	color: #C0C;
+	color: #ff8c00;
 	font-weight: normal;
 }
 .token.op {
-	color: olive;
+	color: #556b2f;
 }
 code.op, .ops code, 
 kbd.op, .ops kbd {
@@ -171,6 +166,9 @@ kbd.op, .ops kbd {
 code kbd {
 	color: black;
 	font-weight: bold;
+}
+.token.strint {
+	color: pink;
 }
 .token.str, dt .str {
 	color: #C00;
@@ -261,6 +259,41 @@ a[href^="System_Requirements."]:link,
 a[href^="ViviFire_Runtime_Library_Members."]:link,
 a[href^="Widening_and_Narrowing_Conversions."]:link {
 	color: inherit;
+}
+
+@media (prefers-color-scheme: dark) {
+	body {
+		background-color: #111;
+		color: #ddd;
+	}
+	pre {
+		background-color: #222;
+		color: #eee;
+	}
+	.token.at {
+		color: lightblue;
+	}
+	.token.id {
+		color: cyan;
+	}
+	.token.kw, .token.nkw {
+		color: blue;
+	}
+	.token.num, .token.char, .token.fixed, .token.date {
+		color: orange;
+	}
+	.token.op {
+		color: olive;
+	}
+	.token.rem {
+		color: #888;
+	}
+	.token.str {
+		color: red;
+	}
+	code kbd {
+		color: #eee;
+	}
 }
 
 @media print {
