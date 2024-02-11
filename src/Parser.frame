@@ -70,6 +70,8 @@ public:
 		m_line_delta = line - 1;
 		m_col_delta = col - 1;
 	}
+	int ColDelta() const { return m_col_delta; }
+	int LineDelta() const { return m_line_delta; }
 	// END MOD
 
 }; // Errors

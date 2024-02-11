@@ -486,6 +486,7 @@ std::wstring StringValue(wchar_t *pStrToken) {
 			// Interpolated string (eg $"Hello, {name}!").
 			std::string tempStr{'\xEF', '\xBB', '\xBF'}; // Initialized with UTF-8 BOM.
 			int nBraces = 0;
+			context.push_back(_string_literal);
 
 			for (wchar_t *pChar = pStart + 2; *pChar; pChar++) {
 				switch (*pChar) {
@@ -520,6 +521,8 @@ std::wstring StringValue(wchar_t *pStrToken) {
 						break;
 				} // switch
 			} // for
+
+			context.pop_back();
 			if (nBraces > 0) SemErr(L"More left braces than right");
 			else if (nBraces < 0) SemErr(L"More right braces than left");
 		} // if
@@ -888,9 +891,14 @@ bool IsUnorderedInit() {
 	return ((k == _char_literal || k == _integer_constant || k == _integer_literal) && scanner->Peek()->kind == _colon_equals);
 }
 
-bool HasWhitespace() {
+inline bool HasWhitespace() {
 	// Is true if there is something between current and next tokens.
 	return la->charPos > t->charPos + coco_string_length(t->val);
+}
+
+inline bool HasWhitespace(int tlength) {
+	// Overloaded method used when length of t is known.
+	return la->charPos > t->charPos + tlength;
 }
 
 void ParseInterpolated(Parser *parseRoot, int col_offset) {
@@ -2378,7 +2386,7 @@ Modifier<int &m, ModifArg &arg> (. ID(L"Modifier", STMT) .)
 =
 	(. m = Modif::LAST; .) // Sentinal.
 	"@"
-	(. if (HasWhitespace()) Err(L"Bad modifier"); .)
+	(. if (HasWhitespace(1)) Err(L"Bad modifier"); .)
 	(
 		"Const" (. m = Modif::Const; .)
 	|
@@ -2548,7 +2556,7 @@ MultiplicativeOperator (. ID(L"MultiplicativeOperator", STMT) .)
 =
 	(.
 	static int s_mod_line = 0, s_rem_line = 0, s_col = 0;
-	static const int WARNED = -1; // Invalid line number used as a flag.
+	constexpr int WARNED = -1; // Use invalid line number as a flag.
 	.)
 	(
 		"*"
@@ -2560,12 +2568,13 @@ MultiplicativeOperator (. ID(L"MultiplicativeOperator", STMT) .)
 		"Mod"
 		(.
 		if (0 == s_mod_line) {
-			s_mod_line = t->line;
+			s_mod_line = t->line + errors->LineDelta(); // Get physical line.
 			if (0 == s_rem_line) {
-				s_col = t->col;
-			} else if (!option.Mod_floored) {
-				Warn(s_rem_line, s_col, L"You used REM here...");
-				Warn(s_mod_line, t->col,
+				s_col = t->col + errors->ColDelta(); // Get physical column.
+			} else if (!option.Mod_floored) { // Without @OPTION MOD FLOORED.
+				Warn(s_rem_line - errors->LineDelta(), s_col - errors->ColDelta(),
+					L"You used REM here...");
+				Warn(t->line, t->col,
 					L"And you used MOD here, although they are the same operation."
 					L" Possibly you want the directive @OPTION MOD FLOORED?"
 				);
@@ -2577,12 +2586,13 @@ MultiplicativeOperator (. ID(L"MultiplicativeOperator", STMT) .)
 		"Rem"
 		(.
 		if (0 == s_rem_line) {
-			s_rem_line = t->line;
+			s_rem_line = t->line + errors->LineDelta(); // Get physical line.
 			if (0 == s_mod_line) {
-				s_col = t->col;
-			} else if (!option.Mod_floored) {
-				Warn(s_mod_line, s_col, L"You used MOD here...");
-				Warn(s_rem_line, t->col,
+				s_col = t->col + errors->ColDelta(); // Get physical column.
+			} else if (!option.Mod_floored) { // Without @OPTION MOD FLOORED.
+				Warn(s_mod_line - errors->LineDelta(), s_col - errors->ColDelta(),
+					L"You used MOD here...");
+				Warn(t->line, t->col,
 					L"And you used REM here, although they are the same operation."
 					L" Possibly you want the directive @OPTION MOD FLOORED?"
 				);
