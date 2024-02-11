@@ -3344,11 +3344,16 @@ TypeParameterList<int parent> (. ID(L"TypeParameterList", STMT) .)
 /*U*/
 UnaryExpression (. ID(L"Unary", EXPR) .)
 =
-	{ UnaryOperator } SimpleExpression
-.
-UnaryOperator (. ID(L"UnaryOperator", STMT) .)
-=
-	( '+' | '-' | "Not" )
+	{
+		"+"
+		(. if (HasWhitespace(1)) Warn(t->line, t->col, L"Whitespace after unary plus ('+') is usually not easy to read"); .)
+	|
+		"-"
+		(. if (HasWhitespace(1)) Warn(t->line, t->col, L"Whitespace after unary minus ('-') is usually not easy to read"); .)
+	|
+		"Not"
+	}
+	SimpleExpression
 .
 UnenclosedArgumentList (. ID(L"UnenclosedArgumentList", STMT) .)
 =
