@@ -55,7 +55,7 @@ wchar_t *FormatBytes (double size, wchar_t *buf) {
 		size /= 1024.0;
 		i++;
 	}
-	wsprintf(buf, L"%.2f %ls", size, units[i]);
+	swprintf(buf, L"%.2f %ls", size, units[i]);
 	return buf;
 }
 
