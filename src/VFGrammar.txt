@@ -1278,9 +1278,14 @@ Argument (. ID(L"Argument", STMT) .)
 .
 ArgumentList (. ID(L"ArgumentList", STMT) .)
 =
-	// Disambiguate "("args")" from "("expr")".
-	( IF (la->kind == _left_paren) EnclosedArgumentList
-	| UnenclosedArgumentList
+	// Related: `OptionalArgList`.
+
+	// Disambiguate "(" args ")" from "(" expr ")".
+	// Given a paren, assume an enclosed argument list.
+	( IF (la->kind == _left_paren)
+		EnclosedArgumentList
+	|
+		UnenclosedArgumentList
 	)
 .
 ArrayDimensionList (. ID(L"ArrayDimensionList", STMT) .)
@@ -1373,7 +1378,29 @@ CallOrNew<int which, Modif *mods> (. ID(L"CallOrNew", STMT) .)
 	bool bShared = mods ? mods->allow(Modif::Shared) : false;
 	if (mods) mods->validate();
 	.)
+
+	(.
+	// Heuristic to find if next token is a proc argument and not an object declaration:
+	//	1. It is not a name.
+	//	2. It is a named argument.
+	//	3. It is a name not followed by comma or newline.
+	//	TODO: more?
+	if (0 == which) {
+		int next;
+		if ( !IsIdentifier(la->kind)
+		|| IsNamedArgument()
+		|| (IsIdentifier(la->kind) && _comma != (next = scanner->Peek()->kind) && _line_break != next) ) {
+			which = _Call;
+		}
+	}
+
+	if (_Call == which && option.args_enclosed) {
+		Err(la->line, la->col, L"Argument list must be between parentheses ('(' ')') because of @OPTION ARGS ENCLOSED");
+	}
+	.)
+
 	UnenclosedArgumentList
+
 	[ IF (la->kind == _line_break && scanner->Peek()->kind == _Begin) // FIXME: multiple line breaks?
 		SyncNewline<s_name>
 		NewBlockStatement
@@ -1388,17 +1415,21 @@ CallStatement (. ID(L"CallStatement", STMT) .)
 		if (std::find(context.rbegin(), context.rend(), _Constructor) == context.rend())
 		    SemErr(L"CALL BASE is available only in a CONSTRUCTOR");
 		.)
-		[ ArgumentList ]
+		OptionalArgList
 	|
 		"Constructor"
 		(.
 		if (std::find(context.rbegin(), context.rend(), _Constructor) == context.rend())
 		    SemErr(L"CALL CONSTRUCTOR is available only in a CONSTRUCTOR");
 		.)
-		[ ArgumentList ]
+		OptionalArgList
 	|
 		SimpleExpression
-		(. if (IsIdentifier(t->kind) && la->kind != _line_break) UnenclosedArgumentList(); .)
+		(.
+		// If token is a name and there is more on the line, it is possibly a proc call with arguments.
+		if (IsIdentifier(t->kind) && la->kind != _line_break)
+			OptionalArgList();
+		.)
 	)
 .
 CaseClause<case_type &clause> (. ID(L"CaseClause", STMT) .)
@@ -2741,6 +2772,14 @@ ObjectStatement<Modif *mods> (. ID(L"ObjectStatement", STMT) .)
 	"End"
 	(. Optional(_Object); .)
 	Newline
+.
+OptionalArgList (. ID(L"OptionalArgList", STMT) .)
+=
+	(.
+	if (option.args_enclosed && la->kind != _left_paren)
+		Err(la->line, la->col, L"Argument list must be between parentheses ('(' ')') because of @OPTION ARGS ENCLOSED");
+	.)
+	[ ArgumentList ]
 .
 OptionalNewline (. ID(L"OptionalNewline", STMT) .)
 =
