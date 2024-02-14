@@ -1380,17 +1380,26 @@ CallOrNew<int which, Modif *mods> (. ID(L"CallOrNew", STMT) .)
 	.)
 
 	(.
-	// Heuristic to find if next token is a proc argument and not an object declaration:
-	//	1. It is not a name.
-	//	2. It is a named argument.
-	//	3. It is a name not followed by comma or newline.
-	//	TODO: more?
 	if (0 == which) {
-		int next;
-		if ( !IsIdentifier(la->kind)
-		|| IsNamedArgument()
-		|| (IsIdentifier(la->kind) && _comma != (next = scanner->Peek()->kind) && _line_break != next) ) {
-			which = _Call;
+		if (bShared) {
+			// Object declarations can have the modifier @SHARED. Calls cannot.
+			which = _New;
+		} else {
+			// Heuristic to find if next token is a proc argument and not an object declaration:
+			//	1. It is not an object name.
+			//	2. It is a named argument.
+			//	3. It is a name not followed by comma or newline.
+			//	TODO: more?
+			int next;
+
+			if ( (_identifier != la->kind && _nullable_identifier != la->kind)
+			|| _typed_identifier == la->kind // After this `la` is sure to be a name.
+			|| _colon_equals == (next = scanner->Peek()->kind)
+			|| (_comma != next && _line_break != next)
+			) {
+				which = _Call;
+				scanner->ResetPeek();
+			}
 		}
 	}
 
@@ -1401,9 +1410,10 @@ CallOrNew<int which, Modif *mods> (. ID(L"CallOrNew", STMT) .)
 
 	UnenclosedArgumentList
 
-	[ IF (la->kind == _line_break && scanner->Peek()->kind == _Begin) // FIXME: multiple line breaks?
+	[ IF (which != _Call && la->kind == _line_break && scanner->Peek()->kind == _Begin) // FIXME: multiple line breaks?
 		SyncNewline<s_name>
 		NewBlockStatement
+		(. which = _New; .)
 	]
 .
 CallStatement (. ID(L"CallStatement", STMT) .)
