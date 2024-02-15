@@ -136,7 +136,7 @@ int main(int argc, char *argv[]) {
 	}
 	
 	// Record start time.
-	auto start = std::chrono::steady_clock::now();
+	const auto start = std::chrono::steady_clock::now();
 	
 	wchar_t *fileName = coco_string_create(args.file);
 	Parser *p = new Parser(new Scanner(fileName));
@@ -145,8 +145,8 @@ int main(int argc, char *argv[]) {
 	
 	if (args.t) {
 		// Calculate the duration.
-		std::chrono::duration<double> timer = std::chrono::steady_clock::now() - start;
-		wprintf(L"Time: %.3f sec\n", timer.count());
+		const std::chrono::duration<double, std::milli> timer = std::chrono::steady_clock::now() - start;
+		wprintf(L"-- time: %.1f ms\n", timer.count());
 	}
 	
 	coco_string_delete(fileName);
