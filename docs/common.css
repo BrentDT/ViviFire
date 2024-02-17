@@ -262,9 +262,16 @@ a[href^="Widening_and_Narrowing_Conversions."]:link {
 }
 
 @media (prefers-color-scheme: dark) {
-	body {
+	body, caption, td, th {
 		background-color: #111;
 		color: #ddd;
+	}
+	.breadcrumb ul, .breadcrumb ul li {
+		background-color: #000;
+	}
+	p.note {
+		background-color: darkmagenta;
+		color: pink;
 	}
 	pre {
 		background-color: #222;
