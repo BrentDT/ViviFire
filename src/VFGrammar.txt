@@ -1006,7 +1006,7 @@ char_literal =
 	'`'char'`'.
 
 malformed_char_literal =
-	'`'[char].
+	'`'[char{alnum}].
 
 fixed_literal = ( '\u00a4' /*currency sign*/ | "@" currency ).
 
@@ -1577,10 +1577,18 @@ ConstantDeclarator (. ID(L"ConstantDeclarator", STMT) .)
 .
 ConstantValueError (. ID(L"ConstantValueError", STMT) .)
 =
-	( char_literal | fixed_literal | integer_constant | integer_literal | null_literal
-	| real_literal | string_constant | string_literal | time_literal | version_literal
+	(
+		( char_literal | fixed_literal | integer_constant | integer_literal | null_literal
+		| real_literal | string_constant | string_literal | time_literal | version_literal
+		)
+		(. SemErr(L"Cannot use a constant value here"); .)
+	|
+		malformed_char_literal
+		(. SemErr(L"Bad escaped name or character literal - usually caused by missing backtick ('`')"); .)
+	|
+		( malformed_integer_literal | malformed_real_literal | malformed_string_literal )
+		(. SemErr(L"Bad symbol"); .)
 	)
-	(. SemErr(L"Cannot use a constant value here"); .)
 .
 ConstIfStatement<Modif &mods, int line, int col> (. ID(L"ConstIfStatement", STMT) .)
 =
@@ -2851,10 +2859,18 @@ PrimaryExpression (. ID(L"Primary", EXPR) .)
 	| "Base"
 	| "Self"
 	| "#Null"
-	| malformed_char_literal     (. SemErr(L"Bad character literal"); .)
-	| malformed_integer_literal  (. SemErr(L"Bad integer literal"); .)
-	| malformed_real_literal     (. SemErr(L"Bad floating-point literal"); .)
-	| malformed_string_literal   (. SemErr(L"Bad string literal - usually caused by missing quote(s) ('\"' or '\"\"')"); .)
+	|
+		malformed_char_literal
+		(. SemErr(L"Bad escaped name or character literal - usually caused by missing backtick ('`')"); .)
+	|
+		malformed_integer_literal
+		(. SemErr(L"Bad integer literal"); .)
+	|
+		malformed_real_literal
+		(. SemErr(L"Bad floating-point literal"); .)
+	|
+		malformed_string_literal
+		(. SemErr(L"Bad string literal - usually caused by missing quote(s) ('\"' or '\"\"')"); .)
 	)
 .
 PrimitiveType<bool bBits> (. ID(L"PrimitiveType", STMT) .)
