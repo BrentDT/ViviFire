@@ -2851,10 +2851,10 @@ PrimaryExpression (. ID(L"Primary", EXPR) .)
 	| "Base"
 	| "Self"
 	| "#Null"
-	| malformed_char_literal     (. SemErr(L"Bad character"); .)
-	| malformed_integer_literal  (. SemErr(L"Bad integer"); .)
-	| malformed_real_literal     (. SemErr(L"Bad real"); .)
-	| malformed_string_literal   (. SemErr(L"Bad string"); .)
+	| malformed_char_literal     (. SemErr(L"Bad character literal"); .)
+	| malformed_integer_literal  (. SemErr(L"Bad integer literal"); .)
+	| malformed_real_literal     (. SemErr(L"Bad floating-point literal"); .)
+	| malformed_string_literal   (. SemErr(L"Bad string literal - usually caused by missing quote(s) ('\"' or '\"\"')"); .)
 	)
 .
 PrimitiveType<bool bBits> (. ID(L"PrimitiveType", STMT) .)
