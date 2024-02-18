@@ -950,6 +950,7 @@ nonoct = alnum - oct.
 currency = ANY - alnum - "_" - ws.
 
 str = ANY - ctrl - eol - '"'.
+notAfterStr = ANY - eol - " $&')+,./;<=>@\\_}". // Chars that cannot come after the closing quote.
 char = ANY - ctrl - eol.
 
 TOKENS
@@ -1057,7 +1058,12 @@ string_literal =
 	.
 
 malformed_string_literal =
-	["_"]["$"]'"'{str}{'"''"'{str}}.
+	["_"]["$"]
+	( '"'{str}{'"''"'{str}}
+	| '"'{str}'"'    // usual string
+	  {'"'{str}'"'}  // double quotes
+	  notAfterStr{str}
+	).
 
 time_literal =
 	dec{dec}":"dec{dec}[":"dec{dec}["."dec{dec}]].
@@ -2845,10 +2851,10 @@ PrimaryExpression (. ID(L"Primary", EXPR) .)
 	| "Base"
 	| "Self"
 	| "#Null"
-	| malformed_char_literal     (. SemErr(L"Bad character constant"); .)
-	| malformed_integer_literal  (. SemErr(L"Bad integer constant"); .)
-	| malformed_real_literal     (. SemErr(L"Bad real constant"); .)
-	| malformed_string_literal   (. SemErr(L"Bad string constant"); .)
+	| malformed_char_literal     (. SemErr(L"Bad character"); .)
+	| malformed_integer_literal  (. SemErr(L"Bad integer"); .)
+	| malformed_real_literal     (. SemErr(L"Bad real"); .)
+	| malformed_string_literal   (. SemErr(L"Bad string"); .)
 	)
 .
 PrimitiveType<bool bBits> (. ID(L"PrimitiveType", STMT) .)
@@ -3136,6 +3142,12 @@ StringExpression<std::wstring &res> (. ID(L"String", EXPR) .)
 		}
 		.)
 	}
+	///(.
+	///if (IsIdentifier(la->kind)) { // TODO: Add other possible incorrect tokens after a string.
+		///(. Err(L"Bad string constant. Possibly you want two quotes ('\"\"')."); .)
+		///SyncNewline(s_name);
+	///}
+	///.)
 	(. if (args.v >= Args::STMT) wprintf(L"\n[%ls]", res.c_str()); .) //TEMP
 .
 StructStatement<Modif &mods> (. ID(L"StructStatement", STMT) .)
