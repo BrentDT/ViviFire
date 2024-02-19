@@ -2681,28 +2681,24 @@ NewBlockStatement (. ID(L"NewBlockStatement", STMT) .)
 =
 	(.
 	int line, col;
-	bool bInitExpr = false;
+	int limit = 0;
 	wchar_t *type_name = nullptr; // TODO: make this a parameter
 	.)
 	"Begin" (. line = t->line; col = t->col; .)
 	[
 		"Call"
+		(. limit = _Call; .)
 		[
 			SimpleNonCallExpression // Default is "Add".
-		]
-		[
-			CollectionInitializer
-			(. bInitExpr = true; .)
 		]
 	|
 		UserType
 	]
 	SyncNewline<s_name>
-	[
-		NewMember
-		(. if (bInitExpr) SemErr(L"Expected END after initialization expression"); .)
-		{ NewMember }
-	]
+	{
+		NewMember<limit>
+	}
+	(. if (t->kind != _line_break) SynErr(_line_break); .)
 	(. if (la->kind != _End) Err(line, col, L"NEW...BEGIN without END"); .)
 	"End"
 	(
@@ -2717,13 +2713,19 @@ NewBlockStatement (. ID(L"NewBlockStatement", STMT) .)
 	)
 	(. coco_string_delete(type_name); .)
 .
-NewMember (. ID(L"NewMember", STMT) .)
+NewMember<int limit> (. ID(L"NewMember", STMT) .)
 =
-	[ Newline ]
-	( NewStatement<nullptr>
-	| ObjectStatement<nullptr>
-	| dot IdentifierStatement SyncNewline<s_name>
-	| ArgumentList SyncNewline<s_name>
+	(
+		ArgumentList SyncSeparator<s_name>
+	|
+		(. if (_Call == limit) Err(la->line, la->col, L"Statement must be an argument list because of BEGIN CALL"); .)
+		(
+			NewStatement<nullptr>
+		|
+			ObjectStatement<nullptr>
+		|
+			dot IdentifierStatement SyncNewline<s_name>
+		)
 	)
 .
 NewStatement<Modif *mods> (. ID(L"NewStatement", STMT) .)
