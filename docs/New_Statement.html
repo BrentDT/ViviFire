@@ -25,18 +25,20 @@
 <p>Makes an instance of an object and initializes it.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<pre><code>[ @Shared ] [ New ] class_name object_name [ , argument_list ]
-[ Begin [ default_type | Call [ method_name ] [ initializer ] ]
+<pre><code>[ @Shared ] _
+[ New ] class_name object_name [ , argument_list ]
+[ Begin [ default_type | Call [ method_name ] ]
     [ statements ]
 End [ New | class_name ] ]&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="at">@Shared</code></dt>
-<dd>Optional &ndash; There can be only one instance for all classes or procedure calls.</dd>
+<dd>Optional modifier &ndash; There can be only one instance for all classes or procedure calls.</dd>
 <dt><code class="kw">New</code></dt>
-<dd>Usually optional keyword.</dd>
-<dd>Mandatory if the statement is a nested member of <code class="kw">New</code>.</dd>
+<dd>At the start of the statement, the keyword is usually optional.</dd>
+<dd>Mandatory if the statement is nested in a different statement of the same type.</dd>
+<dd>Mandatory if the module contains the directive <code>@Option New</code>.</dd>
 <dt><code class="id">class_name</code></dt>
 <dd>Mandatory name of a class.</dd>
 <dt><code class="id">object_name</code></dt>
@@ -44,38 +46,37 @@ End [ New | class_name ] ]&#10;</code></pre>
 <dt><code class="id">argument_list</code></dt>
 <dd>Optional &ndash; One or more expressions with a comma between each.</dd>
 <dt><code class="kw">Begin</code></dt>
-<dd>Optional keyword that Starts the block construct.</dd>
+<dd>Optional keyword that starts the block construct.</dd>
 <dt><code class="id">default_type</code></dt>
 <dd>Optional data type that the compiler will use for the subsequent statements, if the data type is not specified.
 The data type must be related to the type specified in a constructor of <code class="id">class_name</code>.</dd>
 <dt><code class="id">method_name</code></dt>
-<dd>Optional name of the method of <code class="id">class_name</code> to call for each <code class="id">initializer</code> or <code class="id">statement</code>.
+<dd>Optional name of the method of <code class="id">class_name</code> to call for each argument list in <code class="id">statements</code>.
 It must come after the keyword <code class="kw">Call</code>.
 If you supply <code class="kw">Call</code> without <code class="id">method_name</code>, the default is <code>Add</code>.</dd>
-<dt><code class="id">initializer</code></dt>
-<dd>Optional on the same line after <code class="id">method_name</code>.
-It must be a list of values with a comma between each, all between braces (<code class="op">{ }</code>).</dd>
 <dt><code class="id">statements</code></dt>
-<dd>Mandatory in the block construct and if there is no initializer, one or more object-creation statements.
-See the section &ldquo;<a href="#Permitted_members">Permitted members</a>&rdquo; for more information.</dd>
+<dd>Mandatory in the block construct, one or more object-creation statements.
+See the sections &ldquo;Permitted members&rdquo; for more information.</dd>
 <dt><code class="kw">End</code></dt>
 <dd>Completes the block construct.
-You can also use one of <code class="kw">End New</code> or <code class="kw">End</code>&nbsp;<code class="id">class_name</code>.</dd>
+You can also use one of <code class="kw">End New</code> or <code class="kw">End</code>&nbsp;<code class="id">class_name</code>.
+And you can make one of these mandatory with the directive <code class="at">@Option</code>.</dd>
 </dl>
 <h2>Instructions</h2>
-<p>The statement <code class="kw">New</code> has many of the same functions as the statement <code class="kw">Dim</code>, but there are important differences.
+<p><span class="kws">The statement <code>New</code> has many of the same functions as <code>Dim</code> (or <code>Var</code>)</span>, but there are important differences.
 <code class="kw">Dim</code> can declare and initialize many scalar variables and arrays of value types and reference types.</p>
 <p>How <code class="kw">New</code> is different:</p>
 <ul>
 <li>It can declare and initialize only one variable of a reference type.</li>
-<li>If the variable is nullable, it is always given a value.</li>
+<li>If the variable can be null, it is always given a value.</li>
 <li>If a constructor of the given type has an array parameter, you can declare elements with the block construct.</li>
 <li>If you must enter data into the variable with many calls to the same method, there is a construct for that.</li>
 </ul>
-<h2>block construct</h2>
-<p>Usually you use the block construct when a constructor for a class has an object-array parameter.
+<h2>Passing an array argument</h2>
+<p>You can use the block construct when a constructor for a class has an object-array parameter.
 Each object-creation statement between <code class="kw">Begin</code> and <code class="kw">End</code> puts a reference to that object into the array.</p>
 <h3 id="Permitted_members">Permitted members</h3>
+<p>The array-passing construct lets you use four (4) different statements:</p>
 <ul>
 <li><code class="kw">New</code></li>
 <li>Argument list</li>
@@ -100,16 +101,27 @@ You write the class name after the keyword <code class="kw">Begin</code>.
 For all other statements with a different data type, you must use the full statement with <code class="kw">New</code> and the data type.</p>
 <p>Some objects use <code class="kw">#Null</code> for special effects.
 For example, the class <code>menu</code> uses it to show a separator.
-Because of how frequently this occurrs, ViviFire has a special symbol equivalent to <code class="kw">#Null</code>.
-You can use a vertical bar (<code class="op">|</code>) with optional hyphens (<code class="op">-</code>) after it as an argument.
+ViviFire lets you use a vertical bar (<code class="op">|</code>) as an alternative to <code class="kw">#Null</code> when passed as an argument.
+you can also write one or more hyphens after this symbol to help it show better.
 There is no limit on the number of hyphens, but this manual usually uses 4 hyphens (<code>|----</code>).</p>
 <h4><code>Object</code> members</h4>
-<p>A statement of the type <code class="kw">Object</code> makes an instance of a child class.
+<p>The statement <code class="kw">Object</code> makes an instance of a child class.
 If you do not supply a parent class for the object, the default is the type of the array argument (or <code class="id">default_type</code>, if given).
 But if you do supply the parent, it must be a child of the default class.</p>
 <h4>Procedure-call members</h4>
 <p>Procedure calls in the block construct can only be methods and properties of the class <code class="id">class_name</code>.
 They must start with a dot (<code class="op">.</code>) before the procedure name.</p>
+<h2>Initializing a collection</h2>
+<p>This block construct looks almost the same as the usual block construct.
+The first difference is the line that starts with <code class="kw">Begin call</code>.
+After these keywords, you can optionally write the name of a method.
+The method must be one supplied by the type <code class="id">class_name</code>.
+If you do not give a method, the Default name is <code>Add</code>.</p>
+<h3>Permitted members</h3>
+<p>With the collection-initializer construct, the only permitted member is the argument list.
+If you want, you can write two or more argument lists on one line.
+You put a semicolon (<code class="op">;</code>) between each argument list.
+A semicolon at the end of a line is also permitted.</p>
 <h2>Changes in syntax with @Option</h2>
 <p>There are two areas where you can change the syntax of the statement:</p>
 <ul>
@@ -130,21 +142,15 @@ End For&#10;</code></pre>
 <h3>One-line construct compared to the block construct</h3>
 <p>First we make a menu with a one-line statement.
 It shows &ldquo;File&rdquo; on the menu bar.
-In the related popup menu, it shows two commands: &ldquo;Open&hellip;&rdquo; and &ldquo;Exit&rdquo.
-Between these two items we write a vertical bar, which shows as a separator.
-This symbol is an alternative to <code class="kw">#Null</code> that you can use only in argument lists.
+In the related popup menu, it shows two commands: &ldquo;Open&hellip;&rdquo; and &ldquo;Exit&rdquo;.
+There is also a separator between these two items.
 If you select one of the commands, it calls the related procedure.</p>
 <div class="language-vivifire listing">
 <pre><code>' Make a menu.
 Menu FileMenu, "&File", "&amp;Open...", DoOpen, |, "E&amp;xit", DoExit&#10;</code></pre>
 </div>
 <hr>
-<p>Then we re-write the example as a block construct.
-It starts the same as before, until we get to the first command.
-Before the commands, we must write the keyword <code class="kw">Begin</code> on one line.
-Then we write each item on separate lines.
-The vertical bar can have hyphens after it without limits.
-Then we write <code class="kw">End New</code> to complete the statement.</p>
+<p>Then we write the example again as a block construct.</p>
 <div class="language-vivifire listing">
 <pre><code>New Menu FileMenu, "&amp;File"
 Begin
@@ -171,19 +177,16 @@ Begin
     "E&amp;xit", DoExit
 End Menu&#10;</code></pre>
 </div>
-<h3>Call construct</h3>
+<h3>Collection-initializer construct</h3>
 <p>In this example, we declare a list of strings and add some items.
 The class <code>List</code> has a method (<code>Add</code>) to add one item at a time.
-We write <code>Add</code> after <code class="kw">Begin Call</code> to give the method to call for each item in an array.
-(Although we give it here, this name is not necessary because <code>Add</code> is the default.)
-We supply the items in an array initializer.
-The initializer must be on the same line that starts with <code class="kw">Begin</code>.
-We can use the automatic line continuation of braces and commas to make the code easier to read.</p>
+Although we give it here, this name is not necessary because <code>Add</code> is the default.
+We supply the items in some argument lists, one for each call.</p>
 <div class="language-vivifire listing">
 <pre><code>List[String] fruits
-Begin Call Add {
-    "apple", "banana", "cherry",
-    "peach", "pear", "pineapple" }
+Begin Call Add
+    "apple"; "banana"; "cherry";
+    "peach"; "pear"; "pineapple";
 End&#10;</code></pre>
 </div>
 <h2>See also</h2>

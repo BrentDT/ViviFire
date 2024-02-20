@@ -26,14 +26,10 @@
 Collection initializers are typically used to make a collection from a set of known values.
 Examples include the names of months and a list of locations that you can use to validate user input.</p>
 <p>The statement <code class="kw">New</code> becomes a collection initializer when you start the second line with <code class="kw">Begin Call</code>.
-Then you can supply an optional method name that each initializer calls, which the default is <code>Add</code>.
+Then you can supply an optional method name that each initializer calls.
+The default method is <code>Add</code>.
 Then you can supply the data.</p>
-<p>You write the data items with one of two available constructs.
-The difference is which separator they use.</p>
-<p>The first construct lets you put only one call on a line.
-Between each argument you put a comma.
-But the only difference between this and the usual method call is that the method name is missing.
-Thus, we recommend this construct if the method name or the values are long and/or the method has many parameters.</p>
+
 <div class="language-vivifire listing">
 <pre><code>New SiteList sites
 Begin Call
@@ -43,25 +39,22 @@ Begin Call
     "Wikipedia", "https://www.wikipedia.org/"
 End&#10;</code></pre>
 </div>
-<p>The second construct lets you put many calls on the same line.
-You write a comma between each value, with all values between braces (<code class="op">{ }</code>).
-The furst brace must be on the same line after <code class="kw">Begin Call</code> and the optional method name.
-Each value causes a method call with the value as an argument.
-If the method has more than one parameter, you must use nested braces.
-Thus, we recommend this construct if the method has a small number of parameters.</p>
-<div class="language-vivifire listing">
-<pre><code>New List[String] months
-Begin Call {
-    "Jan", "Feb", "Mar", "Apr",
-    "May", "Jun", "Jul", "Aug",
-    "Sep", "Oct", "Nov", "Dec" }
-End
 
-New Map[String, String] states
-Begin Call {
-    {"AK", "Alaska"}, {"AL", "Alabama"},
-    {"AR", "Arkansas"}, {"AZ", "Arizona"},
-    {"CA", "California"} /'...'/ }
+<div class="language-vivifire listing">
+<pre><code>New Array[String] months
+Begin Call
+    "Jan"; "Feb"; "Mar"; "Apr";
+    "May"; "Jun"; "Jul"; "Aug";
+    "Sep"; "Oct"; "Nov"; "Dec"
+End&#10;</code></pre>
+</div>
+
+<div class="language-vivifire listing">
+<pre><code>New Map[String, String] states
+Begin Call
+    "AK", "Alaska"; "AL", "Alabama";
+    "AR", "Arkansas"; "AZ", "Arizona";
+    "CA", "California"; // ...
 End&#10;</code></pre>
 </div>
 <h2>See also</h2>
