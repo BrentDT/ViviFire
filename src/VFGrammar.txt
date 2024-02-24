@@ -132,6 +132,7 @@ struct Option {
 
 	void Parse() {
 		static const wchar_t *s_block = L"block", *s_equals = L"equals", *s_id = L"id", *s_warning = L"warning";
+		int oldV = args.v; if (oldV < Args::EXPR) args.v = 0; // Silence subtokens.
 		if (last) parser->SemErr(L"@OPTION not permitted after LAST");
 		parser->Get();
 		switch (parser->la->kind) {
@@ -302,6 +303,7 @@ struct Option {
 			break;
 		}
 		if (parser->la->kind != _line_break && parser->la->kind != _EOF) goto bad_option;
+		args.v = oldV;
 	}
 
 };
@@ -1019,6 +1021,7 @@ integer_literal =
 	( "%B"["_"]bin{["_"]bin}
 	| "%O"["_"]oct{["_"]oct}
 	| "%X"["_"]hex{["_"]hex}
+		["_" CONTEXT ("i"|"u")]
 	| dec{['_']dec}
 	// Prevent misparsing units (eg "312electronvolts") as real_literal.
 	| dec{['_']dec} CONTEXT ("E"alpha)
@@ -1197,8 +1200,8 @@ bad_identifier = '\u00ce'. (.
 	Get(); SemErr(L"Invalid name caused by incorrect file encoding. Write the file again as \"UTF-8 with BOM\"."); .)
 
 LineContinuation = "_". (.
-	int next = scanner->Peek()->kind;
-	if (next != _line_break && next != _InlineComment)
+	Get();
+	if (la->kind != _line_break && la->kind != _InlineComment)
 	    Err(la->line, la->col, L"Newline or inline comment must follow line continuation"); .)
 
 // Directives

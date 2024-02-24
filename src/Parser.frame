@@ -150,7 +150,7 @@ void Parser::Get() {
 	for (;;) {
 		t = la;
 		// BEGIN MOD - display current token
-		if (t->kind && args.v >= 1) {
+		if (t->kind > 0 && t->kind < maxT && args.v >= 1) {
 			if (t->val[0] >= L'!' && t->val[0] <= L'~') // printable
 				wprintf(L"%ls[%d]%ls", (t->val[0] == L'@' && !iswdigit(t->val[1])) ? L"" : L"\n", t->kind, t->val);
 			else // non-printable
