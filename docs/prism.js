@@ -20,7 +20,7 @@ Prism.languages.vivifire = {
 	'str': /(?:\$(\w+|\u200b)|_?\$?".*?"([\/\\]?".*?")*)/g,
 	'char': /`.`(?!\w)|%\w+/g,
 	'num': {
-		pattern: /(^|[^#%])((\b\d[_\d]*(\.\d+)*(!|[Ee][-+]?\d+)?)|(&[BHObho]\w+))/g,
+		pattern: /(^|[^#%])(\b\d[_\d]*(\.\d+)*(!|[Ee][-+]?\d+)?([DdIiRrUu]\d+)?)/g,
 		lookbehind: true
 	},
 	'nil': /\|-*(?!\?)/g,
