@@ -21,32 +21,37 @@
 </nav>
 <main>
 <h1 id="top">Type Characters</h1>
+<p>There are some characters that have an effect on the data type of some programming elements.
+These characters can be symbols you attach to the end of an identifier or literal.
+Others are alphanumeric suffixes you attach to literals to give them a different data type.</p>
+<!-- TODO: part of name or separate? -->
 <h2>Identifier type characters</h2>
 <p>ViviFire supplies a set of identifier type characters that you can use to specify the data type of a variable or constant.
 The table that follows shows the available identifier type characters with code examples.</p>
-<table id="t1" class="language-vivifire">
+<table id="t1">
 <caption>Identifier type characters</caption>
 <thead>
 <tr><th>Type character</th><th>Data type</th><th>Example</th></tr>
 </thead>
 <tbody>
-<tr><td class="char"><code>%</code></td>
-<td><code class="kw">Int32</code></td>
-<td><pre><code>Dim a%</code></pre></td></tr>
-<tr><td class="char"><code>!</code></td>
-<td><code class="kw">Real64</code></td>
-<td><pre><code>Dim a!</code></pre></td></tr>
-<tr><td class="char"><code>@</code></td>
-<td><code class="kw">Fixed64</code></td>
-<td><pre><code>Dim a@</code></pre></td></tr>
-<tr><td class="char"><code>$</code></td>
-<td><code class="kw">String</code></td>
-<td><pre><code>Dim a$</code></pre></td></tr>
+<tr><td><code>%</code></td>
+	<td><code class="kw">Int32</code></td>
+	<td><pre class="language-vivifire"><code>Var x%</code></pre></td></tr>
+<tr><td><code>!</code></td>
+	<td><code class="kw">Real64</code></td>
+	<td><pre class="language-vivifire"><code>Var x!</code></pre></td></tr>
+<tr><td><code>@</code></td>
+	<td><code class="kw">Fixed64</code></td>
+	<td><pre class="language-vivifire"><code>Var x@</code></pre></td></tr>
+<tr><td><code>$</code></td>
+	<td><code class="kw">String</code></td>
+	<td><pre class="language-vivifire"><code>Var x$</code></pre></td></tr>
 </tbody>
 </table>
 <p>There are no identifier type characters for the data types <span class="kws"><code>Boolean</code>, <code>Char</code>, <code>Fixed128</code>, <code>Int8</code>, <code>Int16</code>, <code>Int64</code>, <code>Int128</code>, <code>Real32</code>, <code>Real128</code>, <code>SafeString</code>, <code>SBits</code>, <code>UBits</code>, or <code>UInt8</code> thru <code>UInt128</code></span>.
 Also, compound data types, for example, arrays and structures do not have an identifier type character.</p>
-<h2>Default literal types</h2>
+<h2>Literal type characters</h2>
+<h3>Default literal types</h3>
 <p>The qualities of a literal usually give it its data type.
 The table that follows gives the defaults.</p>
 <style media="all and (max-width: 65ch)">
@@ -54,77 +59,138 @@ The table that follows gives the defaults.</p>
 	#t2 td:nth-of-type(2):before { content: "Default data type"; }
 	#t2 td:nth-of-type(3):before { content: "Examples"; }
 </style>
-<table id="t2" class="wide language-vivifire">
+<table id="t2" class="wide">
 <thead>
 <tr><th>Qualities of a literal</th>
-<th>Default data type</th>
-<th>Examples</th></tr>
+	<th>Default data type</th>
+	<th>Examples</th></tr>
 </thead>
 <tbody>
 <tr><td>Number, no fraction part</td>
-<td><a href="Int32_Data_Type.html"><code>Int32</code></a></td>
-<td><pre><code>32768 32_768</code></pre></td></tr>
+	<td><code class="kw">Int32</code></td>
+	<td><pre class="language-vivifire"><code>32768 32_768</code></pre></td></tr>
 <tr><td>Number with a fraction part</td>
-<td><a href="Real64_Data_Type.html#Real_literal"><code>Real64</code></a></td>
-<td><pre><code>3.14159 4.1e-8</code></pre></td></tr>
+	<td><<code class="kw">Real64</code></td>
+	<td><pre class="language-vivifire"><code>3.14159 4.1e-8</code></pre></td></tr>
 <tr><td>Between two backtick symbols</td>
-<td><a href="Char_Data_Type.html#Char_literal"><code>Char</code></a></td>
-<td><pre><code>`A` `@`</code></pre></td></tr>
+	<td><code class="kw">Char</code></td>
+	<td><pre class="language-vivifire"><code>`A` `@`</code></pre></td></tr>
 <tr><td>Starts with a percent symbol and a minimum of two letters</td>
-<td><code class="kw">Int32</code></td>
-<td><pre><code>%CR %RETURN</code></pre></td></tr>
+	<td><code class="kw">Int32</code></td>
+	<td><pre class="language-vivifire"><code>%CR %RETURN</code></pre></td></tr>
 <tr><td>Between two quotation symbols</td>
-<td><a href="String_Basics.html#String_literal"><code>String</code></a></td>
-<td><pre><code>"Hello, world!"</code></pre></td></tr>
+	<td><code class="kw">String</code></td>
+	<td><pre class="language-vivifire"><code>"Hello, world!"</code></pre></td></tr>
 <tr><td>Starts with a dollar symbol</td>
 <td><code class="kw">String</code></td>
-<td><pre><code>$CR $13 $LINE</code></pre></td></tr>
+<td><pre class="language-vivifire"><code>$CR $13 $LINE
+$"Hello, <span class="token strint">{<span class="token id">name</span>}</span>!"</code></pre></td></tr>
 <tr><td>Three groups of numbers connected with slashes, hyphens, or colons</td>
-<td><a href="DateTime_Data_Type.html#DateTime_literal"><code>DateTime</code></a></td>
-<td><pre><code>2013/12/11
+	<td><code class="kw">DateTime</code></td>
+	<td><pre class="language-vivifire"><code>2013/12/11
 2013-12-11 10:09:08</code></pre></td></tr>
 <tr><td>Starts with an at-symbol or currency symbol, number</td>
-<td><a href="Fixed64_Data_Type.html#Fixed64_literal"><code>Fixed64</code></a></td>
-<td><pre><code>@12.34 @$12.34 &#164;12.34
+	<td><code class="kw">Fixed64</code></td>
+	<td><pre class="language-vivifire"><code>@12.34 @$12.34 &#164;12.34
 @&#163;1_234_567.89</code></pre></td></tr>
 <tr><td>Three or four groups of numbers connected with dots</td>
-<td><a href="Require_Statement.html#Version_literal">version number</a></td>
-<td><pre><code>1.2.3.4
+	<td>version number</td>
+	<td><pre class="language-vivifire"><code>1.2.3.4
 1.22.333</code></pre></td></tr>
 </tbody>
 </table>
+<h3>Special literal types</h3>
+<p>ViviFire supplies a set of literal type suffixes, which let you select a data type different from the default, given its qualities.
+You attach a suffix to the end of the literal.
+The table that follows shows the available literal type suffixes with examples.</p>
+<table>
+<thead>
+<tr><th>Literal suffix</th><th>Data type</th><th>Example</th></tr>
+</thead>
+<tbody>
+<tr><td><code>I8</code> or <Code>i8</Code></td>
+	<td><code class="kw">Int8</code></td>
+	<td><pre class="language-vivifire"><code>123I8</code></pre></td></tr>
+<tr><td><code>I16</code> or <code>i16</code></td>
+	<td><code class="kw">Int16</code></td>
+	<td><pre class="language-vivifire"><code>123i16</code></pre></td></tr>
+<tr><td><code>I32</code> or <code>i32</code></td>
+	<td><code class="kw">Int32</code></td>
+	<td><pre class="language-vivifire"><code>123I32</code></pre></td></tr>
+<tr><td><code>I64</code> or <code>i64</code></td>
+	<td><code class="kw">Int64</code></td>
+	<td><pre class="language-vivifire"><code>123I64</code></pre></td></tr>
+<tr><td><code>I128</code> or <code>i128</code></td>
+	<td><code class="kw">Int128</code></td>
+	<td><pre class="language-vivifire"><code>123i128</code></pre></td></tr>
+<tr><td><code>D64</code> or <code>d64</code></td>
+	<td><code class="kw">Fixed64</code></td>
+	<td><pre class="language-vivifire"><code>123D64</code></pre></td></tr>
+<tr><td><code>D128</code> or <code>d128</code></td>
+	<td><code class="kw">Fixed128</code></td>
+	<td><pre class="language-vivifire"><code>123d128</code></pre></td></tr>
+<tr><td><code>R32</code> or <code>r32</code></td>
+	<td><code class="kw">Real32</code></td>
+	<td><pre class="language-vivifire"><code>123R32</code></pre></td></tr>
+<tr><td><code>R64</code> or <code>r64</code></td>
+	<td><code class="kw">Real64</code></td>
+	<td><pre class="language-vivifire"><code>123R64</code></pre></td></tr>
+<tr><td><code>R128</code> or <code>r128</code></td>
+	<td><code class="kw">Real128</code></td>
+	<td><pre class="language-vivifire"><code>123r128</code></pre></td></tr>
+<tr><td><code>U8</code> or <code>u8</code></td>
+	<td><code class="kw">UInt8</code></td>
+	<td><pre class="language-vivifire"><code>123U8</code></pre></td></tr>
+<tr><td><code>U16</code> or <code>u16</code></td>
+	<td><code class="kw">UInt16</code></td>
+	<td><pre class="language-vivifire"><code>123u16</code></pre></td></tr>
+<tr><td><code>U32</code> or <code>u32</code></td>
+	<td><code class="kw">UInt32</code></td>
+	<td><pre class="language-vivifire"><code>123U32</code></pre></td></tr>
+<tr><td><code>U64</code> or <code>u64</code></td>
+	<td><code class="kw">UInt64</code></td>
+	<td><pre class="language-vivifire"><code>123U64</code></pre></td></tr>
+<tr><td><code>U128</code> or <code>u128</code></td>
+	<td><code class="kw">UInt128</code></td>
+	<td><pre class="language-vivifire"><code>123u128</code></pre></td></tr>
+</tbody>
+</table>
+<p>There are no literal type characters for <span class="kws"><code>Boolean</code>, <code>Char</code>, <code>DateTime</code>, <code>SafeString</code>, or <code>String</code></span>.
+And there are none for compound data types, for example, arrays and structures.</p>
+<p>Literals can also use the identifier type characters <code>!</code> and <code>@</code>.
+But, identifiers cannot use the special literal types.</p>
 <h2>Hexadecimal, octal, and binary literals</h2>
 <style media="all and (max-width: 40em)">
-	#t3 td:nth-of-type(1):before { content: "Number base"; }
-	#t3 td:nth-of-type(2):before { content: "Prefix"; }
-	#t3 td:nth-of-type(3):before { content: "Applicable digits"; }
-	#t3 td:nth-of-type(4):before { content: "Examples"; }
+	#t4 td:nth-of-type(1):before { content: "Number base"; }
+	#t4 td:nth-of-type(2):before { content: "Prefix"; }
+	#t4 td:nth-of-type(3):before { content: "Applicable digits"; }
+	#t4 td:nth-of-type(4):before { content: "Examples"; }
 </style>
-<table id="t3" class="wide language-vivifire">
+<table id="t4" class="wide">
 <thead>
 <tr><th>Number base</th>
 	<th>Prefix</th>
-	<th>Applicable digits</th>
+	<th>Available digits</th>
 	<th>Examples</th></tr>
 </thead>
 <tbody>
 <tr><td>Hexadecimal (base 16)</td>
 	<td><code>%X</code> or <code>%x</code></td>
 	<td>0&ndash;9 A&ndash;F</td>
-	<td><pre><code>%X0FFF %x0ff_00_2a</code></pre></td></tr>
+	<td><pre class="language-vivifire"><code>%X0FFF %x0ff_00_2a %x7b_i8</code></pre></td></tr>
 <tr><td>Octal (base 8)</td>
 	<td><code>%O</code> or <code>%o</code></td>
 	<td>0&ndash;7</td>
-	<td><pre><code>%O777 %o377_777</code></pre></td></tr>
+	<td><pre class="language-vivifire"><code>%O777 %o377_777</code></pre></td></tr>
 <tr><td>Binary (base 2)</td>
 	<td><code>%B</code> or <code>%b</code></td>
 	<td>0 1</td>
-	<td><pre><code>%B101010 %b11111111_11111111</code></pre></td></tr>
+	<td><pre class="language-vivifire"><code>%B101010 %b11111111_11111111</code></pre></td></tr>
 </tbody>
 </table>
 <p class="note">Note:
 Hexadecimal literals must have a number (0&ndash;9) or underscore (<code>_</code>) immediately after X.
-If you put a letter after X, it will be seen as a named constant.</p>
+If you put a letter after X, it will possibly be seen as a named constant.</p>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Data_Type_Summary.html">Data Type Summary</a></li>
