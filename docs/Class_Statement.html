@@ -25,7 +25,8 @@
 <p>Declares the name of a class and gives its implementation.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<pre><code>[ modifier ] Class class_name [ type_list ] [ Is base_class ] [ Does trait_name ]&hellip;
+<pre><code>[ modifier ] _
+Class class_name [ type_list ] [ Is base_class ] [ Does trait_name ]&hellip;
     [ Where generic_constraints ]&hellip;
     [ statements ]
 End [ Class ]&#10;</code></pre>
@@ -35,8 +36,12 @@ End [ Class ]&#10;</code></pre>
 <dt><code class="id">modifier</code></dt>
 <dd>Optional one of these:
 	<ul>
-	<li><code class="at">@Abstract</code> &ndash; The class must be extended by a class that is not abstract.</li>
-	<li><code class="at">@Open</code> &ndash; The class can be extended.</li>
+	<li><code class="at">@Abstract</code> &ndash; The class can only be the base class (<code class="id">base_class</code>) of other classes.
+	See <a href="Abstract.html"><code>@Abstract</code></a>.</li>
+	<li><code class="at">@Deprecated</code> &ndash; The class can be removed in a subsequent version.
+	See <a href="Deprecated.html"><code>@Deprecated</code></a>.</li>
+	<li><code class="at">@Open</code> &ndash; The class can be the base class (<code class="id">base_class</code>) of other classes.
+	See <a href="Open.html"><code>@Open</code></a>.</li>
 	</ul>
 </dd>
 <dt><code class="id">class_name</code></dt>
@@ -45,20 +50,20 @@ End [ Class ]&#10;</code></pre>
 <dd>Optional one or more names with commas between each, all between brackets (<code class="op">[ ]</code>).
 See <a href="Type_List.html">Type List</a> for more information.</dd>
 <dt><code class="id">base_class</code></dt>
-<dd>Optional name of a class from which this class inherits methods and properties.</dd>
+<dd>Optional name of a class that supplies its public elements (typically methods and properties) to this class.</dd>
 <dt><code class="kw">Does</code></dt>
 <dd>Optional keyword that you can use again and again.</dd>
 <dt><code class="id">trait_name</code></dt>
-<dd>The name of a trait, a construct that specifies behavior.
+<dd>The name of a trait, a construct that gives a specification for behavior.
 See <a href="Does_Clause_Traits.html">Does Clause (Traits)</a> for more information.</dd>
 <dt><code class="kw">Where</code></dt>
-<dd>Optional, one or more times &ndash; Specifies constraints to put on type arguments from <code class="id">type_list</code>.
-You can put one at the end of the first line, or you can have one or more, each on different lines, before <code class="id">statements</code>.</dd>
+<dd>Optional keyword you can use again and again.
+You can put one at the end of the first line, or one or more on different lines.</dd>
 <dt><code class="id">generic_constraints</code></dt>
-<dd>One or more constraints on a generic parameter, with a comma between each.
+<dd>One or more limits (or constraints) on a generic parameter, with a comma between each.
 See <a href="Where_Clause_Generics.html">Where Clause (Generics)</a> for more information.</dd>
 <dt><code class="id">statements</code></dt>
-<dd>Optional statements that declare the members of the class.</dd>
+<dd>Optional statements that are the members of the class.</dd>
 <dt><code class="kw">End</code></dt>
 <dd>Completes the statement.
 You can also use <code class="kw">End Class</code>.</dd>
@@ -66,7 +71,7 @@ You can also use <code class="kw">End Class</code>.</dd>
 See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
 </dl>
 <h2>Instructions</h2>
-<p>The statement <code class="kw">Class</code> makes a data type known as a class.
+<p><code class="kw">Class</code> is a statement that makes a data type known as a class.
 Classes are important constructs in object-oriented programming (OOP).
 See <a href="Objects_and_Classes.html">Objects and Classes</a> for more information.</p>
 <p>You can put a class only in some contexts.
@@ -92,44 +97,37 @@ See <a href="Declaration_Contexts_and_Default_Access_Levels.html">Declaration Co
 <h2>Examples</h2>
 <h3>Example 1</h3>
 <div class="language-vivifire listing">
-<pre><code>Program ClassExample
-Require IO
+<input id="hide1" type="checkbox" checked><label for="hide1">Show optional keywords</label>
+<pre><code>Require ViviFire.IO
 
 Class Person
-    Var my_name As String, my_age As UInt16
-    Constructor name As String, age As UInt16
-        my_name = name
-        my_age = age
-    End Constructor
-    Property Name As String
-    Get
-        Return my_name
-    End Property
-    Property Age As UInt16
-    Get
-        Return my_age
-    End Property
-End Class
+    // Private members.
+    Constructor Var my_name As String
+        // Validate here.
+    End <s>Constructor</s>
 
-Person #a, "Alice", 24
-Person #b, "Bob", 42
+    // Public members.
+    Method SayHello
+        PrintLine $"Hello, I'm <span class="token strint">{<span class="token id">my_name</span>}</span>!"
+    End <s>Method</s>
+End <s>Class</s>
 
-PrintLine #a.Name &amp; " is " &amp; #a.Age
-PrintLine #b.Name &amp; " is " &amp; #b.Age
+<s>New </s>Person a, "Alice"
+<s>New </s>Person b, "Bob"
 
-' Output:
-' Alice is 24
-' Bob is 42&#10;</code></pre>
+a.SayHello
+b.SayHello&#10;</code></pre>
+<div>Output:</div>
+<pre><samp>Hello, I'm Alice!
+Hello, I'm Bob!
+</samp></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
-<li><a href="Constructor_Statement.html">Constructor Statement</a></li>
-<li><a href="Destructor_Statement.html">Destructor Statement</a></li>
-<li><a href="Method_Statement.html">Method Statement</a></li>
-<li><a href="Object_Statement.html">Object Statement</a></li>
-<li><a href="Property_Statement.html">Property Statement</a></li>
-<li><a href="Struct_Statement.html">Struct Statement</a></li>
-<li><a href="Option_Directive.html">@Option Directive</a></li>
+<li><a href="Objects_and_Classes.html">Objects and Classes</a></li>
+<li><a href="Structures_and_Classes.html">Structures and Classes</a></li>
+<li><a href="Trait_Statement.html">Trait Statement</a></li>
+<li><a href="Modules.html">Program and Library Modules</a></li>
 </ul>
 </main>
 <script src="common.js"></script>
