@@ -59,6 +59,11 @@ Other loop constructs are possibly more flexible.
 See the <a href="#See_also">See also</a> section below for more information.</p>
 <h2>Usual operation</h2>
 <p>TODO</p>
+<h3>Loop-index counter</h3>
+<p>With loops of this type, you can use a magic integer constant <code>%INDEX</code>.
+ It starts at zero (0) and increases by one (1) with each iteration.</p>
+ <p>If you nest loops of this type, <code>%INDEX</code> can refer to a different loop to what you think.
+ Thus, we recommend that you make special counter variables as an alternative, if necessary.</p>
 <h2><code>Exit For</code></h2>
 <p>The statement <code class="kw">Exit For</code> can stop this type of loop.
 <code class="kw">Exit For</code> immediately runs the statement after <code class="kw">End</code>.</p>
