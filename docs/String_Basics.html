@@ -28,10 +28,12 @@ ViviFire code can contain string literals, string constants, and string variable
 <h2>String literals</h2>
 <p>A <dfn>string literal</dfn> is a indication of a string value written in code.
 ViviFire's string literals can show most characters.</p>
-<p>A basic string literal contains printable characters between double quotation marks (&quot;).
+<p>A basic string literal contains printable characters between a pair of double-quotation symbols (<code>&quot; &quot;</code>).
 Here is an example:</p>
 <div class="language-vivifire listing">
-<pre><code>"This is a basic string literal."&#10;</code></pre>
+<pre><code>PrintLine "This is a basic string literal."&#10;</code></pre>
+<div>Output:</div>
+<pre><samp>This is a basic string literal.</samp></pre>
 </div>
 <h3>Multi-line strings</h3>
 <p>A string literal can become long.
@@ -40,18 +42,45 @@ One solution is to divide the string into many smaller strings and concatenate t
 If this code runs a small number of times, this could be a good solution.
 But, if this code must run frequently, it can make your program slower.</p>
 <p>ViviFire lets you write one string literal on many lines.
-You write an underscore (<code class="op">_</code>) after the first line.
+You write an underscore symbol (<code>_</code>) after the first line.
 All lines between the first and last have one underscore before and one underscore after.
 Then the last line starts with an underscore.
 An example follows.</p>
 <div class="language-vivifire listing">
-<pre><code>quote =
+<pre><code>Const quote =
     "The following two statements are usually both true: "_
     _"There's not enough documentation. "_
     _"There's too much documentation. "_
     _"-- Larry Wall"&#10;</code></pre>
 </div>
+<h3>Interpolated strings</h3>
+<p>An <dfn>interpolated string literal</dfn> concatenates embedded expressions into one string value.
+Such literals can be much easier for you to read.
+The example that follows  makes a string without interpolation.</p>
+<div class="language-vivifire listing">
+<pre><code>Const a = 5
+Const b = 10
+PrintLine "The sum of " &amp; a &amp; " and " &amp; " is " &amp; (a + b) &amp; "."&#10;</code></pre>
+<div>Output:</div>
+<pre><samp>The sum of 5 and 10 is 15.</samp></pre>
+</div>
+<p>This is not easy to read, and becomes worse with more expressions.</p>
+<p>An interpolated string starts with the dollar and quotation symbols (<code>$&quot;</code>).
+You write an embedded expression between a pair of braces (<code>{ }</code>).</p>
+<p>The equivalent code with interpolation:</p>
+<div class="language-vivifire listing">
+<pre><code>Const a = 5
+Const b = 10
+PrintLine $"The sum of <span class="token strint">{<span class="token id">a</span>}</span> and <span class="token strint">{<span class="token id">b</span>}</span> is <span class="token strint">{<span class="token id">a</span> <span class="token op">+</span> <span class="token id">b</span>}</span>."&#10;</code></pre>
+</div>
+<!-- TODO: See Interpolated Strings for more information. -->
 <h2>String constants</h2>
+<p>A <dfn>string constant</dfn> is an indication of a short string value in code.
+A constant has a length a minimum of one character.
+And only a small number of constants are longer than this.</p>
+<p>A string constant starts with a dollar symbol (<code>$</code>).
+After that, you can write a number or a name.
+The syntax follows:</p>
 <div class="language-literal">
 <div>One of these</div>
 <pre><code><kbd>$</kbd> <var>decimal</var>
