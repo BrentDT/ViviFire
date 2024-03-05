@@ -1614,7 +1614,7 @@ ConstStatement<Modifiers &mods> (. ID(L"ConstStatement", STMT) .)
 	(
 		(.
 		mods.Let(typeid(DeprecatedModif));
-	mods.Check();
+		mods.Check();
 		.)
 		ConstantDeclarator { WEAK comma ConstantDeclarator }
 	|
@@ -1812,6 +1812,8 @@ Deprecated (. ID(L"Deprecated", STMT) .)
 DestructorStatement<Modifiers &mods> (. ID(L"DestructorStatement", STMT) .)
 =
 	(.
+	mods.Check();
+
 	int line, col;
 	.)
 	"Destructor" (. line = t->line; col = t->col; .)
@@ -3230,7 +3232,7 @@ StructState (. ID(L"StructState", STMT) .)
 		(.
 		mods.Let(typeid(DeprecatedModif));
 		mods.Let(typeid(SharedModif));
-	mods.Check();
+		mods.Check();
 		.)
 		[ DimOrVar ] DeclaratorList<YES_BITS>
 		SyncNewline<s_name>
