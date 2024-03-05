@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2023 Brent D. Thorn
+ * Copyright 2024 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.com/.
  *
@@ -9,77 +9,81 @@
  * found in the LICENSE file.
  */
 
-#include <assert.h>
 #include "Modifier.h"
-#include "Parser.h"
-#include "Scanner.h"
 
-void Modif::add(int m) {
-	assert(m >= 0 && m < LAST);
-	if (m_mods[m].present) {
-		m_parser->errors->Error(m_parser->t->line, m_parser->t->col, L"Same modifier again");
+#if defined(RAW_PTR)
+typedef struct Modif* ModifPtr;
+#else
+typedef std::shared_ptr<struct Modif> ModifPtr;
+#endif
+
+bool Modifiers::Add(ModifPtr pMod) {
+	if (!pMod) return false;
+	std::type_index tid = typeid(*pMod);
+	if (mods.count(tid) == 0) {
+		mods[tid] = pMod;
+		return true;
 	}
-	else {
-		m_mods[m].present = true;
-		m_mods[m].allowed = false;
-		m_mods[m].line = m_parser->t->line;
-		m_mods[m].col = m_parser->t->col;
-		m_mods[m].order = m_count++;
-	}
+	parser->errors->Error(pMod->line, pMod->col, L"Same modifier again");
+	return false;
 }
 
-bool Modif::allow(int m) {
-	assert(m < LAST);
-	if (m_mods[m].present) {
-		m_mods[m].allowed = true;
+bool Modifiers::Let(std::type_index tid) {
+	if (mods.count(tid) == 1) {
+		mods[tid]->can_do = true;
+		return true;
 	}
-	return m_mods[m].present;
+	return false;
 }
 
-bool Modif::has(int m) const {
-	assert(m >= 0 && m < LAST);
-	return m_mods[m].present; 
+bool Modifiers::Has(std::type_index tid) const {
+	return (mods.count(tid) == 1);
 }
 
-void Modif::validate() const {
-	if (m_count == 0) return; // No modifiers.
+void Modifiers::Check() const {
+	static const std::type_index
+		Abstract = typeid(AbstractModif),
+		Deprecated = typeid(DeprecatedModif),
+		Iterator= typeid(IteratorModif),
+		ReadOnly = typeid(ReadOnlyModif),
+		Test= typeid(TestModif),
+		WriteOnly = typeid(WriteOnlyModif);
 
-	for (int m = 0; m < LAST; m++) {
-		if (m_mods[m].present && !m_mods[m].allowed) {
-			wchar_t *msg = coco_string_create_append(m_name[m], L" is not permitted here");
-			m_parser->Err(m_mods[m].line, m_mods[m].col, msg);
-			coco_string_delete(msg);
+// Find those incorrect for a given construct.
+	for (auto &m: mods) {
+		if (!m.second->can_do) {
+			std::wstring msg(m.second->Text());
+			msg += L" is not permitted here";
+			parser->errors->Error(m.second->line, m.second->col, msg.c_str());
 		}
 	}
 
 	// Abstract v any except Deprecated, ReadOnly, or WriteOnly.
-	if (m_mods[Abstract].present && m_count > 1) {
-		for (int m = 0; m < LAST; m++) {
-			switch (m) {
-			case Abstract: case Deprecated: case ReadOnly: case WriteOnly:
-				break; // Skip permitted modifiers.
-			default:
-				if (m_mods[m].present) {
-					wchar_t *msg = coco_string_create_append(L"Cannot use @Abstract with ", m_name[m]);
-					m_parser->Err(m_mods[m].line, m_mods[m].col, msg);
-					coco_string_delete(msg);
-				}
+	if (Has(Abstract) && Count() > 1) {
+		for (auto& m : mods) {
+			if (m.first != Abstract && m.first != Deprecated && m.first != ReadOnly && m.first != WriteOnly) {
+				std::wstring msg(L"Cannot use @ABSTRACT with ");
+				msg += m.second->Text();
+				parser->errors->Error(m.second->line, m.second->col, msg.c_str());
 			}
 		}
 	}
 
 	// ReadOnly v WriteOnly.
-	if (m_mods[ReadOnly].present && m_mods[WriteOnly].present) {
-		m_parser->Err(m_mods[WriteOnly].line, m_mods[WriteOnly].col, L"Cannot use @ReadOnly and @WriteOnly together");
+	if (Has(ReadOnly) && Has(WriteOnly)) {
+		const auto &m = mods.find (ReadOnly)->second;
+		parser->errors->Error(m->line, m->col, L"Cannot use @READONLY with @WRITEONLY");
 	}
 
 	// Iterator v WriteOnly.
-	if (m_mods[Iterator].present && m_mods[WriteOnly].present) {
-		m_parser->Err(m_mods[WriteOnly].line, m_mods[WriteOnly].col, L"Cannot use @Iterator and @WriteOnly together");
+	if (Has(Iterator) && Has(WriteOnly)) {
+		const auto &m = mods.find(Iterator)->second;
+		parser->errors->Error(m->line, m->col, L"Cannot use @ITERATOR with @WRITEONLY");
 	}
 
 	// Test v any.
-	if (m_mods[Test].present && m_count > 1) {
-		m_parser->Err(m_mods[Test].line, m_mods[Test].col, L"Cannot use @TEST with other modifiers");
+	if (Has(Test) && Count() > 1) {
+		const auto &m = mods.find(Test)->second;
+		parser->errors->Error(m->line, m->col, L"Cannot use @Test with other modifiers");
 	}
 }

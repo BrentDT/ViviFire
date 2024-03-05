@@ -25,6 +25,13 @@
 #include "Args.h"
 #include "AST.h"
 #include "Modifier.h"
+struct Modif;
+struct Modifiers;
+#if defined(RAW_PTR)
+typedef struct Modif * ModifPtr;
+#else
+typedef std::shared_ptr<struct Modif> ModifPtr;
+#endif
 
 #if __cplusplus >= 201703L // C++17
 #include <filesystem>
@@ -1332,11 +1339,11 @@ AsTypeClause<bool bBits> (. ID(L"AsTypeClause", STMT) .)
 	[ Rank ]
 .
 /*B*/
-BaseUnitStatement<class Modif &mods> (. ID(L"BaseUnitStatement", STMT) .)
+BaseUnitStatement<Modifiers &mods> (. ID(L"BaseUnitStatement", STMT) .)
 =
 	(.
-	mods.allow(Modif::Deprecated);
-	mods.validate();
+	mods.Let(typeid(DeprecatedModif));
+	mods.Check();
 	.)
 	"Base"
 	( "Unit" identifier InUnitClause
@@ -1360,9 +1367,9 @@ Block (. ID(L"Block", STMT) .)
 =
 	( "Constructor" | "Do" | "For" | "Function" | "Method" | "Property" | "Sub" | "While" )
 .
-BlockStatement<Modif &mods> (. ID(L"BlockStatement", STMT) .)
+BlockStatement<Modifiers &mods> (. ID(L"BlockStatement", STMT) .)
 =
-	(. if (mods.count() > 0 && la->kind != _Select) mods.validate(); .)
+	(. if (mods.Count() > 0 && la->kind != _Select) mods.Check(); .)
 	// Must change the line above if more statements get mods.
 	(
 		SelectStatement<mods>
@@ -1381,11 +1388,11 @@ BlockStatement<Modif &mods> (. ID(L"BlockStatement", STMT) .)
 	)
 .
 /*C*/
-CallOrNew<int which, Modif *mods> (. ID(L"CallOrNew", STMT) .)
+CallOrNew<int which, Modifiers *mods> (. ID(L"CallOrNew", STMT) .)
 =
 	(.
-	bool bShared = mods ? mods->allow(Modif::Shared) : false;
-	if (mods) mods->validate();
+	bool bShared = mods ? mods->Let(typeid(SharedModif)) : false;
+	if (mods) mods->Check();
 	.)
 
 	(.
@@ -1485,7 +1492,7 @@ CatchClause (. ID(L"CatchClause", STMT) .)
 .
 ClassOrObjectMember<int kind> (. ID(L"ClassOrObjectMember", STMT) .)
 =
-	(. Modif mods(this); .)
+	(. Modifiers mods(this); .)
 	[ ModifiersClause<mods> ]
 	(
 		 (. if (kind == _Object) Err(la->line, la->col, L"OBJECT cannot have CONSTRUCTOR"); .)
@@ -1506,13 +1513,13 @@ ClassOrObjectMember<int kind> (. ID(L"ClassOrObjectMember", STMT) .)
 	| SubStatement<mods>
 	)
 .
-ClassStatement<Modif &mods> (. ID(L"ClassStatement", STMT) .)
+ClassStatement<Modifiers &mods> (. ID(L"ClassStatement", STMT) .)
 =
 	(.
-	bool bAbstract = mods.allow(Modif::Abstract);
-	mods.allow(Modif::Deprecated);
-	bool bOpen     = mods.allow(Modif::Open);
-	mods.validate();
+	bool bAbstract = mods.Let(typeid(AbstractModif));
+	mods.Let(typeid(DeprecatedModif));
+	bool bOpen     = mods.Let(typeid(OpenModif));
+	mods.Check();
 
 	int line, col;
 	bool generic = false;
@@ -1593,22 +1600,21 @@ ConstantValueError (. ID(L"ConstantValueError", STMT) .)
 		(. SemErr(L"Bad symbol"); .)
 	)
 .
-ConstIfStatement<Modif &mods, int line, int col> (. ID(L"ConstIfStatement", STMT) .)
+ConstIfStatement<Modifiers &mods, int line, int col> (. ID(L"ConstIfStatement", STMT) .)
 =
-	(. mods.validate(); .)
 	(. option_type nThen = WITHOUT_THEN; .)
 	"If" TolExpression
 	[ "Then" (. nThen = WITH_THEN; .) ]
 	IfBlockStatement<line, col, nThen>
 .
-ConstStatement<Modif &mods> (. ID(L"ConstStatement", STMT) .)
+ConstStatement<Modifiers &mods> (. ID(L"ConstStatement", STMT) .)
 =
 	(. int line = la->line, col = la->col; .)
 	"Const"
 	(
 		(.
-		mods.allow(Modif::Deprecated);
-		mods.validate();
+		mods.Let(typeid(DeprecatedModif));
+	mods.Check();
 		.)
 		ConstantDeclarator { WEAK comma ConstantDeclarator }
 	|
@@ -1642,11 +1648,11 @@ Constraint<int block> (. ID(L"Constraint", STMT) .)
 		UserType
 	)
 .
-ConstructorStatement<Modif &mods> (. ID(L"ConstructorStatement", STMT) .)
+ConstructorStatement<Modifiers &mods> (. ID(L"ConstructorStatement", STMT) .)
 =
 	(.
-	mods.allow(Modif::Deprecated);
-	mods.validate();
+	mods.Let(typeid(DeprecatedModif));
+	mods.Check();
 
 	int line, col;
 	bool var_construct = false;
@@ -1688,7 +1694,7 @@ DateTimeExpression (. ID(L"DateTime", EXPR) .)
 		time_literal
 	)
 .
-DeclarationStatement<Modif &mods> (. ID(L"DeclarationStatement", STMT) .)
+DeclarationStatement<Modifiers &mods> (. ID(L"DeclarationStatement", STMT) .)
 =
 	( ConstStatement<mods>
 	| DeclareStatement<mods>
@@ -1750,11 +1756,11 @@ DeclareSignature<bool isAlias> (. ID(L"DeclareSignature", STMT) .)
 	]
 	[ DeclareParameterList ]
 .
-DeclareStatement<Modif &mods> (. ID(L"DeclareStatement", STMT) .)
+DeclareStatement<Modifiers &mods> (. ID(L"DeclareStatement", STMT) .)
 =
 	(.
-	mods.allow(Modif::Deprecated);
-	mods.validate();
+	mods.Let(typeid(DeprecatedModif));
+	mods.Check();
 
 	int line, col;
 	bool bAnsi = false, bCdecl = false, bUtf16 = false;
@@ -1803,11 +1809,9 @@ Deprecated (. ID(L"Deprecated", STMT) .)
 	[ string_literal ]
 	[ OptionalNewline ]
 .
-DestructorStatement<Modif &mods> (. ID(L"DestructorStatement", STMT) .)
+DestructorStatement<Modifiers &mods> (. ID(L"DestructorStatement", STMT) .)
 =
 	(.
-	mods.validate();
-
 	int line, col;
 	.)
 	"Destructor" (. line = t->line; col = t->col; .)
@@ -1824,12 +1828,12 @@ DimOrVar (. ID(L"DimOrVar", STMT) .)
 	| "Var"  (. if (option.Dim_or_Var == TERNARY1) SemErr(L"Must use DIM because of @OPTION"); .)
 	)
 .
-DimStatement<Modif &mods> (. ID(L"DimStatement", STMT) .)
+DimStatement<Modifiers &mods> (. ID(L"DimStatement", STMT) .)
 =
 	(.
 	// Permit @Deprecated?
-	bool bShared = mods.allow(Modif::Shared);
-	mods.validate();
+	bool bShared = mods.Let(typeid(SharedModif));
+	mods.Check();
 	.)
 	DimOrVar
 	DeclaratorList<NO_BITS>
@@ -1933,16 +1937,16 @@ EnumMember (. ID(L"EnumMember", STMT) .)
 	(. if (deprecated && t->kind == _semicolon && la->kind != _at_sign)
 	    Warn(la->line, la->col, L"@DEPRECATED has no effect on this constant. We recommend a line-break here."); .)
 .
-EnumStatement<Modif &mods> (. ID(L"EnumStatement", STMT) .)
+EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 =
 	(.
-	mods.allow(Modif::Deprecated);
-	bool bFlags    = mods.allow(Modif::Flags);
-	bool bMustUse  = mods.allow(Modif::MustUse);
-	bool bOpen     = mods.allow(Modif::Open);
-	bool bStrict   = mods.allow(Modif::Strict);
-	bool bUnique   = mods.allow(Modif::Unique);
-	mods.validate();
+	mods.Let(typeid(DeprecatedModif));
+	bool bFlags    = mods.Let(typeid(FlagsModif));
+	bool bMustUse  = mods.Let(typeid(MustUseModif));
+	bool bOpen     = mods.Let(typeid(OpenModif));
+	bool bStrict   = mods.Let(typeid(StrictModif));
+	bool bUnique   = mods.Let(typeid(UniqueModif));
+	mods.Check();
 
 	int line, col;
 	.)
@@ -2106,7 +2110,7 @@ ForStatement (. ID(L"ForStatement", STMT) .)
 	(. Optional(_For); .)
 	Newline
 .
-FunctionSignature<Modif &mods, int &line, int &col, bool &bodied, bool &generic> (. ID(L"FunctionSignature", STMT) .)
+FunctionSignature<Modifiers &mods, int &line, int &col, bool &bodied, bool &generic> (. ID(L"FunctionSignature", STMT) .)
 =
 	"Function" (. line = t->line; col = t->col; .)
 	Name
@@ -2124,13 +2128,13 @@ FunctionSignature<Modif &mods, int &line, int &col, bool &bodied, bool &generic>
 	)
 	SyncNewline<s_name>
 .
-FunctionStatement<Modif &mods> (. ID(L"FunctionStatement", STMT) .)
+FunctionStatement<Modifiers &mods> (. ID(L"FunctionStatement", STMT) .)
 =
 	(.
-	mods.allow(Modif::Deprecated);
-	bool bIterator = mods.allow(Modif::Iterator);
-	bool bShared   = mods.allow(Modif::Shared);
-	mods.validate();
+	mods.Let(typeid(DeprecatedModif));
+	bool bIterator = mods.Let(typeid(IteratorModif));
+	bool bShared   = mods.Let(typeid(SharedModif));
+	mods.Check();
 
 	int line, col;
 	bool bodied = true;
@@ -2381,18 +2385,18 @@ LoopBody<bool isPreconditional> (. ID(L"LoopBody", STMT) .)
 	)
 .
 /*M*/
-MethodStatement<Modif &mods> (. ID(L"MethodStatement", STMT) .)
+MethodStatement<Modifiers &mods> (. ID(L"MethodStatement", STMT) .)
 =
 	(.
-	bool bAbstract = mods.allow(Modif::Abstract);
-	bool bConst    = mods.allow(Modif::Const);
-	mods.allow(Modif::Deprecated);
-	bool bIterator = mods.allow(Modif::Iterator);
-	bool bMustUse  = mods.allow(Modif::MustUse);
-	bool bOpen     = mods.allow(Modif::Open);
-	bool bOverride = mods.allow(Modif::Override);
-	bool bShared   = mods.allow(Modif::Shared);
-	mods.validate();
+	bool bAbstract = mods.Let(typeid(AbstractModif));
+	bool bConst    = mods.Let(typeid(ConstModif));
+	mods.Let(typeid(DeprecatedModif));
+	bool bIterator = mods.Let(typeid(IteratorModif));
+	bool bMustUse  = mods.Let(typeid(MustUseModif));
+	bool bOpen     = mods.Let(typeid(OpenModif));
+	bool bOverride = mods.Let(typeid(OverrideModif));
+	bool bShared   = mods.Let(typeid(SharedModif));
+	mods.Check();
 
 	int line, col;
 	.)
@@ -2411,7 +2415,7 @@ MethodStatement<Modif &mods> (. ID(L"MethodStatement", STMT) .)
 	(. Optional(_Method); .)
 	Newline
 .
-MethodSignature<Modif &mods, int &line, int &col> (. ID(L"MethodSignature", STMT) .)
+MethodSignature<Modifiers &mods, int &line, int &col> (. ID(L"MethodSignature", STMT) .)
 =
 	"Method"
 	(.
@@ -2435,96 +2439,103 @@ MethodSignature<Modif &mods, int &line, int &col> (. ID(L"MethodSignature", STMT
 		(. bReturns = true; .)
 	]
 	(.
-	if (!bReturns && mods.has(Modif::Const) || mods.has(Modif::MustUse))
+	if (!bReturns && mods.Has(typeid(ConstModif)) || mods.Has(typeid(MustUseModif)))
 		SemErr(L"Method must have return type because of modifier(s)");
 	.)
 	SyncNewline<s_name>
 .
-Modifier<int &m, ModifArg &arg> (. ID(L"Modifier", STMT) .)
+Modifier<ModifPtr &pMod> (. ID(L"Modifier", STMT) .)
 =
-	(. m = Modif::LAST; .) // Sentinal.
-	"@"
+	(.
+	pMod = nullptr; // Sentinel.
+	.)
+	"@" (. int line = t->line, col = t->col; .)
 	(. if (HasWhitespace(1)) Err(L"Bad modifier"); .)
 	(
-		"Const" (. m = Modif::Const; .)
+		"Const" (. pMod = NEW(ConstModif)(line, col); .)
 	|
 		identifier
 		(.
 		switch (t->val[0]) {
 		case L'A': case L'a':
-			if (Matches(L"Abstract")) m = Modif::Abstract;
+			if (Matches(L"Abstract")) pMod = NEW(AbstractModif)(line, col);
 			break;
 		case L'B': case L'b':
-			if (Matches(L"Backed")) m = Modif::Backed;
+			if (Matches(L"Backed")) pMod = NEW(BackedModif)(line, col);
 			break;
 		case L'D': case L'd':
-			if (Matches(L"Deprecated")) m = Modif::Deprecated; //TODO: string_literal
+			if (Matches(L"Deprecated")) {
+				wchar_t *pVal = nullptr;
+				if (_string_literal == la->kind) {
+					Get(); pVal = t->val;
+				} 
+				pMod = NEW(DeprecatedModif)(line, col, pVal);
+			}
 			break;
 		case L'F': case L'f':
-			if (Matches(L"Flags")) m = Modif::Flags;
+			if (Matches(L"Flags")) pMod = NEW(FlagsModif)(line, col);
 			break;
 		case L'I': case L'i':
-			if (Matches(L"Iterator")) m = Modif::Iterator;
+			if (Matches(L"Iterator")) pMod = NEW(IteratorModif)(line, col);
 			break;
 		case L'M': case L'm':
-			if (Matches(L"MustUse")) m = Modif::MustUse;
+			if (Matches(L"MustUse")) pMod = NEW(MustUseModif)(line, col);
 			break;
 		case L'O': case 'o':
-			if (Matches(L"Open")) m = Modif::Open; else
-			if (Matches(L"Override")) m = Modif::Override;
+			if (Matches(L"Open")) pMod = NEW(OpenModif)(line, col); else
+			if (Matches(L"Override")) pMod = NEW(OverrideModif)(line, col);
 			break;
 		case L'R': case L'r':
-			if (Matches(L"ReadOnly")) m = Modif::ReadOnly;
+			if (Matches(L"ReadOnly")) pMod = NEW(ReadOnlyModif)(line, col);
 			break;
 		case L'S': case L's':
-			if (Matches(L"Shared")) m = Modif::Shared; else
+			if (Matches(L"Shared")) pMod = NEW(SharedModif)(line, col); else
 			if (Matches(L"SI")) {
-				m = Modif::SI;
-				arg.si_arg = Modif::SI_default;
+				SIModif::SIArg arg = SIModif::SIArg::_NA;
 				if (_identifier == la->kind) {
 					Get();
-					if (Matches(L"BINARY")) arg.si_arg = Modif::SI_Binary; else
-					if (Matches(L"LARGE")) arg.si_arg = Modif::SI_Large; else
-					if (Matches(L"SMALL")) arg.si_arg = Modif::SI_Small;
-					else Err(t->line, t->col, L"Unknown identifier after @SI");
+					if (Matches(L"BINARY")) arg = SIModif::SIArg::BINARY; else
+					if (Matches(L"LARGE")) arg = SIModif::SIArg::LARGE; else
+					if (Matches(L"SMALL")) arg = SIModif::SIArg::SMALL;
+					else Err(L"Unknown identifier. After @SI only BINARY, LARGE, and SMALL are available.");
 				}
+				pMod = NEW(SIModif)(line, col, arg);
 			} else
-			if (Matches(L"Strict")) m = Modif::Strict;
+			if (Matches(L"Strict")) pMod = NEW(StrictModif)(line, col);
 			break;
 		case L'T': case L't':
 			if (Matches(L"Test")) {
-				m = Modif::Test;
+				TestModif::TestArg arg = TestModif::TestArg::_NA;
 				if (_identifier == la->kind) {
 					Get();
-					arg.test_arg = Modif::Test_default;
-					if (Matches(L"IGNORE")) arg.test_arg = Modif::Test_Ignore;
-					else Err(t->line, t->col, L"Unknown identifier after @TEST");
+					if (Matches(L"IGNORE")) arg = TestModif::TestArg::IGNORED;
+					else Err(t->line, t->col, L"Unknown identifier. After @TEST, only IGNORE is available.");
 				}
+				pMod = NEW(TestModif)(line, col, arg);
 			}
 			break;
 		case L'U': case L'u':
-			if (Matches(L"Unique")) m = Modif::Unique;
+			if (Matches(L"Unique")) pMod = NEW(UniqueModif)(line, col);
 			break;
 		case L'W': case L'w':
-			if (Matches(L"WriteOnly")) m = Modif::WriteOnly;
+			if (Matches(L"WriteOnly")) pMod = NEW(WriteOnlyModif)(line, col);
 			break;
 		}
-		if (Modif::LAST == m) SemErr(L"Invalid directive or modifier");
+		if (nullptr == pMod) SemErr(L"Invalid directive or modifier");
 		.)
 	)
 	[ OptionalNewline ]
 .
-ModifiersClause<Modif &mods> (. ID(L"ModifiersClause", STMT) .)
+ModifiersClause<Modifiers &mods> (. ID(L"ModifiersClause", STMT) .)
 =
 	(.
-	int m;
-	ModifArg arg;
+	ModifPtr pMod;
 	.)
-	Modifier<m, arg>
-	(. mods.add(m); .)
+	Modifier<pMod>
+	(. mods.Add(pMod); .)
 	{
-		Modifier<m, arg>
-		(. mods.add(m); .)
+		Modifier<pMod>
+		(. mods.Add(pMod); .)
 	}
 .
 Module (. ID(L"Module", STMT) .)
@@ -2565,7 +2576,7 @@ Module (. ID(L"Module", STMT) .)
 		RequireStatement
 	}
 	{
-		(. Modif mods(this); .)
+		(. Modifiers mods(this); .)
 		[ ModifiersClause<mods> ]
 		(
 			ModuleMember<mods>
@@ -2574,7 +2585,7 @@ Module (. ID(L"Module", STMT) .)
 		)
 	}
 .
-ModuleMember<Modif &mods> (. ID(L"ModuleMember", STMT) .)
+ModuleMember<Modifiers &mods> (. ID(L"ModuleMember", STMT) .)
 =
 	( BaseUnitStatement<mods>
 	| ClassStatement<mods>
@@ -2594,13 +2605,13 @@ ModuleMember<Modif &mods> (. ID(L"ModuleMember", STMT) .)
 	| UnitStatement<mods>
 	)
 .
-ModuleStatement<bool bProcEntry, Modif &mods> (. ID(L"ModuleStatement", STMT) .)
+ModuleStatement<bool bProcEntry, Modifiers &mods> (. ID(L"ModuleStatement", STMT) .)
 =
 	(. if (bProcEntry) Warn(L"Executable statements at module level ignored when entry point is a procedure"); .)
 	(
 		BlockStatement<mods>
 	|
-		(. mods.validate(); .)
+		(. mods.Check(); .)
 		SimpleStatement
 		{ ";" SimpleStatement }
 		SyncNewline<s_name>
@@ -2731,7 +2742,7 @@ NewMember<int limit> (. ID(L"NewMember", STMT) .)
 		)
 	)
 .
-NewStatement<Modif *mods> (. ID(L"NewStatement", STMT) .)
+NewStatement<Modifiers *mods> (. ID(L"NewStatement", STMT) .)
 =
 	"New" UserType CallOrNew<_New, mods>
 	SyncNewline<s_name>
@@ -2782,12 +2793,12 @@ ObjectName (. ID(L"ObjectName", STMT) .)
 	| nullable_identifier
 	)
 .
-ObjectStatement<Modif *mods> (. ID(L"ObjectStatement", STMT) .)
+ObjectStatement<Modifiers *mods> (. ID(L"ObjectStatement", STMT) .)
 =
 	(.
-	mods ? mods->allow(Modif::Deprecated) : false;
-	bool bShared = mods ? mods->allow(Modif::Shared) : false;
-	if (mods) mods->validate();
+	mods ? mods->Let(typeid(DeprecatedModif)) : false;
+	bool bShared = mods ? mods->Let(typeid(SharedModif)) : false;
+	if (mods) mods->Check();
 
 	int line, col;
 	.)
@@ -2894,7 +2905,7 @@ PrimitiveType<bool bBits> (. ID(L"PrimitiveType", STMT) .)
 ///	Name
 ///	[ IF (IsCall()) EnclosedArgumentList ]
 ///.
-PropertySignature<Modif &mods, int &line, int &col> (. ID(L"PropertySignature", STMT) .)
+PropertySignature<Modifiers &mods, int &line, int &col> (. ID(L"PropertySignature", STMT) .)
 =
 	(. bool explicit_array = false; .)
 	"Property" (. line = t->line; col = t->col; .)
@@ -2909,19 +2920,19 @@ PropertySignature<Modif &mods, int &line, int &col> (. ID(L"PropertySignature", 
 	[ "Does" identifier dot identifier ]
 	SyncNewline<s_name>
 .
-PropertyStatement<Modif &mods> (. ID(L"PropertyStatement", STMT) .)
+PropertyStatement<Modifiers &mods> (. ID(L"PropertyStatement", STMT) .)
 =
 	(.
-	bool bAbstract  = mods.allow(Modif::Abstract);
-	bool bBacked    = mods.allow(Modif::Backed);
-	mods.allow(Modif::Deprecated);
-	bool bIterator  = mods.allow(Modif::Iterator);
-	bool bOpen      = mods.allow(Modif::Open);
-	bool bOverride  = mods.allow(Modif::Override);
-	bool bReadOnly  = mods.allow(Modif::ReadOnly);
-	bool bShared    = mods.allow(Modif::Shared);
-	bool bWriteOnly = mods.allow(Modif::WriteOnly);
-	mods.validate();
+	bool bAbstract  = mods.Let(typeid(AbstractModif));
+	bool bBacked    = mods.Let(typeid(BackedModif));
+	mods.Let(typeid(DeprecatedModif));
+	bool bIterator  = mods.Let(typeid(IteratorModif));
+	bool bOpen      = mods.Let(typeid(OpenModif));
+	bool bOverride  = mods.Let(typeid(OverrideModif));
+	bool bReadOnly  = mods.Let(typeid(ReadOnlyModif));
+	bool bShared    = mods.Let(typeid(SharedModif));
+	bool bWriteOnly = mods.Let(typeid(WriteOnlyModif));
+	mods.Check();
 
 	int line, col;
 	.)
@@ -3052,11 +3063,11 @@ ReturnTypeClause (. ID(L"ReturnTypeClause", STMT) .)
 	)
 .
 /*S*/
-SelectStatement<Modif &mods> (. ID(L"SelectStatement", STMT) .)
+SelectStatement<Modifiers &mods> (. ID(L"SelectStatement", STMT) .)
 =
 	(.
-	bool bStrict   = mods.allow(Modif::Strict);
-	mods.validate();
+	bool bStrict   = mods.Let(typeid(StrictModif));
+	mods.Check();
 
 	int line, col;
 	case_type clause = CASE_ZERO;
@@ -3117,19 +3128,19 @@ SimpleStatement (. ID(L"SimpleStatement", STMT) .)
 SimpleStatementError (. ID(L"SimpleStatementError", STMT) .)
 =
 	(. Err(la->line, la->col, L"This statement not permitted with one-line IF...ELSE"); .)
-	(. Modif mods(this); .)
+	(. Modifiers mods(this); .)
 	BlockStatement<mods>
 .
 Statement (. ID(L"Statement", STMT) .)
 =
-	(. Modif mods(this); .)
+	(. Modifiers mods(this); .)
 	[ ModifiersClause<mods> ]
 	(
 		BlockStatement<mods>
 	|
 		DeclarationStatement<mods>
 	|
-		(. mods.validate(); .)
+		(. mods.Check(); .)
 		SimpleStatement
 		{ ";" SimpleStatement }
 		SyncNewline<s_name>
@@ -3171,12 +3182,12 @@ StringExpression<std::wstring &res> (. ID(L"String", EXPR) .)
 	///.)
 	(. if (args.v >= Args::STMT) wprintf(L"\n[%ls]", res.c_str()); .) //TEMP
 .
-StructStatement<Modif &mods> (. ID(L"StructStatement", STMT) .)
+StructStatement<Modifiers &mods> (. ID(L"StructStatement", STMT) .)
 =
 	(.
-	mods.allow(Modif::Deprecated);
-	bool bMustUse  = mods.allow(Modif::MustUse);
-	mods.validate();
+	mods.Let(typeid(DeprecatedModif));
+	bool bMustUse  = mods.Let(typeid(MustUseModif));
+	mods.Check();
 
 	int line, col;
 	bool generic = false;
@@ -3200,7 +3211,7 @@ StructStatement<Modif &mods> (. ID(L"StructStatement", STMT) .)
 .
 StructProcedure (. ID(L"StructProcedure", STMT) .)
 =
-	(. Modif mods(this); .)
+	(. Modifiers mods(this); .)
 	( ConstructorStatement<mods>
 	| FunctionStatement<mods>
 	| MethodStatement<mods>
@@ -3213,13 +3224,13 @@ StructProcedure (. ID(L"StructProcedure", STMT) .)
 .
 StructState (. ID(L"StructState", STMT) .)
 =
-	(. Modif mods(this); .)
+	(. Modifiers mods(this); .)
 	[ ModifiersClause<mods> ]
 	(
 		(.
-		mods.allow(Modif::Deprecated);
-		mods.allow(Modif::Shared);
-		mods.validate();
+		mods.Let(typeid(DeprecatedModif));
+		mods.Let(typeid(SharedModif));
+	mods.Check();
 		.)
 		[ DimOrVar ] DeclaratorList<YES_BITS>
 		SyncNewline<s_name>
@@ -3232,7 +3243,7 @@ StructState (. ID(L"StructState", STMT) .)
 		ClassStatement<mods>
 	)
 .
-SubSignature<Modif &mods, int &line, int &col, bool &bGeneric> (. ID(L"SubSignature", STMT) .)
+SubSignature<Modifiers &mods, int &line, int &col, bool &bGeneric> (. ID(L"SubSignature", STMT) .)
 =
 	"Sub" (. line = t->line; col = t->col; .)
 	Name
@@ -3262,21 +3273,21 @@ SubSignature<Modif &mods, int &line, int &col, bool &bGeneric> (. ID(L"SubSignat
 		WhereClause<_Sub, bGeneric>
 	]
 	(.
-	if (!bReturns && mods.has(Modif::Const) || mods.has(Modif::MustUse))
+	if (!bReturns && mods.Has(typeid(ConstModif)) || mods.Has(typeid(MustUseModif)))
 		SemErr(L"SUB must have return type because of modifier(s)");
 	.)
 	SyncNewline<s_name>
 .
-SubStatement<Modif &mods> (. ID(L"SubStatement", STMT) .)
+SubStatement<Modifiers &mods> (. ID(L"SubStatement", STMT) .)
 =
 	(.
-	bool bConst    = mods.allow(Modif::Const);
-	mods.allow(Modif::Deprecated);
-	bool bIterator = mods.allow(Modif::Iterator);
-	bool bMustUse  = mods.allow(Modif::MustUse);
-	bool bShared   = mods.allow(Modif::Shared);
-	mods.allow(Modif::Test);
-	mods.validate();
+	bool bConst    = mods.Let(typeid(ConstModif));
+	mods.Let(typeid(DeprecatedModif));
+	bool bIterator = mods.Let(typeid(IteratorModif));
+	bool bMustUse  = mods.Let(typeid(MustUseModif));
+	bool bShared   = mods.Let(typeid(SharedModif));
+	mods.Let(typeid(TestModif));
+	mods.Check();
 
 	int line, col;
 	bool bGeneric = false;
@@ -3337,7 +3348,7 @@ TolExpression (. ID(L"TolExpr", EXPR) .)
 .
 TraitMember (. ID(L"TraitMember", STMT) .)
 =
-	(. Modif mods(this); .)
+	(. Modifiers mods(this); .)
 	[ ModifiersClause<mods> ]
 	( DimStatement<mods>
 	| FunctionStatement<mods>
@@ -3347,12 +3358,12 @@ TraitMember (. ID(L"TraitMember", STMT) .)
 	| SubStatement<mods>
 	)
 .
-TraitStatement<Modif &mods> (. ID(L"TraitStatement", STMT) .)
+TraitStatement<Modifiers &mods> (. ID(L"TraitStatement", STMT) .)
 =
 	(. // Permit @MustUse?
-	bool bAbstract = mods.allow(Modif::Abstract);
-	mods.allow(Modif::Deprecated);
-	mods.validate();
+	bool bAbstract = mods.Let(typeid(AbstractModif));
+	mods.Let(typeid(DeprecatedModif));
+	mods.Check();
 
 	int line, col;
 	bool generic = false;
@@ -3495,12 +3506,12 @@ UnitParameter (. ID(L"UnitParameter", STMT) .)
 =
 	"(" identifier InUnitClause ")"
 .
-UnitStatement<Modif &mods> (. ID(L"UnitStatement", STMT) .)
+UnitStatement<Modifiers &mods> (. ID(L"UnitStatement", STMT) .)
 =
 	(.
-	mods.allow(Modif::Deprecated);
-	bool bSI       = mods.allow(Modif::SI);
-	mods.validate();
+	mods.Let(typeid(DeprecatedModif));
+	bool bSI       = mods.Let(typeid(SIModif));
+	mods.Check();
 	.)
 	"Unit"
 	UnitAlias { UnitAlias }

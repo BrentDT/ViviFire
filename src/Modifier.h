@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2023 Brent D. Thorn
+ * Copyright 2024 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.com/.
  *
@@ -12,76 +12,89 @@
 #if !defined(_MODIFIER_H_)
 #define _MODIFIER_H_
 
+///#include <cstdio>
 #include <assert.h>
+#include <map>
+#include <memory>
+#include <string>
+#include <typeindex>
+#include <typeinfo>
+#include "Parser.h"
+#include "Scanner.h"
 
 class Parser;
-class Scanner;
 
-struct mod_type {
-	bool present = false, allowed = false;
-	int line = 0, col = 0;
-	int order = 0;
+struct Modif abstract {
+	bool can_do = false;
+	const int line, col;
+	Modif(int line, int col): line(line), col(col) {}
+	virtual ~Modif() {}
+	virtual const wchar_t *Text() const = 0;
+	Modif() = delete;
 };
 
-#define NAME_STRING_PAIRS \
-	X(Abstract, L"@ABSTRACT") \
-	X(Backed, L"@BACKED") \
-	X(Const, L"@CONST") \
-	X(Deprecated, L"@DEPRECATED") \
-	X(Flags, L"@FLAGS") \
-	X(Iterator, L"@ITERATOR") \
-	X(MustUse, L"@MUSTUSE") \
-	X(Open, L"@OPEN") \
-	X(Override, L"@OVERRIDE") \
-	X(ReadOnly, L"@READONLY") \
-	X(Shared, L"@SHARED") \
-	X(SI, L"@SI") \
-	X(Strict, L"@STRICT") \
-	X(Test, L"@TEST") \
-	X(Unique, L"@UNIQUE") \
-	X(WriteOnly, L"@WRITEONLY")
+#if defined(RAW_PTR)
+typedef struct Modif* ModifPtr;
+#define NEW(type) new type
+#else
+typedef std::shared_ptr<struct Modif> ModifPtr;
+#define NEW(type) std::make_shared<type>
+#endif
 
-class Modif {
-public:
-	#define X(name, str) name,
-	enum mods {
-		NAME_STRING_PAIRS
-		LAST
+#define ARGUMENTLESS_MODIF(prefix, text) \
+	struct prefix##Modif : public Modif { \
+		prefix##Modif(int line, int col): Modif(line, col) {} \
+		const wchar_t *Text() const { return text; } \
 	};
-	#undef X
-	
-	enum si_args { SI_default, SI_Binary, SI_Large, SI_Small };
-	enum test_args { Test_default, Test_Ignore };
-	
-	typedef union arg {
-		si_args si_arg;
-		test_args test_arg;
-	} arg;
 
-private:
-	#define X(name, str) str,
-	const wchar_t *m_name[LAST] = {
-		NAME_STRING_PAIRS
-	};
-	#undef X
+ARGUMENTLESS_MODIF(Abstract, L"@ABSTRACT")
+ARGUMENTLESS_MODIF(Backed, L"@BACKED")
+ARGUMENTLESS_MODIF(Const, L"@CONST")
+ARGUMENTLESS_MODIF(Flags, L"@FLAGS")
+ARGUMENTLESS_MODIF(Iterator, L"@ITERATOR")
+ARGUMENTLESS_MODIF(MustUse, L"@MUSTUSE")
+ARGUMENTLESS_MODIF(Open, L"@OPEN")
+ARGUMENTLESS_MODIF(Override, L"@OVERRIDE")
+ARGUMENTLESS_MODIF(ReadOnly, L"@READONLY")
+ARGUMENTLESS_MODIF(Shared, L"@SHARED")
+ARGUMENTLESS_MODIF(Strict, L"@STRICT")
+ARGUMENTLESS_MODIF(Unique, L"@UNIQUE")
+ARGUMENTLESS_MODIF(WriteOnly, L"@WRITEONLY")
 
-	mod_type m_mods[LAST];
-	int m_count = 0;
-	class Parser *m_parser;
+#undef ARGUMENTLESS_MODIF
 
-public:
-	Modif(Parser *p) : m_parser(p) {
-		assert(m_name[LAST - 1] != nullptr);
+struct DeprecatedModif : public Modif {
+	std::wstring msg;
+	DeprecatedModif(int line, int col, wchar_t *msg): Modif(line, col) {
+		if (msg) this->msg = msg;
 	}
-
-	void add(int m);
-	bool allow(int m);
-	int count() const { return m_count; }
-	bool has(int m) const;
-	void validate() const;
-
+	const wchar_t *Text() const { return L"@DEPRECATED"; }
 };
 
-typedef Modif::arg ModifArg;
+struct SIModif : public Modif {
+	enum class SIArg { _NA, BINARY, LARGE, SMALL };
+	SIArg arg = SIArg::_NA;
+	SIModif(int line, int col, SIArg arg): Modif(line, col), arg(arg) {}
+	const wchar_t *Text() const { return L"@SI"; }
+};
+
+struct TestModif : public Modif {
+	enum class TestArg { _NA, IGNORED };
+	TestArg arg = TestArg::_NA;
+	TestModif(int line, int col, TestArg arg): Modif(line, col), arg(arg) {}
+	const wchar_t *Text() const { return L"@TEST"; }
+};
+
+struct Modifiers {
+	std::map<std::type_index, ModifPtr> mods;
+	const Parser *parser;
+	Modifiers(Parser *p): parser(p) {}
+	bool Add(ModifPtr pMod);
+	bool Let(std::type_index tid);
+	bool Has(std::type_index tid) const;
+	void Check() const;
+	size_t Count() const { return mods.size(); }
+	Modifiers() = delete;
+};
 
 #endif
