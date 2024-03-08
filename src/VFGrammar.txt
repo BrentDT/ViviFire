@@ -1301,7 +1301,7 @@ ArgumentList (. ID(L"ArgumentList", STMT) .)
 	( IF (la->kind == _left_paren)
 		EnclosedArgumentList
 	|
-		UnenclosedArgumentList
+		UnenclosedArgumentList<nullptr>
 	)
 .
 ArrayDimensionList (. ID(L"ArrayDimensionList", STMT) .)
@@ -1424,12 +1424,17 @@ CallOrNew<int which, Modifiers *mods> (. ID(L"CallOrNew", STMT) .)
 	}
 	.)
 
-	UnenclosedArgumentList
+	UnenclosedArgumentList<&which> // Can contain `NewBeginStatement` after a comma+line_break.
 
-	[ IF (which != _Call && la->kind == _line_break && scanner->Peek()->kind == _Begin) // FIXME: multiple line breaks?
+	// TODO: Catch when the two styles of Begin are used together.
+
+	[ IF (_line_break == la->kind && _Begin == scanner->Peek()->kind)
 		SyncNewline<s_name>
-		NewBlockStatement
-		(. which = _New; .)
+		(.
+		if (which != _Call) which = _New;
+		else Err(la->line, la->col, L"Cannot use BEGIN in procedure call");
+		.)
+		NewBeginStatement
 	]
 .
 CallStatement (. ID(L"CallStatement", STMT) .)
@@ -1614,7 +1619,7 @@ ConstStatement<Modifiers &mods> (. ID(L"ConstStatement", STMT) .)
 	(
 		(.
 		mods.Let(typeid(DeprecatedModif));
-		mods.Check();
+	mods.Check();
 		.)
 		ConstantDeclarator { WEAK comma ConstantDeclarator }
 	|
@@ -1812,8 +1817,6 @@ Deprecated (. ID(L"Deprecated", STMT) .)
 DestructorStatement<Modifiers &mods> (. ID(L"DestructorStatement", STMT) .)
 =
 	(.
-	mods.Check();
-
 	int line, col;
 	.)
 	"Destructor" (. line = t->line; col = t->col; .)
@@ -2693,7 +2696,7 @@ Name (. ID(L"Name", STMT) .)
 ///	(. Optional(_Namespace); .)
 ///	Newline
 ///.
-NewBlockStatement (. ID(L"NewBlockStatement", STMT) .)
+NewBeginStatement (. ID(L"NewBeginStatement", STMT) .)
 =
 	(.
 	int line, col;
@@ -3232,7 +3235,7 @@ StructState (. ID(L"StructState", STMT) .)
 		(.
 		mods.Let(typeid(DeprecatedModif));
 		mods.Let(typeid(SharedModif));
-		mods.Check();
+	mods.Check();
 		.)
 		[ DimOrVar ] DeclaratorList<YES_BITS>
 		SyncNewline<s_name>
@@ -3450,21 +3453,36 @@ UnaryExpression (. ID(L"Unary", EXPR) .)
 	}
 	SimpleExpression
 .
-UnenclosedArgumentList (. ID(L"UnenclosedArgumentList", STMT) .)
+UnenclosedArgumentList<int *pCallOrNew> (. ID(L"UnenclosedArgumentList", STMT) .)
 =
+	(.
+	int nBegins = 0;
+	if (pCallOrNew && _Call != *pCallOrNew) nBegins = 1; // Can have Begin.
+	.)
 	(
 		Argument
 	|
 		comma (. SemErr(L"First argument is missing"); .)
 	)
-	{
-		WEAK comma
-		( IF (la->kind == _line_break)
+	{ WEAK comma
+		( IF (_line_break == la->kind)
 			Newline
+			(
+				(. if (nBegins > 1) Err(la->line, la->col, L"Argument BEGIN must be last one in list"); .)
+				Argument
+			|
+				(.
+				if (0 == nBegins) Err(la->line, la->col, L"Cannot use BEGIN in procedure call");
+				else if (++nBegins > 2) Err(la->line, la->col, L"Argument BEGIN must be last one in list");
+				else *pCallOrNew = _New;
+				.)
+				NewBeginStatement
+			)
+		|
+			(. if (nBegins > 1) Err(la->line, la->col, L"Argument BEGIN must be last one in list"); .)
 			Argument
 		|
-			Argument
-		|
+			// Default positional parameter.
 		)
 	}
 	(. if (t->kind == _comma) SemErr(L"Last argument is missing"); .)
