@@ -144,10 +144,16 @@ dt .mod {
 	color: blue;
 	font-weight: bold;
 }
-.token.id, .literal var, dt .id, dt var {
+.token.id {
+	color: #080808;
+}
+.token.capid, .syntax .token.id, .literal var, dt .id, dt var {
 	color: #077;
 }
-.syntax .token.id, .literal var, dt var, code.id, var.id {
+.no-capid .token.capid {
+	color: inherit;
+}
+.syntax .token.id, .literal var, code.id, var.id {
 	font-style: italic;
 }
 .token.kw, .token.nkw, .literal kbd, dt .kw, dt .nkw, dt kbd {
@@ -287,6 +293,9 @@ a[href^="Widening_and_Narrowing_Conversions."]:link {
 		color: lightblue;
 	}
 	.token.id {
+		color: #eee;
+	}
+	.token.capid, .syntax .token.id {
 		color: cyan;
 	}
 	.token.kw, .token.nkw {
