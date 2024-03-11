@@ -101,8 +101,7 @@ But you can also use the tilde to show always which are floating-point compariso
 <h2>Examples</h2>
 <div class="language-vivifire listing">
 <pre><code>Sub test a, b As Real64
-    PrintLine a &amp; " = " &amp; b &amp; " is " &amp; _
-        (If a = b Tol Then "true" Else "false")
+    PrintLine $"<span class="token strint">{<span class="token id">a</span>}</span> = <span class="token strint">{<span class="token id">b</span>}</span> is <span class="token strint">{<span class="token id">a <span class="token op">=</span> b</span> <span class="token kw">Tol</span>}</span>"
 End
 
 test 1000000000000.01, 1000000000000.011

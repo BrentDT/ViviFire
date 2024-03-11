@@ -35,9 +35,9 @@ Named arguments ignore all position information.</p>
 <pre><code>Sub Test ( arg1 As String,
         Optional arg2 As String = "bar",
         arg3 As Int32 = 42 )
-    #Debug.Print "arg1=""" &amp; arg1 &amp; """" $N _
-        "arg2=""" &amp; arg2 &amp; """" $N _
-        "arg3=" &amp; arg3 &amp; $N
+    #Debug.PrintLine $"arg1 = ""<span class="token strint">{<span class="token id">arg1</span>}</span>"""
+    #Debug.PrintLine $"arg2 = ""<span class="token strint">{<span class="token id">arg2</span>}</span>"""
+    #Debug.PrintLine $"arg3 = <span class="token strint">{<span class="token id">arg3</span>}</span>"
 End Sub&#10;</code></pre>
 </div>
 <h2>Arguments passed by position</h2>
@@ -56,9 +56,9 @@ End Sub&#10;</code></pre>
 <pre><code>Call Test "foo", arg3 := 3, arg2 := "baz"&#10;</code></pre>
 </div>
 <h2>Optional arguments supplied by name</h2>
-<p>TODO2</p>
+<p>TODO</p>
 <h2>Limits on arguments supplied by name</h2>
-<p>TODO2</p>
+<p>TODO</p>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Passing_Arguments_Value_Reference.html">Passing Arguments by Value and by Reference</a></li>
