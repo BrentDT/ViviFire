@@ -918,7 +918,7 @@ void ParseInterpolated(Parser *parseRoot, int col_offset) {
 	errors->SetDelta(parseRoot->t->line, parseRoot->t->col + col_offset);
 	Get();
 
-	Expression();
+	TolExpression();
 	Expect(_right_brace);
 
 	parseRoot->errors->count += errors->count;
