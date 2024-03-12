@@ -844,7 +844,7 @@ bool IsFixedPointArgument() {
 }
 
 bool IsIdentifier(int kind) {
-	return (kind == _identifier || kind == _typed_identifier || kind == _nullable_identifier);
+	return (kind == _identifier || kind == _typed_identifier || kind == _hash);
 }
 
 bool IsNamedArgument() {
@@ -861,15 +861,6 @@ bool IsNamedArgument() {
 	scanner->ResetPeek();
 	return (_colon_equals == next);
 }
-
-///bool IsNewStatement() {
-///	if (la->kind == _New) return true;
-///	if (la->kind == _identifier) { // FIXME: could be qualified name
-///		int next = scanner->Peek()->kind;
-///		return (next == _nullable_identifier || next == _left_bracket); // FIXME: nullable not necessary
-///	}
-///	return false;
-///}
 
 bool IsPropertySelf() {
 	// "Self", "Self%", "Self!", "Self$", or "Self@".
@@ -1095,14 +1086,11 @@ identifier =
 	| alpha{["_"]alnum} CONTEXT (("!"|"@")alpha)
 	).
 
-nullable_identifier =
-	( "#"alnum{["_"]alnum}
-	// Prevent misparsing "#obj!name" as typed_identifier.
-	| "#"alnum{["_"]alnum} CONTEXT ("!"alpha)
-	).
-
 typed_identifier =
-	(alpha|"#"){["_"]alnum}sigil.
+	alpha{["_"]alnum}sigil.
+
+// Keep `hash` after `identifier`, because it can have an effect on performance.
+hash = "#".
 
 // Keywords
 
@@ -1408,7 +1396,7 @@ CallOrNew<int which, Modifiers *mods> (. ID(L"CallOrNew", STMT) .)
 			//	TODO: more?
 			int next;
 
-			if ( (_identifier != la->kind && _nullable_identifier != la->kind)
+			if ( (_identifier != la->kind && _hash != la->kind)
 			|| _typed_identifier == la->kind // After this `la` is sure to be a name.
 			|| _colon_equals == (next = scanner->Peek()->kind)
 			|| (_comma != next && _line_break != next)
@@ -2679,9 +2667,11 @@ MultiplicativeOperator (. ID(L"MultiplicativeOperator", STMT) .)
 /*N*/
 Name (. ID(L"Name", STMT) .)
 =
-	( identifier
-	| nullable_identifier
-	| typed_identifier
+	[ "#" ]
+	(
+		identifier
+	|
+		typed_identifier
 	)
 .
 ///NamespaceStatement<Modif &mods> (. ID(L"NamespaceStatement", STMT) .)
@@ -2794,9 +2784,8 @@ NumericExpression<bool bMixedUnit> (. ID(L"Numeric", EXPR) .)
 /*O*/
 ObjectName (. ID(L"ObjectName", STMT) .)
 =
-	( identifier
-	| nullable_identifier
-	)
+	[ "#" ]
+	identifier
 .
 ObjectStatement<Modifiers *mods> (. ID(L"ObjectStatement", STMT) .)
 =
