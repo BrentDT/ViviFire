@@ -790,7 +790,7 @@ void ParseInlineComment() {
 	}
 }
 
-const wchar_t *SIGILS = L"%!$@";
+///const wchar_t *SIGILS = L"%!$@";
 
 // Resolvers
 
@@ -864,11 +864,7 @@ bool IsNamedArgument() {
 
 bool IsPropertySelf() {
 	// "Self", "Self%", "Self!", "Self$", or "Self@".
-	if (la->kind == _Self) return true;
-	if (la->kind == _typed_identifier && _wcsnicmp(L"self", la->val, 4) == 0 && wcschr(SIGILS, la->val[4])) {
-		return true;
-	}
-	return false;
+	return (_Self == la->kind || (_typed_identifier == la->kind && _wcsnicmp(L"self", la->val, 4) == 0));
 }
 
 bool IsPropertyWithParam() {
