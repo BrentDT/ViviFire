@@ -278,7 +278,7 @@ a[href^="Widening_and_Narrowing_Conversions."],
 	main &:after {
 		content: "\A0\1F6A7"; /* Construction emoji */
 		display: inline-block;
-		font-family: "Noto Emoji Regular", "Segoe UI Emoji", "Segoe UI Symbol", Symbola;
+		font-family: "Noto Emoji Regular", "Segoe UI Emoji", "Segoe UI Symbol", Symbola, emoji;
 	}
 }
 

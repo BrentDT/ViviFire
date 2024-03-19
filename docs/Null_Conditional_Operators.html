@@ -26,8 +26,8 @@ These operators help you write less code to do the necessary tests for null.
 These become very important when you use nested data structures.</p>
 <h2><code>.?</code> operator</h2>
 <p>The operator <code class="op">.?</code> is almost the same as the operator &laquo;<code class="op">.</code>&raquo;.
-It does a test on the left operand for <code class="kw">#Null</code> before it does a member access operation.
-If the left operand is <code class="kw">#Null</code>, the result is also <code class="kw">#Null</code>.
+It does a test on the left operand for null before it does a member access operation.
+If the left operand is null, the result is also null.
 An example follows:</p>
 <div class="language-vivifire listing">
 <pre><code>Var #name = #article.?#author.?name&#10;</code></pre>
@@ -44,8 +44,8 @@ End If&#10;</code></pre>
 </div>
 <h2><code>??</code> operator</h2>
 <p>The operator <code class="op">??</code> is almost the same as the operator &laquo;<code class="op">?</code>&raquo;.
-It does a test on the result returned by the procedure for #Null before it calls the method given by the right operand.
-But if the returned value is null, the result of the expression is null.
+It does a test on the result returned by the procedure for null before it calls the method given by the right operand.
+But if the returned value is null, the result of the expression is also null.
 An example follows:</p>
 <div class="language-vivifire listing">
 <pre><code>Var title = #GetForegroundWindow??#GetFirstChild??GetTitle?&#10;</code></pre>
@@ -61,11 +61,30 @@ If #window Is Object Then
     End If
 End If&#10;</code></pre>
 </div>
+<h2><code>(?)</code> operator</h2>
+<p>The operator &laquo;<code class="op">(?)</code>&raquo; is almost the same as the element-access operator &laquo;<code class="op">()</code>&raquo;.
+It does a test for null on the left operand before it gets the element.
+But if it is null, the result is also null.</p>
+<p>An example follows:</p>
+<div class="language-vivifire listing">
+<pre><code>Var #name = #article.?#authors(?0).name&#10;</code></pre>
+</div>
+<p>What follows is the equivalent to the example above without the null-conditional operators.</p>
+<div class="language-vivifire listing">
+<pre><code>Var #name As String = #Null
+If #article Is Object Then
+    Var #authors = #article.#authors
+    If #authors Is Object Then
+        #name = #authors(0).name
+    End If
+End If&#10;</code></pre>
+</div>
 <h2><code>|?</code> operator</h2>
-<p>The operator &laquo;<code class="op">|?</code>&raquo; is almost the same as the operators &laquo;<code class="kw">Or Else</code>&raquo; or &laquo;<code class="kw">If&hellip;Then&hellip;Else</code>&raquo;.
+<p>The operator &laquo;<code class="op">|?</code>&raquo; is known as the <dfn>null coalescing operator</dfn>.
+It is almost the same as the operators <code class="kw">Or Else</code> and <code class="kw">If&hellip;Then&hellip;Else</code>.
 You use this operator only with nullable variables.
-If the left operand is <em>not</em> null, this becomes the result.
-But if the left operand is null, the result becomes the right operand.</p>
+If the left operand is <em>not</em> null, this value becomes the result.
+But if the left operand is null, the right operand becomes the result.</p>
 <p>There are other differences between these operators:</p>
 <ul>
 <li>With <code class="kw">Or Else</code>, the operands must be Boolean or numeric values.</li>
