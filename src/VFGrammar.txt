@@ -1877,7 +1877,9 @@ DoStatement (. ID(L"DoStatement", STMT) .)
 /*E*/
 EnclosedArgumentList (. ID(L"EnclosedArgumentList", STMT) .)
 =
-	"(" [ OptionalNewline ]
+	"("
+	[ "?" ] // "(?)", the null-conditional index operator.
+	[ OptionalNewline ]
 	[ Argument ]
 	{
 		WEAK comma
@@ -3087,7 +3089,7 @@ SimpleExpression (. ID(L"Simple", EXPR) .)
 		)
 		Name [ TypeArgumentList ]
 	| "!" Name  // Dictionary access
-	| EnclosedArgumentList
+	| EnclosedArgumentList // Also is array subscript.
 	}
 .
 SimpleNonCallExpression (. ID(L"SimpleNonCall", EXPR) .)
