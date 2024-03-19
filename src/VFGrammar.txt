@@ -2443,6 +2443,10 @@ Modifier<ModifPtr &pMod> (. ID(L"Modifier", STMT) .)
 	"@" (. int line = t->line, col = t->col; .)
 	(. if (HasWhitespace(1)) Err(L"Bad modifier"); .)
 	(
+		// @Const
+		(.
+		if (_If == scanner->Peek()->kind) return; // "@CONST IF" is an alternative to "CONST IF".
+		.)
 		"Const" (. pMod = NEW(ConstModif)(line, col); .)
 	|
 		identifier
