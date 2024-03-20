@@ -28,27 +28,17 @@ bool Modifiers::Add(ModifPtr pMod) {
 	return false;
 }
 
-bool Modifiers::Let(std::type_index tid) {
-	if (mods.count(tid) == 1) {
-		mods[tid]->can_do = true;
-		return true;
-	}
-	return false;
+bool Modifiers::Let(const std::type_index &tid) {
+	if (mods.empty() || mods.count(tid) == 0) return false;
+	mods[tid]->can_do = true;
+	return true;
 }
 
-bool Modifiers::Has(std::type_index tid) const {
+bool Modifiers::Has(const std::type_index &tid) const {
 	return (mods.count(tid) == 1);
 }
 
 void Modifiers::Check() const {
-	static const std::type_index
-		Abstract = typeid(AbstractModif),
-		Deprecated = typeid(DeprecatedModif),
-		Iterator= typeid(IteratorModif),
-		ReadOnly = typeid(ReadOnlyModif),
-		Test= typeid(TestModif),
-		WriteOnly = typeid(WriteOnlyModif);
-
 // Find those incorrect for a given construct.
 	for (auto &m: mods) {
 		if (!m.second->can_do) {
@@ -59,9 +49,9 @@ void Modifiers::Check() const {
 	}
 
 	// Abstract v any except Deprecated, ReadOnly, or WriteOnly.
-	if (Has(Abstract) && Count() > 1) {
+	if (Has(s_Abstract) && Count() > 1) {
 		for (auto& m : mods) {
-			if (m.first != Abstract && m.first != Deprecated && m.first != ReadOnly && m.first != WriteOnly) {
+			if (m.first != s_Abstract && m.first != s_Deprecated && m.first != s_ReadOnly && m.first != s_WriteOnly) {
 				std::wstring msg(L"Cannot use @ABSTRACT with ");
 				msg += m.second->Text();
 				parser->errors->Error(m.second->line, m.second->col, msg.c_str());
@@ -70,20 +60,20 @@ void Modifiers::Check() const {
 	}
 
 	// ReadOnly v WriteOnly.
-	if (Has(ReadOnly) && Has(WriteOnly)) {
-		const auto &m = mods.find (ReadOnly)->second;
+	if (Has(s_ReadOnly) && Has(s_WriteOnly)) {
+		const auto &m = mods.find (s_ReadOnly)->second;
 		parser->errors->Error(m->line, m->col, L"Cannot use @READONLY with @WRITEONLY");
 	}
 
 	// Iterator v WriteOnly.
-	if (Has(Iterator) && Has(WriteOnly)) {
-		const auto &m = mods.find(Iterator)->second;
+	if (Has(s_Iterator) && Has(s_WriteOnly)) {
+		const auto &m = mods.find(s_Iterator)->second;
 		parser->errors->Error(m->line, m->col, L"Cannot use @ITERATOR with @WRITEONLY");
 	}
 
 	// Test v any.
-	if (Has(Test) && Count() > 1) {
-		const auto &m = mods.find(Test)->second;
+	if (Has(s_Test) && Count() > 1) {
+		const auto &m = mods.find(s_Test)->second;
 		parser->errors->Error(m->line, m->col, L"Cannot use @Test with other modifiers");
 	}
 }

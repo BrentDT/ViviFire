@@ -45,7 +45,8 @@ typedef std::shared_ptr<struct Modif> ModifPtr;
 	struct prefix##Modif : public Modif { \
 		prefix##Modif(int line, int col): Modif(line, col) {} \
 		const wchar_t *Text() const { return text; } \
-	};
+	}; \
+static const std::type_index s_##prefix = typeid(prefix##Modif);
 
 ARGUMENTLESS_MODIF(Abstract, L"@ABSTRACT")
 ARGUMENTLESS_MODIF(Backed, L"@BACKED")
@@ -70,6 +71,7 @@ struct DeprecatedModif : public Modif {
 	}
 	const wchar_t *Text() const { return L"@DEPRECATED"; }
 };
+static const std::type_index s_Deprecated = typeid(DeprecatedModif);
 
 struct SIModif : public Modif {
 	enum class SIArg { _NA, BINARY, LARGE, SMALL };
@@ -77,6 +79,7 @@ struct SIModif : public Modif {
 	SIModif(int line, int col, SIArg arg): Modif(line, col), arg(arg) {}
 	const wchar_t *Text() const { return L"@SI"; }
 };
+static const std::type_index s_SI = typeid(SIModif);
 
 struct TestModif : public Modif {
 	enum class TestArg { _NA, IGNORED };
@@ -84,14 +87,15 @@ struct TestModif : public Modif {
 	TestModif(int line, int col, TestArg arg): Modif(line, col), arg(arg) {}
 	const wchar_t *Text() const { return L"@TEST"; }
 };
+static const std::type_index s_Test = typeid(TestModif);
 
 struct Modifiers {
 	std::map<std::type_index, ModifPtr> mods;
 	const Parser *parser;
 	Modifiers(Parser *p): parser(p) {}
 	bool Add(ModifPtr pMod);
-	bool Let(std::type_index tid);
-	bool Has(std::type_index tid) const;
+	bool Let(const std::type_index &tid);
+	bool Has(const std::type_index &tid) const;
 	void Check() const;
 	size_t Count() const { return mods.size(); }
 	Modifiers() = delete;

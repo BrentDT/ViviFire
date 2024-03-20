@@ -1326,7 +1326,7 @@ AsTypeClause<bool bBits> (. ID(L"AsTypeClause", STMT) .)
 BaseUnitStatement<Modifiers &mods> (. ID(L"BaseUnitStatement", STMT) .)
 =
 	(.
-	mods.Let(typeid(DeprecatedModif));
+	mods.Let(s_Deprecated);
 	mods.Check();
 	.)
 	"Base"
@@ -1375,7 +1375,7 @@ BlockStatement<Modifiers &mods> (. ID(L"BlockStatement", STMT) .)
 CallOrNew<int which, Modifiers *mods> (. ID(L"CallOrNew", STMT) .)
 =
 	(.
-	bool bShared = mods ? mods->Let(typeid(SharedModif)) : false;
+	bool bShared = mods ? mods->Let(s_Shared) : false;
 	if (mods) mods->Check();
 	.)
 
@@ -1505,9 +1505,9 @@ ClassOrObjectMember<int kind> (. ID(L"ClassOrObjectMember", STMT) .)
 ClassStatement<Modifiers &mods> (. ID(L"ClassStatement", STMT) .)
 =
 	(.
-	bool bAbstract = mods.Let(typeid(AbstractModif));
-	mods.Let(typeid(DeprecatedModif));
-	bool bOpen     = mods.Let(typeid(OpenModif));
+	bool bAbstract = mods.Let(s_Abstract);
+	mods.Let(s_Deprecated);
+	bool bOpen     = mods.Let(s_Open);
 	mods.Check();
 
 	int line, col;
@@ -1602,7 +1602,7 @@ ConstStatement<Modifiers &mods> (. ID(L"ConstStatement", STMT) .)
 	"Const"
 	(
 		(.
-		mods.Let(typeid(DeprecatedModif));
+		mods.Let(s_Deprecated);
 	mods.Check();
 		.)
 		ConstantDeclarator { WEAK comma ConstantDeclarator }
@@ -1640,7 +1640,7 @@ Constraint<int block> (. ID(L"Constraint", STMT) .)
 ConstructorStatement<Modifiers &mods> (. ID(L"ConstructorStatement", STMT) .)
 =
 	(.
-	mods.Let(typeid(DeprecatedModif));
+	mods.Let(s_Deprecated);
 	mods.Check();
 
 	int line, col;
@@ -1748,7 +1748,7 @@ DeclareSignature<bool isAlias> (. ID(L"DeclareSignature", STMT) .)
 DeclareStatement<Modifiers &mods> (. ID(L"DeclareStatement", STMT) .)
 =
 	(.
-	mods.Let(typeid(DeprecatedModif));
+	mods.Let(s_Deprecated);
 	mods.Check();
 
 	int line, col;
@@ -1821,7 +1821,7 @@ DimStatement<Modifiers &mods> (. ID(L"DimStatement", STMT) .)
 =
 	(.
 	// Permit @Deprecated?
-	bool bShared = mods.Let(typeid(SharedModif));
+	bool bShared = mods.Let(s_Shared);
 	mods.Check();
 	.)
 	DimOrVar
@@ -1931,12 +1931,12 @@ EnumMember (. ID(L"EnumMember", STMT) .)
 EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 =
 	(.
-	mods.Let(typeid(DeprecatedModif));
-	bool bFlags    = mods.Let(typeid(FlagsModif));
-	bool bMustUse  = mods.Let(typeid(MustUseModif));
-	bool bOpen     = mods.Let(typeid(OpenModif));
-	bool bStrict   = mods.Let(typeid(StrictModif));
-	bool bUnique   = mods.Let(typeid(UniqueModif));
+	mods.Let(s_Deprecated);
+	bool bFlags    = mods.Let(s_Flags);
+	bool bMustUse  = mods.Let(s_MustUse);
+	bool bOpen     = mods.Let(s_Open);
+	bool bStrict   = mods.Let(s_Strict);
+	bool bUnique   = mods.Let(s_Unique);
 	mods.Check();
 
 	int line, col;
@@ -2122,9 +2122,9 @@ FunctionSignature<Modifiers &mods, int &line, int &col, bool &bodied, bool &gene
 FunctionStatement<Modifiers &mods> (. ID(L"FunctionStatement", STMT) .)
 =
 	(.
-	mods.Let(typeid(DeprecatedModif));
-	bool bIterator = mods.Let(typeid(IteratorModif));
-	bool bShared   = mods.Let(typeid(SharedModif));
+	mods.Let(s_Deprecated);
+	bool bIterator = mods.Let(s_Iterator);
+	bool bShared   = mods.Let(s_Shared);
 	mods.Check();
 
 	int line, col;
@@ -2379,14 +2379,14 @@ LoopBody<bool isPreconditional> (. ID(L"LoopBody", STMT) .)
 MethodStatement<Modifiers &mods> (. ID(L"MethodStatement", STMT) .)
 =
 	(.
-	bool bAbstract = mods.Let(typeid(AbstractModif));
-	bool bConst    = mods.Let(typeid(ConstModif));
-	mods.Let(typeid(DeprecatedModif));
-	bool bIterator = mods.Let(typeid(IteratorModif));
-	bool bMustUse  = mods.Let(typeid(MustUseModif));
-	bool bOpen     = mods.Let(typeid(OpenModif));
-	bool bOverride = mods.Let(typeid(OverrideModif));
-	bool bShared   = mods.Let(typeid(SharedModif));
+	bool bAbstract = mods.Let(s_Abstract);
+	bool bConst    = mods.Let(s_Const);
+	mods.Let(s_Deprecated);
+	bool bIterator = mods.Let(s_Iterator);
+	bool bMustUse  = mods.Let(s_MustUse);
+	bool bOpen     = mods.Let(s_Open);
+	bool bOverride = mods.Let(s_Override);
+	bool bShared   = mods.Let(s_Shared);
 	mods.Check();
 
 	int line, col;
@@ -2430,7 +2430,7 @@ MethodSignature<Modifiers &mods, int &line, int &col> (. ID(L"MethodSignature", 
 		(. bReturns = true; .)
 	]
 	(.
-	if (!bReturns && mods.Has(typeid(ConstModif)) || mods.Has(typeid(MustUseModif)))
+	if (!bReturns && mods.Has(s_Const) || mods.Has(s_MustUse))
 		SemErr(L"Method must have return type because of modifier(s)");
 	.)
 	SyncNewline<s_name>
@@ -2792,8 +2792,8 @@ ObjectName (. ID(L"ObjectName", STMT) .)
 ObjectStatement<Modifiers *mods> (. ID(L"ObjectStatement", STMT) .)
 =
 	(.
-	mods ? mods->Let(typeid(DeprecatedModif)) : false;
-	bool bShared = mods ? mods->Let(typeid(SharedModif)) : false;
+	mods ? mods->Let(s_Deprecated) : false;
+	bool bShared = mods ? mods->Let(s_Shared) : false;
 	if (mods) mods->Check();
 
 	int line, col;
@@ -2919,15 +2919,15 @@ PropertySignature<Modifiers &mods, int &line, int &col> (. ID(L"PropertySignatur
 PropertyStatement<Modifiers &mods> (. ID(L"PropertyStatement", STMT) .)
 =
 	(.
-	bool bAbstract  = mods.Let(typeid(AbstractModif));
-	bool bBacked    = mods.Let(typeid(BackedModif));
-	mods.Let(typeid(DeprecatedModif));
-	bool bIterator  = mods.Let(typeid(IteratorModif));
-	bool bOpen      = mods.Let(typeid(OpenModif));
-	bool bOverride  = mods.Let(typeid(OverrideModif));
-	bool bReadOnly  = mods.Let(typeid(ReadOnlyModif));
-	bool bShared    = mods.Let(typeid(SharedModif));
-	bool bWriteOnly = mods.Let(typeid(WriteOnlyModif));
+	bool bAbstract  = mods.Let(s_Abstract);
+	bool bBacked    = mods.Let(s_Backed);
+	mods.Let(s_Deprecated);
+	bool bIterator  = mods.Let(s_Iterator);
+	bool bOpen      = mods.Let(s_Open);
+	bool bOverride  = mods.Let(s_Override);
+	bool bReadOnly  = mods.Let(s_ReadOnly);
+	bool bShared    = mods.Let(s_Shared);
+	bool bWriteOnly = mods.Let(s_WriteOnly);
 	mods.Check();
 
 	int line, col;
@@ -3062,7 +3062,7 @@ ReturnTypeClause (. ID(L"ReturnTypeClause", STMT) .)
 SelectStatement<Modifiers &mods> (. ID(L"SelectStatement", STMT) .)
 =
 	(.
-	bool bStrict   = mods.Let(typeid(StrictModif));
+	bool bStrict   = mods.Let(s_Strict);
 	mods.Check();
 
 	int line, col;
@@ -3181,8 +3181,8 @@ StringExpression<std::wstring &res> (. ID(L"String", EXPR) .)
 StructStatement<Modifiers &mods> (. ID(L"StructStatement", STMT) .)
 =
 	(.
-	mods.Let(typeid(DeprecatedModif));
-	bool bMustUse  = mods.Let(typeid(MustUseModif));
+	mods.Let(s_Deprecated);
+	bool bMustUse  = mods.Let(s_MustUse);
 	mods.Check();
 
 	int line, col;
@@ -3224,8 +3224,8 @@ StructState (. ID(L"StructState", STMT) .)
 	[ ModifiersClause<mods> ]
 	(
 		(.
-		mods.Let(typeid(DeprecatedModif));
-		mods.Let(typeid(SharedModif));
+		mods.Let(s_Deprecated);
+		mods.Let(s_Shared);
 	mods.Check();
 		.)
 		[ DimOrVar ] DeclaratorList<YES_BITS>
@@ -3269,7 +3269,7 @@ SubSignature<Modifiers &mods, int &line, int &col, bool &bGeneric> (. ID(L"SubSi
 		WhereClause<_Sub, bGeneric>
 	]
 	(.
-	if (!bReturns && mods.Has(typeid(ConstModif)) || mods.Has(typeid(MustUseModif)))
+	if (!bReturns && mods.Has(s_Const) || mods.Has(s_MustUse))
 		SemErr(L"SUB must have return type because of modifier(s)");
 	.)
 	SyncNewline<s_name>
@@ -3277,12 +3277,12 @@ SubSignature<Modifiers &mods, int &line, int &col, bool &bGeneric> (. ID(L"SubSi
 SubStatement<Modifiers &mods> (. ID(L"SubStatement", STMT) .)
 =
 	(.
-	bool bConst    = mods.Let(typeid(ConstModif));
-	mods.Let(typeid(DeprecatedModif));
-	bool bIterator = mods.Let(typeid(IteratorModif));
-	bool bMustUse  = mods.Let(typeid(MustUseModif));
-	bool bShared   = mods.Let(typeid(SharedModif));
-	mods.Let(typeid(TestModif));
+	bool bConst    = mods.Let(s_Const);
+	mods.Let(s_Deprecated);
+	bool bIterator = mods.Let(s_Iterator);
+	bool bMustUse  = mods.Let(s_MustUse);
+	bool bShared   = mods.Let(s_Shared);
+	mods.Let(s_Test);
 	mods.Check();
 
 	int line, col;
@@ -3357,8 +3357,8 @@ TraitMember (. ID(L"TraitMember", STMT) .)
 TraitStatement<Modifiers &mods> (. ID(L"TraitStatement", STMT) .)
 =
 	(. // Permit @MustUse?
-	bool bAbstract = mods.Let(typeid(AbstractModif));
-	mods.Let(typeid(DeprecatedModif));
+	bool bAbstract = mods.Let(s_Abstract);
+	mods.Let(s_Deprecated);
 	mods.Check();
 
 	int line, col;
@@ -3520,8 +3520,8 @@ UnitParameter (. ID(L"UnitParameter", STMT) .)
 UnitStatement<Modifiers &mods> (. ID(L"UnitStatement", STMT) .)
 =
 	(.
-	mods.Let(typeid(DeprecatedModif));
-	bool bSI       = mods.Let(typeid(SIModif));
+	mods.Let(s_Deprecated);
+	bool bSI       = mods.Let(s_SI);
 	mods.Check();
 	.)
 	"Unit"
