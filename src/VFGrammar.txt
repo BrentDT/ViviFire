@@ -1820,7 +1820,6 @@ DimOrVar (. ID(L"DimOrVar", STMT) .)
 DimStatement<Modifiers &mods> (. ID(L"DimStatement", STMT) .)
 =
 	(.
-	// Permit @Deprecated?
 	bool bShared = mods.Let(s_Shared);
 	mods.Check();
 	.)
@@ -1931,13 +1930,16 @@ EnumMember (. ID(L"EnumMember", STMT) .)
 EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 =
 	(.
-	mods.Let(s_Deprecated);
-	bool bFlags    = mods.Let(s_Flags);
-	bool bMustUse  = mods.Let(s_MustUse);
-	bool bOpen     = mods.Let(s_Open);
-	bool bStrict   = mods.Let(s_Strict);
-	bool bUnique   = mods.Let(s_Unique);
-	mods.Check();
+	bool bFlags{}, bMustUse{}, bOpen{}, bStrict{}, bUnique{};
+	if (mods.Count()) {
+		mods.Let(s_Deprecated);
+		bFlags    = mods.Let(s_Flags);
+		bMustUse  = mods.Let(s_MustUse);
+		bOpen     = mods.Let(s_Open);
+		bStrict   = mods.Let(s_Strict);
+		bUnique   = mods.Let(s_Unique);
+		mods.Check();
+	}
 
 	int line, col;
 	.)
@@ -2379,15 +2381,18 @@ LoopBody<bool isPreconditional> (. ID(L"LoopBody", STMT) .)
 MethodStatement<Modifiers &mods> (. ID(L"MethodStatement", STMT) .)
 =
 	(.
-	bool bAbstract = mods.Let(s_Abstract);
-	bool bConst    = mods.Let(s_Const);
-	mods.Let(s_Deprecated);
-	bool bIterator = mods.Let(s_Iterator);
-	bool bMustUse  = mods.Let(s_MustUse);
-	bool bOpen     = mods.Let(s_Open);
-	bool bOverride = mods.Let(s_Override);
-	bool bShared   = mods.Let(s_Shared);
-	mods.Check();
+	bool bAbstract{}, bConst{}, bIterator{}, bMustUse{}, bOpen{}, bOverride{}, bShared{};
+	if (mods.Count()) {
+		bAbstract = mods.Let(s_Abstract);
+		bConst    = mods.Let(s_Const);
+		mods.Let(s_Deprecated);
+		bIterator = mods.Let(s_Iterator);
+		bMustUse  = mods.Let(s_MustUse);
+		bOpen     = mods.Let(s_Open);
+		bOverride = mods.Let(s_Override);
+		bShared   = mods.Let(s_Shared);
+		mods.Check();
+	}
 
 	int line, col;
 	.)
@@ -2919,16 +2924,19 @@ PropertySignature<Modifiers &mods, int &line, int &col> (. ID(L"PropertySignatur
 PropertyStatement<Modifiers &mods> (. ID(L"PropertyStatement", STMT) .)
 =
 	(.
-	bool bAbstract  = mods.Let(s_Abstract);
-	bool bBacked    = mods.Let(s_Backed);
-	mods.Let(s_Deprecated);
-	bool bIterator  = mods.Let(s_Iterator);
-	bool bOpen      = mods.Let(s_Open);
-	bool bOverride  = mods.Let(s_Override);
-	bool bReadOnly  = mods.Let(s_ReadOnly);
-	bool bShared    = mods.Let(s_Shared);
-	bool bWriteOnly = mods.Let(s_WriteOnly);
+	bool bAbstract{}, bBacked{}, bIterator{}, bOpen{}, bOverride{}, bReadOnly{}, bShared{}, bWriteOnly{};
+	if (mods.Count()) {
+		bAbstract  = mods.Let(s_Abstract);
+		bBacked    = mods.Let(s_Backed);
+		mods.Let(s_Deprecated);
+		bIterator  = mods.Let(s_Iterator);
+		bOpen      = mods.Let(s_Open);
+		bOverride  = mods.Let(s_Override);
+		bReadOnly  = mods.Let(s_ReadOnly);
+		bShared    = mods.Let(s_Shared);
+		bWriteOnly = mods.Let(s_WriteOnly);
 	mods.Check();
+	}
 
 	int line, col;
 	.)
@@ -3277,13 +3285,16 @@ SubSignature<Modifiers &mods, int &line, int &col, bool &bGeneric> (. ID(L"SubSi
 SubStatement<Modifiers &mods> (. ID(L"SubStatement", STMT) .)
 =
 	(.
-	bool bConst    = mods.Let(s_Const);
-	mods.Let(s_Deprecated);
-	bool bIterator = mods.Let(s_Iterator);
-	bool bMustUse  = mods.Let(s_MustUse);
-	bool bShared   = mods.Let(s_Shared);
-	mods.Let(s_Test);
-	mods.Check();
+	bool bConst{}, bIterator{}, bMustUse{}, bShared{};
+	if (mods.Count()) {
+		bConst    = mods.Let(s_Const);
+		mods.Let(s_Deprecated);
+		bIterator = mods.Let(s_Iterator);
+		bMustUse  = mods.Let(s_MustUse);
+		bShared   = mods.Let(s_Shared);
+		mods.Let(s_Test);
+		mods.Check();
+	}
 
 	int line, col;
 	bool bGeneric = false;
