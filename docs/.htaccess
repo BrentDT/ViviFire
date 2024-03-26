@@ -12,16 +12,8 @@ RewriteRule ^(index\.html|newest\.php)$ index.php [R=301,L]
 RewriteRule ^ViviFire_from_the_Beginning\.html$ ViviFire_from_Start.html [R=301,L]
 # Feb 2024
 RewriteRule ^Call_Event_Statement\.html$ Raise_Event_Statement.html [R=301,L]
-
-# Implicit_and_Explicit_Conversions.html Automatic-and-Non-Automatic-Conversions
-# Troubleshooting_Data_Types.html Data-Type-Troubleshooting
-# Converting_Between_Strings_Other_Data_Types.html How-Change-Strings-Other-Data-Types
-# Throw_Statement.html Raise-Statement
-# If_Then_Else_Directives.html If-Directive
-# If_Then_Else_Statement.html If-Statement
-# Typographic_Conventions.html Typography-Used-by-This-Manual
-# For_To_Statement.html For-Statement
-# For_Each_In_Statement.html For-Each-Statement
+# Mar 2024
+RewriteRule ^If_Then_Else_Directives\.html$ Const_If_Else_Statement.html [R=301,L]
 
 ## Change underscores to hyphens
 # RewriteRule       ^(.*?)_(.*?_.*)$ $1-$2 [N]
