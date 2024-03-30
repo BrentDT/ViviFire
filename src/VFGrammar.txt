@@ -734,29 +734,6 @@ inline bool in_context(int kind) {
 	return (std::find(context.rbegin(), context.rend(), kind) != context.rend());
 }
 
-const wchar_t * Exit_block_without_block(int kind) {
-	switch (kind) {
-	case _Constructor:
-		return L"EXIT CONSTRUCTOR without CONSTRUCTOR";
-	case _Do:
-		return L"EXIT DO without DO";
-	case _For:
-		return L"EXIT FOR without FOR";
-	case _Function:
-		return L"EXIT FUNCTION without FUNCTION";
-	case _Method:
-		return L"EXIT METHOD without METHOD";
-	case _Property:
-		return L"EXIT PROPERTY without PROPERTY";
-	case _Sub:
-		return L"EXIT SUB without SUB";
-	case _While:
-		return L"EXIT WHILE without WHILE";
-	default:
-		return L"EXIT block without block";
-	}
-}
-
 void ParseInlineComment() {
 	// Parse out "expect-error {{msg}}" or "expect-warning {{msg}}".
 	wchar_t *p = la->val;
@@ -1350,10 +1327,6 @@ BitFieldType<int &tkn> (. ID(L"BitFieldType", STMT) .)
 BitShiftExpression (. ID(L"BitShift", EXPR) .)
 =
 	UnaryExpression { ( "SHL" | "SHR" ) UnaryExpression }
-.
-Block (. ID(L"Block", STMT) .)
-=
-	( "Constructor" | "Do" | "For" | "Function" | "Method" | "Property" | "Sub" | "While" )
 .
 BlockStatement<Modifiers &mods> (. ID(L"BlockStatement", STMT) .)
 =
@@ -1993,9 +1966,42 @@ EventStatement (. ID(L"EventStatement", STMT) .)
 	[ WhereClause<_Event, generic> ]
 	SyncNewline<s_name>
 .
+ExitBlock<int &kind, wchar_t *&msg> (. ID(L"ExitBlock", STMT) .)
+=
+	// Returns kind of block, possible error msg.
+	(. kind = la->kind; .)
+	(
+		"Constructor"
+		(. msg = L"EXIT CONSTRUCTOR without CONSTRUCTOR"; .)
+	|
+		"Do"
+		(. msg = L"EXIT DO without DO"; .)
+	|
+		"For"
+		(. msg = L"EXIT FOR without FOR"; .)
+	|
+		"Function"
+		(. msg = L"EXIT FUNCTION without FUNCTION"; .)
+	|
+		"Method"
+		(. msg = L"EXIT METHOD without METHOD"; .)
+	|
+		"Property"
+		(. msg = L"EXIT PROPERTY without PROPERTY"; .)
+	|
+		"Sub"
+		(. msg = L"EXIT SUB without SUB"; .)
+	|
+		"While"
+		(. msg = L"EXIT WHILE without WHILE"; .)
+	)
+	(.
+	if (la->kind == _comma && kind != _Do && kind != _For && kind != _While)
+		SemErr(L"EXIT list can use only DO or FOR or WHILE");
+	.)
+.
 ExitStatement (. ID(L"ExitStatement", STMT) .)
 =
-	(. int kind = 0; .)
 	"Exit"
 	(.
 	if (in_context(_Finally))
@@ -2008,25 +2014,18 @@ ExitStatement (. ID(L"ExitStatement", STMT) .)
 		    SemErr(L"EXIT label without EXIT WHEN");
 		.)
 	|
-		Block (. kind = t->kind; .)
+		(. int kind = 0; wchar_t *msg = nullptr; .)
+		ExitBlock<kind, msg>
 		(.
 		auto it = std::find(context.rbegin(), context.rend(), kind);
-		if (it == context.rend())
-		    SemErr(Exit_block_without_block(kind));
-
-		if (la->kind == _comma && kind != _Do && kind != _For && kind != _While)
-		    SemErr(L"EXIT list can use only DO or FOR or WHILE");
+		if (it == context.rend()) SemErr(msg);
 		.)
 		{
 			WEAK comma
-			Block (. kind = t->kind; .)
+			ExitBlock<kind, msg>
 			(.
 			it = std::find(++it, context.rend(), kind);
-			if (it == context.rend())
-			    SemErr(Exit_block_without_block(kind));
-
-			if (la->kind == _comma && kind != _Do && kind != _For && kind != _While)
-			    SemErr(L"EXIT list can use only DO or FOR or WHILE");
+			if (it == context.rend()) SemErr(msg);
 			.)
 		}
 	|
