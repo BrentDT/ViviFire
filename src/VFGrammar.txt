@@ -730,6 +730,10 @@ void Warn(int line, int col, const wchar_t *msg) {
 	else errors->Warning(line, col, msg);
 }
 
+inline bool in_context(int kind) {
+	return (std::find(context.rbegin(), context.rend(), kind) != context.rend());
+}
+
 const wchar_t * Exit_block_without_block(int kind) {
 	switch (kind) {
 	case _Constructor:
@@ -1427,14 +1431,14 @@ CallStatement (. ID(L"CallStatement", STMT) .)
 	( IF (la->kind == _Base && scanner->Peek()->kind != _dot)
 		"Base"
 		(.
-		if (std::find(context.rbegin(), context.rend(), _Constructor) == context.rend())
+		if (!in_context(_Constructor))
 		    SemErr(L"CALL BASE is available only in a CONSTRUCTOR");
 		.)
 		OptionalArgList
 	|
 		"Constructor"
 		(.
-		if (std::find(context.rbegin(), context.rend(), _Constructor) == context.rend())
+		if (!in_context(_Constructor))
 		    SemErr(L"CALL CONSTRUCTOR is available only in a CONSTRUCTOR");
 		.)
 		OptionalArgList
@@ -1994,13 +1998,13 @@ ExitStatement (. ID(L"ExitStatement", STMT) .)
 	(. int kind = 0; .)
 	"Exit"
 	(.
-	if (std::find(context.rbegin(), context.rend(), _Finally) != context.rend())
+	if (in_context(_Finally))
 	    SemErr(L"Cannot use EXIT in FINALLY");
 	.)
 	(
 		identifier
 		(.
-		if (std::find(context.rbegin(), context.rend(), _When) == context.rend())
+		if (!in_context(_When))
 		    SemErr(L"EXIT label without EXIT WHEN");
 		.)
 	|
@@ -2156,10 +2160,10 @@ GotoStatement (. ID(L"GotoStatement", STMT) .)
 =
 	"Goto"
 	(.
-	if (std::find(context.rbegin(), context.rend(), _Select) == context.rend())
+	if (!in_context(_Select))
 	    SemErr(L"GOTO CASE without SELECT");
 
-	if (std::find(context.rbegin(), context.rend(), _Finally) != context.rend())
+	if (in_context(_Finally))
 	    SemErr(L"Cannot use GOTO CASE in FINALLY");
 	.)
 	"Case" ( "Else" | TolExpression )
@@ -3003,7 +3007,7 @@ RaiseStatement (. ID(L"RaiseStatement", STMT) .)
 	|
 		// Re-raise exception.
 		(.
-		if (std::find(context.begin(), context.end(), _Catch) == context.end())
+		if (!in_context(_Catch))
 		    SemErr(L"RAISE expression is mandatory here");
 		.)
 	)
@@ -3650,7 +3654,7 @@ YieldStatement (. ID(L"YieldStatement", STMT) .)
 =
 	"Yield"
 	(.
-	if (std::find(context.rbegin(), context.rend(), _Yield) == context.rend())
+	if (!in_context(_Yield))
 	    SemErr(L"Cannot use YIELD without @ITERATOR on procedure");
 	if (std::find_if(context.rbegin(), context.rend(),
 	    [](int i) { return (_Catch == i || _Finally == i); }) != context.rend())
