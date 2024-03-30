@@ -14,11 +14,11 @@
 
 ///#include <cstdio>
 #include <assert.h>
-#include <map>
 #include <memory>
 #include <string>
 #include <typeindex>
 #include <typeinfo>
+#include <vector>
 #include "Parser.h"
 #include "Scanner.h"
 
@@ -90,11 +90,12 @@ struct TestModif : public Modif {
 static const std::type_index s_Test = typeid(TestModif);
 
 struct Modifiers {
-	std::map<std::type_index, ModifPtr> mods;
+	std::vector<std::pair<std::type_index, ModifPtr>> mods;
 	const Parser *parser;
 	Modifiers(Parser *p): parser(p) {}
 	bool Add(ModifPtr pMod);
 	bool Let(const std::type_index &tid);
+	ModifPtr find(const std::type_index &tid) const;
 	bool Has(const std::type_index &tid) const;
 	void Check() const;
 	size_t Count() const { return mods.size(); }
