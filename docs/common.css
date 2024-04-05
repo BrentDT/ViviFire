@@ -221,6 +221,7 @@ code .err:after {
 	margin-top: 0;
 	padding-bottom: 0;
 	padding-top: 0;
+	font-family: "Arial Unicode MS", "DejaVu Sans", Unifont, emoji;
 }
 .checker td {
 	background-color: #fff;
