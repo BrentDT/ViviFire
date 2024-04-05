@@ -1,43 +1,41 @@
-var chm = (location.protocol == "mk:");
-var web = (location.protocol.indexOf("http") == 0);
+const chm = (location.protocol == "mk:");
+const web = (location.protocol.indexOf("http") == 0);
 if (web) setFavIcon('/ViviFire/favicon.ico');
-var stub = (document.getElementById('stub') !== null);
+const stub = (document.getElementById('stub') !== null);
 
-var warning = document.createElement('p');
+const warning = document.createElement('p');
 warning.className = 'nav';
-warning.innerHTML = 'This document '+(stub?'is a stub':'may be incomplete')+'.'
-	+' You can <a href="https://www.b6sw.com/ViviFire/docs/">see the recent changes here</a>.'
-	+' You can also give anonymous feedback. See the poll below the article.';
-document.body.insertBefore(warning, document.body.firstChild);
+warning.innerHTML =
+	`This document ${stub?'is a stub':'may be incomplete'}.
+	You can <a href="https://www.b6sw.com/ViviFire/docs/">see the recent changes here</a>.
+	You can also give anonymous feedback. See the poll below the article.`;
+document.body.insertBefore(warning, document.getElementsByClassName('breadcrumb')[0]);
 
 if (!chm) {
-	var contents = document.createElement('P');
-	contents.innerHTML = 
-		'<a href="contents.html">Contents</a>'+
-		' | <a href="#" onclick="showSearch(this)">Search</a>'+
-		' | <a href="https://www.b6sw.com/forum/posting.php?mode=annotate&f=37&anchor='+/\/(\w+)\.html/.exec(location.href)[1]+'" target="_blank">Send feedback</a>';
-	document.body.insertBefore(contents, document.body.firstChild);
+	const contents = document.createElement('P');
+	contents.innerHTML =
+		`<a href="contents.html">Contents</a>
+		| <a href="#" onclick="showSearch(this)">Search</a>`;
+	document.body.insertBefore(contents, warning);
 }
 
-///var bc = document.getElementsByClassName('breadcrumb'); if (bc) bc[0].setAttribute('aria-label', 'Breadcrumb');
+document.write(`<hr>
+	<div id="poll" role="status" aria-live="polite" aria-relevant="text">
+	<div role="form" aria-label="poll">
+	<p>What do you think about this article?</p>
+	<button aria-label="1 star" onclick="vote(0)">1&#x2605;</button>
+	<button aria-label="2 stars" onclick="vote(1)">&#x2605;</button>
+	<button aria-label="3 stars" onclick="vote(2)">&#x2605;</button>
+	<button aria-label="4 stars" onclick="vote(3)">&#x2605;4</button>
+	<p>or <a href="https://www.b6sw.com/forum/posting.php?mode=annotate&f=37&anchor=${/\/(\w+)\.html/.exec(location.href)[1]}" target="_blank">send a message</a></p>
+	</div></div>`);
 
-document.write('<hr><p>'+
-'<div id="poll" role="status" aria-live="polite" aria-relevant="text">' +
-'<div role="form" aria-label="poll">' +
-'<p>Did this article help you?</p>' +
-'<button onclick="vote(0)">Yes</button>' +
-'<button onclick="vote(1)">No &gt;</button>' +
-///'<button class="touch-only" onclick="vote(2)">Bad on mobile</button>' +
-'</div>' +
-'</div></p>');
+document.write(`<footer aria-label="footer">
+	<p><a rel="license" href="http://creativecommons.org/publicdomain/mark/1.0/">
+	<img src="cc0-80x15.png" style="border-style:none" alt="Public Domain Mark" />
+	</a> This work is free of known copyright restrictions.</p>`);
 
-document.write('<footer aria-label="footer">'+
-'<p>'+
-'<a rel="license" href="http://creativecommons.org/publicdomain/mark/1.0/">'+
-'<img src="cc0-80x15.png" style="border-style:none" alt="Public Domain Mark" />'+
-'</a> This work is free of known copyright restrictions.'+
-'</p>');
-if (!chm && document.lastModified) document.write(lastModifiedOrReviewed()); //'<p>Last modified '+document.lastModified+'.</p>');
+if (!chm && document.lastModified) document.write(lastModifiedOrReviewed());
 document.write('</footer>');
 
 function getFileName(uri) {
@@ -72,10 +70,10 @@ function setFavIcon(url) {
 
 function showSearch(elem) {
 	elem.outerHTML =
-		'<form role="search" action="search.html" method="get" style="display: inline-block">'+
-		'<input type="search" id="q" name="q" required value="" placeholder="Search the manual">'+
-		'<button>Search</button>'+
-		'</form>';
+		`<form role="search" action="search.html" method="get" style="display: inline-block">
+		<input type="search" id="q" name="q" required value="" placeholder="Search the manual">
+		<button>Search</button>
+		</form>`;
 	document.getElementById('q').focus();
 }
 
