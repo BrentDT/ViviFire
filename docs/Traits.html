@@ -21,14 +21,18 @@
 </nav>
 <main><!-- STE -->
 <h1 id="top">Traits</h1>
-<p>A <dfn>trait</dfn> is a construct that lets you use code again and again.
-In a language that does not let classes inherit from more than one parent class, (which ViviFire is one), traits can decrease some of the limits this causes.
-Traits let you use sets of methods freely in different classes, related or not.
-The effects of the mixture of traits and classes are specified in a manner which is easy to accept.</p>
-<p>A trait shows almost the same as a class, but specifies only behavior in a controlled manner.
-You cannot make a variable from a trait.
-Together with the usual inheritance construct, traits do what is known as <dfn>horizontal composition</dfn> of behavior.
-That is, the trait applies its methods to a class without inheritance.</p>
+<p>ViviFire lets you use code again and again with a construct known as a <dfn>Trait</dfn>.
+Traits are a possible alternative to multiple inheritance (a Class with many parents).
+But they can also decrease some limits of single inheritance.</p>
+<p>Traits let you use sets of methods again and again without limits in many classes independently.
+And such classes do not have to be related through inheritance.</p>
+<p>The semantics of traits and classes put together is made to be easy to use.
+It also does not have the typical problems related to multiple inheritance and Mixins.</p>
+<p>A trait looks almost the same as a class.
+But its primary function is to make a group of operations that are usually small and fully related.</p>
+<p>It is not possible to make instances of a trait directly.
+Different from the usual inheritance, it lets you do horizontal composition of behavior.
+In other words, it applies class members without inheritance.</p>
 <h2>Declaration of traits</h2>
 <p>A trait usually starts with <code class="kw">Trait</code> and is completed with <code class="kw">End Trait</code>.
 Between these two lines you can put one or more permitted statements:
@@ -58,7 +62,7 @@ Trait B
     End Method
 End Trait
 
-Class Calculator Does A Does B
+Class Calculator Does A, B
     Method CalculateA Does A.Calculate
     Method CalculateB Does B.Calculate
 End Class&#10;</code></pre>
@@ -92,7 +96,7 @@ Trait Bar
     End Method
 End Trait
 
-Trait Foobar Does Foo Does Bar
+Trait Foobar Does Foo, Bar
     ' ...
 End Trait&#10;</code></pre>
 </div>
@@ -129,13 +133,13 @@ End Trait
     Method Speak As String
 End Trait
 
-Class Dog Is Pet Does Walk Does Swim Does Speak
+Class Dog Is Pet Does Walk, Swim, Speak
     @Override Method Speak As String
         Return "Arf"
     End Method
 End Class
 
-Class Cat Is Pet Does Walk Does Speak
+Class Cat Is Pet Does Walk, Speak
     @Override Method Speak As String
         Return "Meow"
     End Method
