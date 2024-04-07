@@ -1494,7 +1494,7 @@ ClassStatement<Modifiers &mods> (. ID(L"ClassStatement", STMT) .)
 	identifier
 	[ TypeParameterList<_Class> (. generic = true; .) ]
 	[ "Is" UserType ]
-	{ DoesClause }
+	[ DoesClause ]
 	[ WhereClause<_Class, generic> ]
 	SyncNewline<s_name>
 	{ WhereClause<_Class, generic> SyncNewline<s_name> }
@@ -1826,6 +1826,9 @@ DivisionFunction (. ID(L"Division", EXPR) .)
 DoesClause (. ID(L"DoesClause", STMT) .)
 =
 	"Does" UserType
+	{ WEAK comma [ OptionalNewline ]
+		UserType
+	}
 .
 DoStatement (. ID(L"DoStatement", STMT) .)
 =
@@ -2809,7 +2812,7 @@ ObjectStatement<Modifiers *mods> (. ID(L"ObjectStatement", STMT) .)
 	"Object" (. line = t->line; col = t->col; .)
 	ObjectName
 	[ "Is" UserType ]
-	{ DoesClause }
+	[ DoesClause ]
 	SyncNewline<s_name>
 	{ ClassOrObjectMember<_Object> }
 	(. if (la->kind != _End) Err(line, col, L"OBJECT without END"); .)
@@ -3203,7 +3206,7 @@ StructStatement<Modifiers &mods> (. ID(L"StructStatement", STMT) .)
 	identifier
 	[ TypeParameterList<_Struct> (. generic = true; .) ]
 	[ "Is" ValueType ]
-	{ DoesClause }
+	[ DoesClause ]
 	[ WhereClause<_Struct, generic> ]
 	SyncNewline<s_name>
 	{ WhereClause<_Struct, generic> SyncNewline<s_name> }
@@ -3381,7 +3384,7 @@ TraitStatement<Modifiers &mods> (. ID(L"TraitStatement", STMT) .)
 	"Trait" (. line = t->line; col = t->col; .)
 	identifier
 	[ TypeParameterList<_Trait> (. generic = true; .) ]
-	{ DoesClause }
+	[ DoesClause ]
 	[ WhereClause<_Trait, generic> ]
 	SyncNewline<s_name>
 	{ WhereClause<_Trait, generic> SyncNewline<s_name> }
