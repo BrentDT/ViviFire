@@ -25,7 +25,8 @@
 <p>Makes a singleton object.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<pre><code>[ @Shared ] Object object_name [ Is class_name ] [ Does trait_name ]&hellip;
+<pre><code>[ @Shared ] _
+Object object_name [ Is base_class ] [ Does trait_list ]
     [ statements ]
 End [ Object ]&#10;</code></pre>
 </div>
@@ -35,12 +36,10 @@ End [ Object ]&#10;</code></pre>
 <dd>Optional modifier specifies that the object can have a small scope, but its lifetime continues until the program completes.</dd>
 <dt><code class="id">object_name</code></dt>
 <dd>Mandatory name for the object.</dd>
-<dt><code class="id">class_name</code></dt>
+<dt><code class="id">base_class</code></dt>
 <dd>Optional name of a class from which the object inherits methods and properties.</dd>
-<dt><code class="kw">Does</code></dt>
-<dd>Optional keyword that you can use again and again.</dd>
-<dt><code class="id">trait_name</code></dt>
-<dd>Mandatory after <code class="kw">Does</code>.
+<dt><code class="id">trait_list</code></dt>
+<dd>Mandatory after <code class="kw">Does</code>, one or more traits, with a comma between each.
 See <a href="Does_Clause_Traits.html">Does Clause (Traits)</a> for more information.</dd>
 <dt><code class="id">statements</code></dt>
 <dd>Optional declarations and control statements.</dd>

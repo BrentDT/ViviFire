@@ -27,7 +27,7 @@
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <pre><code>[ modifiers ] _
-Struct struct_name [ type_list ] [ Is base_type ] [ Does trait_name ]&hellip;
+Struct struct_name [ type_list ] [ Is base_type ] [ Does trait_list ]
     [ Where generic_constraints ]
     &hellip;
     [ data_members ]
@@ -47,14 +47,13 @@ End [ Struct ]&#10;</code></pre>
 <dt><code class="id">struct_name</code></dt>
 <dd>Mandatory name for the structure.</dd>
 <dt><code class="id">type_list</code></dt>
-<dd>Optional.
+<dd>Optional one or more type parameters, with a comma between each, all between brackets (<code class="op">[ ]</code>).
 See <a href="Type_List.html#">Type List</a> for more information.</dd>
 <dt><code class="id">base_type</code></dt>
 <dd>Optional value type:
 an elementary data type (<code class="kw">Int32</code> for example) or the name of a different structure.</dd>
-<dt><code class="kw">Does</code></dt>
-<dd>Optional keyword that you can use again and again.</dd>
-<dd>The name <code class="id">trait_name</code> after <code class="kw">Does</code> is a trait, a construct that specifies behavior.
+<dt><code class="id">trait_list</code></dt>
+<dd>Mandatory after <code class="kw">Does</code>, one or more traits, with a comma between each.
 See <a href="Does_Clause_Traits.html">Does Clause (Traits)</a> for more information.</dd>
 <dt><code class="kw">Where</code></dt>
 <dd>Optional keyword that you can use again and again.

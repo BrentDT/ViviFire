@@ -26,7 +26,7 @@
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <pre><code>[ @Abstract ] _
-Trait trait_name [ type_list ] [ Does parent_trait ]&hellip;
+Trait trait_name [ type_list ] [ Does trait_list ]
     [ Where generic_constraints ]
     &hellip;
     [ statements ]
@@ -41,10 +41,9 @@ End [ Trait ]&#10;</code></pre>
 <dt><code class="id">type_list</code></dt>
 <dd>Optional one or more type parameters, with a comma between each, all between brackets (<code class="op">[ ]</code>).
 See <a href="Type_List.html#">Type List</a> for more information.</dd>
-<dt><code class="kw">Does</code></dt>
-<dd>Optional keyword you can use again and again.</dd>
-<dt><code class="id">parent_trait</code></dt>
-<dd>Mandatory after <code class="kw">Does</code>, a different trait which supplies the child trait with methods.</dd>
+<dt><code class="id">trait_list</code></dt>
+<dd>Mandatory after <code class="kw">Does</code>, one or more traits, with a comma between each.
+See <a href="Does_Clause_Traits.html">Does Clause (Traits)</a> for more information.</dd>
 <dt><code class="kw">Where</code></dt>
 <dd>Optional keyword you can use again and again.
 See <a href="Where_Clause_Generics.html">Where Clause (Generics)</a> for more information.</dd>

@@ -26,7 +26,7 @@
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <pre><code>[ modifier ] _
-Class class_name [ type_list ] [ Is base_class ] [ Does trait_name ]&hellip;
+Class class_name [ type_list ] [ Is base_class ] [ Does trait_list ]
     [ Where generic_constraints ]&hellip;
     [ statements ]
 End [ Class ]&#10;</code></pre>
@@ -47,14 +47,12 @@ End [ Class ]&#10;</code></pre>
 <dt><code class="id">class_name</code></dt>
 <dd>Mandatory name for the class.</dd>
 <dt><code class="id">type_list</code></dt>
-<dd>Optional one or more names with commas between each, all between brackets (<code class="op">[ ]</code>).
+<dd>Optional one or more type parameters, with a comma between each, all between brackets (<code class="op">[ ]</code>).
 See <a href="Type_List.html">Type List</a> for more information.</dd>
 <dt><code class="id">base_class</code></dt>
 <dd>Optional name of a class that supplies its public elements (typically methods and properties) to this class.</dd>
-<dt><code class="kw">Does</code></dt>
-<dd>Optional keyword that you can use again and again.</dd>
-<dt><code class="id">trait_name</code></dt>
-<dd>The name of a trait, a construct that gives a specification for behavior.
+<dt><code class="id">trait_list</code></dt>
+<dd>Mandatory after <code class="kw">Does</code>, one or more traits, with a comma between each.
 See <a href="Does_Clause_Traits.html">Does Clause (Traits)</a> for more information.</dd>
 <dt><code class="kw">Where</code></dt>
 <dd>Optional keyword you can use again and again.
