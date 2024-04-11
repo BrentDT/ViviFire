@@ -35,22 +35,51 @@ b = 1 + 2 * 3&#10;</code></pre>
 </div>
 <table class="result">
 <caption>After run</caption>
-<tr><th>Variable</th><th>Value</th></tr>
-<tr><td>a</td><td>9</td></tr>
-<tr><td>b</td><td>7</td></tr>
+<tbody>
+<tr><th><code>a</code></th><td><samp>9</samp></td></tr>
+<tr><th><code>b</code></th><td><samp>7</samp></td></tr>
+</tbody>
 </table>
+<h2>Separators</h2>
+<p>Usually you write one statement on a line.
+But this can cause source code to become large with many space characters.
+Use the semicolon (<code class="op">;</code>) when you want to write many small statements on one line.
+It can decrease the size of your code and possibly make it easier to read.
+The example that follows shows three statements on one line.</p>
+<div class="language-vivifire listing">
+<pre><code>a = 1; b = 2; c = 3&#10;</code></pre>
+</div>
+<p class="note">Note:
+Compound statements cannot use the semicolon to put some parts together on one line.
+For example, <code class="kw">Select&hellip;Case</code> must use a minimum of three lines.
+These start with <span class="kws"><code>Select</code>, <code>Case</code>, and <code>End</code></span>.
+Also, <code class="kw">If&hellip;Else</code> is always a compound statement although it has a one-line construct.</p>
 <h2>Concatenation</h2>
 <p>TODO</p>
 <h2>Member access</h2>
 <h3>Dot operator</h3>
-<p>Use the <kbd class="op">.</kbd> operator on a class or structure as a member access operator.
+<p>Use the operator &laquo;<code class="op">.</code>&raquo; on a class or structure as a member-access operator.
 The member can be a field of a structure, or a property or method of a class.</p>
 <h3>Exclamation point operator</h3>
+<p>Use the operator &laquo;<code class="op">!</code>&raquo; on an object variable as a dictionary-access operator.
+A class, trait, or <code class="kw">Object</code> must supply a property with the name <code>Self</code> with one parameter.
+The parameter must have the data type <code class="kw">String</code><!-- or SafeString? -->.
+The identifier that immediately follows the operator becomes the argument value passed to the property as a string.
+The example that follows shows this.</p>
 <div class="language-vivifire listing">
-<pre><code>For Each #employee As Row In #db!employees
-    #Debug.PrintLine "name=" &amp; #employee!name
-    #debug.PrintLine "address=" &amp; #employee!address
-End&#10;</code></pre>
+<pre><code>Class TestClass
+    @ReadOnly Property Self(s As String) As Int32
+    Get
+        Return Char.Code(s)
+    End Property
+End Class
+
+TestClass test
+PrintLine test!X
+PrintLine test!y&#10;</code></pre>
+<div>Output:</div>
+<pre><samp>88
+121&#10;</samp></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
