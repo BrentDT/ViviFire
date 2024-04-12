@@ -845,7 +845,7 @@ bool IsNamedArgument() {
 
 bool IsPropertySelf() {
 	// "Self", "Self%", "Self!", "Self$", or "Self@".
-	return (_Self == la->kind || (_typed_identifier == la->kind && _wcsnicmp(L"self", la->val, 4) == 0));
+	return (_Self == la->kind || (_typed_identifier == la->kind && wcslen(la->val) == 5 && _wcsnicmp(L"self", la->val, 4) == 0));
 }
 
 bool IsPropertyWithParam() {
@@ -1271,11 +1271,18 @@ ArgumentList (. ID(L"ArgumentList", STMT) .)
 .
 ArrayDimensionList (. ID(L"ArrayDimensionList", STMT) .)
 =
-	'('
-	[ Rank                             // Eg 'Dim matrix(*2)'
-	| Expression { comma Expression }  // Eg 'Dim matrix(3, 3)'
+	"("
+	[
+		// Eg 'Dim matrix(*2)'
+		Rank                            
+	|
+		// Eg 'Dim matrix(3, 3)'
+		EnclosedExpression
+		{ WEAK comma
+			EnclosedExpression
+		} 
 	]
-	')'
+	")"
 .
 AssignmentOperator (. ID(L"AssignmentOperator", STMT) .)
 =
