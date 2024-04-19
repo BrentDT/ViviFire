@@ -843,11 +843,6 @@ bool IsNamedArgument() {
 	return (_colon_equals == next);
 }
 
-bool IsPropertySelf() {
-	// "Self", "Self%", "Self!", "Self$", or "Self@".
-	return (_Self == la->kind || (_typed_identifier == la->kind && wcslen(la->val) == 5 && _wcsnicmp(L"self", la->val, 4) == 0));
-}
-
 bool IsPropertyWithParam() {
 	if (IsIdentifier(la->kind) && scanner->Peek()->kind == _left_paren && IsIdentifier(scanner->Peek()->kind)) {
 		return true;
@@ -2924,12 +2919,19 @@ PropertySignature<Modifiers &mods, int &line, int &col> (. ID(L"PropertySignatur
 	(. bool explicit_array = false; .)
 	"Property" (. line = t->line; col = t->col; .)
 	[ DimOrVar (. explicit_array = true; .) ]
-	( IF (IsPropertySelf())
-		( typed_identifier | "Self" ) (. if (explicit_array) SemErr(L"Cannot use DIM or VAR with SELF"); .)
+	(
+		[ "Self" ] "!"
+		(. if (explicit_array) SemErr(L"Cannot use DIM or VAR with default property"); .)
+		(. if (mods.Has(s_WriteOnly)) SemErr(L"Cannot use @WRITEONLY with default property"); .)
+		Name
 		EnclosedParameterList<_Property>
+		[ ReturnTypeClause ]
 	| IF (!explicit_array && IsPropertyWithParam())
-		Name EnclosedParameterList<_Property>
-	| DeclaratorList<NO_BITS>
+		Name
+		EnclosedParameterList<_Property>
+		[ ReturnTypeClause ]
+	|
+		DeclaratorList<NO_BITS>
 	)
 	[ "Does" identifier dot identifier ]
 	SyncNewline<s_name>
