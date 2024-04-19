@@ -2960,16 +2960,21 @@ PropertyStatement<Modifiers &mods> (. ID(L"PropertyStatement", STMT) .)
 		[
 			"Get"
 			(. if (bWriteOnly) SemErr(L"Cannot have GET with @WriteOnly"); .)
-			Newline
-			(.
-			if (bIterator) context.push_back(_Yield);
-			context.push_back(_Property);
-			.)
-			{ Statement }
-			(.
-			context.pop_back();
-			if (bIterator) context.pop_back();
-			.)
+			(
+				"=" Expression
+				SyncNewline<s_name>
+			|
+				Newline
+				(.
+				if (bIterator) context.push_back(_Yield);
+				context.push_back(_Property);
+				.)
+				{ Statement }
+				(.
+				context.pop_back();
+				if (bIterator) context.pop_back();
+				.)
+			)
 		]
 		[
 			"Set"
