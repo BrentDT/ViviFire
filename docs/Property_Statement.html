@@ -31,8 +31,9 @@ Property [ Dim | Var ] declarator [ , declarator ]&hellip; _
 [ Does trait_name . supplied_name ]&#10;</code></pre>
 <h3>Block construct</h3>
 <pre><code>[ modifier ] _
-Property [ Dim | Var ] declarator [ parameter_list ]
-[ Get
+Property [ Dim | Var ] name [ parameter_list ] [ return_type ]
+[ Get = expression
+| Get
     [ statements ] ]
 [ Set parameter
     [ statements] ]
@@ -97,12 +98,31 @@ The one-line construct lets you write many declarators with a comma between each
 	<dd>Optional expression with a data type compatible with <code class="id">type</code> or <code class="id">unit</code>.</dd>
 	</dl>
 </dd>
+<dt><code class="id">name</code></dt>
+<dd>Mandatory name.
+For a default property:
+	<div class="language-vivifire syntax">
+	<h3>Default-property name</h3>
+	<pre><code>[ Self ] ! name&#10;</code></pre>
+	</div>
+	<dl class="parts">
+	<dt><code class="kw">Self</code></dt>
+	<dd>Optional keyword.</dd>
+	</dl>
+</dd>
 <dt><code class="id">parameter_list</code></dt>
 <dd>TODO</dd>
 <dd>Not permitted in the one-line construct, or with an array property.</dd>
+<dt><code class="id">return_type</code></dt>
+<dd>Optional clause.
+It can start with (1) <code class="kw">As</code> then a data type or (2) <code class="kw">In</code> then a unit of measure.</dd>
 <dt><code class="kw">Get</code></dt>
 <dd>Identifies the start of a block of code that returns the value of the property.</dd>
 <dd>Mandatory if given the modifier <code class="at">@ReadOnly</code>.</dd>
+<dt><code class="id">expression</code></dt>
+<dd>Mandatory after &laquo;<code class="op">=</code>&raquo;, the value of the property.
+You cannot use <code class="id">statements</code> with this construct.
+The next line must start with <code class="kw">Set</code> or <code class="kw">End</code>.</dd>
 <dt><code class="kw">Set</code></dt>
 <dd>Identifies the start of a block of code that changes the value of the property.</dd>
 <dd>Mandatory if given the modifier <code class="at">@WriteOnly</code>.</dd>
@@ -135,40 +155,23 @@ If necessary, use the modifier <code class="at">@Backed</code>.</p>
 You can call such properties with only the name of an object and some arguments.
 This can decrease the code that you must write.
 But we do not recommend this because it can cause problems for other programmers who read your code.</p>
+<p>You can declare one or more default properties with a name that starts with &laquo;<code>!</code>&raquo; or &laquo;<code>Self!</code>&raquo; then an identifier.
+The identifier cannot have a type character.
+(See the paragraphs that follow for why this is not possible.)
+The properties must have different parameter signatures.
+You call a default property with parentheses after the name of the object.</p>
+<p>For example, given two properties, <code>one</code> with one parameter and <code>two</code> with two parameters:
+You can call the property <code>Self!one</code> with <code>obj(123)</code>.
+And you can call <code>Self!two</code> with <code>obj("testing", 123)</code>.</p>
 <p>Alternatively, you can use a default property to implement a dictionary access.
 This uses the operator &laquo;<code class="op">!</code>&raquo; between the name of an object and a string.
-You must write the string as a correct name, without quotation marks (<code class="op">&quot; &quot;</code>).
-You give one or more properties a name that starts with <code>Self</code> and has one parameter of type <code class="kw">String</code>.</p>
-<p>There are five (5) different names that you can use:</p>
-<dl>
-<dt><code>Self</code></dt>
-<dd>This is the most usual default property.
-It usually has no limits on types or number of parameters.</dd>
-<dt><code>Self%</code></dt>
-<dd>You use this property to return an integer type from a dictionary access.
-An example is &laquo;<code>MyObject!Items%</code>&raquo;.
-The property declaration must have only one parameter of the type <code class="kw">String</code>.
-The argument passed is the name after &laquo;<code class="op">!</code>&raquo; and without &laquo;<code class="op">%</code>&raquo;
-(<code>&quot;Items&quot;</code> in this example).</dd>
-<dt><code>Self!</code></dt>
-<dd>You use this property to return a floating-point type from a dictionary access.
-An example is &laquo;<code>MyObject!Capacity!</code>&raquo;.
-The property declaration must have only one parameter of the type <code class="kw">String</code>.
-The argument passed is the name between the two &laquo;<code class="op">!</code>&raquo;
-(<code>&quot;Capacity&quot;</code> in this example).</dd>
-<dt><code>Self@</code></dt>
-<dd>You use this property to return the fixed-point type <code class="kw">Fixed64</code> from a dictionary access.
-An example is &laquo;<code>MyObject!Balance@</code>&raquo;.
-The property declaration must have only one parameter of the type <code class="kw">String</code>.
-The argument passed is the name after &laquo;<code class="op">!</code>&raquo; and without &laquo;<code class="op">@</code>&raquo;
-(<code>&quot;Balance&quot;</code> in this example).</dd>
-<dt><code>Self$</code></dt>
-<dd>You use this property to return a string from a dictionary access.
-An example is &laquo;<code>MyObject!Name$</code>&raquo;.
-The property declaration must have only one parameter of the type <code class="kw">String</code>.
-The argument passed is the name after &laquo;<code class="op">!</code>&raquo; and without &laquo;<code class="op">$</code>&raquo;
-(<code>&quot;Name&quot;</code> in this example).</dd>
-</dl>
+You must write the string as a name, without quotation marks (<code class="op">&quot; &quot;</code>).</p>
+<p>You can declare one or more properties with a name that starts with &laquo;<code>!</code>&raquo; or &laquo;<code>Self!</code>&raquo; then an identifier.
+To use a property for dictionary access, it must have only one parameter of type <code class="kw">String</code>.</p>
+<p>The identifier can have a type character (<code>%</code>, <code>!</code>, <code>@</code>, or <code>$</code>) at the end.
+You call such a property with the given type character attached to the string identifier.
+For example, you can call a property <code>Self!int%</code> with <code>obj!foo%</code> or <code>obj!bar%</code>.
+For these examples, the equivalent calls are <code>obj.int%("foo")</code> and <code>obj.int%("bar")</code>.</p>
 <p>All properties that implement dictionary access must only return a value with <code class="kw">Get</code>.
 You can make sure with the modifier <code class="at">@ReadOnly</code>.</p>
 <h2>Examples</h2>
@@ -227,20 +230,27 @@ End Class
     Method RunQuery
         ' Do something
     End Method
-    @ReadOnly Property Self%(key As String)
+    @ReadOnly Property Self!int%(key As String)
     Get
         ' Do something
     End Property
-    @ReadOnly Property Self$(key As String)
+    @ReadOnly Property Self!str$(key As String)
     Get
         ' Do something
     End Property
 End Class
 
-New MyClass MyObject
-MyObject.RunQuery
-PrintLine MyObject!Items%
-PrintLine MyObject!Name$&#10;</code></pre>
+New MyClass myObject
+
+myObject.RunQuery
+
+' Call properties as usual.
+PrintLine myObject.int%("Items")
+PrintLine myObject.str$("Name")
+
+' Call properties with dictionary access.
+PrintLine myObject!Items%
+PrintLine myObject!Name$&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">

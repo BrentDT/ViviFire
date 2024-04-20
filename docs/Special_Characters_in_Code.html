@@ -62,15 +62,14 @@ Also, <code class="kw">If&hellip;Else</code> is always a compound statement alth
 The member can be a field of a structure, or a property or method of a class.</p>
 <h3>Exclamation point operator</h3>
 <p>Use the operator &laquo;<code class="op">!</code>&raquo; on an object variable as a dictionary-access operator.
-A class, trait, or <code class="kw">Object</code> must supply a property with the name <code>Self</code> with one parameter.
+A class, trait, or <code class="kw">Object</code> must supply a property with the name that starts with <code>Self!</code> with one parameter.
 The parameter must have the data type <code class="kw">String</code><!-- or SafeString? -->.
 The identifier that immediately follows the operator becomes the argument value passed to the property as a string.
 The example that follows shows this.</p>
 <div class="language-vivifire listing">
 <pre><code>Class TestClass
-    @ReadOnly Property Self(s As String) As Int32
-    Get
-        Return Char.Code(s)
+    @ReadOnly Property Self!index(s As String) As Int32
+    Get = Char.Code(s)
     End Property
 End Class
 
