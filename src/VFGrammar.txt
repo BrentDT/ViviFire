@@ -392,14 +392,25 @@ void Optional(int kind, option_type nOption = OPTION_DEFAULT) {
 class param_validator {
 	Parser *m_parser;
 	int m_parent;
+		// _typed_identifier => PROPERTY SELF!name[%@!$]
+		// _Set => PROPERTY ... SET
 	int m_count = 0;
 	bool m_byref = false;
 	int m_optionals = 0;
+
 public:
 	param_validator(Parser *parser, int parent): m_parser(parser), m_parent(parent) {}
-	void add(int modif = 0) {
+
+	void Add(int modif = 0) {
+	assert(0 == modif || _ByRef == modif || _Optional == modif);
+
 		m_count++;
-		if (_Set == m_parent && 2 == m_count) m_parser->SemErr(L"SET must have one parameter");
+
+		if (2 == m_count) {
+			// Check if parent construct must have one param.
+			dictionary_1_param() || Set_1_param();
+		}
+
 		switch (modif) {
 		case 0:
 			m_byref = false;  // by value
@@ -412,17 +423,32 @@ public:
 			if (m_optionals == 1) m_parser->Warn(L"OPTIONAL is not necessary again");
 			else m_optionals++;
 			break;
-		default:
-			#if defined(DEBUG)
-			m_parser->errors->Exception(L"Bad kind in param_validator::modifier");
-			#endif
-			break;
 		}
 	}
-	void none() const {
-		if (_Set == m_parent) m_parser->SemErr(L"SET must have one parameter");
+
+	void None() const {
+		// Check if parent construct must have one param.
+		dictionary_1_param() || Set_1_param();
 	}
-	bool optional() const { return (m_optionals != 0); }
+
+	bool Optional() const { return (m_optionals != 0); }
+
+private:
+	bool dictionary_1_param() const {
+		if (_typed_identifier != m_parent) return false;
+		m_parser->SemErr(L"Dictionary-access property must have one parameter");
+		return true;
+	}
+	bool Set_1_param() const {
+		if (_Set != m_parent) return false;
+		m_parser->SemErr(L"SET must have one parameter");
+		return true;
+	}
+};
+
+struct property_sig {
+	int line, col;
+	bool dict_access = false;
 };
 
 bool Match(const wchar_t *s) {
@@ -1891,7 +1917,7 @@ EnclosedParameterList<int parent> (. ID(L"EnclosedParameterList", STMT) .)
 			FormalParameter<param>
 		}
 	|
-		(. param.none(); .)
+		(. param.None(); .)
 	)
 	")"
 .
@@ -2070,13 +2096,13 @@ FloatingPointType<int &tkn> (. ID(L"FloatingPointType", STMT) .)
 FormalParameter<param_validator &param> (. ID(L"FormalParameter", STMT) .)
 =
 	( FormalParameterModifier<param>
-	| (. param.add(); .)
+	| (. param.Add(); .)
 	)
 	Name
 	[ '(' [ Rank ] ')' ]
 	[ TypeClause<NO_BITS> ]
 	( "=" EnclosedExpression
-	| (. if (param.optional() && option.Optional_equals) SemErr(L"Optional parameter must have initializer because of @OPTION"); .)
+	| (. if (param.Optional() && option.Optional_equals) SemErr(L"Optional parameter must have initializer because of @OPTION"); .)
 	)
 .
 FormalParameterList<int parent> (. ID(L"FormalParameterList", STMT) .)
@@ -2086,9 +2112,9 @@ FormalParameterList<int parent> (. ID(L"FormalParameterList", STMT) .)
 FormalParameterModifier<param_validator &param> (. ID(L"FormalParameterModifier", STMT) .)
 =
 	(
-		"ByRef"     (. param.add(_ByRef); .)
+		"ByRef"     (. param.Add(_ByRef); .)
 	|
-		"Optional"  (. param.add(_Optional); .)
+		"Optional"  (. param.Add(_Optional); .)
 	)
 .
 ForStatement (. ID(L"ForStatement", STMT) .)
@@ -2914,17 +2940,19 @@ PrimitiveType<bool bBits> (. ID(L"PrimitiveType", STMT) .)
 ///	Name
 ///	[ IF (IsCall()) EnclosedArgumentList ]
 ///.
-PropertySignature<Modifiers &mods, int &line, int &col> (. ID(L"PropertySignature", STMT) .)
+PropertySignature<Modifiers &mods, property_sig &sig> (. ID(L"PropertySignature", STMT) .)
 =
 	(. bool explicit_array = false; .)
-	"Property" (. line = t->line; col = t->col; .)
+	"Property" (. sig.line = t->line; sig.col = t->col; .)
 	[ DimOrVar (. explicit_array = true; .) ]
 	(
 		[ "Self" ] "!"
 		(. if (explicit_array) SemErr(L"Cannot use DIM or VAR with default property"); .)
 		(. if (mods.Has(s_WriteOnly)) SemErr(L"Cannot use @WRITEONLY with default property"); .)
 		Name
-		EnclosedParameterList<_Property>
+		(. int kind = (_typed_identifier == t->kind) ? _typed_identifier : _Property; .)
+		(. if (_typed_identifier == kind) sig.dict_access = true; .)
+		EnclosedParameterList<kind>
 		[ ReturnTypeClause ]
 	| IF (!explicit_array && IsPropertyWithParam())
 		Name
@@ -2953,9 +2981,9 @@ PropertyStatement<Modifiers &mods> (. ID(L"PropertyStatement", STMT) .)
 	mods.Check();
 	}
 
-	int line, col;
+	property_sig sig;
 	.)
-	PropertySignature<mods, line, col>
+	PropertySignature<mods, sig>
 	[ IF (la->kind == _Get || la->kind == _Set)
 		[
 			"Get"
@@ -2979,17 +3007,16 @@ PropertyStatement<Modifiers &mods> (. ID(L"PropertyStatement", STMT) .)
 		[
 			"Set"
 			(. if (bIterator || bReadOnly) SemErr(L"Cannot have SET with @Iterator or @ReadOnly"); .)
-			(
+			(. if (sig.dict_access) SemErr(L"Cannot have SET with dictionary access"); .)
+			[
 				FormalParameterList<_Set>
-			|
-				(. SemErr(L"SET must have one parameter"); .)
-			)
+			] (. else SemErr(L"SET must have one parameter"); .)
 			SyncNewline<s_name> 
 			(. context.push_back(_Property); .)
 			{ Statement }
 			(. context.pop_back(); .)
 		]
-	(. if (la->kind != _End) Err(line, col, L"PROPERTY without END"); .)
+	(. if (la->kind != _End) Err(sig.line, sig.col, L"PROPERTY without END"); .)
 		"End"
 	(. Optional(_Property); .)
 		Newline
