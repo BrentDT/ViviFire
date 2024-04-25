@@ -140,7 +140,7 @@ struct Option {
 	void Parse() {
 		static const wchar_t *s_block = L"block", *s_equals = L"equals", *s_id = L"id", *s_warning = L"warning";
 		int oldV = args.v; if (oldV < Args::EXPR) args.v = 0; // Silence subtokens.
-		if (last) parser->SemErr(L"@OPTION not permitted after LAST");
+		if (last) parser->SemErr(L"Cannot use @OPTION after @OPTION LAST");
 		parser->Get();
 		switch (parser->la->kind) {
 		case _Dim:
@@ -325,9 +325,9 @@ void Optional(int kind, option_type nOption = OPTION_DEFAULT) {
 	case _Case:  // Select [ Case ]
 		if (la->kind == _Case) {
 			Get();
-			if (option.Select_Case == NO) SemErr(L"SELECT cannot have CASE because of @OPTION");
+			if (option.Select_Case == NO) SemErr(L"Cannot use CASE after SELECT because of @OPTION");
 		}
-		else if (option.Select_Case == YES) SemErr(L"SELECT must have CASE because of @OPTION");
+		else if (option.Select_Case == YES) SemErr(L"Must use SELECT CASE because of @OPTION");
 		break;
 	case _Class:        // End [ Class ]
 	case _Constructor:  // End [ Constructor ]
@@ -416,7 +416,7 @@ public:
 			m_byref = false;  // by value
 			break;
 		case _ByRef:
-			if (m_optionals) m_parser->SemErr(L"Optional parameter cannot be BYREF");
+			if (m_optionals) m_parser->SemErr(L"Cannot use BYREF with OPTIONAL");
 			else m_byref = true;
 			break;
 		case _Optional:
@@ -1234,13 +1234,13 @@ ViviFire (. ID(L"ViviFire", STMT) .)
 	|
 		"Else" (. SemErr(L"ELSE without IF"); .)
 	|
-		"End" (. SemErr(L"END without start"); .)
+		"End" (. SemErr(L"END without block. Possibly you want EXIT PROGRAM."); .)
 	|
 		"Finally" (. SemErr(L"FINALLY without TRY"); .)
 	|
 		"Loop" (. SemErr(L"LOOP without DO"); .)
 	|
-		"Rem" (. SemErr(L"REM is not a comment. Try ' or //"); .)
+		"Rem" (. SemErr(L"REM is not a comment. Possibly you want ' or //"); .)
 	|
 		"Require" (. SemErr(L"REQUIRE must be before statements"); .)
 	|
@@ -1409,7 +1409,7 @@ CallOrNew<int which, Modifiers *mods> (. ID(L"CallOrNew", STMT) .)
 	}
 
 	if (_Call == which && option.args_enclosed) {
-		Err(la->line, la->col, L"Argument list must be between parentheses ('(' ')') because of @OPTION ARGS ENCLOSED");
+		Err(la->line, la->col, L"Argument list must be between parentheses ('(' ')') because of @OPTION");
 	}
 	.)
 
@@ -1773,17 +1773,17 @@ DeclareStatement<Modifiers &mods> (. ID(L"DeclareStatement", STMT) .)
 			identifier
 			(.
 			if (Matches(L"ANSI")) {
-				if (bUtf16) SemErr(L"ANSI is not compatible with UTF16");
+				if (bUtf16) SemErr(L"Cannot use ANSI with UTF16");
 				if (!bAnsi) bAnsi = true;
 				else Warn(t->line, t->col, L"ANSI given more than one time");
 			} else if (Matches(L"CDECL")) {
 				if (!bCdecl) bCdecl = true;
 				else Warn(t->line, t->col, L"CDECL given more than one time");
 			} else if (Matches(L"UTF16")) {
-				if (bAnsi) SemErr(L"UTF16 is not compatible with ANSI");
+				if (bAnsi) SemErr(L"Cannot use UTF16 with ANSI");
 				if (!bUtf16) bUtf16 = true;
 				else Warn(t->line, t->col, L"UTF16 given more than one time");
-			} else SemErr(L"invalid DECLARE flag. ANSI, CDECL, and UTF16 are permitted.");
+			} else SemErr(L"Unknown identifier. After DECLARE only ANSI, CDECL, and UTF16 are available.");
 			.)
 		}
 		(. isAlias = false; .)
@@ -1877,7 +1877,7 @@ DoStatement (. ID(L"DoStatement", STMT) .)
 		[ LoopBody<PRECONDITIONAL> ]
 		(. context.pop_back(); .)
 		"Loop"
-		[ WhileOrUntil (. SemErr(L"DO WHILE or DO UNTIL cannot have LOOP WHILE or LOOP UNTIL"); .) ]
+		[ WhileOrUntil (. SemErr(L"DO WHILE/UNTIL cannot have LOOP WHILE/UNTIL"); .) ]
 		Newline
 	)
 .
@@ -1929,7 +1929,7 @@ EnumMember (. ID(L"EnumMember", STMT) .)
 	(
 		"=" Expression
 	|
-		(. if (option.Enum_equals) SemErr(L"Enumeration constant must have initializer because of @OPTION"); .)
+		(. if (option.Enum_equals) SemErr(L"Enumeration constant must have an initializer because of @OPTION"); .)
 	)
 	SyncSeparator<s_name>
 	(. if (deprecated && t->kind == _semicolon && la->kind != _at_sign)
@@ -1952,26 +1952,18 @@ EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 	int line, col;
 	.)
 	"Enum" (. line = t->line; col = t->col; .)
-	(
+	[
 		identifier
-	|
-		(. if (bFlags || bOpen || option.Enum_id) {
-		    const wchar_t *reason = (bFlags) ? L"@FLAGS" : (bOpen) ? L"@OPEN" : L"@OPTION";
-		    wchar_t *msg = coco_string_create_append(L"Enumeration type must have a name because of ", reason);
-		    Err(msg);
-		    coco_string_delete(msg);
-		} .)
-	)
-	(
+	] (. else if (bFlags || bOpen || option.Enum_id) {
+		Err(L"Enumeration must have a name because of @FLAGS, @OPEN, or @OPTION");
+	}
+	.)
+	[
 		IntegerTypeOrExtension
-	|
-		(. if (bFlags || option.Enum_Is) {
-		    const wchar_t *reason = (bFlags) ? L"@FLAGS" : L"@OPTION";
-		    wchar_t *msg = coco_string_create_append(L"Enumeration must have a clause IS because of ", reason);
-		    Err(msg);
-		    coco_string_delete(msg);
-		} .)
-	)
+	] (. else if (bFlags || option.Enum_Is) {
+		Err(L"Enumeration must have a base type (IS) because of @FLAGS or @OPTION");
+	}
+	.)
 	SyncNewline<s_name>
 	{
 		EnumMember
@@ -2078,7 +2070,7 @@ Expression (. ID(L"Expression", EXPR) .)
 	(.
 	if (la->kind == _right_paren) {
 		Get();
-		SemErr(L"More right parentheses than left parentheses");
+		SemErr(L"More right parentheses than left");
 	}
 	.)
 .
@@ -2343,7 +2335,7 @@ LambdaSub<int line, int col> (. ID(L"LambdaSub", STMT) .)
 =
 	SyncNewline<s_name>
 	{ Statement }
-	(. if (la->kind != _End) Err(line, col, L"ESUB without END"); .)
+	(. if (la->kind != _End) Err(line, col, L"SUB without END"); .)
 	"End"
 	(. Optional(_Sub); .)
 .
@@ -2387,7 +2379,7 @@ LoopBody<bool isPreconditional> (. ID(L"LoopBody", STMT) .)
 				std::wstring id(t->val);
 				std::transform(id.begin(), id.end(), id.begin(), std::towupper);
 				if (++whens[id] == 2) {
-					SemErr(L"BEGIN cannot have two of the same label");
+					SemErr(L"EXIT WHEN cannot have two of the same label");
 					whens[id] = 1;
 				}
 				.)
@@ -2402,7 +2394,7 @@ LoopBody<bool isPreconditional> (. ID(L"LoopBody", STMT) .)
 		// TODO: if @Option When ID, make sure labels agree with When's.
 	|
 		[ IF (la->kind == _Exit)
-			(. Err(la->line, la->col, L"EXIT cannot be first statement in loop. Possibly you wanted EXIT WHEN."); .)
+			(. Err(la->line, la->col, L"EXIT cannot be first statement in loop. Possibly you want EXIT WHEN."); .)
 			ExitStatement
 			SyncNewline<s_name>
 			// Return if EXIT was the only statement.
@@ -2768,7 +2760,7 @@ NewMember<int limit> (. ID(L"NewMember", STMT) .)
 	(
 		ArgumentList SyncSeparator<s_name>
 	|
-		(. if (_Call == limit) Err(la->line, la->col, L"Statement must be an argument list because of BEGIN CALL"); .)
+		(. if (_Call == limit) Err(la->line, la->col, L"Statement not permitted in collection initializer"); .)
 		(
 			NewStatement<nullptr>
 		|
@@ -2899,7 +2891,7 @@ PrimaryExpression (. ID(L"Primary", EXPR) .)
 	|
 		"(" (. int line = t->line, col = t->col; .)
 		EnclosedExpression
-		(. if (la->kind != _right_paren) Err(line, col, L"More left parentheses than right parentheses"); .)
+		(. if (la->kind != _right_paren) Err(line, col, L"More left parentheses than right"); .)
 		")"
 	|
 		"If"
@@ -2947,7 +2939,7 @@ PropertySignature<Modifiers &mods, property_sig &sig> (. ID(L"PropertySignature"
 	[ DimOrVar (. explicit_array = true; .) ]
 	(
 		[ "Self" ] "!"
-		(. if (explicit_array) SemErr(L"Cannot use DIM or VAR with default property"); .)
+		(. if (explicit_array) SemErr(L"Cannot use DIM/VAR with default property"); .)
 		(. if (mods.Has(s_WriteOnly)) SemErr(L"Cannot use @WRITEONLY with default property"); .)
 		Name
 		(. int kind = (_typed_identifier == t->kind) ? _typed_identifier : _Property; .)
@@ -3551,12 +3543,12 @@ UnitAlias (. ID(L"UnitAlias", STMT) .)
 	[
 		integer_literal  // Grammatical number: 1 = singular, 2 = plural, 0 = zero & singular.
 		(. if (t->val[0] >= L'0' && t->val[0] <= L'2' && t->val[1] == L'\0') number = t->val[0] - L'0';
-		else SemErr(L"number must be 0, 1, or 2"); .)
+		else SemErr(L"Number before unit name must be 0, 1, or 2"); .)
 	]
 	identifier 
 	[
 		( "+" | "-" ) // Plurals by "unit+suffix" or "prefix-unit".
-		(. if (number > 0) SemErr(L"Name cannot have a plural part after 1 or 2"); .)
+		(. if (number > 0) SemErr(L"Unit name cannot have a plural part after 1 or 2"); .)
 		identifier
 	]
 .
@@ -3637,7 +3629,7 @@ WhenStatement<bool isPreconditional, when_map &whens> (. ID(L"WhenStatement", ST
 	default: // Duplicate.
 		if (kind == _identifier) SemErr(L"Loop cannot have more than one WHEN with the same label");
 		else if (kind == _Begin) SemErr(L"Loop cannot have more than one WHEN BEGIN");
-		else SemErr(L"Loop cannot have more than one WHEN EACH or WHEN ELSE");
+		else SemErr(L"Loop cannot have more than one WHEN EACH/ELSE");
 		break;
 	}
 	.)
