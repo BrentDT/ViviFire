@@ -23,47 +23,159 @@
 <p>WHEN you compile a ViviFire program, errors can occur.
 What follows is a list of error messages and how you can correct your code.</p>
 <dl>
-<dt><samp class="err">BASE cannot change</samp></dt>
-<dt><samp class="err">BASE permitted only in child class</samp></dt>
-<dt><samp class="err">BYREF is not permitted here</samp></dt>
-<dt><samp class="err">Block NEW must have one or more members</samp></dt>
-<dt><samp class="err">CASE cannot follow CASE ELSE in SELECT</samp></dt>
-<dt><samp class="err">CASE ELSE cannot be first CASE in SELECT</samp></dt>
-<dt><samp class="err">CATCH without TRY</samp></dt>
-<dt><samp class="err">CALL BASE permitted only in child class constructor</samp></dt>
-<dt><samp class="err">CATCH with parameter cannot follow catch-all</samp></dt>
-<dt><samp class="err">Class cannot have more than one destructor</samp></dt>
-<dt><samp class="err">Conditional expression must have tests for &lt;, =, and &gt;</samp></dt>
-<dt><samp class="err">Constructors and destructor must come before other procedures</samp></dt>
-<dt><samp class="err">CONSTRUCTOR DIM or CONSTRUCTOR VAR must come before other procedures</samp></dt>
-<dt><samp class="err">Continued string without start</samp></dt>
-<dt><samp class="err">Declarator cannot be generic</samp></dt>
-<dt><samp class="err">ELSE without IF</samp></dt>
-<dt><samp class="err">END &lt;element&gt; without &lt;element&gt;</samp></dt>
-<dt><samp class="err">ENUM must have one or more members</samp></dt>
-<dt><samp class="err">FINALLY without TRY</samp></dt>
-<dt><samp class="err">Left side of null-conditional must be nullable</samp></dt>
-<dt><samp class="err">LOOP without DO</samp></dt>
-<dt><samp class="err">Malformed character literal</samp></dt>
-<dt><samp class="err">Malformed string literal</samp></dt>
-<dt><samp class="err">Malformed version literal</samp></dt>
-<dt><samp class="err">OBJECT cannot have CONSTRUCTOR</samp></dt>
-<dt><samp class="err">OBJECT cannot have DESTRUCTOR</samp></dt>
-<dt><samp class="err">OPTIONAL not permitted here</samp></dt>
-<dt><samp class="err">Parameter cannot be optional</samp></dt>
-<dt><samp class="err">Parentheses do not agree</samp></dt>
-<dt><samp class="err">Positional arguments cannot follow named arguments</samp></dt>
-<dt><samp class="err">Property cannot have more than one GET</samp></dt>
-<dt><samp class="err">Property cannot have more than one SET</samp></dt>
-<dt><samp class="err">RETURN permitted only in procedure</samp></dt>
-<dt><samp class="err">SELECT must have a minimum of one CASE</samp></dt>
-<dt><samp class="err">SELECT without CASE ELSE because of @OPTION</samp></dt>
-<dt><samp class="err">SELECT without CASE because of @OPTION</samp></dt>
-<dt><samp class="err">SELF cannot change</samp></dt>
-<dt><samp class="err">STRUCT must have data members</samp></dt>
-<dt><samp class="err">THEN without IF</samp></dt>
-<dt><samp class="err">WHEN NONE not permitted in DO...LOOP WHILE or UNTIL</samp></dt>
-<dt><samp class="err">WHERE permitted only in generic construct</samp></dt>
+<dt><samp>Argument BEGIN must be last one in list</samp></dt>
+<dt><samp>Argument list must be between parentheses ('(' ')') because of @OPTION</samp></dt>
+<dt><samp>Bad assignment operator</samp></dt>
+<dt><samp>Bad escaped name or character literal - usually caused by missing backtick ('`')</samp></dt>
+<dt><samp>Bad fixed constant</samp></dt>
+<dt><samp>Bad floating-point literal</samp></dt>
+<dt><samp>Bad integer literal</samp></dt>
+<dt><samp>Bad modifier</samp></dt>
+<dt><samp>Bad string constant. Possibly you want two quotes ('\</samp></dt>
+<dt><samp>Bad string literal - usually caused by missing quote(s) ('\</samp></dt>
+<dt><samp>Bad symbol</samp></dt>
+<dt><samp>BEGIN without NEW or WHEN</samp></dt>
+<dt><samp>Bit field not permitted here</samp></dt>
+<dt><samp>CALL BASE is available only in a CONSTRUCTOR</samp></dt>
+<dt><samp>CALL CONSTRUCTOR is available only in a CONSTRUCTOR</samp></dt>
+<dt><samp>Cannot have expression after TOL clause</samp></dt>
+<dt><samp>Cannot have GET with @WriteOnly</samp></dt>
+<dt><samp>Cannot have more than one statement after THEN or ELSE</samp></dt>
+<dt><samp>Cannot have SET with @Iterator or @ReadOnly</samp></dt>
+<dt><samp>Cannot have SET with dictionary access</samp></dt>
+<dt><samp>Cannot use @OPTION after @OPTION LAST</samp></dt>
+<dt><samp>Cannot use @WRITEONLY with default property</samp></dt>
+<dt><samp>Cannot use a constant value here</samp></dt>
+<dt><samp>Cannot use ANSI with UTF16</samp></dt>
+<dt><samp>Cannot use BEGIN in procedure call</samp></dt>
+<dt><samp>Cannot use BYREFwith OPTIONAL </samp></dt>
+<dt><samp>Cannot use CASE after SELECT because of @OPTION</samp></dt>
+<dt><samp>Cannot use DIM/VAR with default property</samp></dt>
+<dt><samp>Cannot use EXIT in FINALLY</samp></dt>
+<dt><samp>Cannot use EXIT PROGRAM in LIBRARY</samp></dt>
+<dt><samp>Cannot use GOTO CASE in FINALLY</samp></dt>
+<dt><samp>Cannot use METHOD in PROGRAM module</samp></dt>
+<dt><samp>Cannot use UTF16 with ANSI</samp></dt>
+<dt><samp>Cannot use WHERE after a list</samp></dt>
+<dt><samp>Cannot use YIELD in CATCH or FINALLY</samp></dt>
+<dt><samp>Cannot use YIELD without @ITERATOR on procedure</samp></dt>
+<dt><samp>CASE cannot follow CASE ELSE in SELECT</samp></dt>
+<dt><samp>CASE ELSE cannot be first CASE in SELECT</samp></dt>
+<dt><samp>CASE without SELECT</samp></dt>
+<dt><samp>CATCH without TRY</samp></dt>
+<dt><samp>CLASS without END</samp></dt>
+<dt><samp>CONSTRUCTOR DIM/VAR must have a parameter list</samp></dt>
+<dt><samp>CONSTRUCTOR without CLASS or STRUCT</samp></dt>
+<dt><samp>CONSTRUCTOR without END</samp></dt>
+<dt><samp>DECLARE without END</samp></dt>
+<dt><samp>Declared element is missing generic type parameter(s)</samp></dt>
+<dt><samp>DESTRUCTOR without CLASS</samp></dt>
+<dt><samp>DESTRUCTOR without END</samp></dt>
+<dt><samp>Dictionary-access property must have one parameter</samp></dt>
+<dt><samp>DO WHILE/UNTIL cannot have LOOP WHILE/UNTIL</samp></dt>
+<dt><samp>DO without LOOP</samp></dt>
+<dt><samp>ELSE or ELSE IF cannot follow ELSE</samp></dt>
+<dt><samp>ELSE without IF</samp></dt>
+<dt><samp>END cannot have  block type because of @OPTION</samp></dt>
+<dt><samp>END cannot have  type name because of @OPTION</samp></dt>
+<dt><samp>END cannot have block type because of @OPTION</samp></dt>
+<dt><samp>END FOR cannot have name because of @OPTION</samp></dt>
+<dt><samp>END FOR must have name because of @OPTION</samp></dt>
+<dt><samp>END must have block type because of @OPTION</samp></dt>
+<dt><samp>END type name must be the same as NEW type name</samp></dt>
+<dt><samp>END without block. Possibly you want EXIT PROGRAM.</samp></dt>
+<dt><samp>ENUM without END</samp></dt>
+<dt><samp>Enumeration constant must have an initializer because of @OPTION</samp></dt>
+<dt><samp>Enumeration must have a base type (IS) because of @FLAGS or @OPTION</samp></dt>
+<dt><samp>Enumeration must have a name because of @FLAGS, @OPEN, or @OPTION</samp></dt>
+<dt><samp>Event handlers cannot have a return type</samp></dt>
+<dt><samp>EXIT cannot be first statement in loop. Possibly you want EXIT WHEN.</samp></dt>
+<dt><samp>EXIT CONSTRUCTOR without CONSTRUCTOR</samp></dt>
+<dt><samp>EXIT DO without DO</samp></dt>
+<dt><samp>EXIT FOR without FOR</samp></dt>
+<dt><samp>EXIT FUNCTION without FUNCTION</samp></dt>
+<dt><samp>EXIT label without EXIT WHEN</samp></dt>
+<dt><samp>EXIT list can use only DO or FOR or WHILE</samp></dt>
+<dt><samp>EXIT METHOD without METHOD</samp></dt>
+<dt><samp>EXIT PROPERTY without PROPERTY</samp></dt>
+<dt><samp>EXIT SUB without SUB</samp></dt>
+<dt><samp>EXIT WHEN cannot have two of the same label</samp></dt>
+<dt><samp>EXIT WHILE without WHILE</samp></dt>
+<dt><samp>External library must be a string constant</samp></dt>
+<dt><samp>FINALLY without TRY</samp></dt>
+<dt><samp>First argument is missing</samp></dt>
+<dt><samp>FOR without END</samp></dt>
+<dt><samp>FUNCTION must have a return type</samp></dt>
+<dt><samp>FUNCTION without END</samp></dt>
+<dt><samp>GET without PROPERTY</samp></dt>
+<dt><samp>GOTO CASE without SELECT</samp></dt>
+<dt><samp>IF cannot have THEN because of @OPTION</samp></dt>
+<dt><samp>IF must have THEN because of @OPTION</samp></dt>
+<dt><samp>IF must use block construct because of @OPTION</samp></dt>
+<dt><samp>IF without END</samp></dt>
+<dt><samp>IF-THEN-ELSE must be between parentheses</samp></dt>
+<dt><samp>IN and OUT are permitted only with EVENT and TRAIT</samp></dt>
+<dt><samp>Invalid Constraint</samp></dt>
+<dt><samp>Invalid directive or modifier</samp></dt>
+<dt><samp>Invalid name caused by incorrect file encoding. Write the file again as "UTF-8 with BOM"</samp></dt>
+<dt><samp>Last argument is missing</samp></dt>
+<dt><samp>Loop cannot have more than one WHEN BEGIN</samp></dt>
+<dt><samp>Loop cannot have more than one WHEN EACH/ELSE</samp></dt>
+<dt><samp>Loop cannot have more than one WHEN with the same label</samp></dt>
+<dt><samp>LOOP without DO</samp></dt>
+<dt><samp>Method must have return type because of modifier(s)</samp></dt>
+<dt><samp>METHOD without END</samp></dt>
+<dt><samp>More left braces than right</samp></dt>
+<dt><samp>More left parentheses than right</samp></dt>
+<dt><samp>More right braces than left</samp></dt>
+<dt><samp>More right parentheses than left</samp></dt>
+<dt><samp>Must use backslash because of @OPTION</samp></dt>
+<dt><samp>Must use DIM because of @OPTION</samp></dt>
+<dt><samp>Must use EACH because of @OPTION</samp></dt>
+<dt><samp>Must use ELSE because of @OPTION</samp></dt>
+<dt><samp>Must use SELECT CASE because of @OPTION</samp></dt>
+<dt><samp>Must use slash because of @OPTION</samp></dt>
+<dt><samp>Must use VAR because of @OPTION</samp></dt>
+<dt><samp>Namespace or type name expected</samp></dt>
+<dt><samp>NEW...BEGIN without END</samp></dt>
+<dt><samp>Newline or inline comment must follow line continuation</samp></dt>
+<dt><samp>Number before unit name must be 0, 1, or 2</samp></dt>
+<dt><samp>Object BASE is available only in a child class</samp></dt>
+<dt><samp>OBJECT cannot have CONSTRUCTOR</samp></dt>
+<dt><samp>OBJECT cannot have DESTRUCTOR</samp></dt>
+<dt><samp>OBJECT without END</samp></dt>
+<dt><samp>Optional parameter must have initializer because of @OPTION</samp></dt>
+<dt><samp>PROPERTY without END</samp></dt>
+<dt><samp>RAISE expression is mandatory here</samp></dt>
+<dt><samp>REM is not a comment. Possibly you want ' or //</samp></dt>
+<dt><samp>REQUIRE must be before statements</samp></dt>
+<dt><samp>SELECT must have a minimum of one CASE</samp></dt>
+<dt><samp>SELECT without END</samp></dt>
+<dt><samp>SELF constraint only available in CLASS and TRAIT</samp></dt>
+<dt><samp>SET must have one parameter</samp></dt>
+<dt><samp>SET without PROPERTY</samp></dt>
+<dt><samp>Statement not permitted in collection initializer</samp></dt>
+<dt><samp>STRUCT cannot have CLASS member</samp></dt>
+<dt><samp>STRUCT cannot have DESTRUCTOR</samp></dt>
+<dt><samp>STRUCT without END</samp></dt>
+<dt><samp>SUB must have return type because of modifier(s)</samp></dt>
+<dt><samp>SUB without END</samp></dt>
+<dt><samp>THEN without IF</samp></dt>
+<dt><samp>This statement not permitted with one-line IF...ELSE</samp></dt>
+<dt><samp>Too many arguments for MOD or REM</samp></dt>
+<dt><samp>TRAIT without END</samp></dt>
+<dt><samp>TRY without END</samp></dt>
+<dt><samp>Unit name cannot have a plural part after 1 or 2</samp></dt>
+<dt><samp>Unknown identifier. After @SI only BINARY, LARGE, and SMALL are available.</samp></dt>
+<dt><samp>Unknown identifier. After @TEST, only IGNORE is available.</samp></dt>
+<dt><samp>Unknown identifier. After DECLARE only ANSI, CDECL, and UTF16 are available.</samp></dt>
+<dt><samp>Unknown or missing option</samp></dt>
+<dt><samp>UNTIL without DO or LOOP</samp></dt>
+<dt><samp>WHEN label must be declared at EXIT WHEN because of @OPTION</samp></dt>
+<dt><samp>WHEN without EXIT WHEN</samp></dt>
+<dt><samp>WHERE is not permitted here</samp></dt>
+<dt><samp>WHERE must be on the same logical line as REQUIRE</samp></dt>
+<dt><samp>WHILE without END</samp></dt>
 </dl>
 </main>
 <script src="common.js"></script>
