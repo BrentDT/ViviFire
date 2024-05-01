@@ -89,6 +89,8 @@ void PrintMemoryInfo ( DWORD processID ) {
 #endif
 
 int main(int argc, char *argv[]) {
+	int result = 0;
+
 	// Make sure we are set to use Unicode.
 	// Start code adapted from <https://stackoverflow.com/questions/57955871>.
 	fflush(stdout);
@@ -142,6 +144,8 @@ int main(int argc, char *argv[]) {
 	Parser *p = new Parser(new Scanner(fileName));
 	
 	p->Parse();
+
+	if (p->errors->count) result = 2;
 	
 	if (args.t) {
 		// Calculate the duration.
@@ -159,6 +163,6 @@ int main(int argc, char *argv[]) {
 		PrintMemoryInfo(GetCurrentProcessId());
 	}
 #endif
-	return 0;
+	return result;
 }
 
