@@ -14,6 +14,8 @@ RewriteRule ^ViviFire_from_the_Beginning\.html$ ViviFire_from_Start.html [R=301,
 RewriteRule ^Call_Event_Statement\.html$ Raise_Event_Statement.html [R=301,L]
 # Mar 2024
 RewriteRule ^If_Then_Else_Directives\.html$ Const_If_Else_Statement.html [R=301,L]
+# Apr 2024
+RewriteRule ^Const_Directive\.html$ Const.html [R=301,L]
 
 ## Change underscores to hyphens
 # RewriteRule       ^(.*?)_(.*?_.*)$ $1-$2 [N]
