@@ -2068,11 +2068,24 @@ Expression (. ID(L"Expression", EXPR) .)
 		LambdaExpression
 	)
 	(.
-	if (la->kind == _right_paren) {
+	if (_right_paren == la->kind) {
 		Get();
 		SemErr(L"More right parentheses than left");
 	}
-	.)
+
+	switch (la->kind) {
+	case _colon_equals: case _comma: case _line_break: case _right_brace: case _semicolon: case _Else: case _Step: case _Then: case _To: case _Tol:
+		// For all tokens that can follow an expression.
+		// Do nothing.
+		break;
+	default:
+		if (_typed_identifier == t->kind || _at_sign == t->kind) {
+			// For those that think type characters are operators.
+			Err(la->line, la->col, L"Possibly missing operator after type character");
+		} else {
+			Err(la->line, la->col, L"Possibly missing operator");
+		}
+	} .)
 .
 /*F*/
 FixedPointType<int &tkn> (. ID(L"FixedPointType", STMT) .)
