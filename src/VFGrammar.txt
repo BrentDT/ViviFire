@@ -1290,33 +1290,14 @@ ArgumentList (. ID(L"ArgumentList", STMT) .)
 		UnenclosedArgumentList<nullptr>
 	)
 .
-ArrayDimensionList (. ID(L"ArrayDimensionList", STMT) .)
-=
-	"("
-	[
-		// Eg 'Dim matrix(*2)'
-		Rank                            
-	|
-		// Eg 'Dim matrix(3, 3)'
-		EnclosedExpression
-		{ WEAK comma
-			EnclosedExpression
-		} 
-	]
-	")"
-.
-AssignmentOperator (. ID(L"AssignmentOperator", STMT) .)
-=
-	[
-		( concatenation | "+" | "-" | "*" | "/" | "Div" | "Mod" | "Rem" | "SHL" | "SHR" | "And" | "Or" | "Xor" )
-		(. if (HasWhitespace()) Err(L"Bad assignment operator"); .)
-	]
-	"="
-.
 AssignmentStatement (. ID(L"AssignmentStatement", STMT) .)
 =
 	(
-		AssignmentOperator [OptionalNewline]
+		[
+			( concatenation | "+" | "-" | "*" | "/" | "Div" | "Mod" | "Rem" | "SHL" | "SHR" | "And" | "Or" | "Xor" )
+			(. if (HasWhitespace()) Err(L"Bad assignment operator"); .)
+		]
+		"=" [OptionalNewline]
 		Expression
 	|
 		":=" Expression
@@ -1344,13 +1325,6 @@ BaseUnitStatement<Modifiers &mods> (. ID(L"BaseUnitStatement", STMT) .)
 		SyncNewline<s_name>
 	| ANY (. SemErr(L"Object BASE is available only in a child class"); .)
 	)
-.
-BitFieldType<int &tkn> (. ID(L"BitFieldType", STMT) .)
-=
-	(. tkn = la->kind; .)
-	( "SBits" | "UBits" )
-	[ "[" PassableType "]" ]
-	"(" integer_literal ")"
 .
 BitShiftExpression (. ID(L"BitShift", EXPR) .)
 =
@@ -1452,37 +1426,11 @@ CallStatement (. ID(L"CallStatement", STMT) .)
 		.)
 	)
 .
-CaseClause<case_type &clause> (. ID(L"CaseClause", STMT) .)
-=
-	"Case"
-		(. if (clause == CASE_ELSE) SemErr(L"CASE cannot follow CASE ELSE in SELECT"); .)
-	(
-		"Else"
-		(. if (clause == CASE_ZERO) SemErr(L"CASE ELSE cannot be first CASE in SELECT"); .)
-		(. clause = CASE_ELSE; .)
-	|
-		CaseExpression
-		{
-			WEAK comma [ OptionalNewline ]
-			CaseExpression
-		}
-		(. clause = CASE_EXPR; .)
-	)
-	SyncNewline<s_name>
-	{ Statement }
-.
 CaseExpression (. ID(L"CaseExpression", STMT) .)
 =
 	( "Is" ComparisonOperator Expression
 	| Expression [ "To" Expression ]
 	)
-.
-CatchClause (. ID(L"CatchClause", STMT) .)
-=
-	"Catch" [ Name [ AsTypeClause<NO_BITS> ] ] SyncNewline<s_name>
-	(. context.push_back(_Catch); .)
-	{ Statement }
-	(. context.pop_back(); .)
 .
 ClassOrObjectMember<int kind> (. ID(L"ClassOrObjectMember", STMT) .)
 =
@@ -1534,20 +1482,6 @@ ClassStatement<Modifiers &mods> (. ID(L"ClassStatement", STMT) .)
 	"End"
 	(. Optional(_Class); .)
 	Newline
-.
-CollectionInitializer (. ID(L"CollectionInitializer", STMT) .)
-=
-	"{" [ OptionalNewline ]
-	InitializationElement
-	{
-		WEAK comma [ OptionalNewline ]
-		InitializationElement
-	}
-	"}"
-	// Permit isolated right brace.
-	[ IF (la->kind == _line_break && scanner->Peek()->kind == _right_brace)
-		line_break
-	]
 .
 ComparisonExpression (. ID(L"Comparison", EXPR) .)
 =
@@ -1672,10 +1606,6 @@ ConstructorStatement<Modifiers &mods> (. ID(L"ConstructorStatement", STMT) .)
 	(. Optional(_Constructor); .)
 	Newline
 .
-ConvertibleType (. ID(L"ConvertibleType", STMT) .)
-=
-	( PrimitiveType<NO_BITS> | UserType )
-.
 /*D*/
 DateTimeExpression (. ID(L"DateTime", EXPR) .)
 =
@@ -1699,7 +1629,20 @@ DeclarationStatement<Modifiers &mods> (. ID(L"DeclarationStatement", STMT) .)
 Declarator<bool bBits> (. ID(L"Declarator", STMT) .)
 =
 	Name
-	[ ArrayDimensionList ]
+	[
+		"("
+		[
+			// Eg 'Dim matrix(*2)'
+			Rank                            
+		|
+			// Eg 'Dim matrix(3, 3)'
+			EnclosedExpression
+			{ WEAK comma
+				EnclosedExpression
+			} 
+		]
+		")"
+	]
 	[ TypeClause<bBits> ]
 	[ '=' InitializationExpression ]
 .
@@ -1717,24 +1660,6 @@ DeclareParameter<bool &isOptional> (. ID(L"DeclareParameter", STMT) .)
 	integer_literal
 	[ "=" EnclosedExpression ]
 .
-DeclareParameterList (. ID(L"DeclareParameterList", STMT) .)
-=
-	(. bool isOptional; .)
-	( IF (IsDeclareParameterList())
-		"(" [ OptionalNewline ]
-		[
-			DeclareParameter<isOptional>
-			{
-				WEAK comma [ OptionalNewline ]
-				DeclareParameter<isOptional>
-			}
-		]
-		")"
-	|
-		EnclosedParameterList<_Declare>
-		[ TypeClause<NO_BITS> ]
-	)
-.
 DeclareSignature<bool isAlias> (. ID(L"DeclareSignature", STMT) .)
 =
 	( "Function" | "Sub" )
@@ -1748,7 +1673,22 @@ DeclareSignature<bool isAlias> (. ID(L"DeclareSignature", STMT) .)
 			QualifiedName<qn, 0>
 		)
 	]
-	[ DeclareParameterList ]
+	[
+		(. bool isOptional; .)
+		( IF (IsDeclareParameterList())
+			"(" [OptionalNewline]
+			[
+				DeclareParameter<isOptional>
+				{ WEAK comma [OptionalNewline]
+					DeclareParameter<isOptional>
+				}
+			]
+			")"
+		|
+			EnclosedParameterList<_Declare>
+			[ TypeClause<NO_BITS> ]
+		)
+	]
 .
 DeclareStatement<Modifiers &mods> (. ID(L"DeclareStatement", STMT) .)
 =
@@ -2088,16 +2028,6 @@ Expression (. ID(L"Expression", EXPR) .)
 	} .)
 .
 /*F*/
-FixedPointType<int &tkn> (. ID(L"FixedPointType", STMT) .)
-=
-	(. tkn = la->kind; .)
-	( "Fixed64" | "Fixed128" ) [ IF (IsFixedPointArgument()) "(" integer_literal ")" ]
-.
-FloatingPointType<int &tkn> (. ID(L"FloatingPointType", STMT) .)
-=
-	(. tkn = la->kind; .)
-	( "Real32" | "Real64" | "Real128" )
-.
 FormalParameter<param_validator &param> (. ID(L"FormalParameter", STMT) .)
 =
 	( FormalParameterModifier<param>
@@ -2265,7 +2195,10 @@ IfStatement (. ID(L"IfStatement", STMT) .)
 .
 InitializationElement (. ID(L"InitializationElement", STMT) .)
 =
-	[ IF (IsUnorderedInit()) IntegerConstant ":=" ]
+	[ IF (IsUnorderedInit())
+		[ char_literal | integer_constant | integer_literal ] // Use [...] because no error msg is necessary.
+		":="
+	]
 	InitializationExpression
 .
 InitializationExpression (. ID(L"InitializationExpression", STMT) .)
@@ -2273,24 +2206,36 @@ InitializationExpression (. ID(L"InitializationExpression", STMT) .)
 	(
 		Expression
 	|
-		CollectionInitializer
+		"{" [OptionalNewline]
+		InitializationElement
+		{ WEAK comma [OptionalNewline]
+			InitializationElement
+		}
+		"}"
+		// Permit isolated right brace.
+		[ IF (la->kind == _line_break && scanner->Peek()->kind == _right_brace)
+			line_break
+		]
 	)
 .
-IntegerConstant (. ID(L"IntegerConstant", STMT) .)
+IntegerType<int &kind> (. ID(L"IntegerType", STMT) .)
 =
-	( char_literal | integer_constant | integer_literal )
-.
-IntegerType<int &tkn> (. ID(L"IntegerType", STMT) .)
-=
-	(. tkn = la->kind; .)
-	( "Int8"  | "Int16"  | "Int32"  | "Int64"  | "Int128"
-	| "UInt8" | "UInt16" | "UInt32" | "UInt64" | "UInt128"
+	(. kind = la->kind; .)
+	(
+		"Int8"  | "Int16"  | "Int32"  | "Int64"  | "Int128"
+	|
+		"UInt8" | "UInt16" | "UInt32" | "UInt64" | "UInt128"
 	)
 .
 IntegerTypeOrExtension (. ID(L"IntegerTypeOrExtension", STMT) .)
 =
-	(. int tkn = 0; .)
-	"Is" ( identifier | IntegerType<tkn> )
+	(. int kind = 0; .)
+	"Is"
+	(
+		identifier (. kind = _identifier; .)
+	|
+		IntegerType<kind>
+	)
 .
 InUnitClause (. ID(L"InUnitClause", STMT) .)
 =
@@ -2931,13 +2876,25 @@ PrimaryExpression (. ID(L"Primary", EXPR) .)
 .
 PrimitiveType<bool bBits> (. ID(L"PrimitiveType", STMT) .)
 =
-	(. int kind = 0; .)
-	( "Boolean" | "Char" | "DateTime"
-	| "SafeString" | "String"  //TODO: Limit on where can use SafeString.
-	| IntegerType<kind>
-	| FloatingPointType<kind>
-	| FixedPointType<kind>
-	| BitFieldType<kind>  (. if (!bBits) SemErr(L"Bit field not permitted here"); .)
+	(. int kind = la->kind; .)
+	(
+		"Boolean" | "Char" | "DateTime"
+	|
+		"Real32" | "Real64" | "Real128"
+	|
+		"String" | "SafeString"  //TODO: Limits on where can use SafeString?
+	|
+		IntegerType<kind>
+	|
+		( "Fixed64" | "Fixed128" )
+		[ IF (IsFixedPointArgument())
+			"(" integer_literal ")"
+		]
+	|
+		( "SBits" | "UBits" )
+		(. if (!bBits) SemErr(L"Bit field not permitted here"); .)
+		[ "[" PassableType "]" ]
+		"(" integer_literal ")"
 	)
 .
 ///PropertyOrCall (. ID(PropertyOrCall) .)
@@ -3133,7 +3090,23 @@ SelectStatement<Modifiers &mods> (. ID(L"SelectStatement", STMT) .)
 	TolExpression
 	SyncNewline<s_name>
 	(. context.push_back(_Select); .)
-	{ CaseClause<clause> }
+	{
+		"Case"
+		(. if (clause == CASE_ELSE) SemErr(L"CASE cannot follow CASE ELSE in SELECT"); .)
+		(
+			"Else"
+			(. if (clause == CASE_ZERO) SemErr(L"CASE ELSE cannot be first CASE in SELECT"); .)
+			(. clause = CASE_ELSE; .)
+		|
+			CaseExpression
+			{ WEAK comma [OptionalNewline]
+				CaseExpression
+			}
+			(. clause = CASE_EXPR; .)
+		)
+		SyncNewline<s_name>
+		{ Statement }
+	}
 	(. context.pop_back(); .)
 	(. if (la->kind != _End) Err(line, col, L"SELECT without END"); .)
 	"End"
@@ -3446,7 +3419,12 @@ TryStatement (. ID(L"TryStatement", STMT) .)
 	"Try" (. line = t->line; col = t->col; .)
 	Newline
 	{ Statement }
-	{ CatchClause }
+	{
+		"Catch" [ Name [ AsTypeClause<NO_BITS> ] ] SyncNewline<s_name>
+		(. context.push_back(_Catch); .)
+		{ Statement }
+		(. context.pop_back(); .)
+	}
 	[
 		"Finally" Newline
 		(. context.push_back(_Finally); .)
@@ -3470,8 +3448,10 @@ TypeClause<bool bBits> (. ID(L"TypeClause", STMT) .)
 .
 TypeConversion (. ID(L"TypeConversion", EXPR) .)
 =
-	( "As" ConvertibleType
-	| InUnitClause
+	(
+		"As" ( PrimitiveType<NO_BITS> | UserType )
+	|
+		InUnitClause
 	)
 .
 TypeExpression (. ID(L"Type", EXPR) .)
