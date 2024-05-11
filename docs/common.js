@@ -22,11 +22,11 @@ if (!chm) {
 document.write(`<hr>
 	<div id="poll" role="status" aria-live="polite" aria-relevant="text">
 	<div role="form" aria-label="poll">
-	<p>What do you think about this article?</p>
-	<button aria-label="1 star" onclick="vote(0)">1&#x2605;</button>
-	<button aria-label="2 stars" onclick="vote(1)">&#x2605;</button>
-	<button aria-label="3 stars" onclick="vote(2)">&#x2605;</button>
-	<button aria-label="4 stars" onclick="vote(3)">&#x2605;4</button>
+	<p>What is your rating for this article? (1 = lowest)</p>
+	<button onclick="vote(0)">1</button>
+	<button onclick="vote(1)">2</button>
+	<button onclick="vote(2)">3</button>
+	<button onclick="vote(3)">4</button>
 	<p>or <a href="https://www.b6sw.com/forum/posting.php?mode=annotate&f=37&anchor=${/\/(\w+)\.html/.exec(location.href)[1]}" target="_blank">send a message</a></p>
 	</div></div>`);
 
