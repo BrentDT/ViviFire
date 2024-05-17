@@ -30,29 +30,47 @@
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="id">event_name</code></dt>
-<dd>The name of an event variable.</dd>
+<dd>The name of an event.</dd>
 <dt><code class="id">argument_list</code></dt>
 <dd>Zero or more expressions with a comma between each, all optionally between parentheses (&ldquo;<code class="op">( )</code>&rdquo;).</dd>
 </dl>
 <h2>Instructions</h2>
-<p>TODO</p>
+<p>The mandatory name (<code class="id">event_name</code>) is an event declared in the same module.
+It is an error to try to cause an event in a different module.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
-<pre><code>Event MyEventType(a As Int32, b As Int32)
-Var MyEvent As MyEventType = Sub MyEventHandler
-Raise Event MyEvent(1, 2)
+<pre><code>Class CountdownTimer
+    Event Tick(second As Int32)
+    Event Done
+    Method Start(seconds As Int32)
+        While seconds &gt; 0
+            Raise Event Tick seconds
+            Sleep 1s
+            seconds -= 1
+        End While
+        Raise Event Done
+    End Method
+End Class
+
+New CountdownTimer myCountdown
+myCountdown.Start 10
+
 ' ...
-Sub MyEventHandler Handles MyEventType
-    ' ...
+
+Sub myCountdown_Tick Handles myCountdown.Tick
+    PrintLine $"Countdown is at <span class="token strint">{<span class="token id">second</span>}</span>"
+End Sub
+
+Sub myCountdown_Done Handles myCountdown.Done
+    PrintLine "Countdown is done"
 End Sub&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Event_Statement.html">Event Statement</a></li>
-<li><a href="Sub_Operator.html">Sub Expression</a></li>
+<li><a href="Throw_Statement.html">Raise Statement</a></li>
 <li><a href="Sub_Statement.html">Sub Statement</a></li>
 <li><a href="Events.html">Events</a></li>
-<li><a href="Throw_Statement.html">Raise Statement</a></li>
 </ul>
 </main>
 <script src="common.js"></script>
