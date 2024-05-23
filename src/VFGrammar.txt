@@ -64,11 +64,13 @@ enum option_type { OPTION_DEFAULT, WITH_THEN, WITHOUT_THEN };
 enum ternary { TERNARY0, TERNARY1, TERNARY2, YES = TERNARY1, NO = TERNARY2 };
 
 // Aliases for 'true' and 'false'.
-enum { NO_BITS, YES_BITS };
-enum { POSTCONDITIONAL, PRECONDITIONAL };
+enum { NO_BITS = 0, YES_BITS = 1 };
+enum { POSTCONDITIONAL = 0, PRECONDITIONAL = 1 };
 
 // Type aliases.
 typedef std::map<std::wstring, int> when_map;
+// Static inline variables.
+static inline int s_MOD_line = 0, s_REM_line = 0, s_MODREM_col = 0; // For incorrectly used MOD and REM.
 
 // Hold options for the directive '@OPTION'.
 struct Option {
@@ -756,6 +758,27 @@ void Warn(int line, int col, const wchar_t *msg) {
 	else errors->Warning(line, col, msg);
 }
 
+#define COUNT_MOD_AND_REM(op, other) \
+	void Count_##op() { \
+		if (s_##op##_line) return; \
+		s_##op##_line = t->line + errors->LineDelta(); /* Get physical line. */ \
+		if (0 == s_##other##_line) { \
+			s_MODREM_col = t->col + errors->ColDelta(); /* Get physical column. */ \
+		} else if (!option.Mod_floored) { /* Without @OPTION MOD FLOORED. */ \
+			Warn(s_##other##_line - errors->LineDelta(), s_MODREM_col - errors->ColDelta(), \
+				L"You used " #other L" here..."); \
+			Warn(t->line, t->col, \
+				L"And you used " #op L" here, although they are the same operation." \
+				L" Possibly you want the directive @OPTION MOD FLOORED?" \
+			); \
+			s_MOD_line = s_REM_line = -1; /* Prevent more warnings. */ \
+		} \
+	}
+
+COUNT_MOD_AND_REM(MOD, REM)
+COUNT_MOD_AND_REM(REM, MOD)
+#undef COUNT_MOD_AND_REM
+
 inline bool in_context(int kind) {
 	return (std::find(context.rbegin(), context.rend(), kind) != context.rend());
 }
@@ -852,6 +875,15 @@ bool IsFixedPointArgument() {
 
 bool IsIdentifier(int kind) {
 	return (kind == _identifier || kind == _typed_identifier || kind == _hash);
+}
+
+bool IsIntegerType(int kind) {
+	switch (kind) {
+	case _Int8: case _Int16: case _Int32: case _Int64: case _Int128:
+	case _UInt8: case _UInt16: case _UInt32: case _UInt64: case _UInt128:
+		return true;
+	}
+	return false;
 }
 
 bool IsNamedArgument() {
@@ -1778,9 +1810,13 @@ DivisionFunction (. ID(L"Division", EXPR) .)
 	(
 		"Div"
 	|
-		"Mod" (. two_args = true; .)
+		"Mod"
+		(. two_args = true; .)
+		(. Count_MOD(); .)
 	|
-		"Rem" (. two_args = true; .)
+		"Rem"
+		(. two_args = true; .)
+		(. Count_REM(); .)
 	)
 	"(" EnclosedExpression
 	comma EnclosedExpression
@@ -1861,20 +1897,6 @@ EnclosedParameterList<int parent> (. ID(L"EnclosedParameterList", STMT) .)
 	)
 	")"
 .
-EnumMember (. ID(L"EnumMember", STMT) .)
-=
-	(. bool deprecated = false; .)
-	[ Deprecated (. deprecated = true; .) ]
-	identifier
-	(
-		"=" Expression
-	|
-		(. if (option.Enum_equals) SemErr(L"Enumeration constant must have an initializer because of @OPTION"); .)
-	)
-	SyncSeparator<s_name>
-	(. if (deprecated && t->kind == _semicolon && la->kind != _at_sign)
-	    Warn(la->line, la->col, L"@DEPRECATED has no effect on this constant. We recommend a line-break here."); .)
-.
 EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 =
 	(.
@@ -1899,14 +1921,25 @@ EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 	}
 	.)
 	[
-		IntegerTypeOrExtension
+		"Is"
+		PrimitiveType<NO_BITS>
+		(. if (!IsIntegerType(t->kind)) Err(L"Base type must be an integer type or enumeration type"); .)
 	] (. else if (bFlags || option.Enum_Is) {
 		Err(L"Enumeration must have a base type (IS) because of @FLAGS or @OPTION");
-	}
-	.)
+	} .)
 	SyncNewline<s_name>
 	{
-		EnumMember
+		(. bool deprecated = false; .)
+		[ Deprecated (. deprecated = true; .) ]
+		identifier
+		[
+			"=" Expression
+		] (. else if (option.Enum_equals) SemErr(L"Enumeration constant must have an initializer because of @OPTION"); .)
+		SyncSeparator<s_name>
+		(.
+		if (deprecated && t->kind == _semicolon && la->kind != _at_sign)
+			Warn(la->line, la->col, L"@DEPRECATED has no effect on this constant. We recommend a line-break here.");
+		.)
 	}
 	// Make sure last EnumMember ends with EOL.
 	(. if (t->kind != _line_break) SynErr(_line_break); .)
@@ -1915,10 +1948,13 @@ EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 	(. Optional(_Enum); .)
 	Newline
 .
-EventName (. ID(L"EventName", STMT) .)
+EventSpecifier (. ID(L"EventSpecifier", STMT) .)
 =
-	( identifier | "Base" | "Self" )
-	dot identifier
+	[ ObjectName ]
+	(. else .) // KLUDGE: Prevent a small token set.
+	[ "Base" | "Self" ]
+	(. else Err(L"Event specifier must start with an object, BASE, or SELF"); .)
+		dot identifier
 .
 EventStatement (. ID(L"EventStatement", STMT) .)
 =
@@ -2030,9 +2066,11 @@ Expression (. ID(L"Expression", EXPR) .)
 /*F*/
 FormalParameter<param_validator &param> (. ID(L"FormalParameter", STMT) .)
 =
-	( FormalParameterModifier<param>
-	| (. param.Add(); .)
-	)
+	[
+		"ByRef"     (. param.Add(_ByRef); .)
+	|
+		"Optional"  (. param.Add(_Optional); .)
+	] (. else param.Add(); .)
 	Name
 	[ '(' [ Rank ] ')' ]
 	[ TypeClause<NO_BITS> ]
@@ -2043,14 +2081,6 @@ FormalParameter<param_validator &param> (. ID(L"FormalParameter", STMT) .)
 FormalParameterList<int parent> (. ID(L"FormalParameterList", STMT) .)
 =
 	( EnclosedParameterList<parent> | UnenclosedParameterList<parent> )
-.
-FormalParameterModifier<param_validator &param> (. ID(L"FormalParameterModifier", STMT) .)
-=
-	(
-		"ByRef"     (. param.Add(_ByRef); .)
-	|
-		"Optional"  (. param.Add(_Optional); .)
-	)
 .
 ForStatement (. ID(L"ForStatement", STMT) .)
 =
@@ -2218,32 +2248,9 @@ InitializationExpression (. ID(L"InitializationExpression", STMT) .)
 		]
 	)
 .
-IntegerType<int &kind> (. ID(L"IntegerType", STMT) .)
-=
-	(. kind = la->kind; .)
-	(
-		"Int8"  | "Int16"  | "Int32"  | "Int64"  | "Int128"
-	|
-		"UInt8" | "UInt16" | "UInt32" | "UInt64" | "UInt128"
-	)
-.
-IntegerTypeOrExtension (. ID(L"IntegerTypeOrExtension", STMT) .)
-=
-	(. int kind = 0; .)
-	"Is"
-	(
-		identifier (. kind = _identifier; .)
-	|
-		IntegerType<kind>
-	)
-.
 InUnitClause (. ID(L"InUnitClause", STMT) .)
 =
 	"In" UnitOfMeasure
-.
-IsExpression (. ID(L"IsExpression", EXPR) .)
-=
-	"Is" ( SimpleNonCallExpression | "Object" )
 .
 /*J*/
 /*K*/
@@ -2603,57 +2610,23 @@ ModuleStatement<bool bProcEntry, Modifiers &mods> (. ID(L"ModuleStatement", STMT
 .
 MultiplicativeExpression (. ID(L"Multiplicative", EXPR) .)
 =
-	PowerExpression { MultiplicativeOperator PowerExpression }
-.
-MultiplicativeOperator (. ID(L"MultiplicativeOperator", STMT) .)
-=
-	(.
-	static int s_mod_line = 0, s_rem_line = 0, s_col = 0;
-	constexpr int WARNED = -1; // Use invalid line number as a flag.
-	.)
-	(
-		"*"
-	|
-		"/"
-	|
-		"Div"
-	|
-		"Mod"
-		(.
-		if (0 == s_mod_line) {
-			s_mod_line = t->line + errors->LineDelta(); // Get physical line.
-			if (0 == s_rem_line) {
-				s_col = t->col + errors->ColDelta(); // Get physical column.
-			} else if (!option.Mod_floored) { // Without @OPTION MOD FLOORED.
-				Warn(s_rem_line - errors->LineDelta(), s_col - errors->ColDelta(),
-					L"You used REM here...");
-				Warn(t->line, t->col,
-					L"And you used MOD here, although they are the same operation."
-					L" Possibly you want the directive @OPTION MOD FLOORED?"
-				);
-				s_mod_line = s_rem_line = WARNED; // Prevent more warnings.
-			}
-		}
-		.)
-	|
-		"Rem"
-		(.
-		if (0 == s_rem_line) {
-			s_rem_line = t->line + errors->LineDelta(); // Get physical line.
-			if (0 == s_mod_line) {
-				s_col = t->col + errors->ColDelta(); // Get physical column.
-			} else if (!option.Mod_floored) { // Without @OPTION MOD FLOORED.
-				Warn(s_mod_line - errors->LineDelta(), s_col - errors->ColDelta(),
-					L"You used MOD here...");
-				Warn(t->line, t->col,
-					L"And you used REM here, although they are the same operation."
-					L" Possibly you want the directive @OPTION MOD FLOORED?"
-				);
-				s_mod_line = s_rem_line = WARNED; // Prevent more warnings.
-			}
-		}
-		.)
-	)
+	PowerExpression
+	{
+		(
+			"*"
+		|
+			"/"
+		|
+			"Div"
+		|
+			"Mod"
+			(. Count_MOD(); .)
+		|
+			"Rem"
+			(. Count_REM(); .)
+		)
+		PowerExpression
+	}
 .
 /*N*/
 Name (. ID(L"Name", STMT) .)
@@ -2696,7 +2669,16 @@ NewBeginStatement (. ID(L"NewBeginStatement", STMT) .)
 	]
 	SyncNewline<s_name>
 	{
-		NewMember<limit>
+		ArgumentList SyncSeparator<s_name>
+	|
+		(. if (_Call == limit) Err(la->line, la->col, L"Statement not permitted in collection initializer"); .)
+		(
+			NewStatement<nullptr>
+		|
+			ObjectStatement<nullptr>
+		|
+			dot IdentifierStatement SyncNewline<s_name>
+		)
 	}
 	(. if (t->kind != _line_break) SynErr(_line_break); .)
 	(. if (la->kind != _End) Err(line, col, L"NEW...BEGIN without END"); .)
@@ -2712,21 +2694,6 @@ NewBeginStatement (. ID(L"NewBeginStatement", STMT) .)
 		(. if (option.End_block == YES) SemErr(L"END must have block type because of @OPTION"); .)
 	)
 	(. coco_string_delete(type_name); .)
-.
-NewMember<int limit> (. ID(L"NewMember", STMT) .)
-=
-	(
-		ArgumentList SyncSeparator<s_name>
-	|
-		(. if (_Call == limit) Err(la->line, la->col, L"Statement not permitted in collection initializer"); .)
-		(
-			NewStatement<nullptr>
-		|
-			ObjectStatement<nullptr>
-		|
-			dot IdentifierStatement SyncNewline<s_name>
-		)
-	)
 .
 NewStatement<Modifiers *mods> (. ID(L"NewStatement", STMT) .)
 =
@@ -2880,11 +2847,13 @@ PrimitiveType<bool bBits> (. ID(L"PrimitiveType", STMT) .)
 	(
 		"Boolean" | "Char" | "DateTime"
 	|
+		"Int8"  | "Int16"  | "Int32"  | "Int64"  | "Int128"
+	|
 		"Real32" | "Real64" | "Real128"
 	|
 		"String" | "SafeString"  //TODO: Limits on where can use SafeString?
 	|
-		IntegerType<kind>
+		"UInt8" | "UInt16" | "UInt32" | "UInt64" | "UInt128"
 	|
 		( "Fixed64" | "Fixed128" )
 		[ IF (IsFixedPointArgument())
@@ -3296,7 +3265,8 @@ SubSignature<Modifiers &mods, int &line, int &col, bool &bGeneric> (. ID(L"SubSi
 	[
 		"Handles"
 		(. if (bReturns) SemErr(L"Event handlers cannot have a return type"); .)
-		EventName
+		EventSpecifier
+		{ comma EventSpecifier }
 	]
 	[
 		WhereClause<_Sub, bGeneric>
@@ -3456,7 +3426,13 @@ TypeConversion (. ID(L"TypeConversion", EXPR) .)
 .
 TypeExpression (. ID(L"Type", EXPR) .)
 =
-	ConcatenationExpression [ IsExpression | TypeConversion ]
+	ConcatenationExpression
+	[
+		"Is"
+		( SimpleNonCallExpression | "Object" )
+	|
+		TypeConversion
+	]
 .
 TypeParameter<int parent> (. ID(L"TypeParameter", STMT) .)
 =
