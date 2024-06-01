@@ -2560,11 +2560,40 @@ Module (. ID(L"Module", STMT) .)
 		context.push_back(_Program);
 	}
 	.)
-	{ IF (la->kind == _Where)
-		WhereStatement
+	{ IF (_Where == la->kind)
+		"Where" (. int line = t->line, col = t->col; .)
+		identifier  (. wchar_t *id = coco_string_create(t->val); .)
+		"="
+		[
+			DateTimeExpression
+		|
+			(. std::wstring s; .)
+			StringExpression<s>
+			(. module->Add(new AST::ModuleWhere(id, _wcsdup(s.c_str()), AST::STRING, line, col)); .)
+		|
+			version_literal 
+			(. module->Add(new AST::ModuleWhere(id, coco_string_create(t->val), AST::VERSION, line, col)); .)
+		] (. else Err(L"In WHERE, value must be a literal of date/time, string, or version number"); .)
+		(. if (la->kind != _line_break) Err(L"WHERE cannot be a list or expression"); .)
+		SyncNewline<s_name>
 	}
-	{ IF (la->kind == _Require)
-		RequireStatement
+
+	{ IF (_Require == la->kind)
+		(. std::wstring qn; .)
+		"Require"
+		QualifiedName<qn, _identifier> [ "As" identifier ]
+		(
+			{ WEAK comma
+			(. qn.clear(); .)
+				QualifiedName<qn, _identifier>
+				[ "As" identifier ]
+			}
+			(. if (_Where == la->kind) Err(la->line, la->col, L"Cannot use WHERE after a list"); .)
+		|
+			"Where" RequireLogic
+		)
+		SyncNewline<s_name>
+		(. if (_Where == la->kind) Err(la->line, la->col, L"WHERE must be on the same logical line as REQUIRE"); .)
 	}
 	{
 		(. Modifiers mods(this); .)
@@ -3016,24 +3045,6 @@ RequireLogic (. ID(L"RequireLogic", STMT) .)
 	RequireComparison
 	{ ( "And" | "Or" ) RequireComparison }
 .
-RequireStatement (. ID(L"RequireStatement", STMT) .)
-=
-	(. std::wstring qn; .)
-	"Require"
-	QualifiedName<qn, _identifier> [ "As" identifier ]
-	(
-		{ WEAK comma
-		(. qn.clear(); .)
-			QualifiedName<qn, _identifier>
-			[ "As" identifier ]
-		}
-		(. if (_Where == la->kind) Err(la->line, la->col, L"Cannot use WHERE after a list"); .)
-	|
-		"Where" RequireLogic
-	)
-	SyncNewline<s_name>
-	(. if (_Where == la->kind) Err(la->line, la->col, L"WHERE must be on the same logical line as REQUIRE"); .)
-.
 ReturnStatement (. ID(L"ReturnStatement", STMT) .)
 =
 	"Return" [ Expression ]
@@ -3193,53 +3204,63 @@ StructStatement<Modifiers &mods> (. ID(L"StructStatement", STMT) .)
 	"Struct" (. line = t->line; col = t->col; .)
 	identifier
 	[ TypeParameterList<_Struct> (. generic = true; .) ]
-	[ "Is" ValueType ]
+	[ "Is" ( PrimitiveType<NO_BITS> | UserType ) ]
 	[ DoesClause ]
 	[ WhereClause<_Struct, generic> ]
 	SyncNewline<s_name>
 	{ WhereClause<_Struct, generic> SyncNewline<s_name> }
 	(. context.push_back(_Struct); .)
-	{ StructState }
-	{ StructProcedure }
+
+	// Struct state.
+	{
+		(. Modifiers state_mods(this); .)
+		[ ModifiersClause<state_mods> ]
+		(
+			(.
+			state_mods.Let(s_Deprecated);
+			state_mods.Let(s_Shared);
+		state_mods.Check();
+			.)
+			[ DimOrVar ] DeclaratorList<YES_BITS>
+			SyncNewline<s_name>
+	|
+			ConstStatement<state_mods>
+	|
+			EnumStatement<state_mods>
+	|
+			(. state_mods.Check(); .)
+			EventStatement
+		|
+			StructStatement<state_mods>
+		|
+			(. Err(la->line, la->col, L"STRUCT cannot have CLASS member"); .)
+			ClassStatement<state_mods>
+		)
+	}
+
+	// Struct procedures.
+	{
+		(. Modifiers proc_mods(this); .)
+		(
+			ConstructorStatement<proc_mods>
+		|
+			FunctionStatement<proc_mods>
+		|
+			MethodStatement<proc_mods>
+		|
+			PropertyStatement<proc_mods>
+		|
+			SubStatement<proc_mods>
+		|
+			(. Err(la->line, la->col, L"STRUCT cannot have DESTRUCTOR"); .)
+			DestructorStatement<proc_mods>
+		)
+	}
 	(. context.pop_back(); .)
 	(. if (la->kind != _End) Err(line, col, L"STRUCT without END"); .)
 	"End"
 	(. Optional(_Struct); .)
 	Newline
-.
-StructProcedure (. ID(L"StructProcedure", STMT) .)
-=
-	(. Modifiers mods(this); .)
-	( ConstructorStatement<mods>
-	| FunctionStatement<mods>
-	| MethodStatement<mods>
-	| PropertyStatement<mods>
-	| SubStatement<mods>
-	|
-		(. Err(la->line, la->col, L"STRUCT cannot have DESTRUCTOR"); .)
-		DestructorStatement<mods>
-	)
-.
-StructState (. ID(L"StructState", STMT) .)
-=
-	(. Modifiers mods(this); .)
-	[ ModifiersClause<mods> ]
-	(
-		(.
-		mods.Let(s_Deprecated);
-		mods.Let(s_Shared);
-	mods.Check();
-		.)
-		[ DimOrVar ] DeclaratorList<YES_BITS>
-		SyncNewline<s_name>
-	| ConstStatement<mods>
-	| EnumStatement<mods>
-	| EventStatement
-	| StructStatement<mods>
-	|
-		(. Err(la->line, la->col, L"STRUCT cannot have CLASS member"); .)
-		ClassStatement<mods>
-	)
 .
 SubSignature<Modifiers &mods, int &line, int &col, bool &bGeneric> (. ID(L"SubSignature", STMT) .)
 =
@@ -3348,18 +3369,6 @@ TolExpression (. ID(L"TolExpr", EXPR) .)
 		]
 	]
 .
-TraitMember (. ID(L"TraitMember", STMT) .)
-=
-	(. Modifiers mods(this); .)
-	[ ModifiersClause<mods> ]
-	( DimStatement<mods>
-	| FunctionStatement<mods>
-	| MethodStatement<mods>
-	| PropertyStatement<mods>
-	| StructStatement<mods>
-	| SubStatement<mods>
-	)
-.
 TraitStatement<Modifiers &mods> (. ID(L"TraitStatement", STMT) .)
 =
 	(. // Permit @MustUse?
@@ -3377,7 +3386,23 @@ TraitStatement<Modifiers &mods> (. ID(L"TraitStatement", STMT) .)
 	[ WhereClause<_Trait, generic> ]
 	SyncNewline<s_name>
 	{ WhereClause<_Trait, generic> SyncNewline<s_name> }
-	{ TraitMember }
+	{
+		(. Modifiers member_mods(this); .)
+		[ ModifiersClause<member_mods> ]
+		(
+			DimStatement<member_mods>
+		|
+			FunctionStatement<member_mods>
+		|
+			MethodStatement<member_mods>
+		|
+			PropertyStatement<member_mods>
+		|
+			StructStatement<member_mods>
+		|
+			SubStatement<member_mods>
+		)
+	}
 	(. if (la->kind != _End) Err(line, col, L"TRAIT without END"); .)
 	"End"
 	(. Optional(_Trait); .)
@@ -3416,14 +3441,6 @@ TypeClause<bool bBits> (. ID(L"TypeClause", STMT) .)
 	| InUnitClause
 	)
 .
-TypeConversion (. ID(L"TypeConversion", EXPR) .)
-=
-	(
-		"As" ( PrimitiveType<NO_BITS> | UserType )
-	|
-		InUnitClause
-	)
-.
 TypeExpression (. ID(L"Type", EXPR) .)
 =
 	ConcatenationExpression
@@ -3431,7 +3448,10 @@ TypeExpression (. ID(L"Type", EXPR) .)
 		"Is"
 		( SimpleNonCallExpression | "Object" )
 	|
-		TypeConversion
+		"As"
+		( PrimitiveType<NO_BITS> | UserType )
+	|
+		InUnitClause
 	]
 .
 TypeParameter<int parent> (. ID(L"TypeParameter", STMT) .)
@@ -3532,10 +3552,6 @@ UnitOfMeasure (. ID(L"UnitOfMeasure", STMT) .)
 		")"
 	)
 .
-UnitParameter (. ID(L"UnitParameter", STMT) .)
-=
-	"(" identifier InUnitClause ")"
-.
 UnitStatement<Modifiers &mods> (. ID(L"UnitStatement", STMT) .)
 =
 	(.
@@ -3545,8 +3561,9 @@ UnitStatement<Modifiers &mods> (. ID(L"UnitStatement", STMT) .)
 	.)
 	"Unit"
 	UnitAlias { UnitAlias }
-	[ UnitParameter "=" AdditiveExpression
-	| "=" AdditiveExpression
+	[
+		[ "(" identifier InUnitClause ")" ]
+		"=" Expression // TODO: Constant expression.
 	]
 	SyncNewline<s_name>
 	// TODO: Think about block construct to do range tests, for example:
@@ -3562,10 +3579,6 @@ UserType (. ID(L"UserType", STMT) .)
 	[ TypeArgumentList ]
 .
 /*V*/
-ValueType (. ID(L"ValueType", STMT) .)
-=
-	( PrimitiveType<NO_BITS> | UserType )
-.
 /*W*/
 WhenStatement<bool isPreconditional, when_map &whens> (. ID(L"WhenStatement", STMT) .)
 =
@@ -3614,23 +3627,6 @@ WhereClause<int block, bool generic> (. ID(L"WhereClause", STMT) .)
 		WEAK comma [ OptionalNewline ]
 		Constraint<block>
 	}
-.
-WhereStatement (. ID(L"WhereStatement", STMT) .)
-=
-	"Where" (. int line = t->line, col = t->col; .)
-	identifier  (. wchar_t *id = coco_string_create(t->val); .)
-	"="
-	(
-		DateTimeExpression
-	|
-		(. std::wstring s; .)
-		StringExpression<s>
-		(. module->Add(new AST::ModuleWhere(id, _wcsdup(s.c_str()), AST::STRING, line, col)); .)
-	|
-		version_literal 
-		(. module->Add(new AST::ModuleWhere(id, coco_string_create(t->val), AST::VERSION, line, col)); .)
-	)
-	SyncNewline<s_name>
 .
 WhileOrUntil (. ID(L"WhileOrUntil", STMT) .)
 =
