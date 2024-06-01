@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2022 Brent D. Thorn
+ * Copyright 2024 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.com/.
  *
@@ -97,20 +97,25 @@ bool CompareConditional::Add(int op, Expr *expr) {
 
 void ModuleWhere::normalize() {
 	// Removes unnecessary 0s from 'val'.
-	int size = coco_string_length(val);
 	wchar_t *norm = coco_string_create(val);
 	wchar_t *src = val, *dest = norm;
+	int group = 1;
 	while (*src) {
 		while (*src == L'0') src++; // Move past zeros.
 		if (*src == L'\0' || *src == L'.') {
-			*dest++ = L'0'; // Group is a single zero.
+			if (group < 4) *dest++ = L'0'; // Group is a single zero.
+			else { dest--; break; } // Ignore fourth group of zeros.
 		} else {
 			while (*src && *src != L'.') *dest++ = *src++; // Copy group.
 		}
-		if (*src == L'.') *dest++ = *src++; // Move to next group.
+		if (*src == L'.') {
+			// Move to next group.
+			*dest++ = *src++;
+			group++;
+		}
 	}
 	*dest = L'\0';
-	wcscpy_s(val, size, norm);
+	wcscpy_s(val, coco_string_length(val) + 1, norm);
 	coco_string_delete(norm);
 }
 
