@@ -30,6 +30,12 @@
 Unit unit_names [ = expression ]&#10;</code></pre>
 <h3>Interval-scale construct</h3>
 <pre><code>Unit unit_names ( parameter In unit ) = expression&#10;</code></pre>
+<h3>Block construct</h3>
+<pre><code>block_start
+{ When condition
+    [ statements ] }
+&hellip;
+End [ Unit ]&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
@@ -121,6 +127,36 @@ All names identify the same unit.
 You use it with <code class="id">expression</code> for a unit with an interval scale, for example, a unit of temperature.</dd>
 <dt><code class="id">unit</code></dt>
 <dd>A different unit that is related to this unit.</dd>
+<dt><code class="id">block_start</code></dt>
+<dd>The usual construct or interval-scale construct that starts a block construct.</dd>
+<dt><code class="kw">When</code></dt>
+<dd>Mandatory keyword in the block construct that you can use again and again.
+It starts a block with a condition and statements.</dd>
+<dt><code class="id">condition</code></dt>
+<dd>A clause used to do one or more tests when you try to change a unit variable.
+	<div class="language-vivifire syntax">
+	<h3>Range construct</h3>
+	<pre><code>When expression_1 To expression_2&#10;</code></pre>
+	<h3>Comparison construct</h3>
+	<pre><code>When Is comparison_op expression&#10;</code></pre>
+	<h3>Equality construct</h3>
+	<pre><code>When expression&#10;</code></pre>
+	</div>
+	<ul>
+	<li>The range construct lets you compare a range of values.
+	The value of <code class="id">expression_1</code> must be less than or equal to <code class="id">expression_2</code>.</li>
+	<li>The comparison construct lets you use all the comparison operators:
+	<span class="ops"><code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>=</code>, or <code>&lt;&gt;</code></span>.</li>
+	<li>The equality construct operates the same as &laquo;<code class="op">Is =</code>&raquo;.</li>
+	</ul>
+</dd>
+<dt><code class="id">statements</code></dt>
+<dd>Optional one or more statements.
+Frequently only the statement <code class="kw">Raise</code> is necessary to cause an exception.
+The variable <code>value</code> holds the new value.</dd>
+<dt><code class="kw">End</code></dt>
+<dd>Completes the block construct.
+You can also use <code class="kw">End Unit</code>.</dd>
 </dl>
 <h2>Instructions</h2>
 <p>TODO</p>
@@ -139,10 +175,15 @@ Unit inch+es `in` = 2.54 cm
 
 // Kelvin cannot be plural.
 Unit Kelvin K
+When Is &lt; 0.0
+    // Cannot be negative.
+    Raise RangeError(value)
+End Unit
 
 // &deg;C is not given because it is not easy to write.
 // 1 makes a singular name and 2 makes a plural name.
 // This is an interval-scale unit, thus the parameter k.
+// Also gets the range check from Kelvin.
 Unit Celsius 1 degree_C 2 degrees_C (k In Kelvin) = k + 273.15
 
 // Make second, secs, milliseconds, s, ms, ...
