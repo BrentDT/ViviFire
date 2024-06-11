@@ -347,6 +347,7 @@ void Optional(int kind, option_type nOption = OPTION_DEFAULT) {
 	case _Sub:          // End [ Sub ]
 	case _Trait:        // End [ Trait ]
 	case _Try:          // End [ Try ]
+	case _Unit:         // End [ Unit ]
 	case _While:  // End [ While ]
 		if (la->kind == _line_break) { // END without block type.
 			if (option.End_block == YES) SemErr(L"END must have block type because of @OPTION");
@@ -1458,12 +1459,6 @@ CallStatement (. ID(L"CallStatement", STMT) .)
 		.)
 	)
 .
-CaseExpression (. ID(L"CaseExpression", STMT) .)
-=
-	( "Is" ComparisonOperator Expression
-	| Expression [ "To" Expression ]
-	)
-.
 ClassOrObjectMember<int kind> (. ID(L"ClassOrObjectMember", STMT) .)
 =
 	(. Modifiers mods(this); .)
@@ -1514,6 +1509,16 @@ ClassStatement<Modifiers &mods> (. ID(L"ClassStatement", STMT) .)
 	"End"
 	(. Optional(_Class); .)
 	Newline
+.
+ComparisonClause (. ID(L"ComparisonClause", STMT) .)
+=
+	(
+		"Is" ComparisonOperator
+		Expression
+	|
+		Expression
+		[ "To" Expression ]
+	)
 .
 ComparisonExpression (. ID(L"Comparison", EXPR) .)
 =
@@ -3078,9 +3083,9 @@ SelectStatement<Modifiers &mods> (. ID(L"SelectStatement", STMT) .)
 			(. if (clause == CASE_ZERO) SemErr(L"CASE ELSE cannot be first CASE in SELECT"); .)
 			(. clause = CASE_ELSE; .)
 		|
-			CaseExpression
+			ComparisonClause
 			{ WEAK comma [OptionalNewline]
-				CaseExpression
+				ComparisonClause
 			}
 			(. clause = CASE_EXPR; .)
 		)
@@ -3559,18 +3564,26 @@ UnitStatement<Modifiers &mods> (. ID(L"UnitStatement", STMT) .)
 	bool bSI       = mods.Let(s_SI);
 	mods.Check();
 	.)
-	"Unit"
+	"Unit" (. int line = t->line, col = t->col; .)
 	UnitAlias { UnitAlias }
 	[
 		[ "(" identifier InUnitClause ")" ]
 		"=" Expression // TODO: Constant expression.
 	]
 	SyncNewline<s_name>
-	// TODO: Think about block construct to do range tests, for example:
-	//  Unit Kelvin K
-	//  Set value
-	//      If value < 0.0 Then Raise RangeError
-	//  End Unit
+	[ IF (_When == la->kind)
+		(. context.push_back(_Unit); .)
+		{
+		"When" ComparisonClause
+		SyncNewline<s_name>
+		{ Statement }
+		}
+		(. context.pop_back(); .)
+		(. if (la->kind != _End) Err(line, col, L"UNIT without END"); .)
+		"End"
+		(. Optional(_Unit); .)
+		Newline
+	]
 .
 UserType (. ID(L"UserType", STMT) .)
 =
