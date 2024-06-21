@@ -1565,13 +1565,6 @@ ConstantValueError (. ID(L"ConstantValueError", STMT) .)
 		(. SemErr(L"Bad symbol"); .)
 	)
 .
-ConstIfStatement<Modifiers &mods, int line, int col> (. ID(L"ConstIfStatement", STMT) .)
-=
-	(. option_type nThen = WITHOUT_THEN; .)
-	"If" TolExpression
-	[ "Then" (. nThen = WITH_THEN; .) ]
-	IfBlockStatement<line, col, nThen>
-.
 ConstStatement<Modifiers &mods> (. ID(L"ConstStatement", STMT) .)
 =
 	(. int line = la->line, col = la->col; .)
@@ -1580,11 +1573,16 @@ ConstStatement<Modifiers &mods> (. ID(L"ConstStatement", STMT) .)
 		(.
 		mods.Let(s_Deprecated);
 		if (mods.Let(s_Shared)) Warn(line, col, L"@SHARED has no effect on CONST");
-	mods.Check();
+		mods.Check();
 		.)
-		ConstantDeclarator { WEAK comma ConstantDeclarator }
+		ConstantDeclarator
+		{ WEAK comma ConstantDeclarator }
 	|
-		ConstIfStatement<mods, line, col>
+		(. mods.Check(); .) // No modifiers.
+		(. option_type nThen = WITHOUT_THEN; .)
+		"If" TolExpression
+		[ "Then" (. nThen = WITH_THEN; .) ]
+		IfBlockStatement<line, col, nThen>
 	)
 	SyncNewline<s_name>
 .
@@ -2637,7 +2635,7 @@ ModuleStatement<bool bProcEntry, Modifiers &mods> (. ID(L"ModuleStatement", STMT
 	(
 		BlockStatement<mods>
 	|
-		(. mods.Check(); .)
+		(. mods.Check(); .) // No modifiers.
 		SimpleStatement
 		{ ";" SimpleStatement }
 		SyncNewline<s_name>
@@ -3155,7 +3153,7 @@ Statement (. ID(L"Statement", STMT) .)
 	|
 		DeclarationStatement<mods>
 	|
-		(. mods.Check(); .)
+		(. mods.Check(); .) // No modifiers.
 		SimpleStatement
 		{ ";" SimpleStatement }
 		SyncNewline<s_name>
