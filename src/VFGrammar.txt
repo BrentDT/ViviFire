@@ -1579,6 +1579,7 @@ ConstStatement<Modifiers &mods> (. ID(L"ConstStatement", STMT) .)
 	(
 		(.
 		mods.Let(s_Deprecated);
+		if (mods.Let(s_Shared)) Warn(line, col, L"@SHARED has no effect on CONST");
 	mods.Check();
 		.)
 		ConstantDeclarator { WEAK comma ConstantDeclarator }
