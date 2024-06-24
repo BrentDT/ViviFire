@@ -158,6 +158,14 @@ Unit Celsius 1 degree_C 2 degrees_C (k In Kelvin) = k + 273.15&#10;</code></pre>
 	<td><samp>1.8288 meters</samp></td></tr>
 </tbody>
 </table>
+<h2>Range checks</h2>
+<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>Unit Kelvin K
+When Is &lt; 0.0
+    Raise RangeError(value)
+End Unit&#10;</code></pre>
+</div>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Base_Unit_Statement.html">Base Unit Statement</a></li>
