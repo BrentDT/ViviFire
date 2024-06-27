@@ -27,11 +27,6 @@
 #include "Modifier.h"
 struct Modif;
 struct Modifiers;
-#if defined(RAW_PTR)
-typedef struct Modif * ModifPtr;
-#else
-typedef std::shared_ptr<struct Modif> ModifPtr;
-#endif
 
 #if __cplusplus >= 201703L // C++17
 #include <filesystem>
@@ -2435,7 +2430,7 @@ MethodSignature<Modifiers &mods, int &line, int &col> (. ID(L"MethodSignature", 
 	.)
 	SyncNewline<s_name>
 .
-Modifier<ModifPtr &pMod> (. ID(L"Modifier", STMT) .)
+Modifier<struct Modif *&pMod> (. ID(L"Modifier", STMT) .)
 =
 	(.
 	pMod = nullptr; // Sentinel.
@@ -2447,16 +2442,16 @@ Modifier<ModifPtr &pMod> (. ID(L"Modifier", STMT) .)
 		(.
 		if (_If == scanner->Peek()->kind) return; // "@CONST IF" is an alternative to "CONST IF".
 		.)
-		"Const" (. pMod = NEW(ConstModif)(line, col); .)
+		"Const" (. pMod = new ConstModif(line, col); .)
 	|
 		identifier
 		(.
 		switch (t->val[0]) {
 		case L'A': case L'a':
-			if (Matches(L"Abstract")) pMod = NEW(AbstractModif)(line, col);
+			if (Matches(L"Abstract")) pMod = new AbstractModif(line, col);
 			break;
 		case L'B': case L'b':
-			if (Matches(L"Backed")) pMod = NEW(BackedModif)(line, col);
+			if (Matches(L"Backed")) pMod = new BackedModif(line, col);
 			break;
 		case L'D': case L'd':
 			if (Matches(L"Deprecated")) {
@@ -2464,27 +2459,27 @@ Modifier<ModifPtr &pMod> (. ID(L"Modifier", STMT) .)
 				if (_string_literal == la->kind) {
 					Get(); pVal = t->val;
 				} 
-				pMod = NEW(DeprecatedModif)(line, col, pVal);
+				pMod = new DeprecatedModif(line, col, pVal);
 			}
 			break;
 		case L'F': case L'f':
-			if (Matches(L"Flags")) pMod = NEW(FlagsModif)(line, col);
+			if (Matches(L"Flags")) pMod = new FlagsModif(line, col);
 			break;
 		case L'I': case L'i':
-			if (Matches(L"Iterator")) pMod = NEW(IteratorModif)(line, col);
+			if (Matches(L"Iterator")) pMod = new IteratorModif(line, col);
 			break;
 		case L'M': case L'm':
-			if (Matches(L"MustUse")) pMod = NEW(MustUseModif)(line, col);
+			if (Matches(L"MustUse")) pMod = new MustUseModif(line, col);
 			break;
 		case L'O': case 'o':
-			if (Matches(L"Open")) pMod = NEW(OpenModif)(line, col); else
-			if (Matches(L"Override")) pMod = NEW(OverrideModif)(line, col);
+			if (Matches(L"Open")) pMod = new OpenModif(line, col); else
+			if (Matches(L"Override")) pMod = new OverrideModif(line, col);
 			break;
 		case L'R': case L'r':
-			if (Matches(L"ReadOnly")) pMod = NEW(ReadOnlyModif)(line, col);
+			if (Matches(L"ReadOnly")) pMod = new ReadOnlyModif(line, col);
 			break;
 		case L'S': case L's':
-			if (Matches(L"Shared")) pMod = NEW(SharedModif)(line, col); else
+			if (Matches(L"Shared")) pMod = new SharedModif(line, col); else
 			if (Matches(L"SI")) {
 				SIModif::SIArg arg = SIModif::SIArg::_NA;
 				if (_identifier == la->kind) {
@@ -2494,9 +2489,9 @@ Modifier<ModifPtr &pMod> (. ID(L"Modifier", STMT) .)
 					if (Matches(L"SMALL")) arg = SIModif::SIArg::SMALL;
 					else Err(L"Unknown identifier. After @SI only BINARY, LARGE, and SMALL are available.");
 				}
-				pMod = NEW(SIModif)(line, col, arg);
+				pMod = new SIModif(line, col, arg);
 			} else
-			if (Matches(L"Strict")) pMod = NEW(StrictModif)(line, col);
+			if (Matches(L"Strict")) pMod = new StrictModif(line, col);
 			break;
 		case L'T': case L't':
 			if (Matches(L"Test")) {
@@ -2506,14 +2501,14 @@ Modifier<ModifPtr &pMod> (. ID(L"Modifier", STMT) .)
 					if (Matches(L"IGNORE")) arg = TestModif::TestArg::IGNORED;
 					else Err(t->line, t->col, L"Unknown identifier. After @TEST, only IGNORE is available.");
 				}
-				pMod = NEW(TestModif)(line, col, arg);
+				pMod = new TestModif(line, col, arg);
 			}
 			break;
 		case L'U': case L'u':
-			if (Matches(L"Unique")) pMod = NEW(UniqueModif)(line, col);
+			if (Matches(L"Unique")) pMod = new UniqueModif(line, col);
 			break;
 		case L'W': case L'w':
-			if (Matches(L"WriteOnly")) pMod = NEW(WriteOnlyModif)(line, col);
+			if (Matches(L"WriteOnly")) pMod = new WriteOnlyModif(line, col);
 			break;
 		}
 		if (nullptr == pMod) SemErr(L"Invalid directive or modifier");
@@ -2523,9 +2518,7 @@ Modifier<ModifPtr &pMod> (. ID(L"Modifier", STMT) .)
 .
 ModifiersClause<Modifiers &mods> (. ID(L"ModifiersClause", STMT) .)
 =
-	(.
-	ModifPtr pMod;
-	.)
+	(. struct Modif *pMod; .)
 	Modifier<pMod>
 	(. mods.Add(pMod); .)
 	{

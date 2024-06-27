@@ -11,17 +11,11 @@
 
 #include "Modifier.h"
 
-#if defined(RAW_PTR)
-typedef struct Modif* ModifPtr;
-#else
-typedef std::shared_ptr<struct Modif> ModifPtr;
-#endif
-
-bool Modifiers::Add(ModifPtr pMod) {
+bool Modifiers::Add(Modif_t *pMod) {
 	if (pMod) {
 		std::type_index tid = typeid(*pMod);
 		if (!Has(tid)) {
-			mods.push_back(std::make_pair(tid, pMod));
+			mods.push_back(std::make_pair(tid, std::unique_ptr<Modif_t>(pMod)));
 			return true;
 		}
 		parser->errors->Error(pMod->line, pMod->col, L"Same modifier again");
@@ -37,9 +31,9 @@ bool Modifiers::Let(const std::type_index &tid) {
 	return false;
 }
 
-ModifPtr Modifiers::find(const std::type_index &tid) const {
+Modif_t * Modifiers::find(const std::type_index &tid) const {
 	for (const auto &p : mods) {
-		if (tid == p.first) return p.second;
+		if (tid == p.first) return p.second.get();
 	}
 	return nullptr;
 }
@@ -49,7 +43,7 @@ bool Modifiers::Has(const std::type_index &tid) const {
 }
 
 void Modifiers::Check() const {
-	ModifPtr pMod = nullptr;
+	Modif_t *pMod = nullptr;
 
 // Find those incorrect for a given construct.
 	for (const auto &p : mods) {

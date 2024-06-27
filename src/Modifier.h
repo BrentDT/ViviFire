@@ -12,7 +12,6 @@
 #if !defined(_MODIFIER_H_)
 #define _MODIFIER_H_
 
-///#include <cstdio>
 #include <assert.h>
 #include <memory>
 #include <string>
@@ -20,7 +19,7 @@
 #include <typeinfo>
 #include <vector>
 #include "Parser.h"
-#include "Scanner.h"
+///#include "Scanner.h"
 
 class Parser;
 
@@ -32,21 +31,14 @@ struct Modif abstract {
 	virtual const wchar_t *Text() const = 0;
 	Modif() = delete;
 };
-
-#if defined(RAW_PTR)
-typedef struct Modif* ModifPtr;
-#define NEW(type) new type
-#else
-typedef std::shared_ptr<struct Modif> ModifPtr;
-#define NEW(type) std::make_shared<type>
-#endif
+typedef struct Modif Modif_t;
 
 #define ARGUMENTLESS_MODIF(prefix, text) \
 	struct prefix##Modif : public Modif { \
 		prefix##Modif(int line, int col): Modif(line, col) {} \
 		const wchar_t *Text() const { return text; } \
 	}; \
-static const std::type_index s_##prefix = typeid(prefix##Modif);
+	static const std::type_index s_##prefix = typeid(prefix##Modif);
 
 ARGUMENTLESS_MODIF(Abstract, L"@ABSTRACT")
 ARGUMENTLESS_MODIF(Backed, L"@BACKED")
@@ -90,12 +82,12 @@ struct TestModif : public Modif {
 static const std::type_index s_Test = typeid(TestModif);
 
 struct Modifiers {
-	std::vector<std::pair<std::type_index, ModifPtr>> mods;
+	std::vector<std::pair<std::type_index, std::unique_ptr<Modif_t>>> mods;
 	const Parser *parser;
 	Modifiers(Parser *p): parser(p) {}
-	bool Add(ModifPtr pMod);
+	bool Add(Modif_t *pMod);
 	bool Let(const std::type_index &tid);
-	ModifPtr find(const std::type_index &tid) const;
+	Modif_t * find(const std::type_index &tid) const;
 	bool Has(const std::type_index &tid) const;
 	void Check() const;
 	size_t Count() const { return mods.size(); }
