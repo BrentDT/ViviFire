@@ -18,6 +18,8 @@ RewriteRule ^Const_Directive\.html$ Const.html [R=301,L]
 # May 2024
 RewriteRule ^For_Each_In_Statement\.html$ For_Each_Statement.html [R=301,L]
 RewriteRule ^For_To_Statement\.html$ For_Statement.html [R=301,L]
+# Jun 2024
+RewriteRule ^Throw_Statement\.html$ Raise_Statement.html [R=301,L]
 
 ## Change underscores to hyphens
 # RewriteRule       ^(.*?)_(.*?_.*)$ $1-$2 [N]
