@@ -1397,7 +1397,9 @@ CallOrNew<int which, Modifiers *mods> (. ID(L"CallOrNew", STMT) .)
 			//	2. It is a named argument.
 			//	3. It is a name not followed by comma or newline.
 			//	TODO: more?
-			int next;
+			int next = 0; // Sentinal value.
+
+			if (_hash == la->kind) next = scanner->Peek()->kind; // Move peek to after identifier.
 
 			if ( (_identifier != la->kind && _hash != la->kind)
 			|| _typed_identifier == la->kind // After this `la` is sure to be a name.
@@ -1405,8 +1407,8 @@ CallOrNew<int which, Modifiers *mods> (. ID(L"CallOrNew", STMT) .)
 			|| (_comma != next && _line_break != next)
 			) {
 				which = _Call;
-				scanner->ResetPeek();
 			}
+			if (next) scanner->ResetPeek();
 		}
 	}
 
