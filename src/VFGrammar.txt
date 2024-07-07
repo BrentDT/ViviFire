@@ -2312,6 +2312,15 @@ LogicalExpression (. ID(L"Logical", EXPR) .)
 		LogicalOperator
 		ComparisonExpression
 	}
+	(.
+	// If incorrectly typed logical operator.
+	// Eg: If x AndThen ...
+	// Related code in `UnitOfMeasure`.
+	if (_identifier == la->kind && (Match(L"AndThen") || Match(L"OrElse"))) {
+		Err(L"Operators AND THEN and OR ELSE must be two words");
+		ComparisonExpression();
+	}
+	.)
 .
 LogicalOperator (. ID(L"LogicalOperator", STMT) .)
 =
@@ -3544,6 +3553,15 @@ UnitOfMeasure (. ID(L"UnitOfMeasure", STMT) .)
 =
 	(
 		identifier
+		(.
+		// If incorrectly typed logical operator.
+		// Eg: If x = 0 AndThen ...
+		// Related code in `LogicalExpression`.
+		if (Matches(L"AndThen") || Matches(L"OrElse")) {
+			Err(L"Operators AND THEN and OR ELSE must be two words");
+			ComparisonExpression(); // `SyncNewline` is possibly better.
+		}
+		.)
 	|
 		"("
 		identifier
