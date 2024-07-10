@@ -2251,7 +2251,7 @@ InitializationExpression (. ID(L"InitializationExpression", STMT) .)
 .
 InUnitClause (. ID(L"InUnitClause", STMT) .)
 =
-	"In" UnitOfMeasure
+	"In" UnitOrSuffix<_Unit>
 .
 /*J*/
 /*K*/
@@ -2315,7 +2315,7 @@ LogicalExpression (. ID(L"Logical", EXPR) .)
 	(.
 	// If incorrectly typed logical operator.
 	// Eg: If x AndThen ...
-	// Related code in `UnitOfMeasure`.
+	// Related code in `UnitOrSuffix`.
 	if (_identifier == la->kind && (Match(L"AndThen") || Match(L"OrElse"))) {
 		Err(L"Operators AND THEN and OR ELSE must be two words");
 		ComparisonExpression();
@@ -2772,7 +2772,7 @@ NumericExpression<bool bMixedUnit> (. ID(L"Numeric", EXPR) .)
 		"@"
 	]
 	[ IF (bMixedUnit || IsUnit())
-		UnitOfMeasure
+		UnitOrSuffix<0>
 		[ NumericExpression<true> ]
 	]
 .
@@ -3549,10 +3549,51 @@ UnitAlias (. ID(L"UnitAlias", STMT) .)
 		identifier
 	]
 .
-UnitOfMeasure (. ID(L"UnitOfMeasure", STMT) .)
+UnitOrSuffix<int which> (. ID(L"UnitOrSuffix", EXPR) .)
 =
 	(
+		(.
+		bool ws = HasWhitespace();
+		.)
 		identifier
+		(.
+		// If possibly a type suffix.
+		if (wcschr(L"DdIiRrUu", t->val[0]) && wcschr(L"1368", t->val[1])) {
+			if (_Unit == which) {
+				Err(L"Bad unit name"); // Possibly only a placeholder.
+				return;
+			}
+			int val = 0;
+			for (wchar_t *pch = t->val + 1; *pch; pch++) {
+				if (std::iswdigit(*pch)) {
+					val = 10 * val + (*pch - L'0');
+				} else {
+					val = 0; break;
+				}
+			}
+
+			if (val && ws) val = 0; // Suffix cannot have whitespace.
+
+			switch (val) {
+			case 8: // i8/u8
+				if (! wcschr(L"IiUu", t->val[0])) goto bad_suffix;
+				break;
+			case 16: // i16/u16
+				if (! wcschr(L"IiUu", t->val[0])) goto bad_suffix;
+				break;
+			case 32: // i32/r32/u32
+				if (! wcschr(L"IiRrUu", t->val[0])) goto bad_suffix;
+				break;
+			case 64: // d64/i64/r64/u64
+				break;
+			case 128: // d128/i128/r128/u128
+				break;
+			default:
+			bad_suffix:
+				Err(L"Bad literal type suffix");
+			}
+		}
+		.)
 		(.
 		// If incorrectly typed logical operator.
 		// Eg: If x = 0 AndThen ...
