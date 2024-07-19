@@ -3565,10 +3565,10 @@ UnitOrSuffix<int which> (. ID(L"UnitOrSuffix", EXPR) .)
 			}
 			int val = 0;
 			for (wchar_t *pch = t->val + 1; *pch; pch++) {
-				if (std::iswdigit(*pch)) {
+				if (std::iswdigit(*pch) && val <= 128) {
 					val = 10 * val + (*pch - L'0');
 				} else {
-					val = 0; break;
+					val = 0; break; // Bad suffix.
 				}
 			}
 
