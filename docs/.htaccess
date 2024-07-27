@@ -20,6 +20,9 @@ RewriteRule ^For_Each_In_Statement\.html$ For_Each_Statement.html [R=301,L]
 RewriteRule ^For_To_Statement\.html$ For_Statement.html [R=301,L]
 # Jun 2024
 RewriteRule ^Throw_Statement\.html$ Raise_Statement.html [R=301,L]
+# Jul 2024
+RewriteRule ^Implicit_and_Explicit_Conversions\.html$ Automatic_and_Special_Conversions.html [R=301,L]
+RewriteRule ^Troubleshooting_Data_Types\.html$ Data_Type_Troubleshooting.html [R=301,L]
 
 ## Change underscores to hyphens
 # RewriteRule       ^(.*?)_(.*?_.*)$ $1-$2 [N]
