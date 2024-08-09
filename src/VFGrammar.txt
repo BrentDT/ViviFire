@@ -1338,8 +1338,12 @@ AssignmentStatement (. ID(L"AssignmentStatement", STMT) .)
 		"=" [OptionalNewline]
 		Expression
 	|
-		":=" Expression
-		{ ":=" Expression }
+		":=" [OptionalNewline]
+		Expression
+		{
+			":=" [OptionalNewline]
+			Expression
+		}
 	)
 .
 AsTypeClause<bool bBits> (. ID(L"AsTypeClause", STMT) .)
@@ -1358,10 +1362,15 @@ BaseUnitStatement<Modifiers &mods> (. ID(L"BaseUnitStatement", STMT) .)
 	mods.Check();
 	.)
 	"Base"
-	( "Unit" identifier InUnitClause
-		[ "=" MultiplicativeExpression ]
+	(
+		"Unit" identifier InUnitClause
+		[
+			"=" [OptionalNewline]
+			Expression
+		]
 		SyncNewline<s_name>
-	| ANY (. SemErr(L"Object BASE is available only in a child class"); .)
+	|
+		ANY (. SemErr(L"Object BASE is available only in a child class"); .)
 	)
 .
 BitShiftExpression (. ID(L"BitShift", EXPR) .)
@@ -1555,7 +1564,10 @@ ConditionalExpression (. ID(L"Conditional", EXPR) .)
 .
 ConstantDeclarator (. ID(L"ConstantDeclarator", STMT) .)
 =
-	Name [ TypeClause<NO_BITS> ] "=" Expression
+	Name
+	[ TypeClause<NO_BITS> ]
+	"=" [OptionalNewline]
+	Expression
 .
 ConstantValueError (. ID(L"ConstantValueError", STMT) .)
 =
@@ -1687,7 +1699,10 @@ Declarator<bool bBits> (. ID(L"Declarator", STMT) .)
 		")"
 	]
 	[ TypeClause<bBits> ]
-	[ '=' InitializationExpression ]
+	[
+		"=" [OptionalNewline]
+		InitializationExpression
+	]
 .
 DeclaratorList<bool bBits> (. ID(L"DeclaratorList", STMT) .)
 =
@@ -1701,7 +1716,10 @@ DeclareParameter<bool &isOptional> (. ID(L"DeclareParameter", STMT) .)
 =
 	[ "Optional" (. isOptional = true; .) ]
 	integer_literal
-	[ "=" EnclosedExpression ]
+	[
+		"=" [OptionalNewline]
+		EnclosedExpression
+	]
 .
 DeclareSignature<bool isAlias> (. ID(L"DeclareSignature", STMT) .)
 =
@@ -1944,7 +1962,8 @@ EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 		[ Deprecated (. deprecated = true; .) ]
 		identifier
 		[
-			"=" Expression
+			"=" [OptionalNewline]
+			Expression
 		] (. else if (option.Enum_equals) SemErr(L"Enumeration constant must have an initializer because of @OPTION"); .)
 		SyncSeparator<s_name>
 		(.
@@ -2083,10 +2102,13 @@ FormalParameter<param_validator &param> (. ID(L"FormalParameter", STMT) .)
 		"Optional"  (. param.Add(_Optional); .)
 	] (. else param.Add(); .)
 	Name
-	[ '(' [ Rank ] ')' ]
+	[ "(" [ Rank ] ")" ]
 	[ TypeClause<NO_BITS> ]
-	( "=" EnclosedExpression
-	| (. if (param.Optional() && option.Optional_equals) SemErr(L"Optional parameter must have initializer because of @OPTION"); .)
+	(
+		"=" [OptionalNewline]
+		EnclosedExpression
+	|
+		(. if (param.Optional() && option.Optional_equals) SemErr(L"Optional parameter must have initializer because of @OPTION"); .)
 	)
 .
 FormalParameterList<int parent> (. ID(L"FormalParameterList", STMT) .)
@@ -2097,9 +2119,11 @@ ForStatement (. ID(L"ForStatement", STMT) .)
 =
 	(. int line, col; .)
 	"For" (. line = t->line; col = t->col; .)
-	( "Each" LoopControlVariable
+	(
+		"Each" LoopControlVariable
 		"In" InitializationExpression
-	| LoopControlVariable
+	|
+		LoopControlVariable
 		"=" Expression
 		"To" Expression
 		[ "Step" Expression ]
@@ -2967,7 +2991,8 @@ PropertyStatement<Modifiers &mods> (. ID(L"PropertyStatement", STMT) .)
 			"Get"
 			(. if (bWriteOnly) SemErr(L"Cannot have GET with @WriteOnly"); .)
 			(
-				"=" Expression
+				"=" [OptionalNewline]
+				Expression
 				SyncNewline<s_name>
 			|
 				Newline
@@ -3631,7 +3656,8 @@ UnitStatement<Modifiers &mods> (. ID(L"UnitStatement", STMT) .)
 	UnitAlias { UnitAlias }
 	[
 		[ "(" identifier InUnitClause ")" ]
-		"=" Expression // TODO: Constant expression.
+		"=" [OptionalNewline]
+		Expression // TODO: Constant expression.
 	]
 	SyncNewline<s_name>
 	[ IF (_When == la->kind)
