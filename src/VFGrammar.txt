@@ -1234,7 +1234,17 @@ atWarn   = "@Warn"{notEOL}. //TODO
 // Comments
 
 InlineComment = ("'"|"//"){notEOL}. (.
-	if (option.test_unit_or_comp == TERNARY2) ParseInlineComment(); .)
+	if (option.test_unit_or_comp == TERNARY2) ParseInlineComment();
+	// Warn when a comment after line continuation shows almost the same as an expression.
+	// `variable = 'comment
+	// expression`
+	if ( (L'\'' == la->val[0])
+	&& (_equals == t->kind || _comma == t->kind || _left_paren == t->kind || _left_brace == t->kind)
+	) {
+		Warn(la->line, la->col, 
+			L"Line continuation without the _ then a comment with the ' is not easy to read. "
+			L"We recommend that you use (1) the underscore or (2) the comment that starts  //...");
+	} .)
 
 MidlineComment = "/'"{"#"|alnum|"_"|"."|"-"|"/"|":"|sigil}"'/".
 
