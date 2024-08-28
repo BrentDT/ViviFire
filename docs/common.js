@@ -43,19 +43,15 @@ function getFileName(uri) {
 }
 
 function vote(value) {
-	var xmlhttp;
-	if (window.XMLHttpRequest)
-		xmlhttp = new XMLHttpRequest();
-	else
-		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	const dark = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 1 : 0;
+	const xmlhttp = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 	xmlhttp.onreadystatechange = function() {
-		//alert('readyState='+xmlhttp.readyState+' && status='+xmlhttp.status+' && text='+xmlhttp.responseText);
 		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 			document.getElementById("poll").innerHTML = xmlhttp.responseText;
 		}
 	};
 	var article = getFileName(document.URL);
-	xmlhttp.open('GET', 'https://www.b6sw.com/ViviFire/poll/vote.php?article='+article+'&vote='+value, true);
+	xmlhttp.open('GET', `https://www.b6sw.com/ViviFire/poll/vote.php?article=${article}&vote=${value}&dark=${dark}`, true);
 	xmlhttp.send();
 }
 
