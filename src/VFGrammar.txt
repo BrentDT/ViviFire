@@ -822,7 +822,7 @@ void ParseInlineComment() {
 
 bool IsAssignmentOp() {
 	switch (la->kind) {
-	case _concatenation: case _plus: case _minus: case _asterisk: case _slash:
+	case _concatenation: case _plus: case _minus: case _asterisk: case _slash: case _backslash:
 	case _Div: case _Mod: case _Rem: case _SHL: case _SHR: case _And: case _Or: case _Xor:
 		if (scanner->Peek()->kind != _equals) return false;
 	case _equals: case _colon_equals:
@@ -997,16 +997,16 @@ left_bracket  = "[".
 right_bracket = "]".
 left_brace    = "{".
 right_brace   = "}".
-backslash     = "\\".
 
 // Unary
 plus  = "+".
 minus = "-".
 
 // Arithmetic
-caret    = "^".
-asterisk = "*".
-slash    = "/".
+caret     = "^".
+asterisk  = "*".
+slash     = "/".
+backslash = "\\".
 
 // Concatenation
 concatenation = "&".
@@ -1332,7 +1332,7 @@ AssignmentStatement<int col> (. ID(L"AssignmentStatement", STMT) .)
 =
 	(
 		[
-			( concatenation | "+" | "-" | "*" | "/" | "Div" | "Mod" | "Rem" | "SHL" | "SHR" | "And" | "Or" | "Xor" )
+			( concatenation | "+" | "-" | "*" | "/" | "\\" | "Div" | "Mod" | "Rem" | "SHL" | "SHR" | "And" | "Or" | "Xor" )
 			(. if (HasWhitespace()) Err(L"Bad assignment operator"); .)
 		]
 		"=" [OptionalNewline<col>]
@@ -2692,6 +2692,8 @@ MultiplicativeExpression (. ID(L"Multiplicative", EXPR) .)
 			"*"
 		|
 			"/"
+		|
+			"\\"
 		|
 			"Div"
 		|
