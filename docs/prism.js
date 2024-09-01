@@ -24,7 +24,7 @@ Prism.languages.vivifire = {
 		lookbehind: true
 	},
 	'nil': /\|-*(?!\?)/g,
-	'op': /(?:[-+*\/^&~:<=>]{1,3})|\|\?/g,
+	'op': /(?:[-+*\/\\^&~:<=>]{1,3})|\|\?/g,
 	'kw': reKeywords,
 	'nkw': reNonkeywords,
 	'id': /(`?)(?:#\w|\b[a-z])\w*(?:[!@$%](?![A-Za-z]))?\1/g,
