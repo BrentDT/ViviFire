@@ -22,7 +22,7 @@
 </nav>
 <main>
 <h1 id="top"><code>\</code> Operator</h1>
-<p>Divides one number by a second number.</p>
+<p>Divides one number by a second number and gives an integer result.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <pre><code>expression_1 \ expression_2&#10;</code></pre>
@@ -34,13 +34,36 @@
 <dt><code class="id">expression_2</code></dt>
 <dd>A numeric expression, also known as the <dfn>denominator</dfn>.</dd>
 </dl>
+<h2>Data types</h2>
+<p>A given expression can have one of the available numeric data types.
+It can be signed integer, unsigned integer, floating-point, or fixed-point.</p>
+<p>The result is the integer quotient of <code class="id">expression_1</code> divided by <code class="id">expression_2</code>.
+It discards the remainder and keeps only the integer part.
+This is known as <dfn>truncation</dfn>.</p>
+<p>The result data type is a numeric type applicable given the data types of <code class="id">expression_1</code> and <code class="id">expression_2</code>.
+See the table &ldquo;Integer arithmetic&rdquo; in <a href="Data_Types_of_Operator_Results.html">Data Types of Operator Results</a>.</p>
+<p>The operator <code class="op">/</code> is different from <code class="op">\</code> in what it returns.
+The operator <code class="op">/</code> returns the full quotient, which keeps the remainder after the decimal point.</p>
 <h2>Instructions</h2>
-<h3>Data types</h3>
-<p>TODO<!-- If the two expressions are integers, they automatically change to <code class="kw">Real64</code>, and the result is <code class="kw">Real64</code>. --></p>
-<h3>Division by zero</h3>
 <p>TODO</p>
+<h2>Division by zero</h2>
+<p>If <code class="id">expression_2</code> has the value zero, the operator <code class="op">\</code> causes an exception <code>DivideByZeroError</code>.</p>
 <h2>Examples</h2>
-<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>result1 = 42 \ 2
+result2 = 21 \ 2
+result3 = 100 \ -3
+result4 = -3 \ 100&#10;</code></pre>
+</div>
+<table class="integer-results">
+<caption>After run</caption>
+<tbody>
+<tr><th><code>result1</code></th><td><samp>21</samp></td></tr>
+<tr><th><code>result2</code></th><td><samp>10</samp></td></tr>
+<tr><th><code>result3</code></th><td><samp>-33</samp></td></tr>
+<tr><th><code>result4</code></th><td><samp>0</samp></td></tr>
+</tbody>
+</table>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Backslash_Equals_Operator.html">\= Operator</a></li>

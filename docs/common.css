@@ -20,6 +20,9 @@ table {
 	border: thin solid gray;
 	border-collapse: collapse;
 }
+table.integer-results td {
+	text-align: right;
+}
 p#aka {
 	display: none;
 }
