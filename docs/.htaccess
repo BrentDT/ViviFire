@@ -9,8 +9,6 @@ RewriteBase /ViviFire/docs/
 
 RewriteRule ^(index\.html|newest\.php)$ index.php [R=301,L]
 
-# Mar 2024
-RewriteRule ^If_Then_Else_Directives\.html$ Const_If_Else_Statement.html [R=301,L]
 # Apr 2024
 RewriteRule ^Const_Directive\.html$ Const.html [R=301,L]
 # May 2024
@@ -23,6 +21,9 @@ RewriteRule ^Implicit_and_Explicit_Conversions\.html$ Automatic_and_Special_Conv
 RewriteRule ^Troubleshooting_Data_Types\.html$ Data_Type_Troubleshooting.html [R=301,L]
 # Aug 2024
 RewriteRule ^Begin_When_Statements\.html$ Exit_When_Clause.html [R=301,L]
+# Oct 2024
+RewriteRule ^Standard_Procedures_for_Code\.html$ Code_Conventions.html [R=301,L]
+RewriteRule ^Standard_Procedures_for_Names\.html$ Conventions_for_Names.html [R=301,L]
 
 ## Change underscores to hyphens
 # RewriteRule       ^(.*?)_(.*?_.*)$ $1-$2 [N]
