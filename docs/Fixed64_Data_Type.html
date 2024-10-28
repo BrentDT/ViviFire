@@ -35,15 +35,16 @@ And you can put the at-symbol (<code class="op">@</code>) on the end of a name o
 </dl>
 <h2>Fixed64 literal</h2>
 <div class="language-literal">
-<pre><code><kbd>@</kbd> [ <var>symbol</var> ] <var>integer_part</var> [ <kbd>.</kbd> <var>fractional_part</var> ]</code></pre>
+<pre><code><var>prefix</var> <var>integer_part</var> [ <kbd>.</kbd> <var>fractional_part</var> ]</code></pre>
 <div>or</div>
-<pre><code><kbd>&#164;</kbd> <var>integer_part</var> [ <kbd>.</kbd> <var>fractional_part</var> ]</code></pre>
+<pre><code><var>integer_part</var> [ <kbd>.</kbd> <var>fractional_part</var> ] <var>suffix</var></code></pre>
 </div>
 <h3>Parts</h3>
 <dl class="parts">
-<dt><code class="id">symbol</code></dt>
-<dd>Optional one character.
-Some permitted symbols are: <span class="ops"><code>$</code>, <code>&euro;</code>, <code>&pound;</code>, and <code>&yen;</code></span>.</dd>
+<dt><code class="id">prefix</code></dt>
+<dd>One of these symbols: at-symbol (<code class="op">@</code>) or currency symbol (<code class="op">&#164;</code>).
+You can optionally follow the at-symbol with the currency symbol of a given culture.
+Examples include <span class="ops"><code>$</code>, <code>&euro;</code>, <code>&pound;</code>, and <code>&yen;</code></span>.</dd>
 <dd>these symbols are ignored by the compiler.
 If you use a symbol, use the same one in all of your code.</dd>
 <dt><code class="id">integer_part</code></dt>
@@ -54,6 +55,9 @@ You can use an underscore (<code class="op">_</code>) to divide it into groups o
 <dd>One to 18 decimal digits.
 For the default number of decimal digits, the maximum is 4 digits.
 All digits after that are ignored.</dd>
+<dt><code class="id">suffix</code></dt>
+<dd>One of these: the at-symbol (<code class="op">@</code>) or the type suffix <code class="op">d64</code>.
+You can also write the type suffix as <code class="op">D64</code>.</dd>
 </dl>
 <h2>Constructors</h2>
 <dl class="language-vivifire listing">
