@@ -53,6 +53,9 @@ AST::Module *module = nullptr;
 // Something to keep track of nested blocks.
 std::vector<int> context;
 
+// Used by `OptionalNewline` to compare where lines start.
+int m_start_col = 0;
+
 // Some enumeration types.
 enum case_type { CASE_ZERO, CASE_EXPR, CASE_ELSE };
 enum option_type { OPTION_DEFAULT, WITH_THEN, WITHOUT_THEN };
@@ -1328,20 +1331,20 @@ ArgumentList (. ID(L"ArgumentList", STMT) .)
 		UnenclosedArgumentList<nullptr>
 	)
 .
-AssignmentStatement<int col> (. ID(L"AssignmentStatement", STMT) .)
+AssignmentStatement (. ID(L"AssignmentStatement", STMT) .)
 =
 	(
 		[
 			( concatenation | "+" | "-" | "*" | "/" | "\\" | "Div" | "Mod" | "Rem" | "SHL" | "SHR" | "And" | "Or" | "Xor" )
 			(. if (HasWhitespace()) Err(L"Bad assignment operator"); .)
 		]
-		"=" [OptionalNewline<col>]
+		"=" [OptionalNewline]
 		Expression
 	|
-		":=" [OptionalNewline<col>]
+		":=" [OptionalNewline]
 		Expression
 		{
-			":=" [OptionalNewline<col>]
+			":=" [OptionalNewline]
 			Expression
 		}
 	)
@@ -1361,11 +1364,11 @@ BaseUnitStatement<Modifiers &mods> (. ID(L"BaseUnitStatement", STMT) .)
 	mods.Let(s_Deprecated);
 	mods.Check();
 	.)
-	"Base" (. int col = t->col; .)
+	"Base"
 	(
 		"Unit" identifier InUnitClause
 		[
-			"=" [OptionalNewline<col>]
+			"=" [OptionalNewline]
 			Expression
 		]
 		SyncNewline<s_name>
@@ -1478,6 +1481,7 @@ CallStatement (. ID(L"CallStatement", STMT) .)
 ClassOrObjectMember<int kind> (. ID(L"ClassOrObjectMember", STMT) .)
 =
 	(. Modifiers mods(this); .)
+	(. m_start_col = la->col; .)
 	[ ModifiersClause<mods> ]
 	(
 		 (. if (kind == _Object) Err(la->line, la->col, L"OBJECT cannot have CONSTRUCTOR"); .)
@@ -1566,7 +1570,7 @@ ConstantDeclarator (. ID(L"ConstantDeclarator", STMT) .)
 =
 	Name
 	[ TypeClause<NO_BITS> ]
-	"=" [OptionalNewline<1>]
+	"=" [OptionalNewline]
 	Expression
 .
 ConstantValueError (. ID(L"ConstantValueError", STMT) .)
@@ -1700,7 +1704,7 @@ Declarator<bool bBits> (. ID(L"Declarator", STMT) .)
 	]
 	[ TypeClause<bBits> ]
 	[
-		"=" [OptionalNewline<1>]
+		"=" [OptionalNewline]
 		InitializationExpression
 	]
 .
@@ -1708,7 +1712,7 @@ DeclaratorList<bool bBits> (. ID(L"DeclaratorList", STMT) .)
 =
 	Declarator<bBits>
 	{
-		WEAK comma [OptionalNewline<1>]
+		WEAK comma [OptionalNewline]
 		Declarator<bBits>
 	}
 .
@@ -1717,7 +1721,7 @@ DeclareParameter<bool &isOptional> (. ID(L"DeclareParameter", STMT) .)
 	[ "Optional" (. isOptional = true; .) ]
 	integer_literal
 	[
-		"=" [OptionalNewline<1>]
+		"=" [OptionalNewline]
 		EnclosedExpression
 	]
 .
@@ -1737,10 +1741,10 @@ DeclareSignature<bool isAlias> (. ID(L"DeclareSignature", STMT) .)
 	[
 		(. bool isOptional; .)
 		( IF (IsDeclareParameterList())
-			"(" [OptionalNewline<1>]
+			"(" [OptionalNewline]
 			[
 				DeclareParameter<isOptional>
-				{ WEAK comma [OptionalNewline<1>]
+				{ WEAK comma [OptionalNewline]
 					DeclareParameter<isOptional>
 				}
 			]
@@ -1802,7 +1806,7 @@ Deprecated (. ID(L"Deprecated", STMT) .)
 =
 	"@" (. if ( !Match(L"Deprecated") ) SemErr(L"@DEPRECATED expected"); .)
 	[ string_literal ]
-	[ OptionalNewline<0> ]
+	[ OptionalNewline ]
 .
 DestructorStatement<Modifiers &mods> (. ID(L"DestructorStatement", STMT) .)
 =
@@ -1859,7 +1863,7 @@ DivisionFunction (. ID(L"Division", EXPR) .)
 DoesClause (. ID(L"DoesClause", STMT) .)
 =
 	"Does" UserType
-	{ WEAK comma [OptionalNewline<1>]
+	{ WEAK comma [OptionalNewline]
 		UserType
 	}
 .
@@ -1891,12 +1895,12 @@ EnclosedArgumentList (. ID(L"EnclosedArgumentList", STMT) .)
 =
 	"("
 	[ "?" ] // "(?)", the null-conditional index operator.
-	[OptionalNewline<1>]
+	[OptionalNewline]
 	[ Argument ]
 	{
 		WEAK comma
 		[
-			[OptionalNewline<1>]
+			[OptionalNewline]
 			Argument
 		]
 	}
@@ -1914,11 +1918,11 @@ EnclosedExpression (. ID(L"Enclosed", EXPR) .)
 EnclosedParameterList<int parent> (. ID(L"EnclosedParameterList", STMT) .)
 =
 	(. param_validator param(this, parent); .)
-	"(" [OptionalNewline<1>]
+	"(" [OptionalNewline]
 	(
 		FormalParameter<param>
 		{
-			WEAK comma [OptionalNewline<1>]
+			WEAK comma [OptionalNewline]
 			FormalParameter<param>
 		}
 	|
@@ -1962,7 +1966,7 @@ EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 		[ Deprecated (. deprecated = true; .) ]
 		identifier
 		[
-			"=" [OptionalNewline<1>]
+			"=" [OptionalNewline]
 			Expression
 		] (. else if (option.Enum_equals) SemErr(L"Enumeration constant must have an initializer because of @OPTION"); .)
 		SyncSeparator<s_name>
@@ -2105,7 +2109,7 @@ FormalParameter<param_validator &param> (. ID(L"FormalParameter", STMT) .)
 	[ "(" [ Rank ] ")" ]
 	[ TypeClause<NO_BITS> ]
 	(
-		"=" [OptionalNewline<1>]
+		"=" [OptionalNewline]
 		EnclosedExpression
 	|
 		(. if (param.Optional() && option.Optional_equals) SemErr(L"Optional parameter must have initializer because of @OPTION"); .)
@@ -2203,7 +2207,6 @@ GotoStatement (. ID(L"GotoStatement", STMT) .)
 IdentifierStatement (. ID(L"IdentifierStatement", STMT) .)
 =
 	// Related: SimpleExpression
-	(. int col = la->col; .)
 	(
 		Name
 		[ TypeArgumentList ]
@@ -2222,7 +2225,7 @@ IdentifierStatement (. ID(L"IdentifierStatement", STMT) .)
 	| EnclosedArgumentList // Also is array subscript.
 	}
 	[ IF (IsAssignmentOp())
-		AssignmentStatement<col>
+		AssignmentStatement
 	|
 		CallOrNew<0, nullptr>
 	]
@@ -2276,9 +2279,9 @@ InitializationExpression (. ID(L"InitializationExpression", STMT) .)
 	(
 		Expression
 	|
-		"{" [OptionalNewline<1>]
+		"{" [OptionalNewline]
 		InitializationElement
-		{ WEAK comma [OptionalNewline<1>]
+		{ WEAK comma [OptionalNewline]
 			InitializationElement
 		}
 		"}"
@@ -2564,7 +2567,7 @@ Modifier<struct Modif *&pMod> (. ID(L"Modifier", STMT) .)
 		if (nullptr == pMod) SemErr(L"Invalid directive or modifier");
 		.)
 	)
-	[ OptionalNewline<0> ]
+	[ OptionalNewline ]
 .
 ModifiersClause<Modifiers &mods> (. ID(L"ModifiersClause", STMT) .)
 =
@@ -2644,6 +2647,7 @@ Module (. ID(L"Module", STMT) .)
 	}
 	{
 		(. Modifiers mods(this); .)
+		(. m_start_col = la->col; .)
 		[ ModifiersClause<mods> ]
 		(
 			ModuleMember<mods>
@@ -2851,20 +2855,18 @@ OptionalArgList (. ID(L"OptionalArgList", STMT) .)
 	.)
 	[ ArgumentList ]
 .
-OptionalNewline<int col> (. ID(L"OptionalNewline", STMT) .)
+OptionalNewline (. ID(L"OptionalNewline", STMT) .)
 =
-	line_break
+	line_break { line_break }
 	(.
 	// Heuristic to warn about possible missing elements, for example:
 	//     foo =
 	//     bar = 1 ' Although this line shows as an assignment, it is an equality test.
-	//
-	// TODO: Change calls `OptionalNewline<1>` to use the correct column.
 
-	if (la->col <= col && IsIdentifier(la->kind)) {
+	if (la->col <= m_start_col && IsIdentifier(la->kind)) {
 		Warn(la->line, la->col,
 			L"Line continuation where the subsequent line starts with a name is not easy to read. "
-			L"We recommend that you give such lines more indentation or use parentheses.");
+			L"We recommend that you give such lines more indentation (or use parentheses, if permitted).");
 	} .)
 .
 /*P*/
@@ -3005,7 +3007,7 @@ PropertyStatement<Modifiers &mods> (. ID(L"PropertyStatement", STMT) .)
 			"Get"
 			(. if (bWriteOnly) SemErr(L"Cannot have GET with @WriteOnly"); .)
 			(
-				"=" [OptionalNewline<1>]
+				"=" [OptionalNewline]
 				Expression
 				SyncNewline<s_name>
 			|
@@ -3136,7 +3138,7 @@ SelectStatement<Modifiers &mods> (. ID(L"SelectStatement", STMT) .)
 			(. clause = CASE_ELSE; .)
 		|
 			ComparisonClause
-			{ WEAK comma [OptionalNewline<1>]
+			{ WEAK comma [OptionalNewline]
 				ComparisonClause
 			}
 			(. clause = CASE_EXPR; .)
@@ -3200,6 +3202,7 @@ SimpleStatementError (. ID(L"SimpleStatementError", STMT) .)
 Statement (. ID(L"Statement", STMT) .)
 =
 	(. Modifiers mods(this); .)
+	(. m_start_col = la->col; .)
 	[ ModifiersClause<mods> ]
 	(
 		BlockStatement<mods>
@@ -3271,6 +3274,7 @@ StructStatement<Modifiers &mods> (. ID(L"StructStatement", STMT) .)
 	// Struct state.
 	{
 		(. Modifiers state_mods(this); .)
+	(. m_start_col = la->col; .)
 		[ ModifiersClause<state_mods> ]
 		(
 			(.
@@ -3445,6 +3449,7 @@ TraitStatement<Modifiers &mods> (. ID(L"TraitStatement", STMT) .)
 	{ WhereClause<_Trait, generic> SyncNewline<s_name> }
 	{
 		(. Modifiers member_mods(this); .)
+		(. m_start_col = la->col; .)
 		[ ModifiersClause<member_mods> ]
 		(
 			DimStatement<member_mods>
@@ -3579,7 +3584,7 @@ UnenclosedParameterList<int parent> (. ID(L"UnenclosedParameterList", STMT) .)
 	(. param_validator param(this, parent); .)
 	FormalParameter<param>
 	{
-		WEAK comma [OptionalNewline<1>]
+		WEAK comma [OptionalNewline]
 		FormalParameter<param>
 	}
 .
@@ -3670,7 +3675,7 @@ UnitStatement<Modifiers &mods> (. ID(L"UnitStatement", STMT) .)
 	UnitAlias { UnitAlias }
 	[
 		[ "(" identifier InUnitClause ")" ]
-		"=" [OptionalNewline<col>]
+		"=" [OptionalNewline]
 		Expression // TODO: Constant expression.
 	]
 	SyncNewline<s_name>
@@ -3740,7 +3745,7 @@ WhereClause<int block, bool generic> (. ID(L"WhereClause", STMT) .)
 	(. if (!generic) SemErr(L"Declared element is missing generic type parameter(s)"); .)
 	Constraint<block>
 	{
-		WEAK comma [OptionalNewline<1>]
+		WEAK comma [OptionalNewline]
 		Constraint<block>
 	}
 .
