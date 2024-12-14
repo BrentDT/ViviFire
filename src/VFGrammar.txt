@@ -1516,7 +1516,7 @@ ClassStatement<Modifiers &mods> (. ID(L"ClassStatement", STMT) .)
 	"Class" (. line = t->line; col = t->col; .)
 	identifier
 	[ TypeParameterList<_Class> (. generic = true; .) ]
-	[ "Is" UserType ]
+	[ IsOrExtendsOrInherits UserType ]
 	[ DoesClause ]
 	[ WhereClause<_Class, generic> ]
 	SyncNewline<s_name>
@@ -1947,14 +1947,9 @@ EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 	int line, col;
 	.)
 	"Enum" (. line = t->line; col = t->col; .)
+	identifier
 	[
-		identifier
-	] (. else if (bFlags || bOpen || option.Enum_id) {
-		Err(L"Enumeration must have a name because of @FLAGS, @OPEN, or @OPTION");
-	}
-	.)
-	[
-		"Is"
+		IsOrExtendsOrInherits
 		PrimitiveType<NO_BITS>
 		(. if (!IsIntegerType(t->kind)) Err(L"Base type must be an integer type or enumeration type"); .)
 	] (. else if (bFlags || option.Enum_Is) {
@@ -2294,6 +2289,17 @@ InitializationExpression (. ID(L"InitializationExpression", STMT) .)
 InUnitClause (. ID(L"InUnitClause", STMT) .)
 =
 	"In" UnitOrSuffix<_Unit>
+.
+IsOrExtendsOrInherits
+=
+	( "Is"
+| ( identifier | "As" ) // "As" is not the same as "Is". This makes a better error message.
+		(.
+		if ( !Matches(L"Extends") && !Matches(L"Inherits") ) {
+			Err(L"Must be one of these: IS, EXTENDS, or INHERITS");
+		}
+		.)
+	)
 .
 /*J*/
 /*K*/
@@ -2838,7 +2844,7 @@ ObjectStatement<Modifiers *mods> (. ID(L"ObjectStatement", STMT) .)
 	.)
 	"Object" (. line = t->line; col = t->col; .)
 	ObjectName
-	[ "Is" UserType ]
+	[ IsOrExtendsOrInherits UserType ]
 	[ DoesClause ]
 	SyncNewline<s_name>
 	{ ClassOrObjectMember<_Object> }
@@ -3264,7 +3270,7 @@ StructStatement<Modifiers &mods> (. ID(L"StructStatement", STMT) .)
 	"Struct" (. line = t->line; col = t->col; .)
 	identifier
 	[ TypeParameterList<_Struct> (. generic = true; .) ]
-	[ "Is" ( PrimitiveType<NO_BITS> | UserType ) ]
+	[ IsOrExtendsOrInherits ( PrimitiveType<NO_BITS> | UserType ) ]
 	[ DoesClause ]
 	[ WhereClause<_Struct, generic> ]
 	SyncNewline<s_name>
