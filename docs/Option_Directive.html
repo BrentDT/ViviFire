@@ -65,6 +65,7 @@ The warning is applicable only if you supply two or more such arguments to the p
 The warning has a level of <code>Warning4</code>.</p>
 <p>See <a href="Passing_Arguments_Position_Name.html">Passing Arguments by Position and by Name</a> for more information.</p>
 <h4><code>@Option Args Enclosed</code></h4>
+<p>Applicable to: <a href="Call_Statement.html">Call Statement</a>, <a href="Function_Statement.html">Function Statement</a>, <a href="Method_Statement.html">Method Statement</a>, <a href="Sub_Statement.html">Sub Statement</a>.</p>
 <p>You must write parentheses (<code class="op">( )</code>) around (1) arguments for procedure calls and (2) parameters for procedure declarations.
 Procedure declarations start with one of these keywords: <span class="kws"><code>Function</code>, <code>Method</code>, or <code>Sub</code></span>.
 You must supply empty parentheses if a procedure has no parameters.
@@ -78,6 +79,7 @@ That is letters (&lsquo;A&rsquo; thru &lsquo;Z&rsquo;), digits (&lsquo;0&rsquo; 
 </section>
 <section aria-labelledby="Dim">
 <h3 id="Dim" class="notranslate">Dim</h3>
+<p>Applicable to: <a href="Dim_Statement.html">Dim Statement</a>, <a href="Property_Statement.html">Property Statement</a>.</p>
 <h4><code>@Option Dim</code></h4>
 <p>You must start a variable declaration with <code class="kw">Dim</code>, and not <code class="kw">Var</code>.
 For example:</p>
@@ -93,6 +95,7 @@ For example:</p>
 </section>
 <section aria-labelledby="End">
 <h3 id="End" class="notranslate">End</h3>
+<p>Applicable to: <a href="Keywords.html#End">Keywords&nbsp;&sect;End</a>.</p>
 <h4><code>@Option End Block</code></h4>
 <p>You must write <code class="kw">End</code> plus the block type.
 For example:</p>
@@ -110,6 +113,7 @@ For example:</p>
 End&#10;</code></pre>
 </div>
 <h4><code>@Option End For ID</code></h4>
+<p>Applicable to: <a href="For_Statement.html">For Statement</a>.</p>
 <p>You can use this only with &ldquo;<code>@Option End Block</code>&rdquo;.
 You must complete all statements of the type <code class="kw">For</code>with <code class="kw">End For</code>, plus the loop counter.
 For example:</p>
@@ -119,6 +123,7 @@ For example:</p>
 End For index&#10;</code></pre>
 </div>
 <h4><code>@Option End For [ No ID ]</code></h4>
+<p>Applicable to: <a href="For_Statement.html">For Statement</a>.</p>
 <p>You can use this only with &ldquo;<code>@Option End Block</code>&rdquo;.
 You must complete all statements of the type <code class="kw">For</code> with <code class="kw">End For</code>, without the loop counter.
 For example:</p>
@@ -130,27 +135,12 @@ End For&#10;</code></pre>
 </section>
 <section aria-labelledby="Enum">
 <h3 id="Enum" class="notranslate">Enum</h3>
-<h4><code>@Option Enum ID</code></h4>
-<p>You must give a name to all statements of the type <code class="kw">Enum</code>.
-For example:</p>
-<div class="language-vivifire listing">
-<pre><code>Enum DogBreed
-  ' ...
-End&#10;</code></pre>
-</div>
-<h4><code>@Option Enum Is</code></h4>
-<p>You must give statements of the type <code class="kw">Enum</code> a data type, with the clause <code class="kw">Is</code>.
-For example:</p>
-<div class="language-vivifire listing">
-<pre><code>Enum Is UInt16
-  ' ...
-End&#10;</code></pre>
-</div>
+<p>Applicable to: <a href="Enum_Statement.html">Enum Statement</a>.</p>
 <h4><code>@Option Enum Equals</code></h4>
 <p>You must give members of the statement <code class="kw">Enum</code> values, assigned with the operator &ldquo;<code class="op">=</code>&rdquo;.
 For example:</p>
 <div class="language-vivifire listing">
-<pre><code>Enum
+<pre><code>Enum ordinal Is Int32
   first  = 1
   second = 2
 End&#10;</code></pre>
@@ -158,6 +148,7 @@ End&#10;</code></pre>
 </section>
 <section aria-labelledby="If">
 <h3 id="If" class="notranslate">If</h3>
+<p>Applicable to: <a href="If_Then_Else_Statement.html">If&hellip;Else Statement</a>.</p>
 <h4><code>@Option If Then</code></h4>
 <p>You must write <code class="kw">Then</code> with all statements of the type <code class="kw">If&hellip;Else</code>.
 For example:</p>
@@ -190,6 +181,7 @@ Thus, use of the one-line construct becomes an error.</p>
 </section>
 <section aria-labelledby="Mod">
 <h3 id="Mod" class="notranslate">Mod</h3>
+<p>Applicable to: <a href="Mod_Operator.html">Mod Operator</a>, <a href="Mod_Equals_Operator.html">Mod= Operator</a>, <a href="Rem_Operator.html">Rem Operator</a>, <a href="Rem_Equals_Operator.html">Rem= Operator</a>.</p>
 <h4><code>@Option Mod Floored</code></h4>
 <p>Changes how the operators <code class="kw">Mod</code> and <code class="op">Mod=</code> operate.
 Usually the two operators <code class="kw">Mod</code> and <code class="kw">Rem</code> operate the same.
@@ -221,6 +213,7 @@ This alternative operation is known as <dfn>floored modulo</dfn>.</p>
 </section>
 <section aria-labelledby="New">
 <h3 id="New" class="notranslate">New</h3>
+<p>Applicable to: <a href="New_Statement.html">New Statement</a>.</p>
 <h4><code>@Option New</code></h4>
 <p>You must start <code class="kw">New</code> Statements with <code class="kw">New</code>.
 If you use &ldquo;<code>@Option End Block</code>&rdquo;, you must complete the block construct with <code class="kw">End New</code>.
@@ -236,6 +229,7 @@ End New&#10;</code></pre>
 </section>
 <section aria-labelledby="Optional">
 <h3 id="Optional" class="notranslate">Optional</h3>
+<p>Applicable to: <a href="Optional.html">Optional</a>.</p>
 <h4><code>@Option Optional Equals</code></h4>
 <p>You must give a value to an optional parameter with the operator &ldquo;<code class="op">=</code>&rdquo;.
 For example:</p>
@@ -247,6 +241,7 @@ End&#10;</code></pre>
 </section>
 <section aria-labelledby="Select">
 <h3 id="Select" class="notranslate">Select</h3>
+<p>Applicable to: <a href="Select_Case_Statement.html">Select&hellip;Case Statement</a>.</p>
 <h4><code>@Option Select Case</code></h4>
 <p>You must write <code class="kw">Select Case</code> in all statements of the type <code class="kw">Select&hellip;Case</code>.
 For example:</p>
@@ -319,6 +314,7 @@ Const _BAD_NAME = "The user name is not valid."
 <section aria-labelledby="Type">
 <h3 id="Type" class="notranslate">Type</h3>
 <h4><code>@Option Type { Each | Param | Var }</code></h4>
+<p>Applicable to: <a href="Dim_Statement.html">Dim Statement</a>, <a href="Parameter_List.html">Parameter List</a>.</p>
 <p>You must supply a data type for each name in the given location.</p>
 <ul>
 <li><code>Type Param</code> &ndash; Each parameter in a parameter list of a procedure must have a data type.</li>
@@ -360,6 +356,24 @@ PrintLine "The sum of <span class="token strint">{<span class="token id">x</span
 <div class="language-vivifire listing">
 <pre><code>Var x <ins>As Int32</ins>, y <ins>As Int32</ins>, sum As Int32&#10;</code></pre>
 </div>
+<h4><code>@Option Type { Extends | Inherits | Is }</code></h4>
+<p>Applicable to: <a href="Class_Statement.html">Class Statement</a>, <a href="Enum_Statement.html">Enum Statement</a>, <a href="Struct_Statement.html">Struct statement</a>.</p>
+<p>You must use only one of these keywords between the name of the type and a base data type:
+<code class="nkw">Extends</code>, <code class="nkw">Inherits</code>, or <code class="kw">Is</code>.
+For example:</p>
+<div class="language-vivifire listing">
+<pre><code>@Option Type Is
+
+' Correct.
+Class Foo Is BaseType
+  ' ...
+End
+
+' Incorrect.
+Class Bar <mark>Extends</mark> BaseType
+  ' ...
+End&#10;</code></pre>
+</div>
 </section>
 <section aria-labelledby="Unit">
 <h3 id="Unit" class="notranslate">Unit</h3>
@@ -400,6 +414,7 @@ An example follows.</p>
 </section>
 <section aria-labelledby="When">
 <h3 id="When" class="notranslate">When</h3>
+<p>Applicable to: <a href="Exit_When_Clause.html">Exit When Clause</a>.</p>
 <h4><code>@Option When Each</code></h4>
 <p>You must write <code class="kw">When Each</code>, and not <code class="kw">When Else</code>, for statements in the block <code class="kw">Exit When</code>.
 For example:</p>
@@ -438,18 +453,6 @@ End&#10;</code></pre>
 </section>
 <h2>See also</h2>
 <ul class="articles" style="display: inline-block; columns: 2">
-<li><a href="Constructor_Statement.html">Constructor Statement</a></li>
-<li><a href="Dim_Statement.html">Dim Statement</a></li>
-<li><a href="Enum_Statement.html">Enum Statement</a></li>
-<li><a href="Exit_When_Clause.html">Exit When Clause</a></li>
-<li><a href="For_Each_Statement.html">For Each Statement</a></li>
-<li><a href="For_Statement.html">For Statement</a></li>
-<li><a href="If_Then_Else_Statement.html">If&hellip;Else Statement</a></li>
-<li><a href="Mod_Operator.html">Mod Operator</a></li>
-<li><a href="Mod_Equals_Operator.html">Mod= Operator</a></li>
-<li><a href="New_Statement.html">New Statement</a></li>
-<li><a href="Optional.html">Optional</a></li>
-<li><a href="Select_Case_Statement.html">Select&hellip;Case Statement</a></li>
 <li><a href="String_Data_Type.html">String Data Type</a></li>
 <li><a href="Error_and_Warn_Directives.html">@Error and @Warn Directives</a></li>
 </ul>
