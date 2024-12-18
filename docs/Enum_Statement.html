@@ -27,7 +27,7 @@
 <div class="language-vivifire syntax">
 <h3>Usual construct</h3>
 <pre><code>[ modifiers ] _
-Enum [ enumeration_name ] [ Is base_type ]
+Enum enumeration_name [ Is base_type ]
     member_name [ = value ]
     &hellip;
 End [ Enum ]&#10;</code></pre>
@@ -53,22 +53,24 @@ End [ Enum ]&#10;</code></pre>
 	</ul>
 </dd>
 <dt><code>enumeration_name</code></dt>
-<dd>A name for the enumeration</dd>
-<dd>Optional in the usual construct.</dd>
-<dd>Mandatory with the modifiers <code class="at">@Flags</code>, <code class="at">@Open</code>, or <code class="at">@Strict</code>.</dd>
-<dd>Mandatory with the directive <code class="at">@Option Enum ID</code>.</dd>
+<dd>Mandatory name for the enumeration</dd>
+<dt><code class="kw">Is</code></dt>
+<dd>A keyword before <code class="id">base_type</code>.</dd>
+<dd>You can also use one of the non-reserved keywords <code class="nkw">Extends</code> or <code class="nkw">Inherits</code> as an alternative.</dd>
 <dt><code class="id">base_type</code></dt>
-<dd>An integer data type or a different enumeration.
+<dd>A numeric data type, <code class="kw">String</code>, or a different enumeration.
 It sets the range of possible values and the minimum value.</dd>
 <dd>Optional in the usual construct.</dd>
-<dd>Mandatory with the modifier <code class="at">@Flags</code> or the directive <code class="at">@option Enum Is</code>.</dd>
+<dd>Mandatory integer data type with the modifier <code class="at">@Flags</code>.</dd>
 <dt><code class="id">member_name</code></dt>
 <dd>Mandatory name</dd>
 <dd>You can put one or more members on one line.
 Use a semicolon (<code class="op">;</code>) between each member on the same line.
 A semicolon is also permitted at the end of a line.</dd>
 <dt><code class="id">value</code></dt>
-<dd>Optional constant integer expression.</dd>
+<dd>Optional constant expression.
+It must have the same type as <code class="id">base_type</code>, or automatically convert to that type.</dd>
+<dd>Not permitted without <code class="id">base_type</code>.</dd>
 <dd>Mandatory with the directive <code class="at">@Option Enum Equals</code>.</dd>
 <dt><code class="kw">End</code></dt>
 <dd>Completes the statement.
@@ -77,7 +79,7 @@ You can also use <code class="kw">End Enum</code>.</dd>
 See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
 </dl>
 <h2>Instructions</h2>
-<p>An <dfn>enumeration</dfn> is a set of related integer constants.
+<p>An <dfn>enumeration</dfn> is a set of related constants.
 They can make code easier to read and change.
 They are an alternative to literals found in random locations in code.</p>
 <p>Usually it is not necessary to directly set a constant's value.
@@ -102,10 +104,9 @@ Members can have the same values, unless given the modifier <code class="at">@Un
 <p>If <code class="id">type</code> is the name of a bit field, the new statement is an extension to the flags.
 The range of an extension is the same as its parent.</p>
 <h3>Changes in syntax with <code>@Option</code></h3>
-<p>There are four areas where you can change the syntax of the statement:</p>
+<p>There are three areas where you can change the syntax of the statement:</p>
 <ul>
-<li><code>@Option Enum ID</code></li>
-<li><code>@Option Enum Is</code></li>
+<li><code>@Option Type Extends</code>, <code>@Option Type Inherits</code>, <code>@Option Type Is</code></li>
 <li><code>@Option Enum Equals</code></li>
 <li><code>@Option End Block</code> and <code>@Option End</code></li>
 </ul>
