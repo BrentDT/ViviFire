@@ -48,6 +48,9 @@ End [ Struct ]&#10;</code></pre>
 <dt><code class="id">type_list</code></dt>
 <dd>Optional one or more type parameters, with a comma between each, all between brackets (<code class="op">[ ]</code>).
 See <a href="Type_List.html#">Type List</a> for more information.</dd>
+<dt><code class="kw">Is</code></dt>
+<dd>A keyword before <code class="id">base_type</code>.</dd>
+<dd>You can also use one of the non-reserved keywords <code class="nkw">Extends</code> or <code class="nkw">Inherits</code> as an alternative.</dd>
 <dt><code class="id">base_type</code></dt>
 <dd>Optional value type:
 an elementary data type (<code class="kw">Int32</code> for example) or the name of a different structure.</dd>
@@ -93,6 +96,13 @@ But if there are bits that are not used, these are known as <dfn>padding</dfn>.<
 The type of CPU sets the boundaries, counted from the start of the Struct:
 Intel processors usually have 8-bit boundaries, while Motorola processors usually have 16-bit boundaries.
 A bit field must not go across a boundary.</p>
+<h3>Changes in syntax with <code>@Option</code></h3>
+<p>There are two areas where you can change the syntax of the statement:</p>
+<ul>
+<li><code>@Option Type Extends</code>, <code>@Option Type Inherits</code>, <code>@Option Type Is</code></li>
+<li><code>@Option End Block</code> and <code>@Option End</code></li>
+</ul>
+<p>See <a href="Option_Directive.html">@Option Directive</a> for more information.</p>
 <h2>Rules</h2>
 <dl>
 <dt>Nested structures</dt>
