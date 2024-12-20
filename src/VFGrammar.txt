@@ -80,8 +80,6 @@ struct Option {
 	ternary     Dim_or_Var         = TERNARY0; // { Dim | Var }
 	ternary     End_block          = TERNARY0; // End [ Block | No Block ]
 	ternary     End_For_id         = TERNARY0; // End For [ ID | No ID ]
-	bool        Enum_id            = false;    // Enum ID
-	bool        Enum_Is            = false;    // Enum Is
 	bool        Enum_equals        = false;    // Enum Equals
 	ternary     If_Then            = TERNARY0; // If [ Then | No Then ]
 	bool        If_End             = false;    // If End
@@ -97,6 +95,8 @@ struct Option {
 	ternary     test_unit_or_comp  = TERNARY0; // Test [ Compiler ]
 	enum class Each { DEFAULT, Each, Param, Var };
 	Each        type_each          = Each::DEFAULT; // Type { Each | Param | Var }
+	enum class EII { DEFAULT, Extends, Inherits, Is };
+	EII         type_is            = EII::DEFAULT; // Type { Extends | Inherits | Is }
 	bool        unit_full          = false;    // Unit Full
 	short       warning            = 4;        // Warning[1-5]
 	short       warning_error      = 0;        // Warning[1-5] Error
@@ -171,11 +171,7 @@ struct Option {
 			break;
 		case _Enum:
 			parser->Get();
-			if (match(s_id)) {
-				Enum_id = true;           // @Option Enum ID
-			} else if (match(_Is)) {
-				Enum_Is = true;  // @Option Enum Is
-			} else if (match(s_equals)) {
+			if (match(s_equals)) {
 				Enum_equals = true; // @Option Enum Equals
 			} else goto bad_option;
 			break;
@@ -285,6 +281,15 @@ struct Option {
 					break;
 				} else if (match(_Var)) {
 					type_each = Each::Var; // @Option Type Var
+					break;
+				} else if (match(L"Extends")) {
+					type_is = EII::Extends; // @Option Type Extends
+					break;
+				} else if (match(L"Inherits")) {
+					type_is = EII::Inherits; // @Option Type Inherits
+					break;
+				} else if (match(_Is)) {
+					type_is = EII::Is; // @Option Type Is
 					break;
 				} else goto bad_option;
 			} else if (len >= 7 && left_match(s_warning)) {
@@ -1952,8 +1957,8 @@ EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 		IsOrExtendsOrInherits
 		PrimitiveType<NO_BITS>
 		(. if (!IsIntegerType(t->kind)) Err(L"Base type must be an integer type or enumeration type"); .)
-	] (. else if (bFlags || option.Enum_Is) {
-		Err(L"Enumeration must have a base type (IS) because of @FLAGS or @OPTION");
+	] (. else if (bFlags) {
+		Err(L"Enumeration must have a base type because of @FLAGS");
 	} .)
 	SyncNewline<s_name>
 	{
@@ -2292,14 +2297,34 @@ InUnitClause (. ID(L"InUnitClause", STMT) .)
 .
 IsOrExtendsOrInherits
 =
-	( "Is"
-| ( identifier | "As" ) // "As" is not the same as "Is". This makes a better error message.
+	(. bool unwanted = false; .)
+	(
+		"Is"
+		(. if (option.type_is != Option::EII::DEFAULT && option.type_is != Option::EII::Is) unwanted = true; .)
+	|
+		( identifier | "As" ) // "As" is not the same as "Is". This makes a better error message.
 		(.
-		if ( !Matches(L"Extends") && !Matches(L"Inherits") ) {
+		if (Matches(L"EXTENDS")) {
+			if ( option.type_is != Option::EII::DEFAULT && option.type_is != Option::EII::Extends ) unwanted = true;
+		} else if (Matches(L"INHERITS")) {
+			if ( option.type_is != Option::EII::DEFAULT && option.type_is != Option::EII::Inherits ) unwanted = true;
+		} else {
 			Err(L"Must be one of these: IS, EXTENDS, or INHERITS");
 		}
 		.)
 	)
+	(.
+	if (unwanted) {
+		std::wstring msg(L"Must use ");
+		switch (option.type_is) {
+			case Option::EII::Extends:  msg += L"EXTENDS"; break;
+			case Option::EII::Inherits: msg += L"INHERITS"; break;
+			case Option::EII::Is:       msg += L"IS"; break;
+			default: errors->Exception(L"Unhandled case for `option.type_is`");
+		}
+		msg += L" because of @OPTION";
+		Err(msg.c_str());
+	} .)
 .
 /*J*/
 /*K*/
