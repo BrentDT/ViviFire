@@ -25,26 +25,34 @@
 <p>Divides two numbers and returns only the remainder.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<pre><code>number_1 Rem number_2&#10;</code></pre>
+<h3>Operator construct</h3>
+<pre><code>expression_1 Rem expression_2&#10;</code></pre>
+<h3>Function construct</h3>
+<pre><code>Rem ( expression_1, expression_2 )&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
-<dt><code class="id">number_1</code></dt>
+<dt><code class="id">expression_1</code></dt>
 <dd>A numeric expression.</dd>
-<dt><code class="id">number_2</code></dt>
+<dt><code class="id">expression_2</code></dt>
 <dd>A numeric expression.</dd>
 </dl>
 <h2>Instructions</h2>
-<p>The result is the remainder after <code class="id">number_1</code> is divided by <code class="id">number_2</code>.
+<p>The result is the remainder after <code class="id">expression_1</code> is divided by <code class="id">expression_2</code>.
 For example, the expression <code>42 Rem 5</code> gives a result of 2.</p>
-<p>The result has the same sign as <code class="id">number_2</code>.
+<p>The result has the same sign as <code class="id">expression_2</code>.
 Compared to <code class="kw">Rem</code>, the result of the related operator <code class="kw">Mod</code> gets the sign of its first number.
 But it can be easy to select the correct operator for the given conditions.
 The letter &ldquo;M&rdquo; is nearer to the number that gives the result its sign.</p>
 <h3>Data types</h3>
 <p>TODO</p>
-<h3>Division by zero</h3>
-<p>TODO</p>
+<h3>Trying to divide by zero</h3>
+<p>If <code class="id">expression_2</code> is zero, the result of <code class="kw">Rem</code> is related to the data type of its expressions and which construct you use:</p>
+<ul>
+<li>An integer division causes an exception <code>DivisionByZeroException</code>, if you use the operator construct.</li>
+<li>A floating-point division returns <code>Real64.NaN</code>, if you use the operator construct.</li>
+<li>If you use the function construct, it returns <code class="id">expression_1</code> for all possible data types.</li>
+</ul>
 <h2>Examples</h2>
 <p>TODO</p>
 <div class="language-vivifire listing">
@@ -55,7 +63,7 @@ The letter &ldquo;M&rdquo; is nearer to the number that gives the result its sig
 #Debug.PrintLine "-42 Rem -5 = " &amp; -42 Rem -5&#10;</code></pre>
 </div>
 <table class="results">
-<caption>After execution</caption>
+<caption>After run</caption>
 <tbody>
 <tr><td>
 <pre><samp>42 Rem 5 = 2

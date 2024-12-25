@@ -61,18 +61,18 @@ This is always 16.</dd>
 </div>
 <h3>Example 2</h3>
 <div class="language-vivifire listing">
-<pre><code>Dim low As UInt64 = 0, high As UInt64 = 100
-Dim result As UInt64 = low - high&#10;</code></pre>
+<pre><code>Var low = 0u128, high = 100u128
+Var result = low - high&#10;</code></pre>
 </div>
-<table class="results">
+<table class="result">
 <caption>After run</caption>
-<thead>
-<tr><th>Variable</th><th>Value</th></tr>
-</thead>
 <tbody>
-<tr><td><code>low</code></td><td><samp>0 (%X00000000000000000000000000000000)</samp></td></tr>
-<tr><td><code>high</code></td><td><samp>100 (%X00000000000000000000000000000064)</samp></td></tr>
-<tr><td><code>result</code></td><td><samp>340282366920938463463374607431768211356 (%XFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF9C)</samp></td></tr>
+<tr><th><code>low</code></th>
+<td><samp>0 (%X00000000000000000000000000000000)</samp></td></tr>
+<tr><th><code>high</code></th>
+<td><samp>100 (%X00000000000000000000000000000064)</samp></td></tr>
+<tr><th><code>result</code></th>
+<td><samp>340282366920938463463374607431768211356 (%XFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF9C)</samp></td></tr>
 </tbody>
 </table>
 <h2>See also</h2>

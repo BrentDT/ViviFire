@@ -60,18 +60,18 @@ This is always 4.</dd>
 </div>
 <h3>Example 2</h3>
 <div class="language-vivifire listing">
-<pre><code>Dim low As UInt32 = 0, high As UInt32 = 100
-Dim result As Uint32 = low - high&#10;</code></pre>
+<pre><code>Var low = 0u32, high = 100u32
+Var result = low - high&#10;</code></pre>
 </div>
-<table class="results">
+<table class="result">
 <caption>After run</caption>
-<thead>
-<tr><th>Variable</th><th>Value</th></tr>
-</thead>
 <tbody>
-<tr><td><code>low</code></td><td><samp>0 (%X00000000)</samp></td></tr>
-<tr><td><code>high</code></td><td><samp>100 (%X00000064)</samp></td></tr>
-<tr><td><code>result</code></td><td><samp>4294967196 (%XFFFFFF9C)</samp></td></tr>
+<tr><th><code>low</code></th>
+<td><samp>0 (%X00000000)</samp></td></tr>
+<tr><th><code>high</code></th>
+<td><samp>100 (%X00000064)</samp></td></tr>
+<tr><th><code>result</code></th>
+<td><samp>4294967196 (%XFFFFFF9C)</samp></td></tr>
 </tbody>
 </table>
 <h2>See also</h2>
