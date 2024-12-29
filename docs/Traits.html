@@ -21,18 +21,17 @@
 </nav>
 <main><!-- STE -->
 <h1 id="top">Traits</h1>
-<p>ViviFire lets you use code again and again with a construct known as a <dfn>Trait</dfn>.
-Traits are a possible alternative to multiple inheritance (a Class with many parents).
-But they can also decrease some limits of single inheritance.</p>
-<p>Traits let you use sets of methods again and again without limits in many classes independently.
-And such classes do not have to be related through inheritance.</p>
-<p>The semantics of traits and classes put together is made to be easy to use.
-It also does not have the typical problems related to multiple inheritance and Mixins.</p>
-<p>A trait looks almost the same as a class.
-But its primary function is to make a group of operations that are usually small and fully related.</p>
-<p>It is not possible to make instances of a trait directly.
-Different from the usual inheritance, it lets you do horizontal composition of behavior.
-In other words, it applies class members without inheritance.</p>
+<p>A <dfn>trait</dfn> is a construct that lets you use code again and again.
+A typical trait is a set of methods that can become part of many different elements.
+Such elements include classes, structures, and other traits.</p>
+<p>Traits have some of the same qualities as classes and structures, but there are important differences:</p>
+<ul>
+<li>You cannot make instances of a trait, for example, with <span class="kws"><code>Dim</code>/<code>Var</code> or <code>New</code></span>.</li>
+<li>Traits are always open to be used.</li>
+<li>Elements use a trait with the keyword <code class="kw">Does</code>.</li>
+<li>A trait with the modifier <code class="at">@Abstract</code> must contain only method declarations.</li>
+<li>A trait cannot have constructors or a destructor.</li>
+</ul>
 <h2>Declaration of traits</h2>
 <p>A trait usually starts with <code class="kw">Trait</code> and is completed with <code class="kw">End Trait</code>.
 Between these two lines you can put one or more permitted statements:
@@ -45,10 +44,11 @@ But if you use the modifier <code class="at">@Abstract</code>, the method or pro
 A class that uses the trait must declare the method or property again, and supply a body of statements.</p>
 <h3>Multiple traits</h3>
 <p>TODO</p>
-<h3>When different methods have the same signature</h3>
-<p>You have an example class that applies one or more traits.
-If that class has two or more methods with the same signature, the result is a compiler error.
-You can change the names of the methods to correct this error.</p>
+<h3>Different methods with the same signature</h3>
+<p>When you mix traits into a class, that class can possibly have two methods with the same signature.
+Procedures with the same name and parameters cannot be in the same scope.
+Thus, the result is a compile-time error.
+But you can change the names of the methods to correct this error.</p>
 <div class="language-vivifire listing">
 <pre><code>Trait A
     Method Calculate
@@ -67,7 +67,7 @@ Class Calculator Does A, B
     Method CalculateB Does B.Calculate
 End Class&#10;</code></pre>
 </div>
-<h3>To Change method visibility</h3>
+<h3>Changing method visibility</h3>
 <div class="language-vivifire listing">
 <pre><code>Trait Foobar
     Method Foo
@@ -82,7 +82,7 @@ Class Barless Does Foobar
     Function Bar Does Foobar.Bar
 End Class&#10;</code></pre>
 </div>
-<h3>Traits composed from traits</h3>
+<h3>Traits made from traits</h3>
 <div class="language-vivifire listing">
 <pre><code>Trait Foo
     Method Foo
