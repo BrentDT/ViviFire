@@ -558,8 +558,8 @@ std::wstring StringValue(wchar_t *pStrToken) {
 					break;
 				default:
 					if (nBraces > 0) tempStr += wchar_to_UTF8(*pChar);
-						else res += *pChar;
-						break;
+					else res += *pChar;
+					break;
 				} // switch
 			} // for
 
@@ -1251,7 +1251,8 @@ InlineComment = ("'"|"//"){notEOL}. (.
 	) {
 		Warn(la->line, la->col, 
 			L"Line continuation without the _ then a comment with the ' is not easy to read. "
-			L"We recommend that you use (1) the underscore or (2) the comment that starts  //...");
+			L"We recommend that you use (1) the underscore or (2) the comment that starts  //..."
+		);
 	} .)
 
 ///MidlineComment = "/'"{"#"|alnum|"_"|"."|"-"|"/"|":"|sigil}"'/".
@@ -1801,7 +1802,7 @@ DeclareStatement<Modifiers &mods> (. ID(L"DeclareStatement", STMT) .)
 	( DeclareSignature<isAlias>
 	| SyncNewline<s_name>
 		{ DeclareSignature<isAlias> Newline }
-	(. if (la->kind != _End) Err(line, col, L"DECLARE without END"); .)
+		(. if (la->kind != _End) Err(line, col, L"DECLARE without END"); .)
 		"End"
 		(. Optional(_Declare); .)
 	)
@@ -1881,7 +1882,7 @@ DoStatement (. ID(L"DoStatement", STMT) .)
 		(. context.push_back(_Do); .)
 		[ LoopBody<POSTCONDITIONAL> ]
 		(. context.pop_back(); .)
-	(. if (la->kind != _Loop) Err(line, col, L"DO without LOOP"); .)
+		(. if (la->kind != _Loop) Err(line, col, L"DO without LOOP"); .)
 		"Loop" WhileOrUntil TolExpression
 		SyncNewline<s_name>
 	|	// Do While/Until...Loop
@@ -1988,7 +1989,7 @@ EventSpecifier (. ID(L"EventSpecifier", STMT) .)
 	(. else .) // KLUDGE: Prevent a small token set.
 	[ "Base" | "Self" ]
 	(. else Err(L"Event specifier must start with an object, BASE, or SELF"); .)
-		dot identifier
+	dot identifier
 .
 EventStatement (. ID(L"EventStatement", STMT) .)
 =
@@ -2621,7 +2622,7 @@ Module (. ID(L"Module", STMT) .)
 		module = new AST::Module(AST::Module::Library, t->line, t->col);
 		context.push_back(_Library);
 
-	std::wstring qn;
+		std::wstring qn;
 		.)
 		QualifiedName<qn, _identifier>
 		SyncNewline<s_name>
@@ -2897,7 +2898,8 @@ OptionalNewline (. ID(L"OptionalNewline", STMT) .)
 	if ( la->col <= m_start_col && IsIdentifier(la->kind) ) {
 		Warn(la->line, la->col,
 			L"Line continuation where the subsequent line starts with a name is not easy to read. "
-			L"We recommend that you give such lines more indentation (or use parentheses, if permitted).");
+			L"We recommend that you give such lines more indentation (or use parentheses, if permitted)."
+		);
 	} .)
 .
 /*P*/
@@ -3066,9 +3068,9 @@ PropertyStatement<Modifiers &mods> (. ID(L"PropertyStatement", STMT) .)
 			{ Statement }
 			(. context.pop_back(); .)
 		]
-	(. if (la->kind != _End) Err(sig.line, sig.col, L"PROPERTY without END"); .)
+		(. if (la->kind != _End) Err(sig.line, sig.col, L"PROPERTY without END"); .)
 		"End"
-	(. Optional(_Property); .)
+		(. Optional(_Property); .)
 		Newline
 	]
 .
