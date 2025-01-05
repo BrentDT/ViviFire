@@ -1254,7 +1254,7 @@ InlineComment = ("'"|"//"){notEOL}. (.
 			L"We recommend that you use (1) the underscore or (2) the comment that starts  //...");
 	} .)
 
-MidlineComment = "/'"{"#"|alnum|"_"|"."|"-"|"/"|":"|sigil}"'/".
+///MidlineComment = "/'"{"#"|alnum|"_"|"."|"-"|"/"|":"|sigil}"'/".
 
 IGNORE t + '\u00a0' // non-breaking space
 
@@ -2894,7 +2894,7 @@ OptionalNewline (. ID(L"OptionalNewline", STMT) .)
 	//     foo =
 	//     bar = 1 ' Although this line shows as an assignment, it is an equality test.
 
-	if (la->col <= m_start_col && IsIdentifier(la->kind)) {
+	if ( la->col <= m_start_col && IsIdentifier(la->kind) ) {
 		Warn(la->line, la->col,
 			L"Line continuation where the subsequent line starts with a name is not easy to read. "
 			L"We recommend that you give such lines more indentation (or use parentheses, if permitted).");
