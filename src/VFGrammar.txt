@@ -3305,7 +3305,7 @@ StructStatement<Modifiers &mods> (. ID(L"StructStatement", STMT) .)
 	// Struct state.
 	{
 		(. Modifiers state_mods(this); .)
-	(. m_start_col = la->col; .)
+		(. m_start_col = la->col; .)
 		[ ModifiersClause<state_mods> ]
 		(
 			(.
@@ -3315,11 +3315,11 @@ StructStatement<Modifiers &mods> (. ID(L"StructStatement", STMT) .)
 			.)
 			[ DimOrVar ] DeclaratorList<YES_BITS>
 			SyncNewline<s_name>
-	|
+		|
 			ConstStatement<state_mods>
-	|
+		|
 			EnumStatement<state_mods>
-	|
+		|
 			(. state_mods.Check(); .)
 			EventStatement
 		|
@@ -3333,6 +3333,7 @@ StructStatement<Modifiers &mods> (. ID(L"StructStatement", STMT) .)
 	// Struct procedures.
 	{
 		(. Modifiers proc_mods(this); .)
+		(. m_start_col = la->col; .)
 		(
 			ConstructorStatement<proc_mods>
 		|
