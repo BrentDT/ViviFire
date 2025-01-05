@@ -33,7 +33,7 @@ Scanner.h Specification
 -->begin/*
  * ViviFire Programming Language
  *
- * Copyright 2024 Brent D. Thorn
+ * Copyright 2025 Brent D. Thorn
  *
  * You can get the latest version at https://vivifire.com/.
  *
@@ -308,7 +308,7 @@ Scanner.cpp Specification
 -->begin/*
  * ViviFire Programming Language
  *
- * Copyright 2024 Brent D. Thorn
+ * Copyright 2025 Brent D. Thorn
  *
  * You can get the latest version at https://vivifire.com/.
  *
