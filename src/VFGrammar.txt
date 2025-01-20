@@ -1572,13 +1572,6 @@ ConditionalExpression (. ID(L"Conditional", EXPR) .)
 	"Then" EnclosedExpression
 	"Else" EnclosedExpression
 .
-ConstantDeclarator (. ID(L"ConstantDeclarator", STMT) .)
-=
-	Name
-	[ TypeClause<NO_BITS> ]
-	"=" [OptionalNewline]
-	Expression
-.
 ConstantValueError (. ID(L"ConstantValueError", STMT) .)
 =
 	(
@@ -1604,8 +1597,7 @@ ConstStatement<Modifiers &mods> (. ID(L"ConstStatement", STMT) .)
 		if (mods.Let(s_Shared)) Warn(line, col, L"@SHARED has no effect on CONST");
 		mods.Check();
 		.)
-		ConstantDeclarator
-		{ WEAK comma ConstantDeclarator }
+		DeclaratorList<NO_BITS>
 	|
 		(. mods.Check(); .) // No modifiers.
 		(. option_type nThen = WITHOUT_THEN; .)
