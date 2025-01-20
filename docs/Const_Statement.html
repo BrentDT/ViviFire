@@ -56,7 +56,6 @@ If subsequently you must change the value, there is only one change to make.</p>
 <p>You can use <code class="kw">Const</code> only at module level or procedure level.
 It must be in one of these:
 a class, a structure, a module, a procedure, or a block.
-It cannot be in a namespace or trait.
 See <a href="Declaration_Contexts_and_Default_Access_Levels.html">Declaration Contexts and Default Access Levels</a> for more information.</p>
 <p>Constants declared in a class or module (but not in a procedure) have private access.
 While those declared in a structure have public access.</p>
@@ -66,7 +65,7 @@ Constants operate the same as properties declared with all three modifiers <span
 <p>TODO</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
-<pre><code>Const MaxLength As UInt = 32768
+<pre><code>Const MaxLength As UInt32 = 32768
 Const HTTP_GET = "GET", HTTP_POST = "POST"
 Const ScalingFactor = 5.0 / 3.0&#10;</code></pre>
 </div>
