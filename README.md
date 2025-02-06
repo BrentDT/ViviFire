@@ -26,26 +26,24 @@ PrintLine "Hello world!"
 Program SimpleWindow
 Require ViviFire.UI
 
-New Window win
-Begin
-    .Height = 120
-    .Width = 300
+Object win Is Window
+    Height = 120
+    Width = 300
 
-    New Static text,
+    Static text,
         Caption := "There have been no clicks yet.",
         Left := 30, Top := 20
 
-    New Button button1,
+    Button button1,
         Caption := "Click me",
         Left := 100, Top := 50, Height := 25, Width := 100
-    Begin
-        .OnClick = Sub
-            @Shared Var count As Int32
-            count += 1
-            text.Caption = $"Clicked {count} times."
-        End
-    End
-End
+
+    button1.OnClick = Sub
+        @Shared Var count As Int32
+        count += 1
+        text.Caption = $"Clicked {count} times."
+    End Sub
+End Object
 ```
 
 ## Dependencies
