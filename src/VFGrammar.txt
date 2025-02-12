@@ -10,6 +10,7 @@
  */
 
 #include <algorithm>
+#include <array>
 #include <assert.h>
 #include <cstdio>
 #include <cwctype>
@@ -62,7 +63,6 @@ enum option_type { OPTION_DEFAULT, WITH_THEN, WITHOUT_THEN };
 enum ternary { TERNARY0, TERNARY1, TERNARY2, YES = TERNARY1, NO = TERNARY2 };
 
 // Aliases for 'true' and 'false'.
-enum { NO_BITS = 0, YES_BITS = 1 };
 enum { POSTCONDITIONAL = 0, PRECONDITIONAL = 1 };
 
 // Type aliases.
@@ -342,7 +342,6 @@ void Optional(int kind, option_type nOption = OPTION_DEFAULT) {
 	case _Function:     // End [ Function ]
 	case _If:           // End [ If ]
 	case _Method:       // End [ Method ]
-///	case _Namespace:    // End [ Namespace ]
 	case _Object:       // End [ Object ]
 	case _Property:     // End [ Property ]
 	case _Select:       // End [ Select ]
@@ -894,11 +893,13 @@ bool IsNamedArgument() {
 	if (!IsIdentifier(la->kind)) return false;
 
 	int next = scanner->Peek()->kind;
+	if (_hash == la->kind) next = scanner->Peek()->kind;
 
 	if (_equals == next) {
 		// TODO: Set a flag on the AST and subsequently do more tests than is possible here.
 		Warn(t->line, t->col, 
 		    L"The argument does an unusual test for equality (=). Possibly you want a named argument (:=).");
+		scanner->ResetPeek();
 		return false;
 	}
 	scanner->ResetPeek();
@@ -947,6 +948,10 @@ void ParseInterpolated(Parser *parseRoot, int col_offset) {
 	Expect(_right_brace);
 
 	parseRoot->errors->count += errors->count;
+}
+
+inline void BlockBody(int kind, int line, int col, wchar_t *msg) {
+	BlockBody(kind, line, col, msg, true);
 }
 
 IGNORECASE
@@ -1273,10 +1278,6 @@ ViviFire (. ID(L"ViviFire", STMT) .)
 	|
 		"Catch" (. SemErr(L"CATCH without TRY"); .)
 	|
-		"Constructor" (. SemErr(L"CONSTRUCTOR without CLASS or STRUCT"); .)
-	|
-		"Destructor" (. SemErr(L"DESTRUCTOR without CLASS"); .)
-	|
 		"Get" (. SemErr(L"GET without PROPERTY"); .)
 	|
 		"Else" (. SemErr(L"ELSE without IF"); .)
@@ -1297,7 +1298,7 @@ ViviFire (. ID(L"ViviFire", STMT) .)
 	|
 		"Until" (. SemErr(L"UNTIL without DO or LOOP"); .)
 	|
-		"When" (. SemErr(L"WHEN without EXIT WHEN"); .)
+		"When" (. SemErr(L"WHEN without EXIT WHEN or UNIT"); .)
 	|
 		"Where" (. SemErr(L"WHERE is not permitted here"); .)
 	|
@@ -1316,13 +1317,15 @@ AdditiveExpression (. ID(L"Additive", EXPR) .)
 .
 Argument (. ID(L"Argument", STMT) .)
 =
+	[ IF (IsNamedArgument())
+		Name ":="
+	]
 	(
 		null_literal
 	|
-		[ IF (IsNamedArgument())
-			Name ":="
-		]
-		( EnclosedExpression | LambdaExpression )
+		EnclosedExpression
+	|
+		LambdaExpression
 	)
 .
 ArgumentList (. ID(L"ArgumentList", STMT) .)
@@ -1355,56 +1358,117 @@ AssignmentStatement (. ID(L"AssignmentStatement", STMT) .)
 		}
 	)
 .
-AsTypeClause<bool bBits> (. ID(L"AsTypeClause", STMT) .)
+AsTypeClause (. ID(L"AsTypeClause", STMT) .)
 =
 	"As"
 	( UserType [ EnclosedArgumentList ]
-	| PrimitiveType<bBits>
+	| PrimitiveType
 	)
 	[ Rank ]
 .
 /*B*/
+BaseClause<Modifiers &mods> (. ID(L"BaseClause", STMT) .)
+=
+	"Base"
+	[ IF (la->kind == _Unit)
+		BaseUnitStatement<mods>
+	] (. else {
+		IdentifierStatement();
+		SyncNewline(s_name);
+	} .)
+.
 BaseUnitStatement<Modifiers &mods> (. ID(L"BaseUnitStatement", STMT) .)
 =
 	(.
+	if (context.back() != _Program && context.back() != _Library) SemErr(L"BASE UNIT must be at module level (PROGRAM or LIBRARY)");
+
 	mods.Let(s_Deprecated);
 	mods.Check();
 	.)
-	"Base"
-	(
-		"Unit" identifier InUnitClause
-		[
-			"=" [OptionalNewline]
-			Expression
-		]
-		SyncNewline<s_name>
-	|
-		ANY (. SemErr(L"Object BASE is available only in a child class"); .)
-	)
+	"Unit" identifier InUnitClause
+	[
+		"=" [OptionalNewline]
+		Expression
+	]
+	SyncNewline<s_name>
 .
 BitShiftExpression (. ID(L"BitShift", EXPR) .)
 =
 	UnaryExpression { ( "SHL" | "SHR" ) UnaryExpression }
 .
+BlockBody<int kind, int line, int col, wchar_t *msg, bool nl>
+=
+	(. context.push_back(kind); .)
+	{ Statement }
+	(. context.pop_back(); .)
+	(.
+	if (la->kind != _End) {
+		Err(line, col, msg);
+	} else { // There is an END, but is it the correct one?
+		int next = scanner->Peek()->kind;
+		if ( next != _line_break && next != kind ) {
+			Err(line, col, msg);
+			Err(la->line, la->col, L"Incorrect END for this statement");
+
+			// If this END agrees with an open block, let the next outer block have it.
+			if (in_context(next)) return;
+
+			// If no such block is open, discard the line.
+			while (la->kind != _EOF && la->kind != _line_break) Get();
+			if (nl) Newline();
+			return;
+		}
+	} .)
+	"End"
+	(. Optional(kind); .)
+	(. if (nl) Newline(); .)
+.
 BlockStatement<Modifiers &mods> (. ID(L"BlockStatement", STMT) .)
 =
-	(. if (mods.Count() > 0 && la->kind != _Select) mods.Check(); .)
-	// Must change the line above if more statements get mods.
-	(
-		SelectStatement<mods>
+	( BaseClause<mods>
+	| ClassStatement<mods>
+	| ConstStatement<mods>
+	| ConstructorStatement<mods>
+	| DeclareStatement<mods>
 	|
+		(. mods.Check(); .) // No modifiers.
+		DestructorStatement
+	| DimStatement<mods>
+	|
+		(. mods.Check(); .) // No modifiers.
+		DoStatement
+	| EnumStatement<mods>
+	|
+		(. mods.Check(); .) // No modifiers.
 		EventStatement
 	|
-		DoStatement
-	|
+		(. mods.Check(); .) // No modifiers.
 		ForStatement
+	| FunctionStatement<mods>
 	|
+		(. mods.Check(); .) // No modifiers.
 		IfStatement
+	| MethodStatement<mods>
+	| NewStatement<&mods>
+	| ObjectStatement<&mods>
+	| PropertyStatement<mods>
+	| SelectStatement<mods>
+	| StructStatement<mods>
+	| SubStatement<mods>
+	| TraitStatement<mods>
 	|
+		(. mods.Check(); .) // No modifiers.
 		TryStatement
+	| UnitStatement<mods>
 	|
+		(. mods.Check(); .) // No modifiers.
 		WhileStatement
 	)
+.
+BracketedType (. ID(L"BracketedType", EXPR) .)
+=
+	"[" UserType "]"
+	(. if (la->kind != _comma) Err(la->line, la->col, L"Bracketed type cannot be last argument"); .)
 .
 /*C*/
 CallOrNew<int which, Modifiers *mods> (. ID(L"CallOrNew", STMT) .)
@@ -1484,30 +1548,6 @@ CallStatement (. ID(L"CallStatement", STMT) .)
 		.)
 	)
 .
-ClassOrObjectMember<int kind> (. ID(L"ClassOrObjectMember", STMT) .)
-=
-	(. Modifiers mods(this); .)
-	(. m_start_col = la->col; .)
-	[ ModifiersClause<mods> ]
-	(
-		 (. if (kind == _Object) Err(la->line, la->col, L"OBJECT cannot have CONSTRUCTOR"); .)
-		ConstructorStatement<mods>
-	|
-		(. if (kind == _Object) Err(la->line, la->col, L"OBJECT cannot have DESTRUCTOR"); .)
-		DestructorStatement<mods>
-	| ConstStatement<mods>
-	| DeclareStatement<mods>
-	| DimStatement<mods>
-	| EnumStatement<mods>
-	| EventStatement
-	| FunctionStatement<mods>
-	| MethodStatement<mods>
-	| NewStatement<&mods>
-	| PropertyStatement<mods>
-	| StructStatement<mods>
-	| SubStatement<mods>
-	)
-.
 ClassStatement<Modifiers &mods> (. ID(L"ClassStatement", STMT) .)
 =
 	(.
@@ -1527,14 +1567,7 @@ ClassStatement<Modifiers &mods> (. ID(L"ClassStatement", STMT) .)
 	[ WhereClause<_Class, generic> ]
 	SyncNewline<s_name>
 	{ WhereClause<_Class, generic> SyncNewline<s_name> }
-	(. context.push_back(_Class); .)
-//	{ Statement } // Conflict: assignment vs var decl
-	{ ClassOrObjectMember<_Class> }
-	(. context.pop_back(); .)
-	(. if (la->kind != _End) Err(line, col, L"CLASS without END"); .)
-	"End"
-	(. Optional(_Class); .)
-	Newline
+	BlockBody<_Class, line, col, L"CLASS without END">
 .
 ComparisonClause (. ID(L"ComparisonClause", STMT) .)
 =
@@ -1597,13 +1630,13 @@ ConstStatement<Modifiers &mods> (. ID(L"ConstStatement", STMT) .)
 		if (mods.Let(s_Shared)) Warn(line, col, L"@SHARED has no effect on CONST");
 		mods.Check();
 		.)
-		DeclaratorList<NO_BITS>
+		DeclaratorList
 	|
 		(. mods.Check(); .) // No modifiers.
 		(. option_type nThen = WITHOUT_THEN; .)
 		"If" TolExpression
 		[ "Then" (. nThen = WITH_THEN; .) ]
-		IfBlockStatement<line, col, nThen>
+		IfBlockStatement<false, line, col, nThen>
 	)
 	SyncNewline<s_name>
 .
@@ -1643,6 +1676,7 @@ ConstructorStatement<Modifiers &mods> (. ID(L"ConstructorStatement", STMT) .)
 	bool var_construct = false;
 	.)
 	"Constructor" (. line = t->line; col = t->col; .)
+	(. if (context.back() != _Class && context.back() != _Struct) SemErr(L"CONSTRUCTOR is available only in CLASS or STRUCT"); .)
 	[
 		DimOrVar
 		(. var_construct = true; .)
@@ -1653,15 +1687,9 @@ ConstructorStatement<Modifiers &mods> (. ID(L"ConstructorStatement", STMT) .)
 		(. if (var_construct) Err(L"CONSTRUCTOR DIM/VAR must have a parameter list"); .)
 	)
 	SyncNewline<s_name>
-	(. context.push_back(_Constructor); .)
 	(. if (var_construct) context.push_back(_Var); .)
-	{ Statement }
+	BlockBody<_Constructor, line, col, L"CONSTRUCTOR without END">
 	(. if (var_construct) context.pop_back(); .)
-	(. context.pop_back(); .)
-	(. if (la->kind != _End) Err(line, col, L"CONSTRUCTOR without END"); .)
-	"End"
-	(. Optional(_Constructor); .)
-	Newline
 .
 /*D*/
 DateTimeExpression (. ID(L"DateTime", EXPR) .)
@@ -1675,15 +1703,7 @@ DateTimeExpression (. ID(L"DateTime", EXPR) .)
 		time_literal
 	)
 .
-DeclarationStatement<Modifiers &mods> (. ID(L"DeclarationStatement", STMT) .)
-=
-	( ConstStatement<mods>
-	| DeclareStatement<mods>
-	| DimStatement<mods>
-	| NewStatement<&mods>
-	)
-.
-Declarator<bool bBits> (. ID(L"Declarator", STMT) .)
+Declarator (. ID(L"Declarator", STMT) .)
 =
 	Name
 	[
@@ -1700,18 +1720,18 @@ Declarator<bool bBits> (. ID(L"Declarator", STMT) .)
 		]
 		")"
 	]
-	[ TypeClause<bBits> ]
+	[ TypeClause ]
 	[
 		"=" [OptionalNewline]
 		InitializationExpression
 	]
 .
-DeclaratorList<bool bBits> (. ID(L"DeclaratorList", STMT) .)
+DeclaratorList (. ID(L"DeclaratorList", STMT) .)
 =
-	Declarator<bBits>
+	Declarator
 	{
 		WEAK comma [OptionalNewline]
-		Declarator<bBits>
+		Declarator
 	}
 .
 DeclareParameter<bool &isOptional> (. ID(L"DeclareParameter", STMT) .)
@@ -1749,7 +1769,7 @@ DeclareSignature<bool isAlias> (. ID(L"DeclareSignature", STMT) .)
 			")"
 		|
 			EnclosedParameterList<_Declare>
-			[ TypeClause<NO_BITS> ]
+			[ TypeClause ]
 		)
 	]
 .
@@ -1791,9 +1811,13 @@ DeclareStatement<Modifiers &mods> (. ID(L"DeclareStatement", STMT) .)
 		}
 		(. isAlias = false; .)
 	]
-	( DeclareSignature<isAlias>
-	| SyncNewline<s_name>
+	(
+		DeclareSignature<isAlias>
+	|
+		SyncNewline<s_name>
+		(. context.push_back(_Declare); .)
 		{ DeclareSignature<isAlias> Newline }
+		(. context.pop_back(); .)
 		(. if (la->kind != _End) Err(line, col, L"DECLARE without END"); .)
 		"End"
 		(. Optional(_Declare); .)
@@ -1806,18 +1830,15 @@ Deprecated (. ID(L"Deprecated", STMT) .)
 	[ string_literal ]
 	[ OptionalNewline ]
 .
-DestructorStatement<Modifiers &mods> (. ID(L"DestructorStatement", STMT) .)
+DestructorStatement (. ID(L"DestructorStatement", STMT) .)
 =
 	(.
 	int line, col;
 	.)
 	"Destructor" (. line = t->line; col = t->col; .)
+	(. if (context.back() != _Class) SemErr(L"DESTRUCTOR is available only in CLASS"); .)
 	Newline
-	{ Statement }
-	(. if (la->kind != _End) Err(line, col, L"DESTRUCTOR without END"); .)
-	"End"
-	(. Optional(_Destructor); .)
-	Newline
+	BlockBody<_Destructor, line, col, L"DESTRUCTOR without END">
 .
 DimOrVar (. ID(L"DimOrVar", STMT) .)
 =
@@ -1832,7 +1853,7 @@ DimStatement<Modifiers &mods> (. ID(L"DimStatement", STMT) .)
 	mods.Check();
 	.)
 	DimOrVar
-	DeclaratorList<NO_BITS>
+	DeclaratorList
 	SyncNewline<s_name>
 .
 DivisionFunction (. ID(L"Division", EXPR) .)
@@ -1894,12 +1915,20 @@ EnclosedArgumentList (. ID(L"EnclosedArgumentList", STMT) .)
 	"("
 	[ "?" ] // "(?)", the null-conditional index operator.
 	[OptionalNewline]
-	[ Argument ]
+	[
+		Argument
+	|
+		BracketedType
+	]
 	{
 		WEAK comma
 		[
 			[OptionalNewline]
-			Argument
+			(
+				Argument
+			|
+				BracketedType
+			)
 		]
 	}
 	")"
@@ -1948,12 +1977,13 @@ EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 	identifier
 	[
 		IsOrExtendsOrInherits
-		PrimitiveType<NO_BITS>
+		PrimitiveType
 		(. if (!IsIntegerType(t->kind)) Err(L"Base type must be an integer type or enumeration type"); .)
 	] (. else if (bFlags) {
 		Err(L"Enumeration must have a base type because of @FLAGS");
 	} .)
 	SyncNewline<s_name>
+	(. context.push_back(_Enum); .)
 	{
 		(. bool deprecated = false; .)
 		[ Deprecated (. deprecated = true; .) ]
@@ -1968,6 +1998,7 @@ EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 			Warn(la->line, la->col, L"@DEPRECATED has no effect on this constant. We recommend a line-break here.");
 		.)
 	}
+	(. context.pop_back(); .)
 	// Make sure last EnumMember ends with EOL.
 	(. if (t->kind != _line_break) SynErr(_line_break); .)
 	(. if (la->kind != _End) Err(line, col, L"ENUM without END"); .)
@@ -2100,7 +2131,7 @@ FormalParameter<param_validator &param> (. ID(L"FormalParameter", STMT) .)
 	] (. else param.Add(); .)
 	Name
 	[ "(" [ Rank ] ")" ]
-	[ TypeClause<NO_BITS> ]
+	[ TypeClause ]
 	(
 		"=" [OptionalNewline]
 		EnclosedExpression
@@ -2121,6 +2152,13 @@ ForStatement (. ID(L"ForStatement", STMT) .)
 		"In" InitializationExpression
 	|
 		LoopControlVariable
+		[
+			"In"
+			(. Err(L"Error with two possible causes: "
+				L"(1) FOR EACH is missing EACH. "
+				L"(2) Data type of FOR variable must be an integer."
+			); .)
+		]
 		"=" Expression
 		"To" Expression
 		[ "Step" Expression ]
@@ -2129,7 +2167,24 @@ ForStatement (. ID(L"ForStatement", STMT) .)
 	(. context.push_back(_For); .)
 	[ LoopBody<PRECONDITIONAL> ]
 	(. context.pop_back(); .)
-	(. if (la->kind != _End) Err(line, col, L"FOR without END"); .)
+	(.
+	if (la->kind != _End) {
+		Err(line, col, L"FOR without END");
+	} else { // There is an END, but is it the correct one?
+		int next = scanner->Peek()->kind;
+		if ( next != _line_break && next != _For ) {
+			Err(line, col, L"FOR without END");
+			Err(la->line, la->col, L"Incorrect END for this statement");
+
+			// If this END agrees with an open block, let the next outer block have it.
+			if (in_context(next)) return;
+
+			// If no such block is open, discard the line.
+			while (la->kind != _EOF && la->kind != _line_break) Get();
+			Newline();
+			return;
+		}
+	} .)
 	"End"
 	(. Optional(_For); .)
 	Newline
@@ -2167,19 +2222,9 @@ FunctionStatement<Modifiers &mods> (. ID(L"FunctionStatement", STMT) .)
 	FunctionSignature<mods, line, col, bodied, generic>
 	[ IF (bodied)
 		{ WhereClause<_Function, generic> SyncNewline<s_name> }
-		(.
-		if (bIterator) context.push_back(_Yield);
-		context.push_back(_Function);
-		.)
-		{ Statement }
-		(.
-		context.pop_back();
-		if (bIterator) context.pop_back();
-		.)
-	(. if (la->kind != _End) Err(line, col, L"FUNCTION without END"); .)
-	"End"
-	(. Optional(_Function); .)
-		Newline
+		(. if (bIterator) context.push_back(_Yield); .)
+		BlockBody<_Function, line, col, L"FUNCTION without END">
+		(. if (bIterator) context.pop_back(); .)
 	]
 .
 /*G*/
@@ -2200,11 +2245,13 @@ GotoStatement (. ID(L"GotoStatement", STMT) .)
 IdentifierStatement (. ID(L"IdentifierStatement", STMT) .)
 =
 	// Related: SimpleExpression
+	(.
+	if (_Base == t->kind) { // KLUDGE: Called from `BaseClause`.
+		// TODO: Test for base class.
+	} else .)
 	(
 		Name
 		[ TypeArgumentList ]
-	|
-		"Base"
 	|
 		"Self"
 	)
@@ -2220,34 +2267,59 @@ IdentifierStatement (. ID(L"IdentifierStatement", STMT) .)
 	[ IF (IsAssignmentOp())
 		AssignmentStatement
 	|
+		(. // Check for typo.
+		if ( _identifier == t->kind && Matches(L"ForEach") ) Warn(t->line, t->col, L"Possibly you want FOR EACH?");
+		.)
 		CallOrNew<0, nullptr>
 	]
 .
-IfBlockStatement<int line, int col, option_type nThen> (. ID(L"IfBlockStatement", STMT) .)
+IfBlockStatement<bool bBlock, int line, int col, option_type nThen> (. ID(L"IfBlockStatement", STMT) .)
 =
 	(. bool bElseSeen = false; .)
 	(. Optional(_Then, nThen); .)
 	SyncNewline<s_name>
+	(. if (bBlock) context.push_back(_If); .)
 	{ Statement }
-	{	"Else" (. if (bElseSeen) SemErr(L"ELSE or ELSE IF cannot follow ELSE"); .)
-		( "If" TolExpression (. Optional(_Then); .)
-		| (. bElseSeen = true; .)
-		)
+	{
+		"Else"
+		(. if (bElseSeen) SemErr(L"ELSE or ELSE IF cannot follow ELSE"); .)
+		[
+			"If" TolExpression (. Optional(_Then); .)
+		] (. else bElseSeen = true; .)
 		SyncNewline<s_name>
 		{ Statement }
 	}
-	(. if (la->kind != _End) Err(line, col, L"IF without END"); .)
+	(. if (bBlock) context.pop_back(); .)
+	(.
+	if (la->kind != _End) {
+		Err(line, col, L"IF without END");
+	} else { // There is an END, but is it the correct one?
+		int next = scanner->Peek()->kind;
+		if ( next != _line_break && next != _If ) {
+			Err(line, col, L"IF without END");
+			Err(la->line, la->col, L"Incorrect END for this statement");
+
+			// If this END agrees with an open block, let the next outer block have it.
+			if (in_context(next)) return;
+
+			// If no such block is open, discard the line.
+			while (la->kind != _EOF && la->kind != _line_break) Get();
+			Newline();
+			return;
+		}
+	} .)
 	"End"
 	(. Optional(_If); .)
 .
 IfStatement (. ID(L"IfStatement", STMT) .)
 =
-	(. int line, col; .)
-	"If" (. line = t->line; col = t->col; .)
+	(. int line = la->line, col = la->col; .)
+	"If"
 	TolExpression
-	(	"Then"
+	(
+		"Then"
 		(
-			IfBlockStatement<line, col, WITH_THEN>
+			IfBlockStatement<true, line, col, WITH_THEN>
 		|
 			(. if (option.If_End) SemErr(L"IF must use block construct because of @OPTION"); .)
 			( SimpleStatement | SimpleStatementError )
@@ -2255,7 +2327,7 @@ IfStatement (. ID(L"IfStatement", STMT) .)
 			(. if (_semicolon == la->kind) Err(la->line, la->col, L"Cannot have more than one statement after THEN or ELSE"); .)
 		)
 	|
-		IfBlockStatement<line, col, WITHOUT_THEN>
+		IfBlockStatement<true, line, col, WITHOUT_THEN>
 	)
 	Newline
 .
@@ -2358,18 +2430,12 @@ LambdaExpression (. ID(L"Lambda", EXPR) .)
 LambdaFunction<int line, int col> (. ID(L"LambdaFunction", STMT) .)
 =
 	SyncNewline<s_name>
-	{ Statement }
-	(. if (la->kind != _End) Err(line, col, L"FUNCTION without END"); .)
-	"End"
-	(. Optional(_Function); .)
+	BlockBody<_Function, line, col, L"FUNCTION lambda without END", false>
 .
 LambdaSub<int line, int col> (. ID(L"LambdaSub", STMT) .)
 =
 	SyncNewline<s_name>
-	{ Statement }
-	(. if (la->kind != _End) Err(line, col, L"SUB without END"); .)
-	"End"
-	(. Optional(_Sub); .)
+	BlockBody<_Sub, line, col, L"SUB lambda without END", false>
 .
 LogicalExpression (. ID(L"Logical", EXPR) .)
 =
@@ -2397,7 +2463,7 @@ LogicalOperator (. ID(L"LogicalOperator", STMT) .)
 .
 LoopControlVariable (. ID(L"LoopControlVariable", STMT) .)
 =
-	( ObjectName [ AsTypeClause<NO_BITS> ]
+	( ObjectName [ AsTypeClause ]
 	| typed_identifier
 	)
 .
@@ -2464,19 +2530,9 @@ MethodStatement<Modifiers &mods> (. ID(L"MethodStatement", STMT) .)
 	int line, col;
 	.)
 	MethodSignature<mods, line, col>
-	(.
-	if (bIterator) context.push_back(_Yield);
-	context.push_back(_Method);
-	.)
-	{ Statement }
-	(.
-	context.pop_back();
-	if (bIterator) context.pop_back();
-	.)
-	(. if (la->kind != _End) Err(line, col, L"METHOD without END"); .)
-	"End"
-	(. Optional(_Method); .)
-	Newline
+	(. if (bIterator) context.push_back(_Yield); .)
+	BlockBody<_Method, line, col, L"METHOD without END">
+	(. if (bIterator) context.pop_back(); .)
 .
 MethodSignature<Modifiers &mods, int &line, int &col> (. ID(L"MethodSignature", STMT) .)
 =
@@ -2669,40 +2725,14 @@ Module (. ID(L"Module", STMT) .)
 		SyncNewline<s_name>
 		(. if (_Where == la->kind) Err(la->line, la->col, L"WHERE must be on the same logical line as REQUIRE"); .)
 	}
-	{
-		(. Modifiers mods(this); .)
-		(. m_start_col = la->col; .)
-		[ ModifiersClause<mods> ]
-		(
-			ModuleMember<mods>
-		|
-			ModuleStatement<(module_type == _Sub), mods>
-		)
-	}
+	{ ModuleStatement<(module_type == _Sub)> }
 .
-ModuleMember<Modifiers &mods> (. ID(L"ModuleMember", STMT) .)
+ModuleStatement<bool bProcEntry> (. ID(L"ModuleStatement", STMT) .)
 =
-	( BaseUnitStatement<mods>
-	| ClassStatement<mods>
-	| ConstStatement<mods>
-	| DeclareStatement<mods>
-	| DimStatement<mods>
-	| EnumStatement<mods>
-	| FunctionStatement<mods>
-	| MethodStatement<mods>
-///	| NamespaceStatement<mods>
-	| NewStatement<&mods>
-	| ObjectStatement<&mods>
-	| PropertyStatement<mods>
-	| StructStatement<mods>
-	| SubStatement<mods>
-	| TraitStatement<mods>
-	| UnitStatement<mods>
-	)
-.
-ModuleStatement<bool bProcEntry, Modifiers &mods> (. ID(L"ModuleStatement", STMT) .)
-=
-	(. if (bProcEntry) Warn(L"Executable statements at module level ignored when entry point is a procedure"); .)
+	///(. if (bProcEntry) Warn(L"Executable statements at module level ignored when entry point is a procedure"); .)
+	(. Modifiers mods(this); .)
+	(. m_start_col = la->col; .)
+	[ ModifiersClause<mods> ]
 	(
 		BlockStatement<mods>
 	|
@@ -2774,18 +2804,17 @@ NewBeginStatement (. ID(L"NewBeginStatement", STMT) .)
 		UserType
 	]
 	SyncNewline<s_name>
+	(. context.push_back(_New); .)
 	{
-		ArgumentList SyncSeparator<s_name>
-	|
-		(. if (_Call == limit) Err(la->line, la->col, L"Statement not permitted in collection initializer"); .)
-		(
-			NewStatement<nullptr>
+		( IF (_left_paren == la->kind)
+			EnclosedArgumentList
 		|
-			ObjectStatement<nullptr>
-		|
-			dot IdentifierStatement SyncNewline<s_name>
+			[ BracketedType comma ]
+			UnenclosedArgumentList<nullptr>
 		)
+		SyncSeparator<s_name>
 	}
+	(. context.pop_back(); .)
 	(. if (t->kind != _line_break) SynErr(_line_break); .)
 	(. if (la->kind != _End) Err(line, col, L"NEW...BEGIN without END"); .)
 	"End"
@@ -2865,11 +2894,7 @@ ObjectStatement<Modifiers *mods> (. ID(L"ObjectStatement", STMT) .)
 	[ IsOrExtendsOrInherits UserType ]
 	[ DoesClause ]
 	SyncNewline<s_name>
-	{ ClassOrObjectMember<_Object> }
-	(. if (la->kind != _End) Err(line, col, L"OBJECT without END"); .)
-	"End"
-	(. Optional(_Object); .)
-	Newline
+	BlockBody<_Object, line, col, L"OBJECT without END">
 .
 OptionalArgList (. ID(L"OptionalArgList", STMT) .)
 =
@@ -2897,7 +2922,7 @@ OptionalNewline (. ID(L"OptionalNewline", STMT) .)
 /*P*/
 PassableType (. ID(L"PassableType", STMT) .)
 =
-	( PrimitiveType<NO_BITS> | UserType )
+	( PrimitiveType | UserType )
 	[ Rank ]
 .
 PowerExpression (. ID(L"Power", EXPR) .)
@@ -2924,7 +2949,7 @@ PrimaryExpression (. ID(L"Primary", EXPR) .)
 				Name [ TypeArgumentList ]
 			]
 		}
-	| PrimitiveType<YES_BITS>
+	| PrimitiveType
 	|
 		"(" (. int line = t->line, col = t->col; .)
 		EnclosedExpression
@@ -2953,7 +2978,7 @@ PrimaryExpression (. ID(L"Primary", EXPR) .)
 		(. SemErr(L"Bad string literal - usually caused by missing quote(s) ('\"' or '\"\"')"); .)
 	)
 .
-PrimitiveType<bool bBits> (. ID(L"PrimitiveType", STMT) .)
+PrimitiveType (. ID(L"PrimitiveType", STMT) .)
 =
 	(. int kind = la->kind; .)
 	(
@@ -2973,7 +2998,7 @@ PrimitiveType<bool bBits> (. ID(L"PrimitiveType", STMT) .)
 		]
 	|
 		( "SBits" | "UBits" )
-		(. if (!bBits) SemErr(L"Bit field not permitted here"); .)
+		(. if (context.back() != _Struct) SemErr(L"Bit field not permitted here"); .)
 		[ "[" PassableType "]" ]
 		"(" integer_literal ")"
 	)
@@ -3002,7 +3027,7 @@ PropertySignature<Modifiers &mods, property_sig &sig> (. ID(L"PropertySignature"
 		EnclosedParameterList<_Property>
 		[ ReturnTypeClause ]
 	|
-		DeclaratorList<NO_BITS>
+		DeclaratorList
 	)
 	[ "Does" identifier dot identifier ]
 	SyncNewline<s_name>
@@ -3028,7 +3053,7 @@ PropertyStatement<Modifiers &mods> (. ID(L"PropertyStatement", STMT) .)
 	.)
 	PropertySignature<mods, sig>
 	[ IF (la->kind == _Get || la->kind == _Set)
-		[
+		{
 			"Get"
 			(. if (bWriteOnly) SemErr(L"Cannot have GET with @WriteOnly"); .)
 			(
@@ -3047,8 +3072,7 @@ PropertyStatement<Modifiers &mods> (. ID(L"PropertyStatement", STMT) .)
 				if (bIterator) context.pop_back();
 				.)
 			)
-		]
-		[
+		|
 			"Set"
 			(. if (bIterator || bReadOnly) SemErr(L"Cannot have SET with @Iterator or @ReadOnly"); .)
 			(. if (sig.dict_access) SemErr(L"Cannot have SET with dictionary access"); .)
@@ -3059,7 +3083,7 @@ PropertyStatement<Modifiers &mods> (. ID(L"PropertyStatement", STMT) .)
 			(. context.push_back(_Property); .)
 			{ Statement }
 			(. context.pop_back(); .)
-		]
+		}
 		(. if (la->kind != _End) Err(sig.line, sig.col, L"PROPERTY without END"); .)
 		"End"
 		(. Optional(_Property); .)
@@ -3135,7 +3159,7 @@ ReturnStatement (. ID(L"ReturnStatement", STMT) .)
 .
 ReturnTypeClause (. ID(L"ReturnTypeClause", STMT) .)
 =
-	( AsTypeClause<NO_BITS>
+	( AsTypeClause
 	| InUnitClause
 	)
 .
@@ -3232,8 +3256,6 @@ Statement (. ID(L"Statement", STMT) .)
 	(
 		BlockStatement<mods>
 	|
-		DeclarationStatement<mods>
-	|
 		(. mods.Check(); .) // No modifiers.
 		SimpleStatement
 		{ ";" SimpleStatement }
@@ -3289,65 +3311,12 @@ StructStatement<Modifiers &mods> (. ID(L"StructStatement", STMT) .)
 	"Struct" (. line = t->line; col = t->col; .)
 	identifier
 	[ TypeParameterList<_Struct> (. generic = true; .) ]
-	[ IsOrExtendsOrInherits ( PrimitiveType<NO_BITS> | UserType ) ]
+	[ IsOrExtendsOrInherits ( PrimitiveType | UserType ) ]
 	[ DoesClause ]
 	[ WhereClause<_Struct, generic> ]
 	SyncNewline<s_name>
 	{ WhereClause<_Struct, generic> SyncNewline<s_name> }
-	(. context.push_back(_Struct); .)
-
-	// Struct state.
-	{
-		(. Modifiers state_mods(this); .)
-		(. m_start_col = la->col; .)
-		[ ModifiersClause<state_mods> ]
-		(
-			(.
-			state_mods.Let(s_Deprecated);
-			state_mods.Let(s_Shared);
-		state_mods.Check();
-			.)
-			[ DimOrVar ] DeclaratorList<YES_BITS>
-			SyncNewline<s_name>
-		|
-			ConstStatement<state_mods>
-		|
-			EnumStatement<state_mods>
-		|
-			(. state_mods.Check(); .)
-			EventStatement
-		|
-			StructStatement<state_mods>
-		|
-			(. Err(la->line, la->col, L"STRUCT cannot have CLASS member"); .)
-			ClassStatement<state_mods>
-		)
-	}
-
-	// Struct procedures.
-	{
-		(. Modifiers proc_mods(this); .)
-		(. m_start_col = la->col; .)
-		(
-			ConstructorStatement<proc_mods>
-		|
-			FunctionStatement<proc_mods>
-		|
-			MethodStatement<proc_mods>
-		|
-			PropertyStatement<proc_mods>
-		|
-			SubStatement<proc_mods>
-		|
-			(. Err(la->line, la->col, L"STRUCT cannot have DESTRUCTOR"); .)
-			DestructorStatement<proc_mods>
-		)
-	}
-	(. context.pop_back(); .)
-	(. if (la->kind != _End) Err(line, col, L"STRUCT without END"); .)
-	"End"
-	(. Optional(_Struct); .)
-	Newline
+	BlockBody<_Struct, line, col, L"STRUCT without END">
 .
 SubSignature<Modifiers &mods, int &line, int &col, bool &bGeneric> (. ID(L"SubSignature", STMT) .)
 =
@@ -3407,19 +3376,9 @@ SubStatement<Modifiers &mods> (. ID(L"SubStatement", STMT) .)
 		WhereClause<_Sub, bGeneric>
 		SyncNewline<s_name>
 	}
-	(.
-	if (bIterator) context.push_back(_Yield);
-	context.push_back(_Sub);
-	.)
-	{ Statement }
-	(.
-	context.pop_back();
-	if (bIterator) context.pop_back();
-	.)
-	(. if (la->kind != _End) Err(line, col, L"SUB without END"); .)
-	"End"
-	(. Optional(_Sub); .)
-	Newline
+	(. if (bIterator) context.push_back(_Yield); .)
+	BlockBody<_Sub, line, col, L"SUB without END">
+	(. if (bIterator) context.pop_back(); .)
 .
 SyncNewline<const wchar_t *name> (. ID(L"SyncNewline", STMT) .)
 =
@@ -3473,24 +3432,16 @@ TraitStatement<Modifiers &mods> (. ID(L"TraitStatement", STMT) .)
 	[ WhereClause<_Trait, generic> ]
 	SyncNewline<s_name>
 	{ WhereClause<_Trait, generic> SyncNewline<s_name> }
+	(. std::array<int, 9> can {{ _at_sign, _Const, _Dim, _Var, _Function, _Method, _Property, _Struct, _Sub }}; .)
+	(. context.push_back(_Trait); .)
 	{
-		(. Modifiers member_mods(this); .)
-		(. m_start_col = la->col; .)
-		[ ModifiersClause<member_mods> ]
-		(
-			DimStatement<member_mods>
-		|
-			FunctionStatement<member_mods>
-		|
-			MethodStatement<member_mods>
-		|
-			PropertyStatement<member_mods>
-		|
-			StructStatement<member_mods>
-		|
-			SubStatement<member_mods>
-		)
+		(.
+		if ( std::find(can.begin(), can.end(), la->kind) == can.end() ) {
+			Err(la->line, la->col, L"TRAIT cannot have this statement");
+} .)
+		Statement
 	}
+	(. context.pop_back(); .)
 	(. if (la->kind != _End) Err(line, col, L"TRAIT without END"); .)
 	"End"
 	(. Optional(_Trait); .)
@@ -3503,7 +3454,7 @@ TryStatement (. ID(L"TryStatement", STMT) .)
 	Newline
 	{ Statement }
 	{
-		"Catch" [ Name [ AsTypeClause<NO_BITS> ] ] SyncNewline<s_name>
+		"Catch" [ Name [ AsTypeClause ] ] SyncNewline<s_name>
 		(. context.push_back(_Catch); .)
 		{ Statement }
 		(. context.pop_back(); .)
@@ -3523,9 +3474,9 @@ TypeArgumentList (. ID(L"TypeArgumentList", STMT) .)
 =
 	'[' PassableType { WEAK comma PassableType } ']'
 .
-TypeClause<bool bBits> (. ID(L"TypeClause", STMT) .)
+TypeClause (. ID(L"TypeClause", STMT) .)
 =
-	( AsTypeClause<bBits>
+	( AsTypeClause
 	| InUnitClause
 	)
 .
@@ -3537,7 +3488,7 @@ TypeExpression (. ID(L"Type", EXPR) .)
 		( SimpleNonCallExpression | "Object" )
 	|
 		"As"
-		( PrimitiveType<NO_BITS> | UserType )
+		( PrimitiveType | UserType )
 	|
 		InUnitClause
 	]
@@ -3575,8 +3526,10 @@ UnenclosedArgumentList<int *pCallOrNew> (. ID(L"UnenclosedArgumentList", STMT) .
 =
 	(.
 	int nBegins = 0;
-	if (pCallOrNew && _Call != *pCallOrNew) nBegins = 1; // Can have Begin.
-	.)
+	if ( _New == context.back()
+	|| (pCallOrNew && _Call != *pCallOrNew) ) {
+		nBegins = 1; // Can have Begin.
+	} .)
 	(
 		Argument
 	|
@@ -3592,13 +3545,18 @@ UnenclosedArgumentList<int *pCallOrNew> (. ID(L"UnenclosedArgumentList", STMT) .
 				(.
 				if (0 == nBegins) Err(la->line, la->col, L"Cannot use BEGIN in procedure call");
 				else if (++nBegins > 2) Err(la->line, la->col, L"Argument BEGIN must be last one in list");
-				else *pCallOrNew = _New;
+				else if (pCallOrNew) *pCallOrNew = _New;
 				.)
 				NewBeginStatement
 			)
 		|
 			(. if (nBegins > 1) Err(la->line, la->col, L"Argument BEGIN must be last one in list"); .)
 			Argument
+		|
+			BracketedType
+		|
+			(. Err(la->line, la->col, L"BEGIN must be on a new line"); .)
+			NewBeginStatement
 		|
 			// Default positional parameter.
 		)
@@ -3698,6 +3656,8 @@ UnitStatement<Modifiers &mods> (. ID(L"UnitStatement", STMT) .)
 	mods.Check();
 	.)
 	"Unit" (. int line = t->line, col = t->col; .)
+	(. if (context.back() != _Program && context.back() != _Library) SemErr(L"UNIT must be at module level (PROGRAM or LIBRARY)"); .)
+
 	UnitAlias { UnitAlias }
 	[
 		[ "(" identifier InUnitClause ")" ]
@@ -3705,12 +3665,15 @@ UnitStatement<Modifiers &mods> (. ID(L"UnitStatement", STMT) .)
 		Expression // TODO: Constant expression.
 	]
 	SyncNewline<s_name>
-	[ IF (_When == la->kind)
+	[ IF (la->kind == _When)
 		(. context.push_back(_Unit); .)
-		{
 		"When" ComparisonClause
 		SyncNewline<s_name>
 		{ Statement }
+		{
+			"When" ComparisonClause
+			SyncNewline<s_name>
+			{ Statement }
 		}
 		(. context.pop_back(); .)
 		(. if (la->kind != _End) Err(line, col, L"UNIT without END"); .)
@@ -3768,7 +3731,7 @@ WhenStatement<bool isPreconditional, when_map &whens> (. ID(L"WhenStatement", ST
 WhereClause<int block, bool generic> (. ID(L"WhereClause", STMT) .)
 =
 	"Where"
-	(. if (!generic) SemErr(L"Declared element is missing generic type parameter(s)"); .)
+	(. if (!generic) SemErr(L"WHERE without generic type parameter(s)"); .)
 	Constraint<block>
 	{
 		WEAK comma [OptionalNewline]
@@ -3802,7 +3765,7 @@ YieldStatement (. ID(L"YieldStatement", STMT) .)
 	"Yield"
 	(.
 	if (!in_context(_Yield))
-	    SemErr(L"Cannot use YIELD without @ITERATOR on procedure");
+	    SemErr(L"YIELD without @ITERATOR on procedure");
 	if (std::find_if(context.rbegin(), context.rend(),
 	    [](int i) { return (_Catch == i || _Finally == i); }) != context.rend())
 	    SemErr(L"Cannot use YIELD in CATCH or FINALLY");
