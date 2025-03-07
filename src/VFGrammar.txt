@@ -2267,6 +2267,13 @@ IdentifierStatement (. ID(L"IdentifierStatement", STMT) .)
 	[ IF (IsAssignmentOp())
 		AssignmentStatement
 	|
+		// Variable declaration (`foo AS type` or `bar IN unit`).
+		TypeClause
+		[
+			"=" [OptionalNewline]
+			InitializationExpression
+		]
+	|
 		(. // Check for typo.
 		if ( _identifier == t->kind && Matches(L"ForEach") ) Warn(t->line, t->col, L"Possibly you want FOR EACH?");
 		.)
