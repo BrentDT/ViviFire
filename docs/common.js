@@ -38,6 +38,14 @@ document.write(`<footer aria-label="footer">
 if (!chm && document.lastModified) document.write(lastModifiedOrReviewed());
 document.write('</footer>');
 
+// Add 'Help' to the heading 'Syntax'.
+var syntax = document.querySelector('h2+div.language-vivifire.syntax')?.previousElementSibling;
+if (syntax) {
+	syntax.style.position = 'relative';
+	syntax.innerHTML +=
+		'<span style="display: inline-block; position: absolute; right: 20px; font-size: 1rem; font-wait: normal;">[<a href="Typographic_Conventions.html" target="_blank">Help</a>]</span>';
+}
+
 function getFileName(uri) {
 	return /[\/\\](\w+)\.html/.exec(uri)[1];
 }
