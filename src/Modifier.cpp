@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2024 Brent D. Thorn
+ * Copyright 2025 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.com/.
  *

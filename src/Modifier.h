@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2024 Brent D. Thorn
+ * Copyright 2025 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.com/.
  *
@@ -42,6 +42,7 @@ typedef struct Modif Modif_t;
 
 ARGUMENTLESS_MODIF(Abstract, L"@ABSTRACT")
 ARGUMENTLESS_MODIF(Backed, L"@BACKED")
+ARGUMENTLESS_MODIF(Closed, L"@CLOSED")
 ARGUMENTLESS_MODIF(Const, L"@CONST")
 ARGUMENTLESS_MODIF(Flags, L"@FLAGS")
 ARGUMENTLESS_MODIF(Iterator, L"@ITERATOR")
@@ -51,7 +52,6 @@ ARGUMENTLESS_MODIF(Override, L"@OVERRIDE")
 ARGUMENTLESS_MODIF(ReadOnly, L"@READONLY")
 ARGUMENTLESS_MODIF(Shared, L"@SHARED")
 ARGUMENTLESS_MODIF(Strict, L"@STRICT")
-ARGUMENTLESS_MODIF(Unique, L"@UNIQUE")
 ARGUMENTLESS_MODIF(WriteOnly, L"@WRITEONLY")
 
 #undef ARGUMENTLESS_MODIF

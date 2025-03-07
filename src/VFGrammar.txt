@@ -880,8 +880,12 @@ bool IsIdentifier(int kind) {
 	return (kind == _identifier || kind == _typed_identifier || kind == _hash);
 }
 
-bool IsIntegerType(int kind) {
+bool IsEnumBaseType(int kind) {
 	switch (kind) {
+	case _identifier:
+	case _Char: case _String:
+	case _Fixed64: case _Fixed128:
+	case _Real32: case _Real64: case _Real128:
 	case _Int8: case _Int16: case _Int32: case _Int64: case _Int128:
 	case _UInt8: case _UInt16: case _UInt32: case _UInt64: case _UInt128:
 		return true;
@@ -1960,14 +1964,12 @@ EnclosedParameterList<int parent> (. ID(L"EnclosedParameterList", STMT) .)
 EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 =
 	(.
-	bool bFlags{}, bMustUse{}, bOpen{}, bStrict{}, bUnique{};
+	bool bClosed{}, bFlags{}, bMustUse{};
 	if (mods.Count()) {
 		mods.Let(s_Deprecated);
+		bClosed     = mods.Let(s_Closed);
 		bFlags    = mods.Let(s_Flags);
 		bMustUse  = mods.Let(s_MustUse);
-		bOpen     = mods.Let(s_Open);
-		bStrict   = mods.Let(s_Strict);
-		bUnique   = mods.Let(s_Unique);
 		mods.Check();
 	}
 
@@ -1977,8 +1979,8 @@ EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 	identifier
 	[
 		IsOrExtendsOrInherits
-		PrimitiveType
-		(. if (!IsIntegerType(t->kind)) Err(L"Base type must be an integer type or enumeration type"); .)
+		( PrimitiveType | UserType )
+		(. if (!IsEnumBaseType(t->kind)) Err(L"Base type must be an integer type or enumeration type"); .)
 	] (. else if (bFlags) {
 		Err(L"Enumeration must have a base type because of @FLAGS");
 	} .)
@@ -2593,6 +2595,9 @@ Modifier<struct Modif *&pMod> (. ID(L"Modifier", STMT) .)
 		case L'B': case L'b':
 			if (Matches(L"Backed")) pMod = new BackedModif(line, col);
 			break;
+		case L'C': case L'c':
+			if (Matches(L"Closed")) pMod = new ClosedModif(line, col);
+			break;
 		case L'D': case L'd':
 			if (Matches(L"Deprecated")) {
 				wchar_t *pVal = nullptr;
@@ -2643,9 +2648,6 @@ Modifier<struct Modif *&pMod> (. ID(L"Modifier", STMT) .)
 				}
 				pMod = new TestModif(line, col, arg);
 			}
-			break;
-		case L'U': case L'u':
-			if (Matches(L"Unique")) pMod = new UniqueModif(line, col);
 			break;
 		case L'W': case L'w':
 			if (Matches(L"WriteOnly")) pMod = new WriteOnlyModif(line, col);
