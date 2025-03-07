@@ -26,40 +26,40 @@
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <pre><code>[ @Shared ] _
-[ New ] class_name object_name [ , argument_list ]
-[ Begin [ default_type | Call [ method_name ] ]
-    [ statements ]
-End [ New | class_name ] ]&#10;</code></pre>
+[ New ] class_name object_name [ , argument_list ] [ ,
+  Begin [ default_type | Call [ method_name ] ]
+      argument_list
+      &hellip;
+  End [ New | class_name ] ]&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="at">@Shared</code></dt>
 <dd>Optional modifier &ndash; There can be only one instance for all classes or procedure calls.</dd>
 <dt><code class="kw">New</code></dt>
-<dd>At the start of the statement, the keyword is usually optional.</dd>
-<dd>Mandatory if the statement is nested in a different statement of the same type.</dd>
+<dd>Optional keyword.</dd>
 <dd>Mandatory if the module contains the directive <code>@Option New</code>.</dd>
 <dt><code class="id">class_name</code></dt>
 <dd>Mandatory name of a class.</dd>
 <dt><code class="id">object_name</code></dt>
 <dd>Mandatory name for the object.</dd>
 <dt><code class="id">argument_list</code></dt>
-<dd>Optional &ndash; One or more expressions with a comma between each.</dd>
+<dd>One or more expressions with a comma between each.</dd>
+<dd>Optional on the first line.</dd>
+<dd>Mandatory between <code class="kw">Begin</code> and <code class="kw">Eng</code>.
+You can write each one on a different line.
+Alternatively, you can write many on one line with a semicolon (<code class="op">;</code>) between each.</dd>
 <dt><code class="kw">Begin</code></dt>
-<dd>Optional keyword that starts the block construct.</dd>
+<dd>Keyword that starts the block construct.</dd>
 <dt><code class="id">default_type</code></dt>
-<dd>Optional data type that the compiler will use for the subsequent statements, if the data type is not specified.
-The data type must be related to the type specified in a constructor of <code class="id">class_name</code>.</dd>
+<dd>Optional data type that the compiler will use for the subsequent argument lists, if the data type is not specified.</dd>
 <dt><code class="id">method_name</code></dt>
-<dd>Optional name of the method of <code class="id">class_name</code> to call for each argument list in <code class="id">statements</code>.
+<dd>Optional name of the method of <code class="id">class_name</code> to call for each argument list.
 It must come after the keyword <code class="kw">Call</code>.
-If you supply <code class="kw">Call</code> without <code class="id">method_name</code>, the default is <code>Add</code>.</dd>
-<dt><code class="id">statements</code></dt>
-<dd>Mandatory in the block construct, one or more object-creation statements.
-See the sections &ldquo;Permitted members&rdquo; for more information.</dd>
+If you supply <code class="kw">Call</code> without <code class="id">method_name</code>, the default is &ldquo;<code>Add</code>&rdquo;.</dd>
 <dt><code class="kw">End</code></dt>
 <dd>Completes the block construct.
-You can also use one of <code class="kw">End New</code> or <code class="kw">End</code>&nbsp;<code class="id">class_name</code>.
+You can also use (1) <code class="kw">End New</code> or (2) <code>End class_name</code>.
 And you can make one of these mandatory with the directive <code class="at">@Option</code>.</dd>
 </dl>
 <h2>Instructions</h2>
@@ -72,57 +72,34 @@ And you can make one of these mandatory with the directive <code class="at">@Opt
 <li>If a constructor of the given type has an array parameter, you can declare elements with the block construct.</li>
 <li>If you must enter data into the variable with many calls to the same method, there is a construct for that.</li>
 </ul>
-<h2>Passing an array argument</h2>
-<p>You can use the block construct when a constructor for a class has an object-array parameter.
-Each object-creation statement between <code class="kw">Begin</code> and <code class="kw">End</code> puts a reference to that object into the array.</p>
-<h3 id="Permitted_members">Permitted members</h3>
-<p>The array-passing construct lets you use four (4) different statements:</p>
-<ul>
-<li><code class="kw">New</code></li>
-<li>Argument list</li>
-<li><code class="kw">Object</code></li>
-<li>Procedure call</li>
-</ul>
-<h4><code>New</code> members</h4>
-<p>The statement block of <code class="kw">New</code> can contain other such statements.
-You can nest them to a large depth.
-But, we recommend that you keep the number of levels to a minimum.</p>
-<p>The keyword <code class="kw">New</code> is optional in the first line of the statement.
-But, <code class="kw">New</code> is mandatory for some statements in the block construct.</p>
-<p>It is mandatory if:
-(1) the statement also uses the block construct, or (2) it has a different data type from <code class="id">default_type</code>.</p>
-<h4>Argument-list members</h4>
-<p>It is not necessary to write the keyword <code class="kw">New</code> and <code class="id">class_name</code> again and again.
-If the statement block has many objects with the same data type, you can supply only the argument list.
-You can write the arguments between parentheses (<code class="op">(&hellip;)</code>) or without them.
+<h3>Block construct</h3>
+<p>TODO</p>
+<p>You can write the arguments between parentheses (<code class="op">( )</code>) or without them.
 This manual always writes them without parentheses.</p>
-<p>You can use a child class of the declared data type for most or all of the statements.
+<p>If you want, you can write two or more argument lists on one line.
+You put a semicolon (<code class="op">;</code>) between each argument list.
+A semicolon at the end of a line is also permitted.</p>
+<h3>Passing an array argument</h3>
+<p>You can use the block construct when a constructor for a class has an object-array parameter.
+Each argument list between <code class="kw">Begin</code> and <code class="kw">End</code> makes a new object.
+These objects go into the array in the sequence given.</p>
+<p>An argument list does not let you give the reference a name.
+If you must give an object a name, use <span class="kws"><code>Dim</code>, <code>New</code>, or <code>Object</code></span>, then subsequently pass it as an argument.</p>
+<p>If necessary, you can use a child class of the data type of the parameter.
 You write the class name after the keyword <code class="kw">Begin</code>.
-For all other statements with a different data type, you must use the full statement with <code class="kw">New</code> and the data type.</p>
+To use a different child class, you must start the argument list with the name of the class between brackets (<code class="op">[ ]</code>) and a comma.</p>
 <p>Some objects use <code class="kw">#Null</code> for special effects.
 For example, the class <code>menu</code> uses it to show a separator.
 ViviFire lets you use a vertical bar (<code class="op">|</code>) as an alternative to <code class="kw">#Null</code> when passed as an argument.
 you can also write one or more hyphens after this symbol to help it show better.
 There is no limit on the number of hyphens, but this manual usually uses 4 hyphens (<code>|----</code>).</p>
-<h4><code>Object</code> members</h4>
-<p>The statement <code class="kw">Object</code> makes an instance of a child class.
-If you do not supply a parent class for the object, the default is the type of the array argument (or <code class="id">default_type</code>, if given).
-But if you do supply the parent, it must be a child of the default class.</p>
-<h4>Procedure-call members</h4>
-<p>Procedure calls in the block construct can only be methods and properties of the class <code class="id">class_name</code>.
-They must start with a dot (<code class="op">.</code>) before the procedure name.</p>
-<h2>Initializing a collection</h2>
+<h3>Initializing a collection</h3>
 <p>This block construct looks almost the same as the usual block construct.
 The first difference is the line that starts with <code class="kw">Begin call</code>.
 After these keywords, you can optionally write the name of a method.
 The method must be one supplied by the type <code class="id">class_name</code>.
-If you do not give a method, the Default name is <code>Add</code>.</p>
-<h3>Permitted members</h3>
-<p>With the collection-initializer construct, the only permitted member is the argument list.
-If you want, you can write two or more argument lists on one line.
-You put a semicolon (<code class="op">;</code>) between each argument list.
-A semicolon at the end of a line is also permitted.</p>
-<h2>Changes in syntax with @Option</h2>
+If you do not give a method, the Default name is &ldquo;<code>Add</code>&rdquo;.</p>
+<h3>Changes in syntax with @Option</h3>
 <p>There are two areas where you can change the syntax of the statement:</p>
 <ul>
 <li><code>@Option New</code></li>
@@ -152,7 +129,7 @@ Menu FileMenu, "&File", "&amp;Open...", DoOpen, |, "E&amp;xit", DoExit&#10;</cod
 <hr>
 <p>Then we write the example again as a block construct.</p>
 <div class="language-vivifire listing">
-<pre><code>New Menu FileMenu, "&amp;File"
+<pre><code>New Menu FileMenu, "&amp;File",
 Begin
     "&amp;Open...", DoOpen
     |----
@@ -165,17 +142,17 @@ The sub-menu has two commands: &ldquo;File&rdquo; and &ldquo;Folder&rdquo;.
 We cannot add a sub-menu to the one-line construct.
 But the block construct does not have this limit.</p>
 <div class="language-vivifire listing">
-<pre><code>Menu FileMenu, "&amp;File"
+<pre><code>Menu FileMenu, "&amp;File",
 Begin
-    New menu newMenu, "&New"
+    "&New",
     Begin
         "&File", DoNewFile
         "Fol&der", DoNewFolder
-    End Menu
+    End
     "&amp;Open...", DoOpen
     |----
     "E&amp;xit", DoExit
-End Menu&#10;</code></pre>
+End&#10;</code></pre>
 </div>
 <h3>Collection-initializer construct</h3>
 <p>In this example, we declare a list of strings and add some items.
@@ -183,7 +160,7 @@ The class <code>List</code> has a method (<code>Add</code>) to add one item at a
 Although we give it here, this name is not necessary because <code>Add</code> is the default.
 We supply the items in some argument lists, one for each call.</p>
 <div class="language-vivifire listing">
-<pre><code>List[String] fruits
+<pre><code>List[String] fruits,
 Begin Call Add
     "apple"; "banana"; "cherry";
     "peach"; "pear"; "pineapple";
