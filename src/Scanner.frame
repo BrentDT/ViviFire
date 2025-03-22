@@ -348,7 +348,8 @@ wchar_t* coco_string_create(const wchar_t *value, int startIndex, int length) {
 
 	if (value) { len = length; }
 	data = new wchar_t[len + 1];
-	wcsncpy(data, &(value[startIndex]), len);
+	///WAS wcsncpy(data, &(value[startIndex]), len);
+	wcsncpy_s(data, len + 1, &(value[startIndex]), len);
 	data[len] = 0;
 
 	return data;
@@ -405,8 +406,10 @@ wchar_t* coco_string_create_append(const wchar_t* data1, const wchar_t* data2) {
 
 	data = new wchar_t[data1Len + data2Len + 1];
 
-	if (data1) { wcscpy(data, data1); }
-	if (data2) { wcscpy(data + data1Len, data2); }
+	///WAS if (data1) { wcscpy(data, data1); }
+	if (data1) { wcscpy_s(data, data1Len+data2Len+1, data1); }
+	///WAS if (data2) { wcscpy(data + data1Len, data2); }
+	if (data2) { wcscpy_s(data + data1Len, data2Len + 1, data2); }
 
 	data[data1Len + data2Len] = 0;
 
@@ -416,7 +419,8 @@ wchar_t* coco_string_create_append(const wchar_t* data1, const wchar_t* data2) {
 wchar_t* coco_string_create_append(const wchar_t *target, const wchar_t appendix) {
 	int targetLen = coco_string_length(target);
 	wchar_t* data = new wchar_t[targetLen + 2];
-	wcsncpy(data, target, targetLen);
+	///WAS wcsncpy(data, target, targetLen);
+	wcsncpy_s(data, targetLen + 2, target, targetLen);
 	data[targetLen] = appendix;
 	data[targetLen + 1] = 0;
 	return data;
@@ -707,12 +711,13 @@ Scanner::Scanner(const unsigned char* buf, int len) {
 
 Scanner::Scanner(const wchar_t* fileName) {
 	FILE* stream;
-	char *chFileName = coco_string_create_char(fileName);
-	if ((stream = fopen(chFileName, "rb")) == NULL) {
+	///char *chFileName = coco_string_create_char(fileName);
+	///WAS if ((stream = fopen(chFileName, "rb")) == NULL) {
+	if (_wfopen_s(&stream, fileName, L"rb")) {
 		wprintf(L"--- Cannot open file %ls\n", fileName);
 		exit(1);
 	}
-	coco_string_delete(chFileName);
+	///coco_string_delete(chFileName);
 	buffer = new Buffer(stream, false);
 	Init();
 }
@@ -846,7 +851,8 @@ void Scanner::AppendVal(Token *t) {
 	t->val = (wchar_t*) heapTop;
 	heapTop = (void*) ((char*) heapTop + reqMem);
 
-	wcsncpy(t->val, tval, tlen);
+	///WAS wcsncpy(t->val, tval, tlen);
+	wcsncpy_s(t->val, tlen + 1, tval, tlen);
 	t->val[tlen] = L'\0';
 }
 

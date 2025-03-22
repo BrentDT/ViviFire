@@ -48,6 +48,8 @@ extern Args args;
 
 COMPILER ViviFire
 
+static_assert(sizeof(time_t) == 8);
+
 // The root of the AST. Memory is not freed automatically.
 AST::Module *module = nullptr;
 
@@ -704,35 +706,35 @@ std::wstring NamedString(wchar_t *s) {
 			s += 4;
 			if (s[0] != L'\0' && s[0] != L'_') goto bad_name;
 
-			time_t now;
+			struct tm utc; time_t now;
 			time(&now);
-			auto utc = gmtime(&now);
+			gmtime_s(&utc, &now);
 
 			std::wstring secs;
 
 			if (s[0] == L'\0') { // $TIME
 				//TODO
 			} else if (!_wcsicmp(L"_12HM", s)) { // $TIME_12HM
-				secs += (utc->tm_hour < 12) ? L" AM": L" PM";
-				if (utc->tm_hour > 12) utc->tm_hour -= 12;
-				else if (utc->tm_hour == 0) utc->tm_hour = 12;
+				secs += (utc.tm_hour < 12) ? L" AM": L" PM";
+				if (utc.tm_hour > 12) utc.tm_hour -= 12;
+				else if (utc.tm_hour == 0) utc.tm_hour = 12;
 			} else if (!_wcsicmp(L"_12HMS", s)) { // $TIME_12HMS
 				secs += L':';
-				if (utc->tm_sec < 10) secs += L'0';
-				secs += std::to_wstring(utc->tm_sec);
-				secs += (utc->tm_hour < 12) ? L" AM": L" PM";
-				if (utc->tm_hour > 12) utc->tm_hour -= 12;
-				else if (utc->tm_hour == 0) utc->tm_hour = 12;
+				if (utc.tm_sec < 10) secs += L'0';
+				secs += std::to_wstring(utc.tm_sec);
+				secs += (utc.tm_hour < 12) ? L" AM": L" PM";
+				if (utc.tm_hour > 12) utc.tm_hour -= 12;
+				else if (utc.tm_hour == 0) utc.tm_hour = 12;
 			} else if (!_wcsicmp(L"_24HM", s)) { // $TIME_24HM
 				// Nothing to do.
 			} else if (!_wcsicmp(L"_24HMS", s)) { // $TIME_24HMS
 				secs += L':';
-				if (utc->tm_sec < 10) secs += L'0';
-				secs += std::to_wstring(utc->tm_sec);
+				if (utc.tm_sec < 10) secs += L'0';
+				secs += std::to_wstring(utc.tm_sec);
 			} else goto bad_name;
 
 			wchar_t ws[16];
-			swprintf_s(ws, 15, L"%02d:%02d%ls", utc->tm_hour, utc->tm_min, secs.c_str());
+			swprintf_s(ws, 15, L"%02d:%02d%ls", utc.tm_hour, utc.tm_min, secs.c_str());
 			std::wstring res(ws);
 			return res;
 		}
@@ -3392,14 +3394,11 @@ SubStatement<Modifiers &mods> (. ID(L"SubStatement", STMT) .)
 SyncNewline<const wchar_t *name> (. ID(L"SyncNewline", STMT) .)
 =
 	(.
-	wchar_t *msg = NULL;
 	while (!errors->count // Try this to prevent too many errors.
 	    && !(la->kind == _EOF || la->kind == _line_break)) {
-		if (!msg) msg = coco_string_create_append(L"This symbol not expected in ", name);
 		Get();
-		Err(msg);
+		Err((std::wstring(L"This symbol not expected in ") + name).c_str());
 	}
-	coco_string_delete(msg);
 	.)
 	line_break { line_break }
 .
