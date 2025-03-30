@@ -17,6 +17,7 @@
 #include <cstdio>
 #include <io.h>
 #if defined(_WIN32)
+#include <conio.h>
 #include <windows.h>
 #include <psapi.h>  // For MinGW, also give the linker "-lpsapi".
 #else
@@ -46,16 +47,16 @@ bool separate_console () {
 }
 
 #if defined(_WIN32)
-wchar_t *FormatBytes (double size, wchar_t *buf) {
+wchar_t * format_bytes (float size) {
 // Returns a string containing a human-readable size for data given in bytes.
-// The 'buf' should point to a buffer at least 16 bytes in size.
-	 const wchar_t *units[] = { L"Bytes", L"KiB", L"MiB", L"GiB", L"TiB" };
-	int i = 0;
+	static wchar_t buf[16];
+	const wchar_t *units[] = { L"Bytes", L"KiB", L"MiB", L"GiB", L"TiB" };
+	int unit = 0;
 	while (size > 1024.0) {
 		size /= 1024.0;
-		i++;
+		unit++;
 	}
-	swprintf(buf, L"%.2f %ls", size, units[i]);
+	swprintf_s(buf, 16, L"%.1f %ls", size, units[unit]);
 	return buf;
 }
 
@@ -73,16 +74,15 @@ void PrintMemoryInfo ( DWORD processID ) {
 		return;
 	}
 	if ( GetProcessMemoryInfo( hProcess, &pmc, sizeof(pmc)) ) {
-		wchar_t buf[16];
-		wprintf( L"\tPageFaultCount: %u\n", pmc.PageFaultCount );
-		wprintf( L"\tPeakWorkingSetSize: %ls\n", FormatBytes(pmc.PeakWorkingSetSize, buf));
-		wprintf( L"\tWorkingSetSize: %ls\n", FormatBytes(pmc.WorkingSetSize , buf));
-		wprintf( L"\tQuotaPeakPagedPoolUsage: %ls\n", FormatBytes(pmc.QuotaPeakPagedPoolUsage, buf));
-		wprintf( L"\tQuotaPagedPoolUsage: %ls\n", FormatBytes(pmc.QuotaPagedPoolUsage, buf));
-		wprintf( L"\tQuotaPeakNonPagedPoolUsage: %ls\n", FormatBytes(pmc.QuotaPeakNonPagedPoolUsage, buf));
-		wprintf( L"\tQuotaNonPagedPoolUsage: %ls\n", FormatBytes(pmc.QuotaNonPagedPoolUsage, buf));
-		wprintf( L"\tPagefileUsage: %ls\n", FormatBytes(pmc.PagefileUsage, buf)); 
-		wprintf( L"\tPeakPagefileUsage: %ls\n", FormatBytes(pmc.PeakPagefileUsage, buf));
+		wprintf( L"\tPageFaultCount: %u\n", pmc.PageFaultCount);
+		wprintf( L"\tPeakWorkingSetSize: %ls\n", format_bytes(pmc.PeakWorkingSetSize));
+		wprintf( L"\tWorkingSetSize: %ls\n", format_bytes(pmc.WorkingSetSize));
+		wprintf( L"\tQuotaPeakPagedPoolUsage: %ls\n", format_bytes(pmc.QuotaPeakPagedPoolUsage));
+		wprintf( L"\tQuotaPagedPoolUsage: %ls\n", format_bytes(pmc.QuotaPagedPoolUsage));
+		wprintf( L"\tQuotaPeakNonPagedPoolUsage: %ls\n", format_bytes(pmc.QuotaPeakNonPagedPoolUsage));
+		wprintf( L"\tQuotaNonPagedPoolUsage: %ls\n", format_bytes(pmc.QuotaNonPagedPoolUsage));
+		wprintf( L"\tPagefileUsage: %ls\n", format_bytes(pmc.PagefileUsage));
+		wprintf( L"\tPeakPagefileUsage: %ls\n", format_bytes(pmc.PeakPagefileUsage));
 	}
 	CloseHandle( hProcess );
 }
@@ -131,8 +131,12 @@ int main(int argc, char *argv[]) {
 	
 	if (!args.Parse(argc, argv)) {
 		if (separate) {
-			wprintf(L"\nPress Enter to close... ");
-			wscanf(L"%*0c"); // Get char.
+			wprintf(L"\nPress any key to close... ");
+#if defined(_WIN32)
+			_getch();
+#else
+			getchar();
+#endif
 		}
 		return 1;
 	}
