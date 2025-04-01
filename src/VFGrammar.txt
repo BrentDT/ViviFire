@@ -1832,9 +1832,12 @@ DeclareStatement<Modifiers &mods> (. ID(L"DeclareStatement", STMT) .)
 .
 Deprecated (. ID(L"Deprecated", STMT) .)
 =
-	"@" (. if ( !Match(L"Deprecated") ) SemErr(L"@DEPRECATED expected"); .)
-	[ string_literal ]
-	[ OptionalNewline ]
+	(. Modifiers mods(this); .)
+	ModifiersClause<mods>
+	(.
+	mods.Let(s_Deprecated);
+	mods.Check();
+	.)
 .
 DestructorStatement (. ID(L"DestructorStatement", STMT) .)
 =
@@ -1988,9 +1991,9 @@ EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 	} .)
 	SyncNewline<s_name>
 	(. context.push_back(_Enum); .)
+		(. bool deprecated_const = false; .)
 	{
-		(. bool deprecated = false; .)
-		[ Deprecated (. deprecated = true; .) ]
+		[ Deprecated (. deprecated_const = true; .) ]
 		identifier
 		[
 			"=" [OptionalNewline]
@@ -1998,9 +2001,10 @@ EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 		] (. else if (option.Enum_equals) SemErr(L"Enumeration constant must have an initializer because of @OPTION"); .)
 		SyncSeparator<s_name>
 		(.
-		if (deprecated && t->kind == _semicolon && la->kind != _at_sign)
+		if (deprecated_const && t->kind == _semicolon && la->kind != _at_sign) {
 			Warn(la->line, la->col, L"@DEPRECATED has no effect on this constant. We recommend a line-break here.");
-		.)
+			deprecated_const = false; // Stop the warnings.
+		} .)
 	}
 	(. context.pop_back(); .)
 	// Make sure last EnumMember ends with EOL.
