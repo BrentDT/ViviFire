@@ -1338,9 +1338,9 @@ ArgumentList (. ID(L"ArgumentList", STMT) .)
 =
 	// Related: `OptionalArgList`.
 
-	// Disambiguate "(" args ")" from "(" expr ")".
-	// Given a paren, assume an enclosed argument list.
-	( IF (la->kind == _left_paren)
+	// Disambiguate `( args )` and `( expr )`.
+	// Given a `(`, think it an enclosed argument list unless followed by `If`.
+	( IF (_left_paren == la->kind && scanner->Peek()->kind != _If)
 		EnclosedArgumentList
 	|
 		UnenclosedArgumentList<nullptr>
@@ -2265,12 +2265,13 @@ IdentifierStatement (. ID(L"IdentifierStatement", STMT) .)
 	)
 	{
 		( dot
-		| ".?"
+		  ["?"]
 		| "?"
-		| "??"
+		  ["?"]
 		)
 		Name [ TypeArgumentList ]
-	| EnclosedArgumentList // Also is array subscript.
+	| // Argument list or array subscript (`foo ( ... )`).
+		EnclosedArgumentList
 	}
 	[ IF (IsAssignmentOp())
 		AssignmentStatement
@@ -2968,7 +2969,15 @@ PrimaryExpression (. ID(L"Primary", EXPR) .)
 	|
 		"(" (. int line = t->line, col = t->col; .)
 		EnclosedExpression
-		(. if (la->kind != _right_paren) Err(line, col, L"More left parentheses than right"); .)
+		(.
+		if (la->kind != _right_paren) {
+			if (la->kind != _line_break) Err(la->line, la->col, L"right_paren expected");
+			// Try to find the missing paren.
+			while (la->kind != _EOF && la->kind != _line_break && la->kind != _right_paren) Get();
+			if (la->kind == _right_paren) Get();
+			else Err(line, col, L"More left parentheses than right");
+		}
+		else .) // KLUDGE
 		")"
 	|
 		"If"
@@ -3223,9 +3232,9 @@ SimpleExpression (. ID(L"Simple", EXPR) .)
 	// Related: IdentifierStatement, SimpleNonCallExpression.
 	PrimaryExpression
 	{
-		( dot   // Member access
-		| ".?"  // Null-conditional member access (eg "#obj.?proc?")
-		| "??"  // Method call with null-conditional member access (eg "#proc1??proc2?")
+		( dot     // Member access
+		  ["?"]   // Null-conditional member access (eg "#obj.?proc?")
+		| "?" "?" // Method call with null-conditional member access (eg "#proc1??proc2?")
 		)
 		Name [ TypeArgumentList ]
 	| "!" Name  // Dictionary access
@@ -3237,9 +3246,9 @@ SimpleNonCallExpression (. ID(L"SimpleNonCall", EXPR) .)
 	// Related: IdentifierStatement, SimpleExpression.
 	PrimaryExpression
 	{
-		( dot   // Member access
-		| ".?"  // Null-conditional member access (eg "#obj.?proc?")
-		| "??"  // Method call with null-conditional member access (eg "#proc1??proc2?")
+		( dot     // Member access
+		  ["?"]   // Null-conditional member access (eg "#obj.?proc?")
+		| "?" "?" // Method call with null-conditional member access (eg "#proc1??proc2?")
 		)
 		Name [ TypeArgumentList ]
 	| "!" Name  // Dictionary access
