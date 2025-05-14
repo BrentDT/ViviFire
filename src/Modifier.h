@@ -19,7 +19,22 @@
 #include <typeinfo>
 #include <vector>
 #include "Parser.h"
-///#include "Scanner.h"
+
+/** Macros used by the parser.
+  Usage:
+	#define FLAGS X(Flag1); X(Flag2); X(Flag3); etc.
+	#define X _MODS_DECL_FLAGS
+	FLAGS
+	#undef X
+	#define X _MODS_INIT_FLAGS
+	if (mods.Count()) {
+		FLAGS
+		mods.Check();
+	}
+	#undef X
+*/
+#define _MODS_DECL_FLAGS(name) bool b##name{}
+#define _MODS_INIT_FLAGS(name) b##name = mods.Let(s_##name)
 
 class Parser;
 

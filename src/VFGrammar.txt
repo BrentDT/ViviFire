@@ -1969,18 +1969,19 @@ EnclosedParameterList<int parent> (. ID(L"EnclosedParameterList", STMT) .)
 EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 =
 	(.
-	bool bClosed{}, bFlags{}, bMustUse{};
+	#define FLAGS X(Closed); X(Flags); X(MustUse);
+	#define X _MODS_DECL_FLAGS
+	FLAGS
+	#undef X
+	#define X _MODS_INIT_FLAGS
 	if (mods.Count()) {
 		mods.Let(s_Deprecated);
-		bClosed     = mods.Let(s_Closed);
-		bFlags    = mods.Let(s_Flags);
-		bMustUse  = mods.Let(s_MustUse);
+		FLAGS
 		mods.Check();
 	}
-
-	int line, col;
+	#undef X
 	.)
-	"Enum" (. line = t->line; col = t->col; .)
+	"Enum" (. int line = t->line, col = t->col; .)
 	identifier
 	[
 		IsOrExtendsOrInherits
@@ -2530,18 +2531,17 @@ LoopBody<bool isPreconditional> (. ID(L"LoopBody", STMT) .)
 MethodStatement<Modifiers &mods> (. ID(L"MethodStatement", STMT) .)
 =
 	(.
-	bool bAbstract{}, bConst{}, bIterator{}, bMustUse{}, bOpen{}, bOverride{}, bShared{};
+	#define FLAGS X(Abstract); X(Const); X(Iterator); X(MustUse); X(Open); X(Override); X(Shared);
+	#define X _MODS_DECL_FLAGS
+	FLAGS
+	#undef X
+	#define X _MODS_INIT_FLAGS
 	if (mods.Count()) {
-		bAbstract = mods.Let(s_Abstract);
-		bConst    = mods.Let(s_Const);
 		mods.Let(s_Deprecated);
-		bIterator = mods.Let(s_Iterator);
-		bMustUse  = mods.Let(s_MustUse);
-		bOpen     = mods.Let(s_Open);
-		bOverride = mods.Let(s_Override);
-		bShared   = mods.Let(s_Shared);
+		FLAGS
 		mods.Check();
 	}
+	#undef X
 
 	int line, col;
 	.)
@@ -3059,19 +3059,17 @@ PropertySignature<Modifiers &mods, property_sig &sig> (. ID(L"PropertySignature"
 PropertyStatement<Modifiers &mods> (. ID(L"PropertyStatement", STMT) .)
 =
 	(.
-	bool bAbstract{}, bBacked{}, bIterator{}, bOpen{}, bOverride{}, bReadOnly{}, bShared{}, bWriteOnly{};
+	#define FLAGS X(Abstract); X(Backed); X(Iterator); X(Open); X(Override); X(ReadOnly); X(Shared); X(WriteOnly);
+	#define X _MODS_DECL_FLAGS
+	FLAGS
+	#undef X
+	#define X _MODS_INIT_FLAGS
 	if (mods.Count()) {
-		bAbstract  = mods.Let(s_Abstract);
-		bBacked    = mods.Let(s_Backed);
 		mods.Let(s_Deprecated);
-		bIterator  = mods.Let(s_Iterator);
-		bOpen      = mods.Let(s_Open);
-		bOverride  = mods.Let(s_Override);
-		bReadOnly  = mods.Let(s_ReadOnly);
-		bShared    = mods.Let(s_Shared);
-		bWriteOnly = mods.Let(s_WriteOnly);
+		FLAGS
 	mods.Check();
 	}
+	#undef X
 
 	property_sig sig;
 	.)
@@ -3381,16 +3379,18 @@ SubSignature<Modifiers &mods, int &line, int &col, bool &bGeneric> (. ID(L"SubSi
 SubStatement<Modifiers &mods> (. ID(L"SubStatement", STMT) .)
 =
 	(.
-	bool bConst{}, bIterator{}, bMustUse{}, bShared{};
+	#define FLAGS X(Const); X(Iterator); X(MustUse); X(Shared);
+	#define X _MODS_DECL_FLAGS
+	FLAGS
+	#undef X
+	#define X _MODS_INIT_FLAGS
 	if (mods.Count()) {
-		bConst    = mods.Let(s_Const);
 		mods.Let(s_Deprecated);
-		bIterator = mods.Let(s_Iterator);
-		bMustUse  = mods.Let(s_MustUse);
-		bShared   = mods.Let(s_Shared);
+		FLAGS
 		mods.Let(s_Test);
 		mods.Check();
 	}
+	#undef X
 
 	int line, col;
 	bool bGeneric = false;
