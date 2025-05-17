@@ -32,6 +32,7 @@
 		mods.Check();
 	}
 	#undef X
+	#undef FLAGS
 */
 #define _MODS_DECL_FLAGS(name) bool b##name{}
 #define _MODS_INIT_FLAGS(name) b##name = mods.Let(s_##name)

@@ -1980,6 +1980,7 @@ EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 		mods.Check();
 	}
 	#undef X
+	#undef FLAGS
 	.)
 	"Enum" (. int line = t->line, col = t->col; .)
 	identifier
@@ -2542,6 +2543,7 @@ MethodStatement<Modifiers &mods> (. ID(L"MethodStatement", STMT) .)
 		mods.Check();
 	}
 	#undef X
+	#undef FLAGS
 
 	int line, col;
 	.)
@@ -3070,6 +3072,7 @@ PropertyStatement<Modifiers &mods> (. ID(L"PropertyStatement", STMT) .)
 	mods.Check();
 	}
 	#undef X
+	#undef FLAGS
 
 	property_sig sig;
 	.)
@@ -3391,6 +3394,7 @@ SubStatement<Modifiers &mods> (. ID(L"SubStatement", STMT) .)
 		mods.Check();
 	}
 	#undef X
+	#undef FLAGS
 
 	int line, col;
 	bool bGeneric = false;
