@@ -74,15 +74,33 @@ If you must run the statements a known number of times, the statement <code clas
 <p>To find if a loop with <code class="kw">Do While</code> was not run because <code class="id">condition</code> was initially false, use the statement <code>When NONE</code>.</p>
 <p>The post-condition construct does not let you use <code>When NONE</code>.
 The statements always run a minimum of one time, because the condition comes last.</p>
+<p>The Post-condition construct permits you to write the initial line as <code class="kw">Do Exit When</code>.
+This is the only statement permitted on the same line with <code class="kw">Do</code>.</p>
 <p>See <a href="Exit_When_Clause.html">Exit When Clause</a> for more information.</p>
 <h2>Examples</h2>
+<h3>Pre-condition example</h3>
 <div class="language-vivifire listing">
-<pre><code>Do While
-Loop&#10;</code></pre>
+<pre><code>Var factorial = 1
+Var counter = 5
+
+Do While counter &gt; 0
+    factorial *= counter
+    counter -= 1
+Loop
+
+PrintLine factorial&#10;</code></pre>
 </div>
+<h3>Post-condition example</h3>
 <div class="language-vivifire listing">
-<pre><code>Do
-Loop While&#10;</code></pre>
+<pre><code>Var factorial = 1
+Var counter = 5
+
+Do
+    factorial *= counter
+    counter -= 1
+Loop While counter &gt; 0
+
+PrintLine factorial&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">

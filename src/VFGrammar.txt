@@ -1897,17 +1897,18 @@ DoesClause (. ID(L"DoesClause", STMT) .)
 .
 DoStatement (. ID(L"DoStatement", STMT) .)
 =
-	(. int line, col; .)
-	"Do" (. line = t->line; col = t->col; .)
-	(	// Do...Loop While/Until
-		Newline
+	"Do" (. int line = t->line, col = t->col; .)
+	(	// `Do...Loop While/Until`.
+		( Newline
+		| (. if (false) .) "Exit" // KLUDGE: Permit `Do Exit When`.
+		)
 		(. context.push_back(_Do); .)
 		[ LoopBody<POSTCONDITIONAL> ]
 		(. context.pop_back(); .)
 		(. if (la->kind != _Loop) Err(line, col, L"DO without LOOP"); .)
 		"Loop" WhileOrUntil TolExpression
 		SyncNewline<s_name>
-	|	// Do While/Until...Loop
+	|	// `Do While/Until...Loop`.
 		WhileOrUntil TolExpression
 		SyncNewline<s_name>
 		(. context.push_back(_Do); .)
@@ -1915,7 +1916,7 @@ DoStatement (. ID(L"DoStatement", STMT) .)
 		(. context.pop_back(); .)
 		"Loop"
 		[ WhileOrUntil (. SemErr(L"DO WHILE/UNTIL cannot have LOOP WHILE/UNTIL"); .) ]
-		Newline
+		SyncNewline<s_name>
 	)
 .
 /*E*/
