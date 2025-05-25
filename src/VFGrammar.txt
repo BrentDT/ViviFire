@@ -1391,7 +1391,7 @@ BaseUnitStatement<Modifiers &mods> (. ID(L"BaseUnitStatement", STMT) .)
 	mods.Let(s_Deprecated);
 	mods.Check();
 	.)
-	"Unit" identifier InUnitClause
+	"Unit" MandatoryIdent InUnitClause
 	[
 		"=" [OptionalNewline]
 		Expression
@@ -1562,11 +1562,10 @@ ClassStatement<Modifiers &mods> (. ID(L"ClassStatement", STMT) .)
 	bool bOpen     = mods.Let(s_Open);
 	mods.Check();
 
-	int line, col;
 	bool generic = false;
 	.)
-	"Class" (. line = t->line; col = t->col; .)
-	identifier
+	"Class" (. int line = t->line, col = t->col; .)
+	MandatoryIdent
 	[ TypeParameterList<_Class> (. generic = true; .) ]
 	[ IsOrExtendsOrInherits UserType ]
 	[ DoesClause ]
@@ -1653,7 +1652,7 @@ Constraint<int block> (. ID(L"Constraint", STMT) .)
 
 		identifier
 		[ (. c++; .)
-			( "<" | "<=" ) identifier [ ( "<" | "<=" ) identifier ]
+			( "<" | "<=" ) MandatoryIdent [ ( "<" | "<=" ) MandatoryIdent ]
 		]
 		[ (. c++; .)
 			"Is" ( "Class" | "Struct" | "Unit" )
@@ -1799,7 +1798,7 @@ DeclareStatement<Modifiers &mods> (. ID(L"DeclareStatement", STMT) .)
 		)
 		{
 			[ comma ]
-			identifier
+			MandatoryIdent
 			(.
 			if (Matches(L"ANSI")) {
 				if (bUtf16) SemErr(L"Cannot use ANSI with UTF16");
@@ -1984,7 +1983,7 @@ EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 	#undef FLAGS
 	.)
 	"Enum" (. int line = t->line, col = t->col; .)
-	identifier
+	MandatoryIdent
 	[
 		IsOrExtendsOrInherits
 		( PrimitiveType | UserType )
@@ -1997,7 +1996,7 @@ EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 		(. bool deprecated_const = false; .)
 	{
 		[ Deprecated (. deprecated_const = true; .) ]
-		identifier
+		MandatoryIdent
 		[
 			"=" [OptionalNewline]
 			Expression
@@ -2023,12 +2022,12 @@ EventSpecifier (. ID(L"EventSpecifier", STMT) .)
 	(. else .) // KLUDGE: Prevent a small token set.
 	[ "Base" | "Self" ]
 	(. else Err(L"Event specifier must start with an object, BASE, or SELF"); .)
-	dot identifier
+	dot MandatoryIdent
 .
 EventStatement (. ID(L"EventStatement", STMT) .)
 =
 	(. bool generic = false; .)
-	"Event" identifier 
+	"Event" MandatoryIdent
 	[ TypeParameterList<_Event> (. generic = true; .) ]
 	[ FormalParameterList<_Event> ]
 	[ WhereClause<_Event, generic> ]
@@ -2213,7 +2212,7 @@ FunctionSignature<Modifiers &mods, int &line, int &col, bool &bodied, bool &gene
 		)
 		[ WhereClause<_Function, generic> ]
 	|
-		"Does" identifier "." Name
+		"Does" MandatoryIdent dot Name
 		(. bodied = false; .)
 	)
 	SyncNewline<s_name>
@@ -2500,7 +2499,7 @@ LoopBody<bool isPreconditional> (. ID(L"LoopBody", STMT) .)
 			whens[id]++;
 			.)
 			{ WEAK comma
-				identifier
+				MandatoryIdent
 				(.
 				std::wstring id(t->val);
 				std::transform(id.begin(), id.end(), id.begin(), std::towupper);
@@ -2530,6 +2529,17 @@ LoopBody<bool isPreconditional> (. ID(L"LoopBody", STMT) .)
 	)
 .
 /*M*/
+MandatoryIdent
+=
+	// Related: `Name`.
+	(. // Make sure it is not a keyword.
+	if (la->kind >= _And && la->kind <= _Yield) { // FIXME: Initial and last keywords can change.
+		Get();
+		SemErr(L"Keyword cannot be used as an identifier here");
+		return;
+	} .)
+	identifier
+.
 MethodStatement<Modifiers &mods> (. ID(L"MethodStatement", STMT) .)
 =
 	(.
@@ -2700,7 +2710,7 @@ Module (. ID(L"Module", STMT) .)
 		context.push_back(_Program);
 		.)
 		[ "=" (. module_type = _Sub; module->procStart = true; .) ]
-		identifier (. module->Name(t->val); .)
+		MandatoryIdent (. module->Name(t->val); .)
 		SyncNewline<s_name>
 	]
 	(.
@@ -2711,7 +2721,7 @@ Module (. ID(L"Module", STMT) .)
 	.)
 	{ IF (_Where == la->kind)
 		"Where" (. int line = t->line, col = t->col; .)
-		identifier  (. wchar_t *id = coco_string_create(t->val); .)
+		MandatoryIdent  (. wchar_t *id = coco_string_create(t->val); .)
 		"="
 		[
 			DateTimeExpression
@@ -2730,12 +2740,12 @@ Module (. ID(L"Module", STMT) .)
 	{ IF (_Require == la->kind)
 		(. std::wstring qn; .)
 		"Require"
-		QualifiedName<qn, _identifier> [ "As" identifier ]
+		QualifiedName<qn, _identifier> [ "As" MandatoryIdent ]
 		(
 			{ WEAK comma
 			(. qn.clear(); .)
 				QualifiedName<qn, _identifier>
-				[ "As" identifier ]
+				[ "As" MandatoryIdent ]
 			}
 			(. if (_Where == la->kind) Err(la->line, la->col, L"Cannot use WHERE after a list"); .)
 		|
@@ -2786,7 +2796,14 @@ MultiplicativeExpression (. ID(L"Multiplicative", EXPR) .)
 /*N*/
 Name (. ID(L"Name", STMT) .)
 =
+	// Related: `MandatoryIdent`.
 	[ "#" ]
+	(.
+	if (la->kind >= _And && la->kind <= _Yield) { // FIXME: Initial and last keywords can change.
+		Get();
+		SemErr(L"Keyword cannot be used as an identifier here");
+		return;
+	} .)
 	(
 		identifier
 	|
@@ -2897,7 +2914,7 @@ NumericExpression<bool bMixedUnit> (. ID(L"Numeric", EXPR) .)
 ObjectName (. ID(L"ObjectName", STMT) .)
 =
 	[ "#" ]
-	identifier
+	MandatoryIdent
 .
 ObjectStatement<Modifiers *mods> (. ID(L"ObjectStatement", STMT) .)
 =
@@ -3056,7 +3073,7 @@ PropertySignature<Modifiers &mods, property_sig &sig> (. ID(L"PropertySignature"
 	|
 		DeclaratorList
 	)
-	[ "Does" identifier dot identifier ]
+	[ "Does" MandatoryIdent dot MandatoryIdent ]
 	SyncNewline<s_name>
 .
 PropertyStatement<Modifiers &mods> (. ID(L"PropertyStatement", STMT) .)
@@ -3169,7 +3186,7 @@ RequireComparison (. ID(L"RequireComparison", STMT) .)
 =
 	// TODO: strings can only be "=" or "<>".
 	( [ version_literal ( "<" | "<=" ) ]  // Eg 1.0.0 <= version < 2.0.0
-		identifier
+		MandatoryIdent
 		ComparisonOperator ( string_literal | version_literal )
 	| "(" RequireLogic ")"
 	)
@@ -3331,11 +3348,10 @@ StructStatement<Modifiers &mods> (. ID(L"StructStatement", STMT) .)
 	bool bMustUse  = mods.Let(s_MustUse);
 	mods.Check();
 
-	int line, col;
 	bool generic = false;
 	.)
-	"Struct" (. line = t->line; col = t->col; .)
-	identifier
+	"Struct" (. int line = t->line, col = t->col; .)
+	MandatoryIdent
 	[ TypeParameterList<_Struct> (. generic = true; .) ]
 	[ IsOrExtendsOrInherits ( PrimitiveType | UserType ) ]
 	[ DoesClause ]
@@ -3448,11 +3464,10 @@ TraitStatement<Modifiers &mods> (. ID(L"TraitStatement", STMT) .)
 	mods.Let(s_Deprecated);
 	mods.Check();
 
-	int line, col;
 	bool generic = false;
 	.)
-	"Trait" (. line = t->line; col = t->col; .)
-	identifier
+	"Trait" (. int line = t->line, col = t->col; .)
+	MandatoryIdent
 	[ TypeParameterList<_Trait> (. generic = true; .) ]
 	[ DoesClause ]
 	[ WhereClause<_Trait, generic> ]
@@ -3525,7 +3540,7 @@ TypeParameter<int parent> (. ID(L"TypeParameter", STMT) .)
 		( "In" | "Out" )
 		(. if (parent != _Event && parent != _Trait) SemErr(L"IN and OUT are permitted only with EVENT and TRAIT"); .)
 	]
-	identifier
+	MandatoryIdent
 .
 TypeParameterList<int parent> (. ID(L"TypeParameterList", STMT) .)
 =
@@ -3606,11 +3621,11 @@ UnitAlias (. ID(L"UnitAlias", STMT) .)
 		(. if (t->val[0] >= L'0' && t->val[0] <= L'2' && t->val[1] == L'\0') number = t->val[0] - L'0';
 		else SemErr(L"Number before unit name must be 0, 1, or 2"); .)
 	]
-	identifier 
+	MandatoryIdent
 	[
 		( "+" | "-" ) // Plurals by "unit+suffix" or "prefix-unit".
 		(. if (number > 0) SemErr(L"Unit name cannot have a plural part after 1 or 2"); .)
-		identifier
+		MandatoryIdent
 	]
 .
 UnitOrSuffix<int which> (. ID(L"UnitOrSuffix", EXPR) .)
@@ -3669,8 +3684,8 @@ UnitOrSuffix<int which> (. ID(L"UnitOrSuffix", EXPR) .)
 		.)
 	|
 		"("
-		identifier
-		{ [ "*" | "/" ] identifier }
+		MandatoryIdent
+		{ [ "*" | "/" ] MandatoryIdent }
 		")"
 	)
 .
@@ -3686,7 +3701,7 @@ UnitStatement<Modifiers &mods> (. ID(L"UnitStatement", STMT) .)
 
 	UnitAlias { UnitAlias }
 	[
-		[ "(" identifier InUnitClause ")" ]
+		[ "(" MandatoryIdent InUnitClause ")" ]
 		"=" [OptionalNewline]
 		Expression // TODO: Constant expression.
 	]
