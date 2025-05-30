@@ -2001,6 +2001,13 @@ EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 			"=" [OptionalNewline]
 			Expression
 		] (. else if (option.Enum_equals) SemErr(L"Enumeration constant must have an initializer because of @OPTION"); .)
+		(.
+		if (_comma == la->kind) {
+			Get();
+			// This error can be very frequent for a person that knows many other programming languages.
+			if (errors->count < 3) Err(L"Separator must be a semicolon (;)");
+			continue;
+		} .)
 		SyncSeparator<s_name>
 		(.
 		if (deprecated_const && t->kind == _semicolon && la->kind != _at_sign) {
