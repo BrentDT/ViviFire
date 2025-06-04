@@ -10,7 +10,7 @@ body {
 body, caption, td, th {
 	font-family: Tahoma, sans-serif;
 	font-size: 100%;
-	background-color: #E0E0E0;
+	background-color: #F5F5DC;
 	color: #333333;
 }
 dd, main li, p {
@@ -77,7 +77,7 @@ nav p:first-child, #strings {
 	display: inline;
 	list-style: none;
 	font-size: 85%;
-	background-color: #EAEAEA;
+	/* background-color: #EAEAEA; */
 }
 .breadcrumb ul {
 	padding: 0;
@@ -287,7 +287,7 @@ a[href^="Widening_and_Narrowing_Conversions."],
 @media (prefers-color-scheme: dark) {
 	body, caption, td, th {
 		background-color: #111;
-		color: #ddd;
+		color: #F5F5DC;
 	}
 	.breadcrumb ul, .breadcrumb ul li {
 		background-color: #000;

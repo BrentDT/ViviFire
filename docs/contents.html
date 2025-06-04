@@ -14,7 +14,33 @@
 <body>
 <main>
 <h1>Contents</h1>
-<p><label for="go">Go to letter</label>: <input id="go" type="text" maxlength="1"> <span id="msg" role="status" aria-live="polite"></span></p>
+<nav aria-labelledby="letter">
+<span id="letter">Go to letter</span>:
+<a href="#A">A</a>
+<a href="#B">B</a>
+<a href="#C">C</a>
+<a href="#D">D</a>
+<a href="#E">E</a>
+<a href="#F">F</a>
+<a href="#G">G</a>
+<a href="#H">H</a>
+<a href="#I">I</a>
+<a href="#K">K</a>
+<a href="#L">L</a>
+<a href="#M">M</a>
+<a href="#N">N</a>
+<a href="#O">O</a>
+<a href="#P">P</a>
+<a href="#Q">Q</a>
+<a href="#R">R</a>
+<a href="#S">S</a>
+<a href="#T">T</a>
+<a href="#U">U</a>
+<a href="#V">V</a>
+<a href="#W">W</a>
+<a href="#X">X</a>
+<a href="#Y">Y</a>
+</nav>
 <ul class="articles">
 <li><h3><a id="A" href="#A" accesskey="A">A</a></h3></li>
 <li><a href="Statements_1.html">A&ndash;D Statements</a></li>
@@ -291,27 +317,5 @@
 </ul>
 <hr>
 </main>
-<script>
-function bindEvent(elem, name, code) {
-	if (elem.addEventListener) {
-		elem.addEventListener(name, code, false);
-	} else if (elem.attachEvent) {
-		elem.attachEvent('on'+name, code);
-	}
-	}
-var msg = document.getElementById('msg');
-bindEvent(document, 'keydown', function(event) {
-	var k = event.key.toUpperCase();
-	if (k.length != 1 || event.ctrlKey) return;
-	msg.textContent = '';
-	var el = document.getElementById(k);
-	if (el) {
-		el.scrollIntoView(true);
-		el.focus();
-	} else {
-		msg.textContent = 'Sorry, no articles start with "' + k + '".';
-	}
-});
-</script>
 </body>
 </html>
