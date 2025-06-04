@@ -226,11 +226,18 @@ public:
 		}
 		delete [] tab;
 	}
+	
+	static inline int s_min = 0, s_max = 0; // MOD 2025-06-03
 
 	void set(const wchar_t *key, int val) {
 		Elem *e = new Elem(key, val);
 		int k = coco_string_hash(key) % 128;
 		e->next = tab[k]; tab[k] = e;
+		
+		// BEGIN MOD 2025-06-03
+		if (0 == s_min) s_min = val;
+		else if (val > s_max) s_max = val;
+		// END MOD
 	}
 
 	int get(const wchar_t *key, int defaultVal) {
@@ -292,6 +299,12 @@ public:
 	Token* Scan();
 	Token* Peek();
 	void ResetPeek();
+	
+	// BEGIN MOD 2025-06-03
+	bool IsKeyword(int val) const {
+		return (val >= keywords.s_min && val <= keywords.s_max);
+	}
+	// END MOD
 
 }; // end Scanner
 

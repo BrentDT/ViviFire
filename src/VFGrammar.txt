@@ -2540,7 +2540,7 @@ MandatoryIdent
 =
 	// Related: `Name`.
 	(. // Make sure it is not a keyword.
-	if (la->kind >= _And && la->kind <= _Yield) { // FIXME: Initial and last keywords can change.
+	if (scanner->IsKeyword(la->kind)) {
 		Get();
 		SemErr(L"Keyword cannot be used as an identifier here");
 		return;
@@ -2806,7 +2806,7 @@ Name (. ID(L"Name", STMT) .)
 	// Related: `MandatoryIdent`.
 	[ "#" ]
 	(.
-	if (la->kind >= _And && la->kind <= _Yield) { // FIXME: Initial and last keywords can change.
+	if (scanner->IsKeyword(la->kind)) {
 		Get();
 		SemErr(L"Keyword cannot be used as an identifier here");
 		return;
