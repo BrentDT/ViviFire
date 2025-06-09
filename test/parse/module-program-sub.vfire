@@ -1,0 +1,6 @@
+' Part of the ViviFire test suite.
+program = test
+
+sub test
+    var x = "This is a test"
+end sub
