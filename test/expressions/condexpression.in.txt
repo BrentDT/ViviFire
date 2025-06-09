@@ -1,6 +1,0 @@
-program condexpression
-
-a = if b then c else d
-a = if b <=> c (<) d (=) e (>) f
-a = if b <=> c (=) d (<>) e
-a = if b (<-10) c (<0) d (=0) e (>0) f (>10) g

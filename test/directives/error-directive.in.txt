@@ -1,4 +1,0 @@
-program errordirective
-
-@Error This is an error
-end

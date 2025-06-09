@@ -1,3 +1,0 @@
-This is a warning
-
--- 0 errors

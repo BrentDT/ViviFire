@@ -1,6 +1,0 @@
-library test
-
-struct point
-x as real64
-y as real64
-end struct
