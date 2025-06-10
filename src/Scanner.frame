@@ -236,7 +236,7 @@ public:
 		
 		// BEGIN MOD 2025-06-03
 		if (0 == s_min) s_min = val;
-		else if (val > s_max) s_max = val;
+		else s_max = val; // No condition necessary because values of `val` are sequential.
 		// END MOD
 	}
 
