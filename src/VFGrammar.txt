@@ -864,11 +864,11 @@ bool IsDateTime() {
 }
 
 bool IsDeclareParameterList() {
-	if (la->kind == _left_paren) {
-		int k = scanner->Peek()->kind;
-		if (k == _line_break) k = scanner->Peek()->kind;
-		if (k == _Optional) k = scanner->Peek()->kind;
-		return (k == _integer_literal);
+	if (_left_paren == la->kind) {
+		int kind = scanner->Peek()->kind;
+		if (_line_break == kind) kind = scanner->Peek()->kind;
+		if (_Optional == kind) kind = scanner->Peek()->kind;
+		if (_integer_literal == kind) return true;
 	}
 	scanner->ResetPeek();
 	return false;
@@ -1782,6 +1782,7 @@ DeclareStatement<Modifiers &mods> (. ID(L"DeclareStatement", STMT) .)
 =
 	(.
 	mods.Let(s_Deprecated);
+	mods.Let(s_Platform);
 	mods.Check();
 
 	int line, col;
@@ -2647,6 +2648,21 @@ Modifier<struct Modif *&pMod> (. ID(L"Modifier", STMT) .)
 			if (Matches(L"Open")) pMod = new OpenModif(line, col); else
 			if (Matches(L"Override")) pMod = new OverrideModif(line, col);
 			break;
+		case L'P': case L'p':
+			if (Matches(L"Platform")) {
+				if (_identifier == la->kind) {
+					Get();
+					std::wstring needle{L'|'};
+					wchar_t * pName = coco_string_create_lower(t->val);
+					needle += pName;
+					needle += L'|';
+					if (wcsstr(L"|win32|windows|", needle.c_str())) {
+						pMod = new PlatformModif(line, col); // TODO: Pass identifier as argument.
+					} else Err(L"Unknown identifier after @PLATFORM.");
+					delete pName;
+				} else Err(la->line, la->col, L"Missing mandatory identifier after @PLATFORM");
+			}
+			break;
 		case L'R': case L'r':
 			if (Matches(L"ReadOnly")) pMod = new ReadOnlyModif(line, col);
 			break;
@@ -2659,7 +2675,7 @@ Modifier<struct Modif *&pMod> (. ID(L"Modifier", STMT) .)
 					if (Matches(L"BINARY")) arg = SIModif::SIArg::BINARY; else
 					if (Matches(L"LARGE")) arg = SIModif::SIArg::LARGE; else
 					if (Matches(L"SMALL")) arg = SIModif::SIArg::SMALL;
-					else Err(L"Unknown identifier. After @SI only BINARY, LARGE, and SMALL are available.");
+					else Err(L"Unknown identifier after @SI. Only BINARY, LARGE, and SMALL are available.");
 				}
 				pMod = new SIModif(line, col, arg);
 			} else
