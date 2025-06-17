@@ -26,16 +26,23 @@
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
 <h3>One-line construct</h3>
-<pre><code>Declare [ library_name [ flags ] ] { Function | Sub } name _
+<pre><code>[ @Platform platform_name ] _
+Declare [ library_name [ flags ] ] { Function | Sub } name _
   [ Is canonical_name ] [ parameter_list ]&#10;</code></pre>
 <h3>Block construct</h3>
-<pre><code>Declare library_name [ flags ]
+<pre><code>[ @Platform platform_name ] _
+Declare library_name [ flags ]
   { Function | Sub } name [ Is canonical_name ] [ parameter_list ]
   &hellip;
 End [ Declare ]&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
+<dt><code class="at">@Platform</code></dt>
+<dd>Optional modifier tells the compiler that the element(s) is/are available only on the given platform.</dd>
+<dt><code class="id">platform_name</code></dt>
+<dd>Mandatory after <code class="at">@Platform</code>, the name of a platform.
+See <a href="Platform.html">@Platform</a> for a full list.</dd>
 <dt><code class="id">library_name</code></dt>
 <dd>Optional string literal with the name of a compiled library, for example, a dynamic link library (DLL).</dd>
 <dt><code class="id">flags</code></dt>
