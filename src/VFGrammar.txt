@@ -1375,13 +1375,12 @@ AsTypeClause (. ID(L"AsTypeClause", STMT) .)
 /*B*/
 BaseClause<Modifiers &mods> (. ID(L"BaseClause", STMT) .)
 =
-	"Base"
-	[ IF (la->kind == _Unit)
-		BaseUnitStatement<mods>
-	] (. else {
+	(. if (scanner->Peek()->kind != _Unit) {
 		IdentifierStatement();
 		SyncNewline(s_name);
+		return;
 	} .)
+	"Base" BaseUnitStatement<mods>
 .
 BaseUnitStatement<Modifiers &mods> (. ID(L"BaseUnitStatement", STMT) .)
 =
@@ -1661,7 +1660,7 @@ Constraint<int block> (. ID(L"Constraint", STMT) .)
 			"Does" UserType
 		}
 		[ (. c++; .)
-			"Constructor" ( "(" ")" | "?" )
+			"Constructor" "(" ")"
 		]
 		(. if (c == 0) SemErr(L"invalid Constraint"); .)
 	|
@@ -1922,9 +1921,7 @@ DoStatement (. ID(L"DoStatement", STMT) .)
 /*E*/
 EnclosedArgumentList (. ID(L"EnclosedArgumentList", STMT) .)
 =
-	"("
-	[ "?" ] // "(?)", the null-conditional index operator.
-	[OptionalNewline]
+	"(" [OptionalNewline]
 	[
 		Argument
 	|
@@ -2264,7 +2261,8 @@ IdentifierStatement (. ID(L"IdentifierStatement", STMT) .)
 =
 	// Related: SimpleExpression
 	(.
-	if (_Base == t->kind) { // KLUDGE: Called from `BaseClause`.
+	if (_Base == la->kind) { // KLUDGE: Called from `BaseClause`.
+		Get();
 		// TODO: Test for base class.
 	} else .)
 	(
@@ -2274,14 +2272,15 @@ IdentifierStatement (. ID(L"IdentifierStatement", STMT) .)
 		"Self"
 	)
 	{
-		( dot
-		  ["?"]
-		| "?"
-		  ["?"]
+		[ // Null-conditional operators.
+			"?"  (. if (HasWhitespace(1)) Err(L"Bad operator"); .)
+		]
+		( // Member access (eg `obj . member` or `#obj ?. member`).
+			"." Name [ TypeArgumentList ]
+		| // Argument list or array subscript (`proc ( args )` or `obj ( indexes )` or `#obj ?( indexes )`).
+			EnclosedArgumentList
+			// FIXME: `EnclosedArgumentList` + `CallOrNew` causes "LL1 warning in IdentifierStatement: left_paren is start & successor of deletable structure".
 		)
-		Name [ TypeArgumentList ]
-	| // Argument list or array subscript (`foo ( ... )`).
-		EnclosedArgumentList
 	}
 	[ IF (IsAssignmentOp())
 		AssignmentStatement
@@ -2998,16 +2997,6 @@ PrimaryExpression (. ID(L"Primary", EXPR) .)
 		StringExpression<s>
 	| [ "Class" | "Trait" ]
 		Name [ TypeArgumentList ]
-		{
-			// Syntactic sugar for argumentless proc call.
-			// Lets one do "proc?" or "proc1?proc2?proc3?" instead of
-			// "proc()" or "proc1().proc2().proc3()", respectively.
-
-			question
-			[ /// IF (IsIdentifier(la->kind))
-				Name [ TypeArgumentList ]
-			]
-		}
 	| PrimitiveType
 	|
 		"(" (. int line = t->line, col = t->col; .)
@@ -3274,13 +3263,16 @@ SimpleExpression (. ID(L"Simple", EXPR) .)
 	// Related: IdentifierStatement, SimpleNonCallExpression.
 	PrimaryExpression
 	{
-		( dot     // Member access
-		  ["?"]   // Null-conditional member access (eg "#obj.?proc?")
-		| "?" "?" // Method call with null-conditional member access (eg "#proc1??proc2?")
+		[ // Null-conditional operators.
+			"?" (. if (HasWhitespace(1)) Err(L"Bad operator"); .)
+		]
+		( // Member access (eg `obj . member` or `#obj ?. member`).
+			"." Name [ TypeArgumentList ]
+		| // Dictionary access (eg `obj ! key` or `#obj ?! key`).
+			"!" Name
+		| // Argument list or array subscript (eg `proc ( args )` or `obj ( indexes )` or `#obj ?( indexes )`).
+			EnclosedArgumentList
 		)
-		Name [ TypeArgumentList ]
-	| "!" Name  // Dictionary access
-	| EnclosedArgumentList // Also is array subscript.
 	}
 .
 SimpleNonCallExpression (. ID(L"SimpleNonCall", EXPR) .)
@@ -3288,12 +3280,14 @@ SimpleNonCallExpression (. ID(L"SimpleNonCall", EXPR) .)
 	// Related: IdentifierStatement, SimpleExpression.
 	PrimaryExpression
 	{
-		( dot     // Member access
-		  ["?"]   // Null-conditional member access (eg "#obj.?proc?")
-		| "?" "?" // Method call with null-conditional member access (eg "#proc1??proc2?")
+		[ // Null-conditional operators.
+			"?" (. if (HasWhitespace(1)) Err(L"Bad operator"); .)
+		]
+		( // Member access (eg `obj . member` or `#obj ?. member`).
+			"." Name [ TypeArgumentList ]
+		|  // Dictionary access (eg `obj ! key` or `#obj ?! key`).
+			"!" Name
 		)
-		Name [ TypeArgumentList ]
-	| "!" Name  // Dictionary access
 	}
 .
 SimpleStatement (. ID(L"SimpleStatement", STMT) .)
