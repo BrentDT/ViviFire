@@ -2273,13 +2273,22 @@ IdentifierStatement (. ID(L"IdentifierStatement", STMT) .)
 	)
 	{
 		[ // Null-conditional operators.
-			"?"  (. if (HasWhitespace(1)) Err(L"Bad operator"); .)
+			"?"
+			(. if ( HasWhitespace(1) || (_dot != la->kind && _left_paren != la->kind && _exclamation != la->kind) ) {
+				Err(L"Bad operator");
+			} .)
 		]
 		( // Member access (eg `obj . member` or `#obj ?. member`).
 			"." Name [ TypeArgumentList ]
 		| // Argument list or array subscript (`proc ( args )` or `obj ( indexes )` or `#obj ?( indexes )`).
 			EnclosedArgumentList
 			// FIXME: `EnclosedArgumentList` + `CallOrNew` causes "LL1 warning in IdentifierStatement: left_paren is start & successor of deletable structure".
+
+		| // Error.
+			(. int line = (_question == t->kind) ? t->line : la->line; .)
+			(. int col = (_question == t->kind) ? t->col : la->col; .)
+			"!" (. Err(line, col, L"Cannot use dictionary-access operator ('!' or '?!') here"); .)
+			Name
 		)
 	}
 	[ IF (IsAssignmentOp())
@@ -3264,7 +3273,10 @@ SimpleExpression (. ID(L"Simple", EXPR) .)
 	PrimaryExpression
 	{
 		[ // Null-conditional operators.
-			"?" (. if (HasWhitespace(1)) Err(L"Bad operator"); .)
+			"?"
+			(. if ( HasWhitespace(1) || (_dot != la->kind && _exclamation != la->kind && _left_paren != la->kind) ) {
+				Err(L"Bad operator");
+			} .)
 		]
 		( // Member access (eg `obj . member` or `#obj ?. member`).
 			"." Name [ TypeArgumentList ]
@@ -3281,7 +3293,10 @@ SimpleNonCallExpression (. ID(L"SimpleNonCall", EXPR) .)
 	PrimaryExpression
 	{
 		[ // Null-conditional operators.
-			"?" (. if (HasWhitespace(1)) Err(L"Bad operator"); .)
+			"?"
+			(. if ( HasWhitespace(1) || (_dot != la->kind && _exclamation != la->kind) ) {
+				Err(L"Bad operator");
+			} .)
 		]
 		( // Member access (eg `obj . member` or `#obj ?. member`).
 			"." Name [ TypeArgumentList ]
