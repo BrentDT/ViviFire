@@ -2624,39 +2624,48 @@ Modifier<struct Modif *&pMod> (. ID(L"Modifier", STMT) .)
 	|
 		identifier
 		(.
-		switch (t->val[0]) {
-		case L'A': case L'a':
-			if (Matches(L"Abstract")) pMod = new AbstractModif(line, col);
-			break;
-		case L'B': case L'b':
-			if (Matches(L"Backed")) pMod = new BackedModif(line, col);
-			break;
-		case L'C': case L'c':
-			if (Matches(L"Closed")) pMod = new ClosedModif(line, col);
-			break;
-		case L'D': case L'd':
-			if (Matches(L"Deprecated")) {
-				wchar_t *pVal = nullptr;
-				if (_string_literal == la->kind) {
-					Get(); pVal = t->val;
-				} 
-				pMod = new DeprecatedModif(line, col, pVal);
+		switch (coco_string_length(t->val)) {
+		case 2:
+			if (Matches(L"SI")) {
+				SIModif::SIArg arg = SIModif::SIArg::_NA;
+				if (_identifier == la->kind) {
+					Get();
+					if (Matches(L"BINARY")) arg = SIModif::SIArg::BINARY; else
+					if (Matches(L"LARGE")) arg = SIModif::SIArg::LARGE; else
+					if (Matches(L"SMALL")) arg = SIModif::SIArg::SMALL;
+					else Err(L"Unknown identifier after @SI. Only BINARY, LARGE, and SMALL are available.");
+				}
+				pMod = new SIModif(line, col, arg);
 			}
 			break;
-		case L'F': case L'f':
+		case 4:
+			if (Matches(L"Open")) pMod = new OpenModif(line, col); else
+			if (Matches(L"Test")) {
+				TestModif::TestArg arg = TestModif::TestArg::_NA;
+				if (_identifier == la->kind) {
+					Get();
+					if (Matches(L"IGNORE")) arg = TestModif::TestArg::IGNORED;
+					else Err(t->line, t->col, L"Unknown identifier. After @TEST, only IGNORE is available.");
+				}
+				pMod = new TestModif(line, col, arg);
+			}
+			break;
+		case 5:
 			if (Matches(L"Flags")) pMod = new FlagsModif(line, col);
 			break;
-		case L'I': case L'i':
-			if (Matches(L"Iterator")) pMod = new IteratorModif(line, col);
+		case 6:
+			if (Matches(L"Backed")) pMod = new BackedModif(line, col); else
+			if (Matches(L"Closed")) pMod = new ClosedModif(line, col); else
+			if (Matches(L"Shared")) pMod = new SharedModif(line, col); else
+			if (Matches(L"Strict")) pMod = new StrictModif(line, col);
 			break;
-		case L'M': case L'm':
+		case 7:
 			if (Matches(L"MustUse")) pMod = new MustUseModif(line, col);
 			break;
-		case L'O': case 'o':
-			if (Matches(L"Open")) pMod = new OpenModif(line, col); else
-			if (Matches(L"Override")) pMod = new OverrideModif(line, col);
-			break;
-		case L'P': case L'p':
+		case 8:
+			if (Matches(L"Abstract")) pMod = new AbstractModif(line, col); else
+			if (Matches(L"Iterator")) pMod = new IteratorModif(line, col); else
+			if (Matches(L"Override")) pMod = new OverrideModif(line, col); else
 			if (Matches(L"Platform")) {
 				if (_identifier == la->kind) {
 					Get();
@@ -2669,39 +2678,20 @@ Modifier<struct Modif *&pMod> (. ID(L"Modifier", STMT) .)
 					} else Err(L"Unknown identifier after @PLATFORM.");
 					delete pName;
 				} else Err(la->line, la->col, L"Missing mandatory identifier after @PLATFORM");
-			}
-			break;
-		case L'R': case L'r':
+			} else
 			if (Matches(L"ReadOnly")) pMod = new ReadOnlyModif(line, col);
 			break;
-		case L'S': case L's':
-			if (Matches(L"Shared")) pMod = new SharedModif(line, col); else
-			if (Matches(L"SI")) {
-				SIModif::SIArg arg = SIModif::SIArg::_NA;
-				if (_identifier == la->kind) {
-					Get();
-					if (Matches(L"BINARY")) arg = SIModif::SIArg::BINARY; else
-					if (Matches(L"LARGE")) arg = SIModif::SIArg::LARGE; else
-					if (Matches(L"SMALL")) arg = SIModif::SIArg::SMALL;
-					else Err(L"Unknown identifier after @SI. Only BINARY, LARGE, and SMALL are available.");
-				}
-				pMod = new SIModif(line, col, arg);
-			} else
-			if (Matches(L"Strict")) pMod = new StrictModif(line, col);
-			break;
-		case L'T': case L't':
-			if (Matches(L"Test")) {
-				TestModif::TestArg arg = TestModif::TestArg::_NA;
-				if (_identifier == la->kind) {
-					Get();
-					if (Matches(L"IGNORE")) arg = TestModif::TestArg::IGNORED;
-					else Err(t->line, t->col, L"Unknown identifier. After @TEST, only IGNORE is available.");
-				}
-				pMod = new TestModif(line, col, arg);
-			}
-			break;
-		case L'W': case L'w':
+		case 9:
 			if (Matches(L"WriteOnly")) pMod = new WriteOnlyModif(line, col);
+			break;
+		case 10:
+			if (Matches(L"Deprecated")) {
+				wchar_t *pVal = nullptr;
+				if (_string_literal == la->kind) {
+					Get(); pVal = t->val;
+				} 
+				pMod = new DeprecatedModif(line, col, pVal);
+			}
 			break;
 		}
 		if (nullptr == pMod) SemErr(L"Invalid directive or modifier");
