@@ -24,13 +24,13 @@
 <p>This is a group of related operators that do a test for <code class="kw">#Null</code> on the left operand.
 These operators help you write less code to do the necessary tests for null.
 These become very important when you use nested data structures.</p>
-<h2><code>.?</code> operator</h2>
-<p>The operator <code class="op">.?</code> is almost the same as the operator &laquo;<code class="op">.</code>&raquo;.
-It does a test on the left operand for null before it does a member access operation.
-If the left operand is null, the result is also null.
-An example follows:</p>
+<h2><code>?.</code> Member-access operator</h2>
+<p>The operator &laquo;<code class="op">?.</code>&raquo; is almost the same as the member-access operator &laquo;<code class="op">.</code>&raquo;.
+It does a test on the left operand for null before it does a member-access operation.
+If the left operand is null, the result is also null.</p>
+<p>An example follows.</p>
 <div class="language-vivifire listing">
-<pre><code>Var #name = #article.?#author.?name&#10;</code></pre>
+<pre><code>Var #name = #article?.#author?.name&#10;</code></pre>
 </div>
 <p>What follows is the equivalent to the example above without the null-conditional operators.</p>
 <div class="language-vivifire listing">
@@ -42,32 +42,13 @@ If #article Is Object Then
     End If
 End If&#10;</code></pre>
 </div>
-<h2><code>??</code> operator</h2>
-<p>The operator <code class="op">??</code> is almost the same as the operator &laquo;<code class="op">?</code>&raquo;.
-It does a test on the result returned by the procedure for null before it calls the method given by the right operand.
-But if the returned value is null, the result of the expression is also null.
-An example follows:</p>
-<div class="language-vivifire listing">
-<pre><code>Var title = #GetForegroundWindow??#GetFirstChild??GetTitle?&#10;</code></pre>
-</div>
-<p>What follows is the equivalent to the example above without the null-conditional operators.</p>
-<div class="language-vivifire listing">
-<pre><code>Var #title As String = #Null
-Var #window = #GetForegroundWindow?
-If #window Is Object Then
-    Var #child = #window.#GetFirstChild?
-    If #child Is Object Then
-        #title = #child.GetTitle?
-    End If
-End If&#10;</code></pre>
-</div>
-<h2><code>(?)</code> operator</h2>
-<p>The operator &laquo;<code class="op">(?)</code>&raquo; is almost the same as the element-access operator &laquo;<code class="op">()</code>&raquo;.
+<h2><code>?()</code> Element-access operator</h2>
+<p>The operator &laquo;<code class="op">?()</code>&raquo; is almost the same as the element-access operator &laquo;<code class="op">()</code>&raquo;.
 It does a test for null on the left operand before it gets the element.
-But if it is null, the result is also null.</p>
-<p>An example follows:</p>
+If the left operand is null, the result is also null.</p>
+<p>An example follows.</p>
 <div class="language-vivifire listing">
-<pre><code>Var #name = #article.?#authors(?0).name&#10;</code></pre>
+<pre><code>Var #name = #article?.#authors?(0).name&#10;</code></pre>
 </div>
 <p>What follows is the equivalent to the example above without the null-conditional operators.</p>
 <div class="language-vivifire listing">
@@ -79,8 +60,14 @@ If #article Is Object Then
     End If
 End If&#10;</code></pre>
 </div>
-<h2><code>|?</code> operator</h2>
-<p>The operator &laquo;<code class="op">|?</code>&raquo; is known as the <dfn>null coalescing operator</dfn>.
+<h2><code>?!</code> Dictionary-access operator</h2>
+<p>The operator &laquo;<code class="op">?!</code>&raquo; is almost the same as the dictionary-access operator &laquo;<code class="op">!</code>&raquo;.
+It does a test for null on the left operand before it gets the value related to the given key.
+If the left operand is null, the result is also null.</p>
+<p>An example follows.</p>
+<p>TODO</p>
+<h2><code>??</code> Null-coalescing operator</h2>
+<p>The operator &laquo;<code class="op">??</code>&raquo; is known as the <dfn>null-coalescing operator</dfn>.
 It is almost the same as the operators <code class="kw">Or Else</code> and <code class="kw">If&hellip;Then&hellip;Else</code>.
 You use this operator only with nullable variables.
 If the left operand is <em>not</em> null, this value becomes the result.
@@ -93,12 +80,12 @@ This is because you must give the nullable expression two times.</li>
 </ul>
 <p>An example follows.</p>
 <div class="language-vivifire listing">
-<pre><code>Var PageTitle As String = #SuppliedTitle |? "Default Title"&#10;</code></pre>
+<pre><code>Var name As String = #SuppliedName ?? "No name given"&#10;</code></pre>
 </div>
 <p>What follows is the equivalent to the example above without the null-conditional operator.</p>
 <div class="language-vivifire listing">
-<pre><code>Var PageTitle As String =
-    (If #SuppliedTitle Is Object Then #SuppliedTitle Else "Default Title")&#10;</code></pre>
+<pre><code>Var name As String =
+    (If #SuppliedName Is Object Then #SuppliedName Else "No name given")&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">

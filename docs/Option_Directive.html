@@ -69,7 +69,7 @@ The warning has a level of <code>Warning4</code>.</p>
 <p>You must write parentheses (<code class="op">( )</code>) around (1) arguments for procedure calls and (2) parameters for procedure declarations.
 Procedure declarations start with one of these keywords: <span class="kws"><code>Function</code>, <code>Method</code>, or <code>Sub</code></span>.
 You must supply empty parentheses if a procedure has no parameters.
-And if a procedure call does not have arguments, you must write empty parentheses or a question mark (<code class="op">?</code>).</p>
+And if a procedure call does not have arguments, you must write empty parentheses.</p>
 </section>
 <section aria-labelledby="Charset">
 <h3 id="Charset" translate="no">Charset</h3>
@@ -442,7 +442,7 @@ End&#10;</code></pre>
 Thus it becomes an error not to supply this list.
 For example:</p>
 <div class="language-vivifire listing">
-<pre><code>While NextResult?
+<pre><code>While NextResult()
 Exit When found ' mandatory
 When Each
     ' ...
