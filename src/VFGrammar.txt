@@ -1031,7 +1031,7 @@ backslash = "\\".
 concatenation = "&".
 
 // Null coalescing
-null_coalescing = "|?".
+null_coalescing = "??".
 
 // Comparison
 tilde            = "~".
@@ -2898,7 +2898,7 @@ Newline (. ID(L"Newline", STMT) .)
 .
 NullCoalescingExpression (. ID(L"NullCoalescing", EXPR) .)
 =
-	TypeExpression [ "|?" NullCoalescingExpression ]
+	TypeExpression [ "??" NullCoalescingExpression ]
 .
 NumericExpression<bool bMixedUnit> (. ID(L"Numeric", EXPR) .)
 =
