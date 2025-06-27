@@ -851,16 +851,24 @@ bool IsAssignmentOp() {
 ///}
 
 bool IsDateTime() {
-	if (_time_literal == la->kind) return true;
 	if (_integer_literal == la->kind && la->val[0] != L'%') { // Decimal literal.
 		int sep = scanner->Peek()->kind;
+		if (_colon == sep) return true; // Possible time literal.
 		if (sep != _slash && sep != _minus) return false;
 		if (_integer_literal == scanner->Peek()->kind && sep == scanner->Peek()->kind && _integer_literal == scanner->Peek()->kind) {
-			return true;
+			return true; // Possible date literal.
 		}
 	}
 	scanner->ResetPeek();
 	return false;
+}
+
+bool IsDecimalLiteral(const wchar_t * pVal) {
+	while (*pVal) {
+		if (!((*pVal >= L'0' && *pVal <= L'9') || *pVal == L'.')) return false;
+		pVal++;
+	}
+	return true;
 }
 
 bool IsDeclareParameterList() {
@@ -1003,6 +1011,7 @@ TOKENS
 line_break  = eol{eol}.
 
 at_sign     = "@".
+colon       = ":".
 comma       = ",".
 dot         = ".".
 exclamation = "!".
@@ -1110,11 +1119,6 @@ malformed_string_literal =
 	  {'"'{str}'"'}  // double quotes
 	  notAfterStr{str}
 	).
-
-time_literal =
-	dec{dec}":"dec{dec}[":"dec{dec}["."dec{dec}]].
-
-//TODO: malformed_time_literal
 
 version_literal =
 	dec{dec}"."dec{dec}"."dec{dec}["."dec{dec}].
@@ -1613,7 +1617,7 @@ ConstantValueError (. ID(L"ConstantValueError", STMT) .)
 =
 	(
 		( char_literal | fixed_literal | integer_constant | integer_literal | null_literal
-		| real_literal | string_constant | string_literal | time_literal | version_literal
+		| real_literal | string_constant | string_literal | version_literal
 		)
 		(. SemErr(L"Cannot use a constant value here"); .)
 	|
@@ -1696,16 +1700,22 @@ ConstructorStatement<Modifiers &mods> (. ID(L"ConstructorStatement", STMT) .)
 	(. if (var_construct) context.pop_back(); .)
 .
 /*D*/
-DateTimeExpression (. ID(L"DateTime", EXPR) .)
+DateTimeExpression<int count> (. ID(L"DateTime", EXPR) .)
 =
-	(
-		integer_literal
-		( "/" | "-" ) integer_literal
-		( "/" | "-" ) integer_literal
-		[ time_literal ]
-	|
-		time_literal
+	integer_literal
+	(. int line = t->line, col = t->col; .)
+	(. if (count == 2 || !IsDecimalLiteral(t->val)) Err(L"Bad date/time"); .)
+	( // Date literal.
+		[ "/" | "-" ] integer_literal (. if (!IsDecimalLiteral(t->val)) Err(line, col, L"Bad date/time"); .)
+		[ "/" | "-" ] integer_literal (. if (!IsDecimalLiteral(t->val)) Err(line, col, L"Bad date/time"); .)
+	| // Time literal.
+		":" integer_literal (. if (!IsDecimalLiteral(t->val)) Err(line, col, L"Bad date/time"); .)
+		[
+			":"
+			( integer_literal | real_literal ) (. if (!IsDecimalLiteral(t->val)) Err(line, col, L"Bad date/time"); .)
+		]
 	)
+	[ DateTimeExpression<count + 1> ]
 .
 Declarator (. ID(L"Declarator", STMT) .)
 =
@@ -2745,7 +2755,7 @@ Module (. ID(L"Module", STMT) .)
 		MandatoryIdent  (. wchar_t *id = coco_string_create(t->val); .)
 		"="
 		[
-			DateTimeExpression
+			DateTimeExpression<0>
 		|
 			(. std::wstring s; .)
 			StringExpression<s>
@@ -2915,7 +2925,7 @@ NumericExpression<bool bMixedUnit> (. ID(L"Numeric", EXPR) .)
 		.)
 	]
 	( IF (IsDateTime())
-		DateTimeExpression
+		DateTimeExpression<0>
 	|
 		integer_literal
 	|
