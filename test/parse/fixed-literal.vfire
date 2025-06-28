@@ -1,0 +1,13 @@
+﻿' Part of the ViviFire test suite.
+print @123.45
+print 123.45@
+print 123.45d64
+print 123.45D128
+print ¤123.45
+print @$123.45
+print @€123.45
+print @₱123.45
+print @£123.45
+print @₽123.45
+print @₹123.45
+print @¥123.45
