@@ -46,53 +46,75 @@ It becomes the initial value of <code class="id">counter</code>.</dd>
 It can become the last value of <code class="id">counter</code> before the loop stops.</dd>
 <dt><code class="id">step_value</code></dt>
 <dd>Optional integer expression.
- It is the increment for <code class="id">counter</code>.
+ It is added to <code class="id">counter</code> after each time through the loop.
 The default is one (<code>1</code>).</dd>
 <dt><code class="id">statements</code></dt>
-<dd>Optional One or more statements between the lines that start with <code class="kw">For</code> and <code class="kw">End</code>.
-They run for each value between <code class="id">start_value</code> and (<code class="id">end_value</code>.</dd>
-<dd>The alternative is two or more blocks of statements.
-The initial group starts with <code class="kw">Exit When</code>, and runs the same as specified above.
-The subsequent groups start with <code class="kw">When</code>, and run when the group after <code class="kw">Exit When</code> cannot start, or after it completes.
-See the <a href="#When_statements">When statements section</a> for more information.</dd>
+<dd>Optional one or more statements between <code class="kw">For</code> and <code class="kw">End</code>.
+They run for each value between <code class="id">start_value</code> and <code class="id">end_value</code>.</dd>
+<dd>The alternative is two or more groups of statements.
+The initial group starts with <code class="kw">Exit When</code>, and runs the same as given above.
+The subsequent groups start with <code class="kw">When</code>, and run when (1) the loop cannot start, or (2) after the loop stops.
+See <a href="#When_statements">&sect;&nbsp;When statements</a> for more information.</dd>
 <dt><code class="kw">End</code></dt>
 <dd>Completes the statement.
 You can also use <code class="kw">End For</code>.
 The optional variable <code class="id">counter</code> can only follow <code class="kw">End For</code>.</dd>
 <dd>You can change the syntax of this part.
-See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
+See <a href="#Option_Directive">&sect;&nbsp;Changes in syntax with @Option</a> for more information.</dd>
 </dl>
 <h2>Instructions</h2>
-<p><code class="kw">End For</code> is not the same as <a href="Exit_Statement.html"><code>Exit For</code></a>.</p>
 <p>You can use <code class="kw">For</code> when you want to run a sequence of statements again and again.
 It is recommended when you can be sure how many times the statements must run.
 Control is connected with the variable <code class="id">counter</code> specified in the line that starts with <code class="kw">For</code>.
 Other loop constructs are possibly more flexible.
-See the <a href="#See_also">See also</a> section below for more information.</p>
+See <a href="#See_also">&sect;&nbsp;See also</a> below for more information.</p>
+<p>In the example that follows, the variable <code>index</code> starts with a Value of one (1).
+Its Value increases by one each time through the loop.
+The loop stops after the Value of <code>index</code> gets to 5.</p>
+<div class="language-vivifire listing">
+<pre><code>For index = 1 To 5
+    #Debug.Print $"{index} "
+End For
+#Debug.PrintLine
+' Output: 1 2 3 4 5 &#10;</code></pre>
+</div>
+<p>The next example simulates the countdown for the launch of a spacecraft.
+It starts at 10 and goes down to one, with a one second pause after each iteration.
+The clause <code>Step -1</code> causes the Value of <code>countdown</code> to decrease by one.</p>
+<div class="language-vivifire listing">
+<pre><code>For countdown = 10 To 1 Step -1
+    #Debug.PrintLine countdown
+    Sleep 1000 ' milliseconds
+End For
+#Debug.PrintLine "BLASTOFF!"&#10;</code></pre>
+</div>
 <h2>Usual operation</h2>
-<p>When a loop of type <code class="kw">For</code> starts, ViviFire calculates <code class="id">start_value</code>, <code class="id">end_value</code>, and <code class="id">step_value</code>.
-ViviFire calculates these values only one time and gives <code class="id">counter</code> the value of <code class="id">start_value</code>.
-Before the statement block runs, ViviFire compares <code class="id">counter</code> to <code class="id">end_value</code>.
-If <code class="id">counter</code> is larger than <code class="id">end_value</code> (or smaller if <code class="id">step_value</code> is negative), the loop does not run, then control moves to the statement after <code class="kw">End</code>.
-But the opposite result usually occurs, thus the loop runs.</p>
-<p>Each time ViviFire runs <code class="kw">End</code>, it adds <code class="id">step_value</code> to <code class="id">counter</code> and goes back to <code class="kw">For</code>.
+<p>When this type of loop starts, ViviFire calculates <code class="id">start_value</code>, <code class="id">end_value</code>, and <code class="id">step_value</code>.
+ViviFire calculates these values only one time and assigns <code class="id">counter</code> the value of <code class="id">start_value</code>.</p>
+<p>Before the statement block runs, ViviFire compares <code class="id">counter</code> to <code class="id">end_value</code>.
+If it is less than or equal to <code class="id">end_value</code> and step_value is greater than zero, the loop runs.
+And if it is greater than or equal to <code class="id">end_value</code> and step_value is less than zero, the loop runs.
+But if the two conditions are false, the loop does not run and control moves to the statement after <code class="kw">End</code>.</p>
+<p>Each time ViviFire gets to <code class="kw">End</code>, it adds <code class="id">step_value</code> to <code class="id">counter</code> and goes back to <code class="kw">For</code>.
 Again it compares counter to end_value, and again it runs the block or stops the loop as a result.
 This process continues until <code class="id">counter</code> becomes out-of-range of <code class="id">end_value</code>.
 Alternatively, one of the statements <code class="kw">Exit</code> or <code class="kw">Return</code> can stop the loop.</p>
 <h3><code>step</code></h3>
 <p><code class="id">step_value</code> can be positive or negative.
-The value of this parameter selects how the loop runs as follows:</p>
+The value of this expression selects how the loop runs as follows:</p>
 <table>
 <caption><code>Step</code></caption>
 <thead>
 <tr><th>Value</th>
-<th>Loop runs if</th></tr>
+<th>What the loop does</th></tr>
 </thead>
 <tbody>
-<tr><td>Positive or zero</td>
-<td><code class="id">counter</code> &lt;= <code class="id">end_value</code></td></tr>
-<tr><td>Negative</td>
-<td><code class="id">counter</code> &gt;= <code class="id">end_value</code></td></tr>
+<tr><td>Greater than zero</td>
+<td>Runs while <code class="id">counter</code> &lt;= <code class="id">end_value</code></td></tr>
+<tr><td>Less than zero</td>
+<td>Runs while <code class="id">counter</code> &gt;= <code class="id">end_value</code></td></tr>
+<tr><td>Zero</td>
+<td>Raises the exception <code>RangeError</code></td></tr>
 </tbody>
 </table>
 <p>If you do not supply <code class="id">step_value</code>, its default value is 1.</p>
@@ -109,16 +131,18 @@ The value of this parameter selects how the loop runs as follows:</p>
 <p><code class="kw">Exit</code> can also stop more than one nested loop.
 You can use the statement &laquo;<code class="kw">Exit For, For</code>&raquo; in the inner loop to stop two loops.</p>
 <h2 id="When_statements">When statements</h2>
-<p>To find if a loop of this type completed because <code class="id">counter</code> became more than <code class="id">end_value</code>, use &laquo;<code>When DONE</code>&raquo;.
-To find if a loop of this type did not run because <code class="id">counter</code> was initially out-of-range, use &laquo;<code>When NONE</code>&raquo;.
-See <a href="Exit_When_Clause.html">Exit When Clause</a> for more information.</p>
+<p>To find if a loop of this type completed because <code class="id">counter</code> became more than <code class="id">end_value</code>, use <code>When DONE</code>.</p>
+<p>To find if a loop of this type did not run because <code class="id">counter</code> was initially out-of-range, use <code>When NONE</code>.</p>
+<p>See <a href="Exit_When_Clause.html">Exit When Clause</a> for more information.</p>
+<h2 id="Option_Directive">Changes in syntax with <code>@Option</code></h2>
+<p>There are two areas where you can chage the syntax of the statement:</p>
+<ul>
+<li><code>@Option End Block</code> and <code>@Option End</code></li>
+<li><code>@Option End For ID</code> and <code>@Option End For</code></li>
+</ul>
+<p>See <a href="Option_Directive.html">@Option Directive</a> for more information.</p>
 <h2>Examples</h2>
-<div class="language-vivifire listing">
-<pre><code>For index As Int32 = 1 To 5
-    #Debug.Print index
-End For
-#Debug.PrintLine&#10;</code></pre>
-</div>
+<p>TODO</p>
 <h2 id="See_also">See also</h2>
 <ul class="articles">
 <li><a href="Do_Loop_Statement.html">Doo...Loop Statement</a> &ndash; Runs because of a pre-condition or a post-condition.</li>

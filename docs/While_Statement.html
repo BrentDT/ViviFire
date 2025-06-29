@@ -37,33 +37,32 @@ End [ While ]&#10;</code></pre>
 <dd>Optional one or more statements.
 They run while <code class="id">condition</code> is true.</dd>
 <dd>The alternative is two or more blocks of statements.
-The first block starts with <code class="kw">Begin</code>, and runs the same as given above.
-The subsequent blocks start with <code class="kw">When</code>, and run after the loop stops.
-See <a href="#When_statements"><code>When</code> statements</a> below for more information.</dd>
+The initial group starts with <code class="kw">Exit When</code>, and runs the same as given above.
+The subsequent groups start with <code class="kw">When</code>, and run when (1) the loop cannot start, or (2) after the loop stops.
+See <a href="#When_statements">&sect;&nbsp;When statements</a> for more information.</dd>
 <dt><code class="kw">End</code></dt>
 <dd>Completes the statement.
 You can also use <code class="kw">End While</code>.</dd>
 <dd>You can change this part of the syntax.
-See <a href="Option_Directive.html"><code>@Option</code> Directive</a> for more information.</dd>
+See <a href="Option_Directive.html#End">@Option Directive &sect;&nbsp;End</a> for more information.</dd>
 </dl>
 <h2>Instructions</h2><!-- STE -->
-<p><code class="kw">End While</code> is not the same as <a href="Exit_Statement.html"><code class="kw">Exit While</code></a>.</p>
 <p>Use the construct <code class="kw">While</code> when you must run one or more statements again and again.
 It is recommended when you cannot be sure how many times the statements must run.
 Control is connected with the Boolean <code class="id">condition</code> after <code class="kw">While</code>.
 Other loop constructs are possibly more flexible or can give better performance.
 See the <a href="#See_also">See also section</a> below for more information.</p>
-<h3>Usual operation</h3>
+<h2>Usual operation</h2>
 <p>If <code class="id">condition</code> is true, <code class="id">statements</code> run.
 After <code class="kw">End</code>, control moves back to <code class="kw">While</code>, where <code class="id">condition</code> calculates again.
 While <code class="id">condition</code> stays true, <code class="id">statements</code> continue to run.
 But when it becomes false, control moves to the statement after <code class="kw">End</code>.</p>
 <p><code class="id">condition</code> always calculates before <code class="id">statements</code> run.
 But if <code class="id">condition</code> is initially false, <code class="id">statements</code> do not run.</p>
-<h3><code>Exit While</code></h3>
+<h2><code>Exit While</code></h2>
 <p>The statement <a href="Exit_Statement.html"><code>Exit While</code></a> can stop <code class="kw">While</code>.
 <code class="kw">Exit While</code> immediately moves control to the statement after <code class="kw">End</code>.</p>
-<h3 id="When_statements"><code>When</code> statements</h3>
+<h2 id="When_statements"><code>When</code> statements</h2>
 <p>To find if <code class="kw">While</code> completed because <code class="id">condition</code> became false, use <code>When DONE</code>.</p>
 <p>To find if <code class="kw">While</code> was not run because <code class="id">condition</code> was initially false, use <code>When NONE</code>.</p>
 <p>See <a href="Exit_When_Clause.html"><code>Exit When</code> Clause</a> for more information.</p>
@@ -81,6 +80,7 @@ End While&#10;</code></pre>
 <ul class="articles">
 <li><a href="Do_Loop_Statement.html">Do&hellip;Loop Statement</a> &ndash; Is more flexible in the location of the condition.</li>
 <li><a href="For_Statement.html">For Statement</a> &ndash; Gives better performance when run a given number of times.</li>
+<li><a href="For_Each_Statement.html">For Each Statement</a> &ndash; Runs through a given data structure.</li>
 <li><a href="Exit_Statement.html">Exit Statement</a></li>
 <li><a href="Exit_When_Clause.html">Exit When Clause</a></li>
 <li><a href="Loop_Constructs.html">Loop Constructs</a></li>
