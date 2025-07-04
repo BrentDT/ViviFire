@@ -109,10 +109,10 @@ End&#10;</code></pre>
 <p>You can use strings, Characters, integers, floating-point, or fixed-point data types.
 Each value must be different, but it is not necessary to initialize each constant.
 A constant without an initializer gets a value automatically.</p>
-<p>For number types, the first constant gets the default value of the type.
+<p>For number types, the initial constant gets the default value of the type.
 Each subsequent member adds one to the value before it.</p>
 <p>For <code class="kw">String</code>, each member without an initializer gets the name of the member as a string.
-The code that follows shows how easy it is to add string values to the first example.</p>
+The code that follows shows how easy it is to add string values to the initial example.</p>
 <div class="language-vivifire listing">
 <pre><code>Enum direction Is String
     North ' = "North"
@@ -158,7 +158,7 @@ Var #possiblePlanet = Planet(3)
 <h3><code>@Flags</code></h3>
 <p>The construct with the modifier <code class="at">@Flags</code> must have a related value with an integer data type.
 Each member without an initializer gets the value with the &ldquo;least significant bit&rdquo; not used at that point.
-Thus the first member has a default value of one, the second is 2, the third is 4, the fourth is 8, etc.</p>
+Thus the initial member has a default value of one, the second is 2, the third is 4, the fourth is 8, etc.</p>
 <p><code class="id">base_type</code> is usually one of the primitive integer types:
 <span class="kws"><code>Int8</code>, <code>UInt8</code>, <code>Int16</code>, <code>UInt16</code>, <code>Int32</code>, <code>UInt32</code>, <code>Int64</code>, <code>UInt64</code>, <code>Int128</code>, or <code>UInt128</code></span>.</p>
 <p>If <code class="id">base_type</code> is an enumeration with <code class="at">@Flags</code>, the new statement is an extension to the flags.

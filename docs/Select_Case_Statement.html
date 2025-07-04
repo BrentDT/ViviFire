@@ -76,14 +76,23 @@ The value of <code class="id">expression_1</code> must be less than or equal to 
 You can also use <code class="kw">End Select</code>.</dd>
 </dl>
 <h2>Instructions</h2>
-<p>If <code class="id">test_expression</code> agrees with one of the expressions after <code class="kw">Case</code>, the related block of statements that follows it runs.
+<p>If <code class="id">test_expression</code> agrees with one of the expressions after <code class="kw">Case</code>, the block of statements that follows it runs.
 The block continues until the next <span class="kws"><code>Case</code>, <code>Case Else</code>, or <code>End Select</code></span>.
-Then the statement after <code class="kw">End Select</code> runs.
-If more than one expression can agree, only the first one that agrees runs.</p>
+Then control moves to the statement after <code class="kw">End Select</code>.
+If more than one expression can agree, only the one found first runs.</p>
 <p>The line <code class="kw">Case Else</code> is related to the block <code class="id">else_statements</code>.
 This block runs only when <code class="id">test_expression</code> agreed with none of the sets of expressions that came before it.
 Although usually not mandatory, we recommend that you supply <code class="kw">Case Else</code> if unusual values of <code class="id">test_expression</code> are possible.
-If none of the blocks that start with <code class="kw">Case</code> ran, the statement after <code class="kw">End</code> runs.</p>
+If none of the blocks that start with <code class="kw">Case</code> ran, control moves to the statement after <code class="kw">End</code>.</p>
+<p>You can use many expressions and ranges in the clause <code class="id">expression_list</code> after each <code class="kw">Case</code>.
+You put a comma (<code>,</code>) between each expression or Range.</p>
+<p class="note">Note:
+The clause expression_list with many expressions does what is known as short-circuit evaluation.
+Each expression is compared to <code class="id">test_expression</code> from left to right.
+If an expression agrees with <code class="id">test_expression</code>, the remaining expressions are not evaluated.
+Short-circuit evaluation can give better performance, but can cause unwanted results.</p>
+<p>Expressions can use procedure calls that return a value.
+A procedure with a necessary side effect can get ignored in a list of expressions.</p>
 <h3>Changes in syntax with <code>@Option</code></h3>
 <p>There are three areas where you can change the syntax of the statement:</p>
 <ul>

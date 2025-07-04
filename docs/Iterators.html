@@ -31,8 +31,8 @@ Examples of collections are lists and arrays.</p>
 End
 PrintLine
 
-@Iterator Function EvenSequence(first, last As Int32) As Int32
-    For number = first To last
+@Iterator Function EvenSequence(initial, last As Int32) As Int32
+    For number = initial To last
         If number Mod 2 = 0 Then
             Yield number
         End
