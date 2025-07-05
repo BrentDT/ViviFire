@@ -1,0 +1,3 @@
+﻿' Part of the ViviFire test suite.
+t=a: a=b: b=t
+call a: call b: call c
