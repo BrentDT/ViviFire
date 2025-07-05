@@ -2136,7 +2136,7 @@ Expression (. ID(L"Expression", EXPR) .)
 	}
 
 	switch (la->kind) {
-	case _colon_equals: case _comma: case _line_break: case _right_brace: case _semicolon: case _Else: case _Step: case _Then: case _To: case _Tol:
+	case _colon: case _colon_equals: case _comma: case _line_break: case _right_brace: case _semicolon: case _Else: case _Step: case _Then: case _To: case _Tol:
 		// For all tokens that can follow an expression.
 		// Do nothing.
 		break;
@@ -2793,17 +2793,7 @@ Module (. ID(L"Module", STMT) .)
 ModuleStatement<bool bProcEntry> (. ID(L"ModuleStatement", STMT) .)
 =
 	///(. if (bProcEntry) Warn(L"Executable statements at module level ignored when entry point is a procedure"); .)
-	(. Modifiers mods(this); .)
-	(. m_start_col = la->col; .)
-	[ ModifiersClause<mods> ]
-	(
-		BlockStatement<mods>
-	|
-		(. mods.Check(); .) // No modifiers.
-		SimpleStatement
-		{ ";" SimpleStatement }
-		SyncNewline<s_name>
-	)
+	Statement
 .
 MultiplicativeExpression (. ID(L"Multiplicative", EXPR) .)
 =
@@ -3463,6 +3453,12 @@ SubStatement<Modifiers &mods> (. ID(L"SubStatement", STMT) .)
 SyncNewline<const wchar_t *name> (. ID(L"SyncNewline", STMT) .)
 =
 	(.
+	if (_colon == la->kind) {
+		Get();
+		Err(L"Colon without date/time. Possibly you want semicolon?");
+		return;
+	}
+
 	while (!errors->count // Try this to prevent too many errors.
 	    && !(la->kind == _EOF || la->kind == _line_break)) {
 		Get();
