@@ -1,14 +1,21 @@
 @Echo Off
 SetLocal EnableDelayedExpansion
 
-Set "VF_EXE=..\src\release\vf.exe -v0"
+Set "VF_EXE=..\src\release\vf.exe"
+Set "FLAGS=-v0"
+
+If Not Exist %VF_EXE% (
+	Echo FATAL ERROR: ViviFire is not at %VF_EXE%
+	Exit /B 1
+)
+
 :: Number of failed test.
 Set fails=0
 
 :: All stdout gets written to a new 'test.log' with each run.
 > test.log (
-  :: Recursively test each file with the extensions '.vfire' and '.vflib'.
-  For /R %%f In (*.vfire *.vflib) Do Call :Test "%%~f"
+	:: Recursively test each file with the extensions '.vfire' and '.vflib'.
+	For /R %%f In (*.vfire *.vflib) Do Call :Test "%%~f"
 )
 
 :: Show success, or if failures, ask to show the log file.
@@ -53,6 +60,6 @@ GoTo :EOF
 	:: Workaround to convert UTF-16 to ASCII/ANSI also removes control chars.
 	Set "output="
 	For /F "usebackq tokens=* delims=" %%a In (`
-		%VF_EXE% %1 ^| Find /V ""
+		%VF_EXE% %FLAGS% %1 ^| Find /V ""
 	`) Do Set "output=!output!%%a"
 	GoTo :EOF
