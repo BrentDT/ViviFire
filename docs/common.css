@@ -23,9 +23,6 @@ table {
 table.integer-results td {
 	text-align: right;
 }
-p#aka {
-	display: none;
-}
 p.note {
 	font-size: 95%;
 	background-color: #E7B8B8;
@@ -37,10 +34,6 @@ p.note {
 tbody th {
 	text-align: left;
 	vertical-align: top;
-}
-td.char {
-	font-weight: bold;
-	text-align: center;
 }
 h1, h1 code {
 	font-family: Georgia, serif;
@@ -65,10 +58,6 @@ ul.six-cols {
 	list-style: none;
 	margin: 0;
 	padding: 0;
-}
-.foot {
-	font-size: 85%;
-	font-style: italic;
 }
 nav p:first-child, #strings {
 	display: none;
@@ -135,47 +124,50 @@ nav ul, ul.articles {
 	margin-left: 0;
 	padding-left: 0;
 }
-.articles code {
+.articles a, .articles code {
 	font-family: inherit;
+	text-decoration: none;
+}
+.articles h2 a, .articles h3 a {
+	color: inherit;
+	text-decoration: inherit;
 }
 .token.rem {
 	color: #555;
 	font-style: italic;
 }
-.token.at, dt .at, 
-dt .mod {
+.token.at, dt .at {
 	color: blue;
 	font-weight: bold;
 }
 .token.id {
 	color: #080808;
 }
-.token.capid, .syntax .token.id, .literal var, dt .id, dt var {
+.token.capid, .syntax .token.id, dt .id, dt var {
 	color: #077;
 }
 .no-capid .token.capid {
 	color: inherit;
 }
-.syntax .token.id, .literal var, code.id, var.id {
+.syntax .token.id, code.id {
 	font-style: italic;
 }
-.token.kw, .token.nkw, .literal kbd, dt .kw, dt .nkw, dt kbd {
+.token.kw, .token.nkw, dt .kw, dt .nkw, dt kbd {
 	color: navy;
 	font-style: normal;
 }
-.token.kw, .literal kbd, code.at, code.kw, .kws code, 
-dt kbd, kbd.kw, kbd.mod, .kws kbd {
+.token.kw, code.at, code.kw, .kws code, 
+dt kbd {
 	font-weight: bold;
 }
-.token.num, .token.char, .token.fixed, .token.date, dt .num {
+.token.num, .token.char, .token.fixed, .token.date {
 	color: #ff8c00;
 	font-weight: normal;
 }
 .token.op {
 	color: #556b2f;
 }
-code.op, .ops code, 
-kbd.op, .ops kbd {
+code.op, .ops code {
 	font-weight: bold;
 }
 code kbd {
@@ -185,16 +177,8 @@ code kbd {
 .token.strint {
 	color: pink;
 }
-.token.str, dt .str {
+.token.str {
 	color: #C00;
-}
-.articles h2 a, .articles h3 a {
-	color: inherit;
-	text-decoration: inherit;
-}
-input#go {
-	text-align: center;
-	width: 3em;
 }
 code .err {
 	border-bottom:2px dotted red;
@@ -240,40 +224,68 @@ kbd kbd { /* Made to look like keys */
 	padding: 0.02em 0.04em 0;
 	border: 0.02em solid black;
 }
-.screen-reader {
+/* .screen-reader {
 	position: absolute;
 	left: -9999px;
 	top: -9999px;
 	width: 1px;
 	height: 1px;
-}
+} */
 code.IPA {
 	font-family: "DejaVu Sans", "Lucida Sans Unicode", Gentium;
 	font-size: inherit;
 }
-/* Stubs - updated 2024/03/13 */
-a[href^="Collection_Initializers."],
+/* Stubs - updated 2025/07/11 */
+/* Find on Windows: `FindStr /M "\<id=.stub\>" *.html` */
+a[href^="Array_Conversions."],
+a[href^="Array_Dimensions."],
+a[href^="Code_Conventions."],
 a[href^="Collections."],
+a[href^="Collection_Initializers."],
+a[href^="Composite_Data_Types."],
+a[href^="Conventions_for_Names."],
 a[href^="Conversions_Between_Strings_and_Other_Types."],
+a[href^="Converting_Between_Strings_Other_Data_Types."],
 a[href^="Covariance_and_Contravariance."],
+a[href^="Data_Types_of_Operator_Results."],
 a[href^="Declaration_Contexts_and_Default_Access_Levels."],
+a[href^="Declared_Element_Names."],
+a[href^="Does_Clause_Traits."],
 a[href^="Effects_of_Culture_on_Strings."],
+a[href^="Events."],
+a[href^="How_Control_Scope_Variable."],
+a[href^="How_Declare_Structure."],
 a[href^="How_Make_Strings."],
 a[href^="In."],
 a[href^="Installation."],
+a[href^="Iterator."],
 a[href^="Iterators."],
+a[href^="Lambda_Expressions."],
 a[href^="Language_Limits."],
+a[href^="Lifetime."],
 a[href^="Namespaces."],
+a[href^="Nullable_Value_Types."],
+a[href^="Objects_and_Classes."],
 a[href^="Object_Lifetime."],
+a[href^="Object_Variables."],
+a[href^="Out."],
+a[href^="Passing_Arguments_Value_Reference."],
+a[href^="Performance_of_Data_Types."],
+a[href^="Procedure_Parameters_and_Arguments."],
 a[href^="Programming_Concepts."],
+a[href^="Property_Procedures."],
+a[href^="References_and_the_Require_Statement."],
 a[href^="References_to_Declared_Elements."],
 a[href^="StringBuilder_Class."],
 a[href^="String_Manipulations."],
 a[href^="Structures_and_Classes."],
+a[href^="Structures_and_Other_Programming_Constructs."],
+a[href^="Structure_Variables."],
 a[href^="System_Requirements."],
+a[href^="Variable_Declaration."],
 a[href^="ViviFire_Runtime_Library_Members."],
 a[href^="Widening_and_Narrowing_Conversions."],
-#stub h1 {
+#stub > h1 {
 	&:link {
 		color: inherit;
 	}
