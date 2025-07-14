@@ -42,7 +42,7 @@ GoTo :EOF
 		)
 	) Else (
 		:: Compare output to '.err' file.
-		Echo %output%|FindStr /L /G:/ "%~p1%~n1.err" > NUL
+		FindStr /B /C:"%output%" "%~p1%~n1.err" > NUL
 		:: If they are different...
 		If ErrorLevel 1 (
 			Set "absolute=%~1"
@@ -62,4 +62,7 @@ GoTo :EOF
 	For /F "usebackq tokens=* delims=" %%a In (`
 		%VF_EXE% %FLAGS% %1 ^| Find /V ""
 	`) Do Set "output=!output!%%a"
+	:: Escape chars that can cause problems: " -> \x22, ) -> \x29.
+	Set output=%output:"=\x22%
+	Set output=%output:)=\x29%
 	GoTo :EOF
