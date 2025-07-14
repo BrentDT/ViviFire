@@ -1,0 +1,17 @@
+' Part of the ViviFire test suite.
+function ChangePassword(
+        old_password as string, ' The original password. Shows a warning.
+        new_password as string) as boolean
+    const bad_passwords() =
+        {{ // Keep these in order.
+            "", "12345", "123456", "1234567890", "asdfghjkl",
+            "password", "qwerty", "qwertyuiop", "zxcvbnm" }
+        }
+    if new_password = old_password then _ ' Must be different.
+        return false
+    for each bad_password in bad_passwords
+        if new_password = bad_password then _
+            return false
+    end for
+    return true
+end function
