@@ -1,0 +1,7 @@
+﻿' Part of the ViviFire test suite.
+if x andthen y
+else if x orelse y
+end
+if x = 0 andthen y = 0
+else if x = 0 orelse y = 0
+end
