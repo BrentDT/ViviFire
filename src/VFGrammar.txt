@@ -2493,13 +2493,14 @@ LogicalExpression (. ID(L"Logical", EXPR) .)
 	}
 	(.
 	// If incorrectly typed logical operator.
-	// Eg: If x AndThen ...
+	// Eg: `If x AndThen ...`
 	// Related code in `UnitOrSuffix`.
-	if (_identifier == la->kind && (Match(L"AndThen") || Match(L"OrElse"))) {
-		Err(L"Operators AND THEN and OR ELSE must be two words");
-		ComparisonExpression();
-	}
-	.)
+	if (_identifier == la->kind) {
+		if (int which = (Match(L"AndThen") ? _And : 0 || Match(L"OrElse") ? _Or : 0)) {
+			Err((std::wstring(_And == which ? L"AND THEN" : L"OR ELSE") + L" must be two words").c_str());
+			ComparisonExpression();
+		}
+	} .)
 .
 LogicalOperator (. ID(L"LogicalOperator", STMT) .)
 =
@@ -3706,13 +3707,12 @@ UnitOrSuffix<int which> (. ID(L"UnitOrSuffix", EXPR) .)
 		.)
 		(.
 		// If incorrectly typed logical operator.
-		// Eg: If x = 0 AndThen ...
+		// Eg: `If x = 0 AndThen ...`
 		// Related code in `LogicalExpression`.
-		if (Matches(L"AndThen") || Matches(L"OrElse")) {
-			Err(L"Operators AND THEN and OR ELSE must be two words");
+		if (int which = (Matches(L"AndThen") ? _And : 0 || Matches(L"OrElse") ? _Or : 0)) {
+			Err((std::wstring(_And == which ? L"AND THEN" : L"OR ELSE") + L" must be two words").c_str());
 			ComparisonExpression(); // `SyncNewline` is possibly better.
-		}
-		.)
+		} .)
 	|
 		"("
 		MandatoryIdent
