@@ -46,7 +46,9 @@ Object win Is Window
 End Object
 ```
 
-## Dependencies
+## Prerequisites & dependencies
+
+C++ 17 is the recommended language version.
 
 Use [Coco/R for C++](https://ssw.jku.at/Research/Projects/Coco/) to compile
 VFGrammar.txt.  This generates the source files for the parser and scanner.
