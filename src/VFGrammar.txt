@@ -611,7 +611,22 @@ std::wstring StringValue(wchar_t *pStrToken) {
 			return res;
 		}
 		default:
-		if (pStrToken[1] >= L'0' && pStrToken[1] <= L'9') {
+		if ((pStrToken[1] == L'v' || pStrToken[1] == L'V') && std::iswdigit(pStrToken[2]) || wcschr(pStrToken, L'.')) {
+			// Possibly a version literal.
+			std::wstring ws;
+			int nDots = 0;
+			wchar_t *pChar = pStrToken + 1; // Start after '$'.
+			if (!std::iswdigit(*pChar)) pChar++; // Ignore 'V' or 'v'.
+			for (; *pChar; pChar++) {
+				if (std::iswdigit(*pChar)) ws += *pChar;
+				else if (*pChar == L'.') { nDots++; ws += L'.'; }
+				else goto named_constant;
+			}
+			if (nDots > 3) goto bad_token;
+			while (nDots++ < 3) ws += L".0";
+			return ws;
+		} else if (std::iswdigit(pStrToken[1])) {
+			// Possibly a decimal character.
 			std::wstring ws;
 			for (wchar_t *pChar = pStrToken + 1; *pChar; pChar++) {
 				if (*pChar >= L'0' && *pChar <= L'9') ws += *pChar;
@@ -627,6 +642,7 @@ std::wstring StringValue(wchar_t *pStrToken) {
 			return NamedString(pStrToken);
 		}
 	}
+	bad_token:
 	return std::wstring(L"ERR"); // TEMP
 }
 
@@ -1106,7 +1122,10 @@ malformed_real_literal =
 	).
 
 string_constant =
-	'$'alnum{['_']alnum}.
+	"$"alnum{["_"|"."]alnum}.
+	// Character: `$13` == `$U0D` == `$CR` == `$RETURN`.
+	// Platform-controlled: `$PS` == `$PATH_SEP` == (string literal) `""/""` == `""\""`.
+	// Version number: `$v1` == `$1.0` == `$1.0.0` == `$1.0.0.0`.
 
 string_literal =
 	["_"]          // continuation
@@ -1122,11 +1141,6 @@ malformed_string_literal =
 	  {'"'{str}'"'}  // double quotes
 	  notAfterStr{str}
 	).
-
-version_literal =
-	dec{dec}"."dec{dec}"."dec{dec}["."dec{dec}].
-
-//TODO: malformed_version_literal
 
 // Identifiers
 
@@ -1620,7 +1634,7 @@ ConstantValueError (. ID(L"ConstantValueError", STMT) .)
 =
 	(
 		( char_literal | fixed_literal | integer_constant | integer_literal | null_literal
-		| real_literal | string_constant | string_literal | version_literal
+		| real_literal | string_constant | string_literal
 		)
 		(. SemErr(L"Cannot use a constant value here"); .)
 	|
@@ -2764,9 +2778,6 @@ Module (. ID(L"Module", STMT) .)
 			(. std::wstring s; .)
 			StringExpression<s>
 			(. module->Add(new AST::ModuleWhere(id, _wcsdup(s.c_str()), AST::STRING, line, col)); .)
-		|
-			version_literal 
-			(. module->Add(new AST::ModuleWhere(id, coco_string_create(t->val), AST::VERSION, line, col)); .)
 		] (. else Err(L"In WHERE, value must be a literal of date/time, string, or version number"); .)
 		(. if (la->kind != _line_break) Err(L"WHERE cannot be a list or expression"); .)
 		SyncNewline<s_name>
@@ -3200,9 +3211,9 @@ ReDimStatement (. ID(L"ReDimStatement", STMT) .)
 RequireComparison (. ID(L"RequireComparison", STMT) .)
 =
 	// TODO: strings can only be "=" or "<>".
-	( [ version_literal ( "<" | "<=" ) ]  // Eg 1.0.0 <= version < 2.0.0
+	( [ string_constant ( "<" | "<=" ) ]  // Eg `$v1 <= version < $v2`.
 		MandatoryIdent
-		ComparisonOperator ( string_literal | version_literal )
+		ComparisonOperator ( string_constant | string_literal )
 	| "(" RequireLogic ")"
 	)
 .
