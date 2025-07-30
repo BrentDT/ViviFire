@@ -63,7 +63,7 @@ You can use one or more limits to find the correct library if different librarie
 <h3>Limits construct</h3>
 <p>You use the limits construct when more than one library with the same name is available.
 You can compare the names and values supplied by the statements <code class="kw">Where</code> in each library.
-These values can have one of three data types: <code class="kw">DateTime</code>, <code class="kw">String</code>, or version number.</p>
+These values can be one of three types: <code class="kw">DateTime</code>, <code class="kw">String</code>, or version number.</p>
 <h4>Comparing strings</h4>
 <p>You can compare a string identifier to a string literal.
 The only permitted comparison operators are equality (<code class="op">=</code>) and inequality (<code class="op">&lt;&gt;</code>).
@@ -78,14 +78,14 @@ All comparison operators are available:
 <span class="ops"><code>=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>, and <code>&lt;&gt;</code></span>.
 An example follows.</p>
 <div class="language-vivifire listing">
-<pre><code>Require MyLibrary Where version = 1.5.0&#10;</code></pre>
+<pre><code>Require MyLibrary Where version = $1.5&#10;</code></pre>
 </div>
 <p>You can also compare a version identifier to a range of versions.
 You must write this in the sequence (1) lower version, (2) comparison, (3) identifier, (4) comparison, (5) higher version.
 The comparisons must be one of the operators <code class="op">&lt;</code> or <code class="op">&lt;=</code>.
 An example follows.</p>
 <div class="language-vivifire listing">
-<pre><code>Require MyLibrary Where 1.1.0 &lt;= version &lt; 2.0.0&#10;</code></pre>
+<pre><code>Require MyLibrary Where $1.1 &lt;= version &lt; $v2&#10;</code></pre>
 </div>
 <h4><code>And</code> and <code>Or</code></h4>
 <p>You can put two or more comparisons together with one of the operators <code class="kw">And</code> and <code class="kw">Or</code>.
@@ -98,23 +98,30 @@ Comparisons between parentheses evaluate before outer comparisons.
 An example follows.</p>
 <div class="language-vivifire listing">
 <pre><code>Require MyLibrary _
-    Where (author = "John Doe" And version &lt; 2.1.0) _
-    Or (author = "Jane Doe" And version &gt;= 2.1.0)&#10;</code></pre>
+    Where (author = "John Doe" And version &lt; $2.1) _
+    Or (author = "Jane Doe" And version &gt;= $2.1)&#10;</code></pre>
 </div>
 <h2 id="Version_literal">Version literal</h2>
 <div class="language-literal">
-<pre><code><var>number</var> <kbd>.</kbd> <var>number</var> <kbd>.</kbd> <var>number</var> [ <kbd>.</kbd> <var>number</var> ]</code></pre>
+<pre><code><kbd>$</kbd> <var>number</var> <kbd>.</kbd> <var>number</var> [ <kbd>.</kbd> <var>number</var> [ <kbd>.</kbd> <var>number</var> ]]</code></pre>
+<div>or</div>
+<pre><code><kbd>$v</kbd> <var>number</var> [ <kbd>.</kbd> <var>number</var> [ <kbd>.</kbd> <var>number</var> [ <kbd>.</kbd> <var>number</var> ]]]</code></pre>
 </div>
 <dl class="parts">
 <dt><code class="id">number</code></dt>
-<dd>One of three or four groups of decimal integers.
-The compiler ignores zeroes before other numbers at the start of a group. </dd>
-<dd>For example, &laquo;<code>1.02.03</code>&raquo; is the same as &laquo;<code>1.2.3</code>&raquo;.</dd>
+<dd>One of a maximum of four groups of decimal integers.
+After <code>$v</code>, you can have a minimum of one group, for example, &laquo;<code>$v1</code>&raquo;.
+But without <code>v</code>, you must have a minimum of two groups, for example, &laquo;<code>$1.2</code>&raquo;.</dd>
+<dd>The compiler ignores zeroes before other numbers at the start of a group.
+For example, &laquo;<code>$1.02.003</code>&raquo; is the same as &laquo;<code>$1.2.3</code>&raquo;.</dd>
 </dl>
+<p class="note">Note:
+The string value of a version literal is controlled by the implementation of ViviFire.
+It can be different on different platforms and releases, and can change without warning.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
 <pre><code>Require ViviFire.IO
-Require MyProject.TestHarness Where version = 2.1.0&#10;</code></pre>
+Require MyProject.TestHarness Where version = $2.1&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
