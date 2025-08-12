@@ -1,0 +1,12 @@
+*.o
+*.obj
+*.old
+/docs/search.html
+/src/Parser.cpp
+/src/Parser.h
+/src/Scanner.cpp
+/src/Scanner.h
+/src/VFGrammar-diffs.txt
+/src/Debug/
+/src/Release/
+/test/test.log
