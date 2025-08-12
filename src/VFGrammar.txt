@@ -557,6 +557,14 @@ std::wstring StringValue(wchar_t *pStrToken) {
 						tempStr.clear();
 					} else if (nBraces > 0) tempStr += '}'; // Interpolation includes a brace.
 					break;
+				case L'`':
+					// If interpolated char literal, possibly $"{`}`}".
+					if (nBraces > 0 && pChar[1] && pChar[2] == L'`') {
+						tempStr += '`' + wchar_to_UTF8(pChar[1]) + '`';
+						pChar += 2;
+						break;
+					}
+					// Else fallthrough.
 				default:
 					if (nBraces > 0) tempStr += wchar_to_UTF8(*pChar);
 					else res += *pChar;
@@ -1128,17 +1136,20 @@ string_constant =
 	// Version number: `$v1` == `$1.0` == `$1.0.0` == `$1.0.0.0`.
 
 string_literal =
-	["_"]          // continuation
-	["$"]          // interpolated string (eg $"Hello {name}!")
-	'"'{str}'"'    // usual string
-	{'"'{str}'"'}  // double quotes
-	.
+	["_"]                // Continuation.
+	["$"]        // Interpolated string (eg $"Hello {name}!").
+	'"'{str}'"'  // Usual string.
+	{
+	  ( '"'      // Double quotes (eg "Cannot open ""file.ext"".").
+	  | "`"      // Interpolated char literal (eg $"foo {bar(`"`)}").
+	  ){str}'"'
+	}.
 
 malformed_string_literal =
 	["_"]["$"]
 	( '"'{str}{'"''"'{str}}
 	| '"'{str}'"'    // usual string
-	  {'"'{str}'"'}  // double quotes
+	  {('"'|"`"){str}'"'}  // double quotes
 	  notAfterStr{str}
 	).
 
