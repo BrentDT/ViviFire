@@ -25,14 +25,8 @@
 <p>Initializes the data of a new instance of an object.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<h3>Usual construct</h3>
 <pre><code>[ @Deprecated ] _
 Constructor [ parameter_list ]
-    [ statements ]
-End [ Constructor ]&#10;</code></pre>
-<h3>Var construct</h3>
-<pre><code>[ @Deprecated ] _
-Constructor { Dim | Var } parameter_list
     [ statements ]
 End [ Constructor ]&#10;</code></pre>
 </div>
@@ -41,19 +35,12 @@ End [ Constructor ]&#10;</code></pre>
 <dt><code class="at">@Deprecated</code></dt>
 <dd>Optional modifier.
 See <a href="Deprecated.html">@Deprecated</a> for more information.</dd>
-<dt><code class="kw">Dim</code></dt>
-<dd>Used with the &ldquo;Var construct&rdquo;.
-Specifies that variables declared in <code>parameter_list</code> are members of the parent construct.
-The arguments that you supply automatically assign values to the members.
-Such constructors must come before usual constructors.</dd>
-<dt><code class="kw">Var</code></dt>
-<dd>Same as <code class="kw">Dim</code>.</dd>
 <dt><code class="id">parameter_list</code></dt>
-<dd>Optional in the usual construct.
+<dd>Optional, one or more variable declarations with a comma between each.
+Parentheses (<code class="op">( )</code>) around the parameters are optional unless you use <code class="at">@Option</code> to make them mandatory.</dd>
+<dd>Usually the variable is local to the constructor.
+But if you put <code class="kw">Self</code> and a dot (<code class="op">.</code>) befor the name, the parameter refers to the member of the parent construct with that name.
 See <a href="Parameter_List.html">Parameter List</a> for more information.</dd>
-<dd>Mandatory in the Var construct.
-The parameters become members of the parent construct.
-You can supply a default value with the operator &laquo;<code class="op">=</code>&raquo;.</dd>
 <dt><code class="id">statements</code></dt>
 <dd>Optional statements.</dd>
 <dt><code class="kw">End</code></dt>
@@ -64,20 +51,12 @@ See <a href="Option_Directive.html">@Option Directive</a> for more information.<
 </dl>
 <h2>Instructions</h2>
 <p>ViviFire lets you have many constructors in an object.
-Each constructor must have a different parameter signature.</p>
+Each constructor must have a different parameter signature.
+A constructor without parameters is known as a <dfn>default constructor</dfn>.</p>
 <p>All constructors must be in a group together.
 They come after a possible data section and before a possible destructor or other procedures.</p>
 <p>You can think of the data section as a type of constructor.
-Statements you put in this section run before <code class="kw">Constructor</code>.</p>
-<h3>Var construct</h3>
-<p>Constructors with the <dfn>Var construct</dfn> start with the line <code class="kw">Constructor Var</code> or <code class="kw">Constructor Dim</code>.
-Such constructors must have one or more parameters.
-Each parameter becomes a field of its parent object.
-You must put all such constructors before all of the usual constructors.</p>
-<p>If you make an object with one or more constructors with the Var construct, ViviFire automatically calls all other such constructors with default values.
-You can specify different default values with parameter initializers.
-You do this with the operator <code class="op">=</code> written between the parameter declarator and a constant value.
-Alternatively, you can use the statement <code class="kw">Call Constructor</code>.</p>
+Statements you put in this section always run before a constructor gets called.</p>
 <h3>Permitted parents</h3>
 <ul class="articles">
 <li><a href="Class_Statement.html">Class</a></li>
@@ -87,12 +66,19 @@ Alternatively, you can use the statement <code class="kw">Call Constructor</code
 <h3>Changes in syntax with <code>@Option</code></h3>
 <p>There are two areas where you can change the syntax of the statement:</p>
 <ul>
-<li><code>@Option Dim</code> and <code>@Option Var</code></li>
+<li><code>@Option Args Enclosed</code></li>
 <li><code>@Option End Block</code> and <code>@Option End</code></li>
 </ul>
 <p>See <a href="Option_Directive.html">@Option Directive</a> for more information.</p>
 <h2>Examples</h2>
-<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>Class Point
+    Var x, y As Real64
+
+    Constructor Self.x, Self.y
+    End Constructor
+End Class&#10;</code></pre>
+</div>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="Call_Constructor_Statement.html">Call Constructor Statement</a></li>

@@ -433,6 +433,10 @@ public:
 		}
 	}
 
+	void Self() {
+		if (m_parent != _Constructor) m_parser->Err(L"Parameter with SELF is available only in a constructor");
+	}
+
 	void None() const {
 		// Check if parent construct must have one param.
 		dictionary_1_param() || Set_1_param();
@@ -1707,25 +1711,12 @@ ConstructorStatement<Modifiers &mods> (. ID(L"ConstructorStatement", STMT) .)
 	(.
 	mods.Let(s_Deprecated);
 	mods.Check();
-
-	int line, col;
-	bool var_construct = false;
 	.)
-	"Constructor" (. line = t->line; col = t->col; .)
+	"Constructor" (. int line = t->line, col = t->col; .)
 	(. if (context.back() != _Class && context.back() != _Struct) SemErr(L"CONSTRUCTOR is available only in CLASS or STRUCT"); .)
-	[
-		DimOrVar
-		(. var_construct = true; .)
-	]
-	(
-		FormalParameterList<_Constructor>
-	|
-		(. if (var_construct) Err(L"CONSTRUCTOR DIM/VAR must have a parameter list"); .)
-	)
+	FormalParameterList<_Constructor>
 	SyncNewline<s_name>
-	(. if (var_construct) context.push_back(_Var); .)
 	BlockBody<_Constructor, line, col, L"CONSTRUCTOR without END">
-	(. if (var_construct) context.pop_back(); .)
 .
 /*D*/
 DateTimeExpression<int count> (. ID(L"DateTime", EXPR) .)
@@ -2177,20 +2168,34 @@ Expression (. ID(L"Expression", EXPR) .)
 /*F*/
 FormalParameter<param_validator &param> (. ID(L"FormalParameter", STMT) .)
 =
+	(. bool bSelf = false; .)
 	[
 		"ByRef"     (. param.Add(_ByRef); .)
 	|
 		"Optional"  (. param.Add(_Optional); .)
 	] (. else param.Add(); .)
+	[
+		"Self" (. param.Self(); .)
+		"."
+		(. bSelf = true; .)
+	]
 	Name
-	[ "(" [ Rank ] ")" ]
-	[ TypeClause ]
 	(
+		(. #define SELF_CHECK if (bSelf) Err(la->line, la->col, L"Cannot declare type of member again"); .)
+		[
+			(. SELF_CHECK .)
+			"(" [ Rank ] ")"
+		]
+		[
+			(. SELF_CHECK .)
+			TypeClause
+		]
+		(. #undef SELF_CHECK .)
+	)
+	[
 		"=" [OptionalNewline]
 		EnclosedExpression
-	|
-		(. if (param.Optional() && option.Optional_equals) SemErr(L"Optional parameter must have initializer because of @OPTION"); .)
-	)
+	] (. else if (param.Optional() && option.Optional_equals) SemErr(L"Optional parameter must have initializer because of @OPTION"); .)
 .
 FormalParameterList<int parent> (. ID(L"FormalParameterList", STMT) .)
 =
