@@ -1,5 +1,5 @@
 ' Part of the ViviFire test suite.
 program test
 where str = "string"
-where ver = 1.0.0
-where ver4 = 1.0.0.1
+where ver = $v1
+where ver4 = $1.0.0.1

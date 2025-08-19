@@ -1574,13 +1574,6 @@ CallStatement (. ID(L"CallStatement", STMT) .)
 		.)
 		OptionalArgList
 	|
-		"Constructor"
-		(.
-		if (!in_context(_Constructor))
-		    SemErr(L"CALL CONSTRUCTOR is available only in a CONSTRUCTOR");
-		.)
-		OptionalArgList
-	|
 		SimpleExpression
 		(.
 		// If token is a name and there is more on the line, it is possibly a proc call with arguments.
