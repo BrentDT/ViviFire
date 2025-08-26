@@ -23,26 +23,41 @@
 <h1 id="top">Comments in Code</h1>
 <p>All through this manual you will see examples of ViviFire code with comments.
 Most of these comments start with an apostrophe (<code class="op">&#39;</code>) and stop at the end of the line.
-You can also use two slashes (<code class="op">//</code>) as an alternative.
-The ViviFire compiler ignores all comments.</p>
+You can also use two slashes (<code class="op">//</code>) as an alternative to an apostrophe.
+The ViviFire compiler usually ignores all comments.</p>
 <p>You put comments in your code to tell what other code does.
 And frequently they give other information.</p>
-<p>There are two types of comments:
-(1) the in-line comment, shown above, and (2) the mid-line comment.</p>
-<p>A <dfn>mid-line comment</dfn> uses a pair of symbols to identify the start and end, and has one symbol between them.
-The start is a slash-apostrophe (<code class="op">/'</code>) and the end is an apostrophe-slash (<code class="op">'/</code>).
-The inner part can be a name, a number or date literal, or some sequence of characters that are a part of these symbols.</p>
-<p>Permitted punctuation characters include <code>! # $ % - . / @ _</code>.
-But, you cannot use other punctuation or whitespace characters.</p>
-<p>You can write mid-line comments at many positions in a line of code.
-But, you cannot write two adjacent comments on one line.</p>
-<h2>Examples</h2>
+<p>Comments can follow a statement on the same line, or fill a full line.
+These are shown in the code that follows.</p>
 <div class="language-vivifire listing">
-<pre><code>// This is a full-line comment.
-PrintLine "Test" ' This comment is in-line with code.
-PrintLine "Hi " &amp; name _  ' This comment ...
-    &amp; " how are you?" ' is divided in two.
-Call Test 1 /'one'/, 2 /'two'/, 3 /'three'/&#10;</code></pre>
+<pre><code>' This comment starts at the left edge of the screen.
+Const Greeting = "Hello"  ' This comment is in-line.&#10;</code></pre>
+</div>
+<p>If a comment is too long for one line, use the comment symbol on each line.
+An example follows:</p>
+<div class="language-vivifire listing">
+<pre><code>' This comment is too long to keep it all on one line, thus it
+' is necessary to break it into two.&#10;</code></pre>
+</div>
+<p>A comment can follow a line-continuation sequence on the same line.
+But you cannot use a line-continuation sequence to continue a comment, because comments ignore all such sequences.</p>
+<p>Because the apostrophe can show almost the same as a quotation mark, some comments can cause warnings.
+ViviFire shows a warning if an apostrophe follows one of these line-continuation sequences:
+an assignment operator, a comma, a left parenthesis, or a left brace.
+There are two possible corrections:
+(1) put an underscore symbol (<code class="op">_</code>) before the apostrophe,
+or (2) change the comment symbol to two slashes (<code class="op">//</code>).</p>
+<p>The example that follows shows some conditions in which comments can cause warnings.</p>
+<div class="language-vivifire listing">
+<pre><code>' This comment has no problem.
+Function ConcatenatedFour(    ' This comment causes a warning.
+      parameter1 As String,   // This comment has no problem.
+      parameter2 As String,   ' This comment causes a warning.
+      parameter3 As String, _ ' This comment has no problem.
+      parameter4 As String) As String
+    ConcatenatedFour = ' This comment causes a warning.
+      parameter1 + parameter2 + parameter3 + parameter4
+End Function&#10;</code></pre>
 </div>
 <h2>Conventions for comments</h2>
 <p>The list that follows gives some general instructions about what type of comment can come before a section of code.
@@ -64,6 +79,7 @@ Good names can make some comments shorter or not as necessary.</li>
 <li>Write comments the same as sentences.
 start with an upper-case letter, and put a period (or other applicable punctuation) at the end.</li>
 </ul>
+<!-- TODO: Possibly REM can be a problem for some BASIC users? -->
 </main>
 <script src="prism.js"></script>
 <script src="common.js"></script>
