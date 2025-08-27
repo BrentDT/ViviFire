@@ -1296,10 +1296,10 @@ InlineComment = ("'"|"//"){notEOL}. (.
 	if ( (L'\'' == la->val[0])
 	&& (_equals == t->kind || _comma == t->kind || _left_paren == t->kind || _left_brace == t->kind)
 	) {
-		Warn(la->line, la->col, 
-			L"Line continuation without the _ then a comment with the ' is not easy to read. "
-			L"We recommend that you use (1) the underscore or (2) the comment that starts  //..."
-		);
+		const std::wstring eol = t->val;
+		std::wstring msg = L"Line continuation with a comment (`" + eol + L" '`) is not easy to read. ";
+		msg += L"We recommend `" + eol + L" _ '` or `" + eol + L" //`.";
+		Warn(la->line, la->col, msg.c_str());
 	} .)
 
 ///MidlineComment = "/'"{"#"|alnum|"_"|"."|"-"|"/"|":"|sigil}"'/".

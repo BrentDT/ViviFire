@@ -1,0 +1,9 @@
+﻿' This comment has no problem.
+function ConcatenatedFour(    ' This comment causes a warning.
+      parameter1 as string,   // This comment has no problem.
+      parameter2 as string,   ' This comment causes a warning.
+      parameter3 as string, _ ' This comment has no problem.
+      parameter4 as string) as string
+    ConcatenatedFour = ' This comment causes a warning.
+      parameter1 + parameter2 + parameter3 + parameter4
+end function
