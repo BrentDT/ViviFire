@@ -1,8 +1,10 @@
 @Echo Off
 SetLocal EnableDelayedExpansion
 
-Set "VF_EXE=..\src\release\vf.exe"
-Set "FLAGS=-v0"
+Set VF_EXE=..\src\release\vf.exe
+Set FLAGS=-v0
+Set LOG_FILE=test.log
+Set VIEWER=Start ""
 
 If Not Exist %VF_EXE% (
 	Echo FATAL ERROR: ViviFire is not at %VF_EXE%
@@ -12,8 +14,8 @@ If Not Exist %VF_EXE% (
 :: Number of failed test.
 Set fails=0
 
-:: All stdout gets written to a new 'test.log' with each run.
-> test.log (
+:: All stdout gets written to a new log file with each run.
+> %LOG_FILE% (
 	:: Recursively test each file with the extensions '.vfire' and '.vflib'.
 	For /R %%f In (*.vfire *.vflib) Do Call :Test "%%~f"
 )
@@ -25,8 +27,8 @@ If %fails% EQU 0 (
 	If %~0 NEQ %0 Pause
 ) Else (
 	:: Wait a maximum of 10 seconds.
-	Choice /M "%fails% failed. Open test.log" /T:10 /D:N
-	If !ErrorLevel! EQU 1 Start "" test.log
+	Choice /M "%fails% failed. Open test log" /T:10 /D:N
+	If !ErrorLevel! EQU 1 %VIEWER% %LOG_FILE%
 )
 GoTo :EOF
 
@@ -41,10 +43,11 @@ GoTo :EOF
 			Set /A fails+=1
 		)
 	) Else (
-		:: Compare output to '.err' file.
-		FindStr /B /C:"%output%" "%~p1%~n1.err" > NUL
+		:: Compare output to '.err' file. FindStr has a limit of 511 chars.
+		FindStr /B /C:"%output:~0,511%" "%~p1%~n1.err" > NUL
+		If !ErrorLevel! NEQ 0 If !ErrorLevel! NEQ 1 Echo WARNING: FindStr returned !ErrorLevel!
 		:: If they are different...
-		If ErrorLevel 1 (
+		If !ErrorLevel! EQU 1 (
 			Set "absolute=%~1"
 			:: Show relative path and output.
 			Echo "!absolute:%CD%\=!" failed with {{%output%}}.
