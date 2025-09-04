@@ -44,7 +44,7 @@ GoTo :EOF
 		)
 	) Else (
 		:: Compare output to '.err' file. FindStr has a limit of 511 chars.
-		FindStr /B /C:"%output:~0,511%" "%~p1%~n1.err" > NUL
+		FindStr /B /C:^"%output:~0,511%^" "%~p1%~n1.err" > NUL
 		If !ErrorLevel! NEQ 0 If !ErrorLevel! NEQ 1 Echo WARNING: FindStr returned !ErrorLevel!
 		:: If they are different...
 		If !ErrorLevel! EQU 1 (
@@ -65,7 +65,7 @@ GoTo :EOF
 	For /F "usebackq tokens=* delims=" %%a In (`
 		%VF_EXE% %FLAGS% %1 ^| Find /V ""
 	`) Do Set "output=!output!%%a"
-	:: Escape chars that can cause problems: " -> \x22, ) -> \x29.
-	Set output=%output:"=\x22%
-	Set output=%output:)=\x29%
+	:: Escape chars that can cause problems.
+	Set output=%output:"=\^^"%
+	Set output=%output:)=\^^)%
 	GoTo :EOF
