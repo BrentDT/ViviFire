@@ -152,6 +152,7 @@ public:
 
 class UTF8Buffer : public Buffer {
 public:
+	using Buffer::Buffer; // 2025-09-03
 	UTF8Buffer(Buffer *b) : Buffer(b) {};
 	virtual int Read();
 };
@@ -718,7 +719,7 @@ int UTF8Buffer::Read() {
 }
 
 Scanner::Scanner(const unsigned char* buf, int len) {
-	buffer = new Buffer(buf, len);
+	buffer = new UTF8Buffer(buf, len); // was Buffer 2025-09-03
 	Init();
 }
 
@@ -731,12 +732,12 @@ Scanner::Scanner(const wchar_t* fileName) {
 		exit(1);
 	}
 	///coco_string_delete(chFileName);
-	buffer = new Buffer(stream, false);
+	buffer = new UTF8Buffer(stream, false); // was Buffer 2025-09-03
 	Init();
 }
 
 Scanner::Scanner(FILE* s) {
-	buffer = new Buffer(s, true);
+	buffer = new UTF8Buffer(s, true); // was Buffer 2025-09-03
 	Init();
 }
 
@@ -774,18 +775,12 @@ void Scanner::Init() {
 	pos = -1; line = 1; col = 0; charPos = -1;
 	oldEols = 0;
 	NextCh();
-	if (ch == 0xEF) { // check optional byte order mark for UTF-8
-		NextCh(); int ch1 = ch;
-		NextCh(); int ch2 = ch;
-		if (ch1 != 0xBB || ch2 != 0xBF) {
-			wprintf(L"Illegal byte order mark at start of file");
-			exit(1);
-		}
-		Buffer *oldBuf = buffer;
-		buffer = new UTF8Buffer(buffer); col = 0; charPos = -1;
-		delete oldBuf; oldBuf = NULL;
+	// BEGIN MOD 2025-09-03
+	if (ch == 0xFEFF) { // check optional byte order mark for UTF-8
+		col = 0; charPos = -1;
 		NextCh();
 	}
+	// END MOD
 
 -->initialization
 	pt = tokens = CreateToken(); // first token is a dummy

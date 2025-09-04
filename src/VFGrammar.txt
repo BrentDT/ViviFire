@@ -530,7 +530,7 @@ std::wstring StringValue(wchar_t *pStrToken) {
 			}
 		} else {
 			// Interpolated string (eg $"Hello, {name}!").
-			std::string tempStr{'\xEF', '\xBB', '\xBF'}; // Initialized with UTF-8 BOM.
+			std::string tempStr;
 			int nBraces = 0;
 			context.push_back(_string_literal);
 
@@ -1272,9 +1272,6 @@ Yield       = "Yield".
 
 PRAGMAS
 
-bad_identifier = '\u00ce'. (.
-	Get(); SemErr(L"Invalid name caused by incorrect file encoding. Write the file again as \"UTF-8 with BOM\"."); .)
-
 LineContinuation = "_". (.
 	Get();
 	if (la->kind != _line_break && la->kind != _InlineComment)
@@ -1301,8 +1298,6 @@ InlineComment = ("'"|"//"){notEOL}. (.
 		msg += L"We recommend `" + eol + L" _ '` or `" + eol + L" //`.";
 		Warn(la->line, la->col, msg.c_str());
 	} .)
-
-///MidlineComment = "/'"{"#"|alnum|"_"|"."|"-"|"/"|":"|sigil}"'/".
 
 IGNORE t + '\u00a0' // non-breaking space
 
