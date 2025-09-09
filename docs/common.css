@@ -181,17 +181,7 @@ code kbd {
 	color: #C00;
 }
 code .err {
-	border-bottom:2px dotted red;
-	display: inline-block;
-	position: relative;
-}
-code .err:after {
-	content: '';
-	width: 100%;
-	border-bottom:2px dotted red;
-	position: absolute;
-	bottom:-1px;
-	left: -2px;
+	text-decoration: wavy underline red;
 }
 #poll {
 	background-color: #801b1b;
