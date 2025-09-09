@@ -38,8 +38,7 @@ End [ Select ]&#10;</code></pre>
 <dl class="parts">
 <dt><code class="at">@Strict</code></dt>
 <dd>Optional modifier specifies that you must supply tests for all possible values of <code class="id">test_expression</code>.</dd>
-<dd><code class="id">test_expression</code> can be an enumeration type (declared with <code class="kw">Enum</code>) that also has the modifier <code class="at">@Strict</code>.
-If it does, you must use all the constants with the equality construct, and without <code class="kw">Case Else</code>.
+<dd>If <code class="id">test_expression</code> is an enumeration type, you must use all the constants with the equality construct, and without <code class="kw">Case Else</code>.
 Other data types put no such limits on the syntax.</dd>
 <dt><code class="kw">Case</code></dt>
 <dd>Usually optional keyword after <code class="kw">Select</code>.

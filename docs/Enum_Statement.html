@@ -45,7 +45,8 @@ End [ Enum ]&#10;</code></pre>
 	</ul>
 </dd>
 <dt><code>enumeration_name</code></dt>
-<dd>Mandatory name for the enumeration</dd>
+<dd>Mandatory name for the enumeration.
+Names ignore letter case.</dd>
 <dt><code class="kw">Is</code></dt>
 <dd>A keyword before <code class="id">base_type</code>.</dd>
 <dd>You can also use one of the non-reserved keywords <code class="nkw">Extends</code> or <code class="nkw">Inherits</code> as an alternative.</dd>
@@ -54,14 +55,17 @@ End [ Enum ]&#10;</code></pre>
 The data type sets the range of possible values and the minimum value.
 An enumeration must have the modifier <code class="at">@Closed</code> to be extended.</dd>
 <dd>Optional in the usual construct.</dd>
-<dd>Mandatory integer data type with the modifier <code class="at">@Flags</code>.</dd>
+<dd>With <code class="at">@Flags</code>: Mandatory integer data type or a different enumeration with <code class="at">@Flags</code>.
+Only an enumeration with <code class="at">@Flags</code> can extend an enumeration with <code class="at">@Flags</code>.</dd>
 <dt><code class="id">member_name</code></dt>
 <dd>Mandatory name</dd>
 <dd>You can put one or more members on one line.
 Use a semicolon (<code class="op">;</code>) between each member on the same line.
 A semicolon is also permitted at the end of a line.</dd>
 <dd>You can use the modifier <code class="at">@Deprecated</code> before a member.
-If you try to use such members, the compiler shows a warning.</dd>
+If you try to use such members, the compiler shows a warning.
+But <code class="at">@Deprecated</code> is applicable to only one member.
+If you use it on a line with semicolons, the compiler will show a different warning.</dd>
 <dt><code class="id">member_data</code></dt>
 <dd>Optional constant expression.
 It must have the same type as <code class="id">base_type</code>, or automatically convert to that type.</dd>
@@ -145,13 +149,15 @@ PrintLine $"The address of {site} is <{site.Data()}>."
 </div>
 <p>You can make an enumeration of the planets:</p>
 <div class="language-vivifire listing">
-<pre><code>Enum Planet Is Int32
+<pre><code>Enum Planet Is Int16
     Mercury = 1; Venus; Earth; Mars; Jupiter; Uranus; Neptune
 End
 
+' Get planet by index. Variable must be nullable.
 Var #possiblePlanet = Planet(3)
 ' Variable has the value Planet.Earth.
 
+' Try to find the tenth planet.
 #possiblePlanet = Planet(10)
 ' Variable has the value #Null.&#10;</code></pre>
 </div>
@@ -163,6 +169,10 @@ Thus the initial member has a default value of one, the second is 2, the third i
 <span class="kws"><code>Int8</code>, <code>UInt8</code>, <code>Int16</code>, <code>UInt16</code>, <code>Int32</code>, <code>UInt32</code>, <code>Int64</code>, <code>UInt64</code>, <code>Int128</code>, or <code>UInt128</code></span>.</p>
 <p>If <code class="id">base_type</code> is an enumeration with <code class="at">@Flags</code>, the new statement is an extension to the flags.
 <code class="id">base_type</code> must have one or more bits available.</p>
+<p>In the example that follows, the comment after each member shows two numbers.
+The left number is the decimal (base-10) value automatically assigned to the constant.
+The right number (in parentheses) is the same value in binary (base-2).
+The comment after <code class="kw">End Enum</code> shows all the bits used by this enumeration.</p>
 <div class="language-vivifire listing">
 <pre><code>@Flags @Closed
 Enum Days Is Int8
@@ -174,7 +184,7 @@ Enum Days Is Int8
     Friday    ' = 16 (00010000)
     Saturday  ' = 32 (00100000)
     Sunday    ' = 64 (01000000)
-End Enum
+End Enum ' Total 127 (01111111)
 
 Var weekend As Days = Days.Saturday Or Days.Sunday
 PrintLine weekend
@@ -189,6 +199,55 @@ PrintLine restDays
 ' Output:
 ' Thursday, Saturday, Sunday&#10;</code></pre>
 </div>
+<h3>Aliases</h3>
+<p>Aliases are not possible, because two constants cannot refer to the same object.
+But, you can use <code class="kw">Const</code> to make something almost the same.</p>
+<div class="language-vivifire listing">
+<pre><code>Enum TrafficLight
+    RED; YELLOW; GREEN
+END
+
+Const AMBER = TrafficLight.YELLOW&#10;</code></pre>
+</div>
+<p>We do not recommend such aliases, because they can cause problems.
+You cannot use the qualified name <code>TrafficLight.AMBER</code>.
+Also, when you use <code>Print</code> (or other string conversions) with <code>AMBER</code>, the result is <code>"YELLOW"</code>.</p>
+<h3>Using enumeration types with <code>Select&hellip;Case</code></h3>
+<p>When you use the statement <code class="kw">Select&hellip;Case</code> with the modifier <code class="at">@Strict</code>, the compiler tries to be as correct as possible.
+If the test expression is an enumeration type, you must do a test for all the values in the given enumeration.
+Also, if you add one or more members to the enumeration, the program will not compile until you add tests for them.</p>
+<p>If you start with the code for <code>TrafficLight</code> from above.
+Then, you add a statement to do tests for all the members with <code class="kw">Select</code>.</p>
+<p>Subsequently, you add a new member for lights that flash yellow.
+But when you try to compile, you get an error.</p>
+<div class="language-vivifire listing">
+<pre><code>Enum TrafficLight
+    RED; YELLOW; GREEN
+    FLASH_YELLOW
+End Enum
+
+Var light As TrafficLight
+
+' ...
+
+' Error: "@STRICT SELECT is missing test(s) for enumeration TrafficLight".
+<span class="err">@Strict Select light</span>
+Case TrafficLight.RED
+    ' Red light.
+Case TrafficLight.YELLOW
+    ' Yellow light.
+Case TrafficLight.GREEN
+    ' Green light.
+End Select&#10;</code></pre>
+</div>
+<p>It is necessary to add a new test.</p>
+<div class="language-vivifire listing">
+<pre><code>' ...
+    ' Green light.
+Case TrafficLight.FLASH_YELLOW
+    ' Flashing yellow light.
+End Select&#10;</code></pre>
+</div>
 <h3>Changes in syntax with <code>@Option</code></h3>
 <p>There are three areas where you can change the syntax of the statement:</p>
 <ul>
@@ -201,6 +260,7 @@ PrintLine restDays
 <ul class="articles">
 <li><a href="Const_Statement.html">Const Statement</a></li>
 <li><a href="Constants_and_Enumerations.html">Constants and Enumerations</a></li>
+<li><a href="Select_Case_Statement.html">Select&hellip;Case Statement</a></li>
 <li><a href="Option_Directive.html">@Option Directive</a></li>
 </ul>
 </main>
