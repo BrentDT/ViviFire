@@ -225,7 +225,7 @@ code.IPA {
 	font-family: "DejaVu Sans", "Lucida Sans Unicode", Gentium;
 	font-size: inherit;
 }
-/* Stubs - updated 2025/07/11 */
+/* Stubs - updated 2025/09/21 */
 /* Find on Windows: `FindStr /M "\<id=.stub\>" *.html` */
 a[href^="Array_Conversions."],
 a[href^="Array_Dimensions."],
@@ -274,7 +274,6 @@ a[href^="Structure_Variables."],
 a[href^="System_Requirements."],
 a[href^="Variable_Declaration."],
 a[href^="ViviFire_Runtime_Library_Members."],
-a[href^="Widening_and_Narrowing_Conversions."],
 #stub > h1 {
 	&:link {
 		color: inherit;
