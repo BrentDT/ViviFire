@@ -1034,6 +1034,7 @@ currency = '$' + '\u00a2' + '\u00a3' + '\u00a5' +
 	'\u17db' + '\u20a0' .. '\u20cf' + '\ua838' + '\ufdfc'.
 
 str = ANY - ctrl - eol - '"'.
+istr = str - "{}".
 notAfterStr = ANY - eol - " $&')+,./;<=>@\\_}". // Chars that cannot come after the closing quote.
 char = ANY - ctrl - eol.
 
@@ -1141,13 +1142,26 @@ string_constant =
 
 string_literal =
 	["_"]                // Continuation.
-	["$"]        // Interpolated string (eg $"Hello {name}!").
-	'"'{str}'"'  // Usual string.
-	{
-	  ( '"'      // Double quotes (eg "Cannot open ""file.ext"".").
-	  | "`"      // Interpolated char literal (eg $"foo {bar(`"`)}").
-	  ){str}'"'
-	}.
+	(
+		// Usual string.
+		'"'
+		{str
+		|'"'["/"|"\\"]'"' // Quotes or file path separators, eg `Error: Unable to open ""dir"/"file"""`.
+		}
+		'"'
+	|
+		// Interpolated string, eg `$"Welcome, {name}!"`.
+		"$\""
+		{istr
+		|"{{"|"}}" // Double braces to show only one brace.
+		|'"'["/"|"\\"]'"' // Quotes or file path separators.
+		  |"{" { istr | '"'{str}'"' | "`\"`" | "`}`" | "}}" } "}" // Single braces for interpolation.
+		  // Some parts increase the size of the generated scanner very much. The worst parts are
+		  // the character literals, ``"`` and ``}``, which increased the size by ~49KB.
+		  // Also, the double right braces increased it by ~11KB.
+		}
+		'"'
+	).
 
 malformed_string_literal =
 	["_"]["$"]

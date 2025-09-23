@@ -226,7 +226,9 @@ code.IPA {
 	font-size: inherit;
 }
 /* Stubs - updated 2025/09/21 */
-/* Find on Windows: `FindStr /M "\<id=.stub\>" *.html` */
+/* Find on Windows:
+	(For /F %f In ('FindStr /M "\<id=.stub\>" *.html') Do @Echo a[href^^^^="%~nf."],) | Clip
+*/
 a[href^="Array_Conversions."],
 a[href^="Array_Dimensions."],
 a[href^="Code_Conventions."],
