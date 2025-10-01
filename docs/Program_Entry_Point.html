@@ -21,11 +21,14 @@
 </nav>
 <main>
 <h1 id="top">Program Entry Point</h1>
-<p>All ViviFire programs must contain one module that starts with <code class="kw">Program</code> and a name.
+<p>All ViviFire programs must contain a minimum of one module with the file extension <code>.vfire</code>.
+If there are two or more such modules, one must start with <code class="kw">Program</code> and a name.
+But if there is only one such module, <code class="kw">Program</code> is optional.
 This module is where your program starts to run.</p>
-<p>The name of the program can be the same as one procedure.
+<p>If you supply <code class="kw">Program</code>, the name of the program can be the same as one procedure in the module.
 When you write <code class="op">=</code> before the name, that procedure becomes where the program starts to run.
-But, if <code class="op">=</code> is not given, control starts at the top of the module.</p>
+But if <code class="op">=</code> is not given, control starts at the top of the module
+(the same as a module without <code class="kw">Program</code>).</p>
 <p>A procedure lets you easily get arguments from the command line, and/or return an error code to the operating system.
 But if these are not necessary in your program, you can select not to use a procedure.
 There are alternatives you can use.
@@ -67,7 +70,7 @@ You can select what to do with different arguments.
 Sub ArgsAndError(args() As String) As Int32
     MessageBox "Start of program"
     For Each arg In args
-    Begin
+    Exit When
         MessageBox arg &amp; " arg"
     When DONE
         ArgsAndError = %EXIT_SUCCESS
@@ -87,7 +90,7 @@ End Sub&#10;</code></pre>
 Sub ArgsOnly(args() As String)
     MessageBox "Start of program"
     For Each arg In args
-    Begin
+    Exit When
         MessageBox arg &amp; " arg"
     When NONE
         MessageBox "No args!"
