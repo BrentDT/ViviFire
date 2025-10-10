@@ -1651,7 +1651,7 @@ ConstantValueError (. ID(L"ConstantValueError", STMT) .)
 =
 	(
 		( char_literal | fixed_literal | integer_constant | integer_literal | null_literal
-		| real_literal | string_constant | string_literal
+		| "#Null" | real_literal | string_constant | string_literal
 		)
 		(. SemErr(L"Cannot use a constant value here"); .)
 	|
