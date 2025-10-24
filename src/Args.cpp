@@ -1,9 +1,9 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2024 Brent D. Thorn
+ * Copyright 2025 Brent D. Thorn
  *
- * You can get the latest version at http://vivifire.com/.
+ * You can get the latest version at http://vivifire.me/.
  *
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file.
@@ -81,7 +81,7 @@ bool Args::Parse (int argc, char *argv[]) {
 		L"\t-v3  Maximum verbosity\n\n"
 
 		L"You can find new releases and documentation at the official home page:\n"
-		L"http://vivifire.com\n"
+		L"http://vivifire.me\n"
 		);
 		return false;
 	}

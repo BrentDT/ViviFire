@@ -11,7 +11,7 @@ frequently and quickly before it becomes stable.
 The source code for ViviFire is released under the MIT license.  And the
 documentation is released under Creative Commons CC0 (public domain).
 
-To learn more about the language, [visit the home page](http://vivifire.com).
+To learn more about the language, [visit the home page](http://vivifire.me).
 
 ## Example code
 
