@@ -1998,7 +1998,7 @@ EnclosedParameterList<int parent> (. ID(L"EnclosedParameterList", STMT) .)
 EnumStatement<Modifiers &mods> (. ID(L"EnumStatement", STMT) .)
 =
 	(.
-	#define FLAGS X(Closed); X(Flags); X(MustUse);
+	#define FLAGS X(Flags); X(Frozen); X(MustUse);
 	#define X _MODS_DECL_FLAGS
 	FLAGS
 	#undef X
@@ -2701,7 +2701,7 @@ Modifier<struct Modif *&pMod> (. ID(L"Modifier", STMT) .)
 			break;
 		case 6:
 			if (Matches(L"Backed")) pMod = new BackedModif(line, col); else
-			if (Matches(L"Closed")) pMod = new ClosedModif(line, col); else
+			if (Matches(L"Frozen")) pMod = new FrozenModif(line, col); else
 			if (Matches(L"Shared")) pMod = new SharedModif(line, col); else
 			if (Matches(L"Strict")) pMod = new StrictModif(line, col);
 			break;

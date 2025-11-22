@@ -36,11 +36,11 @@ End [ Enum ]&#10;</code></pre>
 <dt><code class="id">modifiers</code></dt>
 <dd><p>Optional modifiers:</p>
 	<ul>
-	<li><code class="at">@Closed</code> &ndash; The enumeration cannot be extended with new members.
-	But you can make a new enumeration that extends a closed one.</li>
 	<li><code class="at">@Deprecated</code> &ndash; The enumeration can be removed in a subsequent version.
 	See <a href="Deprecated.html">@Deprecated</a> for more information.</li>
 	<li><code class="at">@Flags</code> &ndash; Changes the enumeration into a set of bit flags.</li>
+	<li><code class="at">@Frozen</code> &ndash; The enumeration cannot be extended with new members.
+	But you can make a new enumeration that extends a frozen one.</li>
 	<li><code class="at">@MustUse</code> &ndash; Code that calls a procedure that returns the enumeration type must use the result.
 	See <a href="MustUse.html">@MustUse</a> for more information.</li>
 	</ul>
@@ -54,7 +54,7 @@ Names ignore letter case.</dd>
 <dt><code class="id">base_type</code></dt>
 <dd>A numeric data type, <code class="kw">String</code>, or a different enumeration.
 The data type sets the range of possible values and the minimum value.
-An enumeration must have the modifier <code class="at">@Closed</code> to be extended.</dd>
+An enumeration must have the modifier <code class="at">@Frozen</code> to be extended.</dd>
 <dd>Optional in the usual construct.</dd>
 <dd>With <code class="at">@Flags</code>: Mandatory integer data type or a different enumeration with <code class="at">@Flags</code>.
 Only an enumeration with <code class="at">@Flags</code> can extend an enumeration with <code class="at">@Flags</code>.</dd>
@@ -175,7 +175,7 @@ The left number is the decimal (base-10) value automatically assigned to the con
 The right number (in parentheses) is the same value in binary (base-2).
 The comment after <code class="kw">End Enum</code> shows all the bits used by this enumeration.</p>
 <div class="language-vivifire listing">
-<pre><code>@Flags @Closed
+<pre><code>@Flags @Frozen
 Enum Days Is Int8
     None = 0
     Monday    ' =  1 (00000001)
