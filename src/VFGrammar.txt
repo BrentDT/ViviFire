@@ -1614,7 +1614,7 @@ ClassStatement<Modifiers &mods> (. ID(L"ClassStatement", STMT) .)
 ComparisonClause (. ID(L"ComparisonClause", STMT) .)
 =
 	(
-		"Is" ComparisonOperator
+		"Is" ComparisonOperator<false>
 		Expression
 	|
 		Expression
@@ -1623,12 +1623,18 @@ ComparisonClause (. ID(L"ComparisonClause", STMT) .)
 .
 ComparisonExpression (. ID(L"Comparison", EXPR) .)
 =
-	NullCoalescingExpression { ComparisonOperator NullCoalescingExpression }
+	NullCoalescingExpression { ComparisonOperator<false> NullCoalescingExpression }
 .
-ComparisonOperator (. ID(L"ComparisonOperator", STMT) .)
+ComparisonOperator<bool less_only> (. ID(L"ComparisonOperator", STMT) .)
 =
-	[ "~" ]
+	(. bool bad_op = false; .)
+	[
+		"~" (. if (less_only) bad_op = true; .)
+	]
 	( "=" | "<>" | "<" | "<=" | ">" | ">=" )
+	(. if ( bad_op || (less_only && t->kind != _less_than && t->kind != _less_or_equal) ) {
+		Err(L"Only the operators `<` and `<=` are permitted here");
+	} .)
 .
 ConcatenationExpression (. ID(L"Concatenation", EXPR) .)
 =
@@ -1689,7 +1695,7 @@ Constraint<int block> (. ID(L"Constraint", STMT) .)
 
 		identifier
 		[ (. c++; .)
-			( "<" | "<=" ) MandatoryIdent [ ( "<" | "<=" ) MandatoryIdent ]
+			ComparisonOperator<true> MandatoryIdent [ ComparisonOperator<true> MandatoryIdent ]
 		]
 		[ (. c++; .)
 			"Is" ( "Class" | "Struct" | "Unit" )
@@ -1704,7 +1710,7 @@ Constraint<int block> (. ID(L"Constraint", STMT) .)
 	|
 		"Self"
 		(. if (block != _Class && block != _Trait) SemErr(L"SELF constraint only available in CLASS and TRAIT"); .)
-		( "<" | "<=" | "Is" )
+		( ComparisonOperator<true> | "Is" )
 		UserType
 	)
 .
@@ -3229,9 +3235,9 @@ ReDimStatement (. ID(L"ReDimStatement", STMT) .)
 RequireComparison (. ID(L"RequireComparison", STMT) .)
 =
 	// TODO: strings can only be "=" or "<>".
-	( [ string_constant ( "<" | "<=" ) ]  // Eg `$v1 <= version < $v2`.
+	( [ string_constant ComparisonOperator<true> ]  // Eg `$v1 <= version < $v2`.
 		MandatoryIdent
-		ComparisonOperator ( string_constant | string_literal )
+		ComparisonOperator<false> ( string_constant | string_literal )
 	| "(" RequireLogic ")"
 	)
 .
