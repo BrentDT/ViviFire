@@ -30,7 +30,7 @@
 <dt>Negation</dt>
 <dd><code class="kw">Char</code> is an unsigned type and thus cannot hold a negative value.</dd>
 <dt>Automatic conversions</dt>
-<dd><code class="kw">Char</code> widens to <code class="kw">String</code> without risk of overflow.</dd>
+<dd><span class="kws"><code>Char</code> widens to <code>String</code> or <code>SafeString</code></span> without risk of overflow.</dd>
 <dt>Type characters</dt>
 <dd><code class="kw">Char</code> has no type character.</dd>
 </dl>
@@ -42,7 +42,7 @@ You write a character literal with the character between backticks (<code class=
 Some examples follow.</p>
 <div class="language-vivifire listing">
 <pre><code>Dim letter As Char = `A`
-Dim backtick As Char = ```&#10;</code></pre>
+Const backtick As Char = ```&#10;</code></pre>
 </div>
 <h2>Shared methods and properties</h2>
 <dl class="language-vivifire listing">
@@ -56,47 +56,67 @@ This is always 4.</dd>
 <dt><pre><code>Char.Upper(c As Char, Optional #fmt As Format) As Char</code></pre></dt>
 <dd>Returns an upper-case letter if given a lower-case letter, or the given character if it is not a letter.</dd>
 </dl>
-<p>The methods that follow have two overloads each:
-(1) a necessary character (<code class="id">chr</code>),
-or (2) a necessary string (<code class="id">str</code>) and a necessary position (<code class="id">pos</code>) in it.
-The position starts at zero.</p>
+<p>The methods that follow have three overloads each:
+(1) a character (<code>chr As Char</code>),
+(2) a string (<code>str As String</code>),
+or (3) a safe string (<code>str As SafeString</code>).
+For string types, each method gets the initial character of the given string.
+But if the string is empty, the method raises an exception TBD.</p>
 <dl class="language-vivifire listing">
 <dt><pre><code>Char.IsControl(chr As Char) As Boolean
-Char.IsControl(str As String, pos As Int32) As Boolean</code></pre></dt>
+Char.IsControl(str As String) As Boolean
+Char.IsControl(str As SafeString) As Boolean</code></pre></dt>
 <dd>Returns true if given a control character, and false if given a different character.</dd>
 <dt><pre><code>Char.IsDigit(chr As Char) As Boolean
-Char.IsDigit(str As String, pos As Int32) As Boolean</code></pre></dt>
+Char.IsDigit(str As String) As Boolean
+Char.IsDigit(str As SafeString) As Boolean</code></pre></dt>
 <dd>Returns true if given a number between 0 and 9, and false if given a different character.</dd>
+<dd>See also <code>IsNumber</code>.</dd>
 <dt><pre><code>Char.IsLetter(chr As Char) As Boolean
-Char.IsLetter(str As String, pos As Int32) As Boolean</code></pre></dt>
+Char.IsLetter(str As String) As Boolean
+Char.IsLetter(str As SafeString) As Boolean</code></pre></dt>
 <dd>Returns true if given a letter, and false if given a different character.</dd>
 <dt><pre><code>Char.IsLower(chr As Char) As Boolean
-Char.IsLower(str As String, pos As Int32) As Boolean</code></pre></dt>
+Char.IsLower(str As String) As Boolean
+Char.IsLower(str As SafeString) As Boolean</code></pre></dt>
 <dd>Returns true if given a lower-case letter, and false if given a different character.</dd>
+<dd>See also <code>IsUpper</code>.</dd>
 <dt><pre><code>Char.IsNumber(chr As Char) As Boolean
-Char.IsNumber(str As String, pos As Int32) As Boolean</code></pre></dt>
+Char.IsNumber(str As String) As Boolean
+Char.IsNumber(str As SafeString) As Boolean</code></pre></dt>
 <dd>Returns true if given a number or related character, and false if given a different character.</dd>
+<dd>See also <code>IsDigit</code>.</dd>
 <dt><pre><code>Char.IsPunctuation(chr As Char) As Boolean
-Char.IsPunctuation(str As String, pos As Int32) As Boolean</code></pre></dt>
+Char.IsPunctuation(str As String) As Boolean
+Char.IsPunctuation(str As SafeString) As Boolean</code></pre></dt>
 <dd>Returns true if given a punctuation character, and false if given a different character.</dd>
 <dt><pre><code>Char.IsSeparator(chr As Char) As Boolean
-Char.IsSeparator(str As String, pos As Int32) As Boolean</code></pre></dt>
+Char.IsSeparator(str As String) As Boolean
+Char.IsSeparator(str As SafeString) As Boolean</code></pre></dt>
 <dd>Returns true if given a separator character, and false if given a different character.</dd>
+<dd>See also <code>IsWhitespace</code>.</dd>
 <dt><pre><code>Char.IsSymbol(chr As Char) As Boolean
-Char.IsSymbol(str As String, pos As Int32) As Boolean</code></pre></dt>
+Char.IsSymbol(str As String) As Boolean
+Char.IsSymbol(str As SafeString) As Boolean</code></pre></dt>
 <dd>Returns true if given a symbol character, and false if given a different character.</dd>
 <dt><pre><code>Char.IsUpper(chr As Char) As Boolean
-Char.IsUpper(str As String, pos As Int32) As Boolean</code></pre></dt>
+Char.IsUpper(str As String) As Boolean
+Char.IsUpper(str As SafeString) As Boolean</code></pre></dt>
 <dd>Returns true if given an upper-case letter, and false if given a different character.</dd>
+<dd>See also <code>IsLower</code>.</dd>
 <dt><pre><code>Char.IsWhitespace(chr As Char) As Boolean
-Char.IsWhitespace(str As String, pos As Int32) As Boolean</code></pre></dt>
+Char.IsWhitespace(str As String) As Boolean
+Char.IsWhitespace(str As SafeString) As Boolean</code></pre></dt>
 <dd>Returns true if given a whitespace character, and false if given a different character.</dd>
+<dd>See also <code>IsSeparator</code>.</dd>
 <dt><pre><code>Char.UnicodeBlock(chr As Char) As UnicodeBlocks
-Char.UnicodeBlock(str As String, pos As Int32) As UnicodeBlocks</code></pre></dt>
+Char.UnicodeBlock(str As String) As UnicodeBlocks
+Char.UnicodeBlock(str As SafeString) As UnicodeBlocks</code></pre></dt>
 <dd>Returns an enumeration value of type <code>UnicodeBlocks</code> that is related to the Unicode block of the given character.</dd>
 </dl>
 <h2>See also</h2>
 <ul class="articles">
+<li><a href="SafeString_Data_Type.html">SafeString Data Type</a></li>
 <li><a href="String_Data_Type.html">String Data Type</a></li>
 <li><a href="Pre_calculated_Constants.html">Pre-Calculated Constants</a></li>
 </ul>
