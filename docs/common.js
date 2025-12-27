@@ -15,19 +15,21 @@ if (!chm) {
 	const contents = document.createElement('P');
 	contents.innerHTML =
 		`<a href="contents.html">Contents</a>
-		| <a href="#" onclick="showSearch(this)">Search</a>`;
+		| <button onclick="showSearch(this)">Search</button>`;
 	document.body.insertBefore(contents, warning);
 }
+
+if ('' === location.hash)document.body.scrollIntoView(true);
 
 document.write(`<hr>
 	<div id="poll" role="status" aria-live="polite" aria-relevant="text">
 	<div role="form" aria-label="poll">
 	<p>What is your rating for this article? (1 = lowest)</p>
-	<button onclick="vote(0)">1</button>
-	<button onclick="vote(1)">2</button>
-	<button onclick="vote(2)">3</button>
-	<button onclick="vote(3)">4</button>
-	<p>or <a href="https://www.b6sw.com/forum/posting.php?mode=annotate&f=37&anchor=${/\/(\w+)\.html/.exec(location.href)[1]}" target="_blank">send a message</a></p>
+	<button onclick="vote(0)" title="Very bad">1</button>
+	<button onclick="vote(1)" title="Bad">2</button>
+	<button onclick="vote(2)" title="Good">3</button>
+	<button onclick="vote(3)" title="Very good">4</button>
+`+ /*	<p>or <a href="https://www.b6sw.com/forum/posting.php?mode=annotate&f=37&anchor=${/\/(\w+)\.html/.exec(location.href)[1]}" target="_blank">send a message</a></p> */ `
 	</div></div>`);
 
 document.write(`<footer aria-label="footer">
