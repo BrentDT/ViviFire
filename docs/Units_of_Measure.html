@@ -91,6 +91,15 @@ To make an irregular plural, write the number <code>1</code> before the singular
 This automatically makes all names with the SI prefixes of magnitude.
 For a one-letter name, it adds the short prefixes, for example, &ldquo;k&rdquo;.
 For longer names, it uses the full prefixes, for example, &ldquo;kilo&rdquo;.</p>
+<p>You can control which types of prefixes get automatically added to units.
+You put special attributes after <code class="at">@SI</code>.</p>
+<ul>
+<li><code class="at">@SI BINARY</code> &ndash; Adds binary-unit prefixes:
+<code>kibi Ki</code>, <code>mebi Mi</code>, <code>gibi Gi</code>, <code>tebi Ti</code>, <code>pebi Pi</code>, <code>exbi Ei</code>, <code>zebi Zi</code>, <code>yobi Yi</code>, <code>robi Ri</code>, and <code>quebi Qi</code>.</li>
+<li><code class="at">@SI LARGE</code> &ndash; adds large-unit prefixes, for example, <code>mega</code> and <code>M</code>.</li>
+<li><code class="at">@SI SMALL</code> &ndash; adds small-unit prefixes, for example, <code>micro</code>, <code>&micro;</code>, and <code>&mu;</code>.</li>
+</ul>
+<p>See the examples below for a complete list of the large and small-unit prefixes.</p>
 <p>Different units can have the same name if each unit has a different base unit.
 But when this occurs, you cannot use these units to make a variable or parameter to a procedure with the keyword <code class="kw">In</code>.
 You can try to make units that do not have the same name, or use a different alternative name.</p>
