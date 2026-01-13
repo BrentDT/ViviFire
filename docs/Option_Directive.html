@@ -295,11 +295,11 @@ A unit test is a procedure with the modifier <code class="at">@Test</code>.
 See <a href="Test.html"><code>@Test</code></a> for more information.</p>
 <h4><code>@Option Test Compiler</code></h4>
 <p>Causes ViviFire to parse inline comments to find commands used in tests of the compiler.
-You must not use this directive unless you do work on the compiler.
-Block comments are ignored as usual.</p>
+You can use this directive only if you do work on the compiler.</p>
 <p>These commands (<code>expect-error</code> and <code>expect-warning</code>) cause the compiler to ignore errors and warnings before the applicable command.
 The comment must be on the same line as the statement, or the line immediately after the statement.</p>
 <p>Then you must write the error or warning message between a pair of two braces (<code class="op">{{ }}</code>).
+The compiler shows a different error if the given error or warning does not occur.
 The compiler ignores the remaining comment until the end of the line.</p>
 <p>An example follows.</p>
 <div class="language-vivifire listing">
