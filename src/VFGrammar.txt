@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2025 Brent D. Thorn
+ * Copyright 2026 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.me/.
  *
@@ -2685,7 +2685,7 @@ Modifier<struct Modif *&pMod> (. ID(L"Modifier", STMT) .)
 					if (Matches(L"BINARY")) arg = SIModif::SIArg::BINARY; else
 					if (Matches(L"LARGE")) arg = SIModif::SIArg::LARGE; else
 					if (Matches(L"SMALL")) arg = SIModif::SIArg::SMALL;
-					else Err(L"Unknown identifier after @SI. Only BINARY, LARGE, and SMALL are available.");
+					else Err(L"Unknown attribute after @SI. Only BINARY, LARGE, and SMALL are available.");
 				}
 				pMod = new SIModif(line, col, arg);
 			}
@@ -2716,6 +2716,15 @@ Modifier<struct Modif *&pMod> (. ID(L"Modifier", STMT) .)
 			break;
 		case 8:
 			if (Matches(L"Abstract")) pMod = new AbstractModif(line, col); else
+			if (Matches(L"Interval")) {
+				IntervalModif::IntervalArg arg = IntervalModif::IntervalArg::_NA;
+				if (_identifier == la->kind) {
+					Get();
+					if (Matches(L"NonNeg")) arg = IntervalModif::IntervalArg::NONNEG;
+					else Err(L"Unknown attribute after @INTERVAL. Only NONNEG is available.");
+				}
+				pMod = new IntervalModif(line, col, arg);
+			} else
 			if (Matches(L"Iterator")) pMod = new IteratorModif(line, col); else
 			if (Matches(L"Override")) pMod = new OverrideModif(line, col); else
 			if (Matches(L"Platform")) {
@@ -2727,9 +2736,9 @@ Modifier<struct Modif *&pMod> (. ID(L"Modifier", STMT) .)
 					needle += L'|';
 					if (wcsstr(L"|win32|windows|", needle.c_str())) {
 						pMod = new PlatformModif(line, col); // TODO: Pass identifier as argument.
-					} else Err(L"Unknown identifier after @PLATFORM.");
+					} else Err(L"Unknown attribute after @PLATFORM.");
 					delete pName;
-				} else Err(la->line, la->col, L"Missing mandatory identifier after @PLATFORM");
+				} else Err(la->line, la->col, L"Missing mandatory attribute after @PLATFORM");
 			} else
 			if (Matches(L"ReadOnly")) pMod = new ReadOnlyModif(line, col);
 			break;
@@ -3759,6 +3768,7 @@ UnitStatement<Modifiers &mods> (. ID(L"UnitStatement", STMT) .)
 =
 	(.
 	mods.Let(s_Deprecated);
+	mods.Let(s_Interval);
 	bool bSI       = mods.Let(s_SI);
 	mods.Check();
 	.)

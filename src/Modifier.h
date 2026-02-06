@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2025 Brent D. Thorn
+ * Copyright 2026 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.com/.
  *
@@ -81,6 +81,14 @@ struct DeprecatedModif : public Modif {
 	const wchar_t *Text() const { return L"@DEPRECATED"; }
 };
 static const std::type_index s_Deprecated = typeid(DeprecatedModif);
+
+struct IntervalModif : public Modif {
+	enum class IntervalArg { _NA, NONNEG };
+	IntervalArg arg = IntervalArg::_NA;
+	IntervalModif(int line, int col, IntervalArg arg): Modif(line, col), arg(arg) {}
+	const wchar_t *Text() const { return L"@INTERVAL"; }
+};
+static const std::type_index s_Interval = typeid(IntervalModif);
 
 struct SIModif : public Modif {
 	enum class SIArg { _NA, BINARY, LARGE, SMALL };

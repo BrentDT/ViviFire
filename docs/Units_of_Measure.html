@@ -147,8 +147,8 @@ You can try to make units that do not have the same name, or use a different alt
 <h2>Units with interval scales</h2>
 <p>TODO</p>
 <div class="language-vivifire listing no-capid">
-<pre><code>Unit Kelvin K
-Unit Celsius 1 degree_C 2 degrees_C (k In Kelvin) = k + 273.15&#10;</code></pre>
+<pre><code>@Interval NonNeg Unit Kelvin K
+@Interval Unit Celsius 1 degree_C 2 degrees_C (k In Kelvin) = k + 273.15&#10;</code></pre>
 </div>
 <h2>Measure types and variables</h2>
 <p>TODO</p>
@@ -170,10 +170,7 @@ Unit Celsius 1 degree_C 2 degrees_C (k In Kelvin) = k + 273.15&#10;</code></pre>
 <h2>Range checks</h2>
 <p>TODO</p>
 <div class="language-vivifire listing">
-<pre><code>Unit Kelvin K
-When Is &lt; 0.0
-    Raise RangeError(value)
-End Unit&#10;</code></pre>
+<pre><code>@Interval NonNeg Unit Kelvin K&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
