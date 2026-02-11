@@ -38,7 +38,7 @@ Unit unit_names ( parameter In unit ) = expression&#10;</code></pre>
 <dd>Optional one or more modifiers.
 You can put modifiers together on one line, or put each one on a different line.
 <ul>
-<li><code class="at">@Deprecated</code> &ndash; 
+<li><code class="at">@Deprecated</code> &ndash; If you try to use the unit, the result is a compiler warning.
 See <a href="Deprecated.html">@Deprecated</a> for more information.</li>
 <li><code class="at">@SI</code> &ndash; The unit is an SI (metric) unit.
 You can supply one of three optional attributes:
@@ -83,9 +83,13 @@ You can supply one of three optional attributes:
 	</li>
 	</ul>
 If you do not supply an attribute, the default prefixes are those given by <code>LARGE</code> and <code>small</code> put together.</li>
-<li><code class="at">@Interval</code> &ndash; TODO
+<li><code class="at">@Interval</code> &ndash; The unit is on an interval scale.
+You can add or subtract the value, but you cannot multiply it.
+And the value zero is not without something to measure.
+<p>You must use (1) the interval-scale construct or (2) the attribute <code>NonNeg</code>.</p>
 	<ul>
-	<li><code class="at">@interval NonNegative</code> &ndash; TODO</li>
+	<li><code class="at">@interval NonNeg</code> &ndash; The unit cannot have a negative value.
+	If you try to make a negative value, the result is an error.</li>
 	</ul>
 </li>
 </ul>
@@ -149,7 +153,7 @@ Unit light_year+s ly = 9.4605284 petameters
 Unit inch+es `in` = 2.54 cm
 
 // Kelvin cannot be negative or plural.
-@Interval NonNegative
+@Interval NonNeg
   Unit Kelvin K
 
 // &deg;C is not given because it is not easy to write.
