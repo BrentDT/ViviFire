@@ -43,7 +43,7 @@ Function function_name Does trait_name . supplied_name&#10;</code></pre>
 	<li><code class="at">@Iterator</code> &ndash; The procedure implements the iterator pattern.
 	See <a href="Iterator.html">@Iterator</a> for more information.</li>
 	<li><code class="at">@Shared</code> &ndash; The procedure is a member of its container, and not an instance of that container.
-	See <a href="Shared.html"><Code>@Shared</Code></a> for more information.</li>
+	See <a href="Shared.html"><code>@Shared</code></a> for more information.</li>
 	</ul>
 </dd>
 <dt><code class="id">function_name</code></dt>
@@ -105,10 +105,10 @@ Only procedures in the same container can call it.
 External code cannot directly call a function.</li>
 <li>A function is <dfn>constant</dfn>.
 It does not have access to and cannot change non-local state.
-Thus you cannot use the modifier <Code class="at">@Shared</Code> on variables in a function.
-And you cannot use the modifier <Code class="kw">ByRef</Code> on parameters.</li>
+Thus you cannot use the modifier <code class="at">@Shared</code> on variables in a function.
+And you cannot use the modifier <code class="kw">ByRef</code> on parameters.</li>
 <li>Code in a function can call only constant procedures.
-Constant procedures include other functions and procedures with the modifier <Code class="at">@Const</Code>.</li>
+Constant procedures include other functions and procedures with the modifier <code class="at">@Const</code>.</li>
 <li>A function must Return a value.</li>
 </ul>
 <p>A function has the qualities that follow:</p>
