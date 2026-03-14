@@ -3566,11 +3566,12 @@ TraitStatement<Modifiers &mods> (. ID(L"TraitStatement", STMT) .)
 .
 TryStatement (. ID(L"TryStatement", STMT) .)
 =
-	(. int line, col; .)
-	"Try" (. line = t->line; col = t->col; .)
+	"Try" (. int line = t->line, col = t->col; .)
 	Newline
 	{ Statement }
+	(. int nCatches = 0; .)
 	{
+		(. nCatches++; .)
 		"Catch" [ Name [ AsTypeClause ] ] SyncNewline<s_name>
 		(. context.push_back(_Catch); .)
 		{ Statement }
@@ -3581,7 +3582,7 @@ TryStatement (. ID(L"TryStatement", STMT) .)
 		(. context.push_back(_Finally); .)
 		{ Statement }
 		(. context.pop_back(); .)
-	]
+	] (. else if (0 == nCatches) Err(line, col, L"TRY without CATCH or FINALLY"); .)
 	(. if (la->kind != _End) Err(line, col, L"TRY without END"); .)
 	"End"
 	(. Optional(_Try); .)
