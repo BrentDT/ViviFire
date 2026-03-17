@@ -14,6 +14,7 @@
 #include <assert.h>
 #include <cstdio>
 #include <cwctype>
+#include <filesystem>
 #include <map>
 #include <memory>
 #include <stdexcept>
@@ -28,15 +29,6 @@
 #include "Modifier.h"
 struct Modif;
 struct Modifiers;
-
-#if __cplusplus >= 201703L // C++17
-#include <filesystem>
-#define S_PATH_SEP std::filesystem::path::preferred_separator
-#elif defined(_WIN32)
-#define S_PATH_SEP L"\\"
-#else
-#define S_PATH_SEP L"/"
-#endif
 
 // IMPORTANT: Use this macro with all productions.
 // 'SyncNewline' gets passed 's_name'.
@@ -716,7 +708,7 @@ std::wstring NamedString(wchar_t *s) {
 		if (!_wcsicmp(L"PD", s) || !_wcsicmp(L"PARENTDIR", s))
 			return std::wstring(L"..");
 		else if (!_wcsicmp(L"PS", s) || !_wcsicmp(L"PATHSEP", s))
-			return std::wstring(S_PATH_SEP);
+			return std::wstring(1, std::filesystem::path::preferred_separator);
 		break;
 	case L'R': case L'r':
 		if (s[1] == L'\0' || !_wcsicmp(L"RETURN", s))
@@ -1146,7 +1138,7 @@ string_literal =
 		// Usual string.
 		'"'
 		{str
-		|'"'["/"|"\\"]'"' // Quotes or file path separators, eg `Error: Unable to open ""dir"/"file"""`.
+		|'"''"' // // Quotes. The parser takes File path separators.
 		}
 		'"'
 	|
@@ -1154,7 +1146,7 @@ string_literal =
 		"$\""
 		{istr
 		|"{{"|"}}" // Double braces to show only one brace.
-		|'"'["/"|"\\"]'"' // Quotes or file path separators.
+		|'"''"' // Quotes. The parser takes File path separators.
 		  |"{" { istr | '"'{str}'"' | "`\"`" | "`}`" | "}}" } "}" // Single braces for interpolation.
 		  // Some parts increase the size of the generated scanner very much. The worst parts are
 		  // the character literals, ``"`` and ``}``, which increased the size by ~49KB.
@@ -3377,7 +3369,6 @@ Statement (. ID(L"Statement", STMT) .)
 .
 StringExpression<std::wstring &res> (. ID(L"String", EXPR) .)
 =
-	(. const std::wstring sep(S_PATH_SEP); .)
 	( string_literal | string_constant )
 	(. try {
 	    res += StringValue(t->val);
@@ -3389,11 +3380,11 @@ StringExpression<std::wstring &res> (. ID(L"String", EXPR) .)
 		[
 			"/"
 			(. if (option.String_slash == Option::Slash::Back) SemErr(L"Must use backslash because of @OPTION"); .)
-			(. res += sep; .)
+			(. res += std::filesystem::path::preferred_separator; .)
 		|
 			"\\"
 			(. if (option.String_slash == Option::Slash::Fore) SemErr(L"Must use slash because of @OPTION"); .)
-			(. res += sep; .)
+			(. res += std::filesystem::path::preferred_separator; .)
 		]
 		( string_literal | string_constant )
 		(. try {
