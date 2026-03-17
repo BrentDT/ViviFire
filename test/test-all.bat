@@ -1,7 +1,7 @@
 @Echo Off
 SetLocal EnableDelayedExpansion
 
-Set VF_EXE=..\src\release\vf.exe
+Set VF_EXE=..\src\x64\Release\vf.exe
 Set FLAGS=-v0
 Set LOG_FILE=test.log
 Set VIEWER=Start ""
