@@ -54,7 +54,7 @@ typedef struct Modif Modif_t;
 		prefix##Modif(int line, int col): Modif(line, col) {} \
 		const wchar_t *Text() const { return text; } \
 	}; \
-	static const std::type_index s_##prefix = typeid(prefix##Modif);
+	const std::type_index s_##prefix = typeid(prefix##Modif);
 
 ARGUMENTLESS_MODIF(Abstract, L"@ABSTRACT")
 ARGUMENTLESS_MODIF(Backed, L"@BACKED")
@@ -80,7 +80,7 @@ struct DeprecatedModif : public Modif {
 	}
 	const wchar_t *Text() const { return L"@DEPRECATED"; }
 };
-static const std::type_index s_Deprecated = typeid(DeprecatedModif);
+const std::type_index s_Deprecated = typeid(DeprecatedModif);
 
 struct IntervalModif : public Modif {
 	enum class IntervalArg { _NA, NONNEG };
@@ -88,7 +88,7 @@ struct IntervalModif : public Modif {
 	IntervalModif(int line, int col, IntervalArg arg): Modif(line, col), arg(arg) {}
 	const wchar_t *Text() const { return L"@INTERVAL"; }
 };
-static const std::type_index s_Interval = typeid(IntervalModif);
+const std::type_index s_Interval = typeid(IntervalModif);
 
 struct SIModif : public Modif {
 	enum class SIArg { _NA, BINARY, LARGE, SMALL };
@@ -96,7 +96,7 @@ struct SIModif : public Modif {
 	SIModif(int line, int col, SIArg arg): Modif(line, col), arg(arg) {}
 	const wchar_t *Text() const { return L"@SI"; }
 };
-static const std::type_index s_SI = typeid(SIModif);
+const std::type_index s_SI = typeid(SIModif);
 
 struct TestModif : public Modif {
 	enum class TestArg { _NA, IGNORED };
@@ -104,7 +104,7 @@ struct TestModif : public Modif {
 	TestModif(int line, int col, TestArg arg): Modif(line, col), arg(arg) {}
 	const wchar_t *Text() const { return L"@TEST"; }
 };
-static const std::type_index s_Test = typeid(TestModif);
+const std::type_index s_Test = typeid(TestModif);
 
 struct Modifiers {
 	std::vector<std::pair<std::type_index, std::unique_ptr<Modif_t>>> mods;
