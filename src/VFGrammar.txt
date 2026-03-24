@@ -871,12 +871,16 @@ bool IsAssignmentOp() {
 ///}
 
 bool IsDateTime() {
-	if (_integer_literal == la->kind && la->val[0] != L'%') { // Decimal literal.
-		int sep = scanner->Peek()->kind;
-		if (_colon == sep) return true; // Possible time literal.
-		if (sep != _slash && sep != _minus) return false;
-		if (_integer_literal == scanner->Peek()->kind && sep == scanner->Peek()->kind && _integer_literal == scanner->Peek()->kind) {
-			return true; // Possible date literal.
+	// Check for integer literal and base-10.
+	if (_integer_literal != la->kind || la->val[0] == L'%') return false;
+	int sep = scanner->Peek()->kind;
+	// Separator must be one of slash, hyphen, or colon.
+	if (sep != _slash && sep != _minus && sep != _colon) return false;
+	// Integer literal #2.
+	if (_integer_literal == scanner->Peek()->kind) {
+		// Time literal can have 2 or 3 parts, but date must have 3 parts with the same separator.
+		if ( _colon == sep || (sep == scanner->Peek()->kind && _integer_literal == scanner->Peek()->kind) ) {
+			return true;
 		}
 	}
 	scanner->ResetPeek();
