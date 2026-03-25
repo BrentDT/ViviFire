@@ -1,6 +1,7 @@
 *.o
 *.obj
 *.old
+/docs/search/
 /docs/search.html
 /src/Parser.cpp
 /src/Parser.h
@@ -9,4 +10,5 @@
 /src/VFGrammar-diffs.txt
 /src/Debug/
 /src/Release/
+/src/x64/
 /test/test.log
