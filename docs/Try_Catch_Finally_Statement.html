@@ -27,7 +27,7 @@
 <div class="language-vivifire syntax">
 <pre><code>Try
     [ try_statements ]
-[ Catch [ catch_parameter ]
+[ Catch [ exception [ As type ] ]
     [ catch_statements ] ]
 &hellip;
 [ Finally
@@ -41,11 +41,14 @@ End [ Try ]&#10;</code></pre>
 <dt><code class="kw">Catch</code></dt>
 <dd>Optional start of a block of statements that you can use again and again.
 It runs when an error occurs.</dd>
-<dt><code class="id">catch_parameter</code></dt>
-<dd>Optional declaration of an object variable.
-The type of the object given to <code class="kw">Raise</code> selects which block (<code class="kw">Catch</code>) runs.</dd>
+<dt><code class="id">exception</code></dt>
+<dd>Optional name of an object variable.</dd>
 <dd>If not given, <code class="kw">Catch</code> will run for all errors.
 This can be done only as the last block in a sequence of such blocks.</dd>
+<dt><code class="id">type</code></dt>
+<dd>Optional data type of the error object.
+The type of the object given to <code class="kw">Raise</code> selects which block (<code class="kw">Catch</code>) runs.
+If not given, the default is <code>Error</code>.</dd>
 <dt><code class="id">catch_statements</code></dt>
 <dd>Optional statements that run when an error occurs.</dd>
 <dt><code class="id">finally_statements</code></dt>
@@ -58,15 +61,65 @@ You can also use <code class="kw">End Try</code>.</dd>
 See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
 </dl>
 <h2>Instructions</h2>
+<p>An <dfn>exception</dfn> is an error that can occur at run-time.
+If you think a section of code can cause an exception, put the code in a block that starts with <code class="kw">Try</code>.
+Then use a block that starts with <code class="kw">Catch</code> to keep control if the exception occurs.</p>
+<p>The block that starts with <code class="kw">Try</code> can have one or more clauses that start with <code class="kw">Catch</code> that follow it.
+Each <code class="kw">Catch</code> is a handler for each different exception.
+When code raises an exception, ViviFire tries to find the handler that agrees with the given exception.
+If ViviFire cannot find a handler in this scope,  it moves control back to the procedure that called this one.
+It continues up the call stack until it finds a handler for the given exception.
+But if it cannot find a handler, ViviFire shows an error message to the user and stops the program.</p>
+<p>You can use more than one <code class="kw">Catch</code> as part of the statement <code>Try&hellip;Catch&hellip;Finally</code>.
+If you do this, the sequence of the clauses has an effect because ViviFire examines them in sequence.
+Catch the more special exceptions before the more general exceptions.</p>
+<p>The most general conditions for <code class="kw">Catch</code> that follow will catch all exceptions that inherit from the class <code>Error</code>.
+You typically use one of these constructs as the last in the sequence of clauses.
+Control flow cannot move to a clause that follows one of these constructs.</p>
+<ul class="language-vivifire">
+<li><code>Catch e As Error&#10;</code></li>
+<li><code>Catch&#10;</code></li>
+</ul>
+<p>Local variables declared in <code class="kw">Try</code> are not available in <code class="kw">Catch</code> because each block is a different scope.
+If you want to use a variable in more than one block, declare it before <code class="kw">Try</code>.</p>
+<h2><code>Finally</code> block</h2>
+<p>If you have one or more statements that must run before you move out of <code class="kw">Try</code>, use <code class="kw">Finally</code>.
+Control moves to this block immediately before it moves to the code after <code class="kw">End Try</code>.
+This occurs if code raises an exception or runs correctly.</p>
+<p>Although <code class="kw">Return</code> usually immediately moves control out of a procedure, the code in <code class="kw">Finally</code> runs Before the procedure returns.
+The only conditions which do not let <code class="kw">Finally</code> run are as follows:</p>
+<ul>
+<li><span class="kws"><code>Exit Program</code> in <code>Try</code> or <code>Catch</code></span></li>
+<li> <code>StackOverflowError</code> raised in <code class="kw">Try</code> or <code class="kw">Catch</code></li>
+</ul>
+<p>You cannot move out of <code class="kw">Finally</code> with the usual Control flow statements <code>Exit</code> and <code>Return</code>.
+Only an exception can move control out of <code class="kw">Finally</code>.</p>
+<p>If the statement <code class="kw">Try</code> contains <code class="kw">Finally</code>, blocks of <code class="kw">Catch</code> become optional.</p>
+<h2>Exception argument</h2>
+<p>TODO</p>
+<h2>Before you use <code>Try&hellip;Catch&hellip;Finally</code></h2>
+<p>TODO</p>
+<h2>Iterators</h2>
 <p>TODO</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
-<pre><code>Try
+<pre><code>Var x, y, z As Int32
+
+Try
     ' Cause a division by zero.
-    x = a / 0
-Catch #ex As Exception
-    ' Do something about the error.
+    x = y \ z
+
+    ' This will not run.
+    PrintLine "End of Try"
+Catch e As Error
+    ' Show the error message.
+    PrintLine e.Message
+Finally
+    PrintLine "End of Finally"
 End Try&#10;</code></pre>
+<div>Output:</div>
+<pre><samp>Division by zero
+End of Finally&#10;</samp></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">

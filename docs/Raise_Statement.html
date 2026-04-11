@@ -30,14 +30,18 @@
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="id">expression</code></dt>
-<dd>Usually mandatory name of a class or an object reference.</dd>
-<dd>Optional when put in one of the blocks <code class="kw">Catch</code> of the statement <code class="kw">Try&hellip;Catch&hellip;Finally</code>.</dd>
+<dd>Usually mandatory name of a class or an object reference that supplies information about the exception.</dd>
+<dd>Optional when put in a block <code class="kw">Catch</code> of <code class="kw">Try&hellip;Catch&hellip;Finally</code>.</dd>
 </dl>
 <h2>Instructions</h2>
-<p>TODO</p>
+<p><code class="kw">Raise</code> raises an exception that lets you move control to a block of code in <code class="kw">Try&hellip;Catch&hellip;Finally</code>.
+You can use <code class="kw">Raise</code> to prevent errors in your code which can cause crashes.
+ViviFire moves up the call stack until it finds the applicable exception handler.</p>
+<p><code class="kw">Raise</code> without an expression is permitted only in a code block of <code class="kw">Catch</code>.
+This raises the same exception again, to subsequently catch it with a different handler.</p>
 <h2>Examples</h2>
 <div class="language-vivifire listing">
-<pre><code>Raise Exception("An exception occured")&#10;</code></pre>
+<pre><code>Raise Error("An exception occured")&#10;</code></pre>
 </div>
 <h2>See also</h2>
 <ul class="articles">
