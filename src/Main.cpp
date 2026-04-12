@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2025 Brent D. Thorn
+ * Copyright 2026 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.me/.
  *
@@ -28,6 +28,18 @@
 #include "Args.h"
 
 Args args;
+
+#if defined(__EMSCRIPTEN__)
+	#include <emscripten/val.h>
+	
+	std::string GetElementText() {
+		#error "Not implemented"
+		emscripten::val document = emscripten::val::global("document");
+		emscripten::val element = document.call<emscripten::val>("getElementById", emscripten::val(elementId));
+		if (!element.as<bool>()) return ""; // Element not found.
+		return element["innerText"].as<std::string>();
+	}
+#endif
 
 bool separate_console () {
 // Returns true if app was started from the desktop.
@@ -126,26 +138,34 @@ int main(int argc, char *argv[]) {
 #endif
 	///std::ios_base::sync_with_stdio(false);
 	// End adapted code.
- 
+
+#if !defined(__EMSCRIPTEN__)
 	bool separate = separate_console();
 	
 	if (!args.Parse(argc, argv)) {
 		if (separate) {
 			wprintf(L"\nPress any key to close... ");
-#if defined(_WIN32)
+	#if defined(_WIN32)
 			_getch();
-#else
+	#else
 			getchar();
-#endif
+	#endif
 		}
 		return 1;
 	}
-	
+#endif // Not Emscripten.
+
 	// Record start time.
 	const auto start = std::chrono::steady_clock::now();
 	
+#if defined(__EMSCRIPTEN__)
+	wchar_t *fileName = nullptr;
+	std::string code = GetElementText();
+	Parser *p = new Parser(new Scanner(code.c_str(), code.length()));
+#else
 	wchar_t *fileName = coco_string_create(args.file);
 	Parser *p = new Parser(new Scanner(fileName));
+#endif
 	
 	p->Parse();
 
