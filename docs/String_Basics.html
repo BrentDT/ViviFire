@@ -35,13 +35,12 @@ Here is an example:</p>
 <div>Output:</div>
 <pre><samp>This is a basic string literal.</samp></pre>
 </div>
-<h3>Multi-line strings</h3>
-<p>A string literal can become long.
-It can become too long to read easily if you must scroll horizontally.
+<h3 id="Dividing">Dividing long strings</h3>
+<p>If a string literal becomes too long, you must scroll horizontally to read it.
 One solution is to divide the string into many smaller strings and concatenate them at runtime.
 If this code runs a small number of times, this could be a good solution.
 But, if this code must run frequently, it can make your program slower.</p>
-<p>ViviFire lets you write one string literal on many lines.
+<p>ViviFire lets you divide one string literal into many lines.
 You write an underscore symbol (<code>_</code>) after the initial line.
 All lines between the initial and last have one underscore before and one underscore after.
 Then the last line starts with an underscore.
@@ -51,7 +50,16 @@ An example follows.</p>
     "The following two statements are usually both true: "_
     _"There's not enough documentation. "_
     _"There's too much documentation. "_
-    _"-- Larry Wall"&#10;</code></pre>
+    _"&mdash; Larry Wall"&#10;</code></pre>
+</div>
+<p>The above string literal is one line, without line breaks.
+If you want a string with line breaks, you must put <code>$N</code> between each line.</p>
+<div class="language-vivifire listing">
+<pre><code>Const quote2 =
+    "The following two statements are usually both true: " $N _
+    _"There's not enough documentation. " $N _
+    _"There's too much documentation. " $N _
+    _"&mdash; Larry Wall"&#10;</code></pre>
 </div>
 <h3>Interpolated strings</h3>
 <p>An <dfn>interpolated string literal</dfn> concatenates embedded expressions into one string value.

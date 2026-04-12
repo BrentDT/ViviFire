@@ -96,12 +96,14 @@ You can divide a long statement into two or more lines of code.
 You write a space and an underscore (<code class="op">_</code>) before the end-of-line.</p>
 <p>In the example that follows, a name and address returned from a database table are printed to a label.</p>
 <div class="language-vivifire listing">
-<pre><code>#address_label.Text = _
+<pre><code>address_label.Text = _
     #row!Name &amp; $N &amp; _
     #row!Address&#10;</code></pre>
 </div>
+<p>You can divide a long string literal with a related (but different) syntax.
+See <a href="String_Basics.html#Dividing">String Elements &sect;&nbsp;Dividing long strings</a> for more information.</p>
 <h3>Divided statements without the underscore</h3>
-<p>Some conditions let you continue a statement on a different line without the underscore character (<code class="op">_</code>).
+<p>Some conditions let you continue a statement on a different line without the underscore symbol (<code class="op">_</code>).
 In the table that follows are the elements of a statement and conditions in which the compiler ignores an end-of-line.</p>
 <style media="all and (max-width: 40em)">
 	#tilc td:nth-of-type(1):before { content: "Element"; }
@@ -128,14 +130,14 @@ End Method&#10;</code></pre></td></tr>
 }&#10;</code></pre></td></tr>
 <tr><td>After an assignment operator
 (<span class="ops"><code>=</code>, <code>:=</code>,
-<code>*=</code>, <code>/=</code>, <code>Div=</code>, <code>Mod=</code>, <code>Rem=</code>,
+<code>*=</code>, <code>/=</code>, <code>\=</code>, <code>Div=</code>, <code>Mod=</code>, <code>Rem=</code>,
 <code>+=</code>, <code>-=</code>,
 <code>And=</code>, <code>Or=</code>, <code>Xor=</code>,
 <code>SHL=</code>, <code>SHR=</code>,
 <code>&amp;=</code></span>)</td>
 <td><pre><code>Var fileStream =
     Files("*.txt").OpenDialog()&#10;</code></pre></td></tr>
-<tr><td>After a modifier that starts with the at-sign (<code class="op">@</code>)</td>
+<tr><td>After a modifier that starts with the at-symbol (<code class="op">@</code>)</td>
 <td><pre><code>@Deprecated "Use foobar as an alternative"
 Method foo(a As Int32, b As String)&#10;</code></pre></td></tr>
 </tbody>
