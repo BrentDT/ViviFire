@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2023 Brent D. Thorn
+ * Copyright 2026 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.com/.
  *
@@ -23,6 +23,7 @@ struct Args {
 	bool  m    = false;
 	bool  t    = false;
 	short v    = default_v;
+	bool  vs   = false;
 	char *file = nullptr;
 	
 	bool Parse (int argc, char *argv[]);

@@ -502,7 +502,7 @@ std::string wchar_to_UTF8(wchar_t in) {
 std::wstring StringValue(wchar_t *pStrToken) {
 	// Returns the string value of a string literal or constant.
 	assert(pStrToken != nullptr);
-	assert(pStrToken[0] == L'"' || pStrToken[0] == L'_' || pStrToken[0] == L'$');
+	assert(pStrToken[0] == L'"' || (pStrToken[0] == L'_' && pStrToken[1] != L'\0') || pStrToken[0] == L'$');
 
 	wchar_t *pStart = &pStrToken[(*pStrToken == L'_') ? 1 : 0]; // Ignore underscore.
 	bool interpolated = false;
@@ -1283,7 +1283,7 @@ Yield       = "Yield".
 PRAGMAS
 
 LineContinuation = "_". (.
-	Get();
+	la = scanner->Scan();  // Ignore underscore. Possibly more code from `Parser::Get()` will be necessary.
 	if (la->kind != _line_break && la->kind != _InlineComment)
 	    Err(la->line, la->col, L"Newline or inline comment must follow line continuation"); .)
 
@@ -3382,12 +3382,9 @@ StringExpression<std::wstring &res> (. ID(L"String", EXPR) .)
 	.)
 	{ IF (la->kind == _string_constant || la->kind == _string_literal || la->kind == _slash || la->kind == _backslash)
 		[
-			"/"
-			(. if (option.String_slash == Option::Slash::Back) SemErr(L"Must use backslash because of @OPTION"); .)
-			(. res += std::filesystem::path::preferred_separator; .)
-		|
-			"\\"
-			(. if (option.String_slash == Option::Slash::Fore) SemErr(L"Must use slash because of @OPTION"); .)
+			( "/"  (. if (option.String_slash == Option::Slash::Back) SemErr(L"Must use backslash because of @OPTION"); .)
+			| "\\" (. if (option.String_slash == Option::Slash::Fore) SemErr(L"Must use slash because of @OPTION"); .)
+			)
 			(. res += std::filesystem::path::preferred_separator; .)
 		]
 		( string_literal | string_constant )
@@ -3398,13 +3395,7 @@ StringExpression<std::wstring &res> (. ID(L"String", EXPR) .)
 		}
 		.)
 	}
-	///(.
-	///if (IsIdentifier(la->kind)) { // TODO: Add other possible incorrect tokens after a string.
-		///(. Err(L"Bad string constant. Possibly you want two quotes ('\"\"')."); .)
-		///SyncNewline(s_name);
-	///}
-	///.)
-	(. if (args.v >= Args::STMT) wprintf(L"\n[%ls]", res.c_str()); .) //TEMP
+	(. if (args.vs) wprintf(L"\n-- '%ls'", res.c_str()); .) //TEMP
 .
 StructStatement<Modifiers &mods> (. ID(L"StructStatement", STMT) .)
 =

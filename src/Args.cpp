@@ -1,7 +1,7 @@
 /*
  * ViviFire Programming Language
  *
- * Copyright 2025 Brent D. Thorn
+ * Copyright 2026 Brent D. Thorn
  *
  * You can get the latest version at http://vivifire.me/.
  *
@@ -43,6 +43,10 @@ bool Args::Parse (int argc, char *argv[]) {
 						if (arg[3] == '\0') this->v = arg[2] - '0';
 						else goto bad_flag;
 						break;
+					case 's':
+						if (arg[3] == '\0') this->vs = true;
+						else goto bad_flag;
+						break;
 					case '\0':
 						v = default_v;
 						break;
@@ -70,15 +74,16 @@ bool Args::Parse (int argc, char *argv[]) {
 		L"ViviFire Test Parser by Brent D. Thorn, " NOW L"\n\n"
 
 		L"Syntax:\n"
-		L"\tvf [-m] [-t] [-v[0-3]] sourcefile\n\n"
+		L"\tvf [-m] [-t] [-v[0-3]] [-vs] sourcefile\n\n"
 
 		L"Switches:\n"
-		L"\t-m   Display memory usage\n"
-		L"\t-t   Display time elapsed\n"
+		L"\t-m   Show memory usage\n"
+		L"\t-t   Show time elapsed\n"
 		L"\t-v0  Minimal verbosity; Errors only\n"
-		L"\t-v1  Displays tokens and errors (default)\n"
-		L"\t-v2  Displays statements, tokens, and errors\n"
-		L"\t-v3  Maximum verbosity\n\n"
+		L"\t-v1  Show tokens and errors (default)\n"
+		L"\t-v2  Show statements, tokens, and errors\n"
+		L"\t-v3  Maximum verbosity\n"
+		L"\t-vs  Show strings\n\n"
 
 		L"You can find new releases and documentation at the official home page:\n"
 		L"http://vivifire.me\n"
