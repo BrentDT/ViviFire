@@ -81,7 +81,7 @@ nav p:first-child, #strings {
 div.listing s {
 	text-decoration: inherit;
 }
-div.listing input[type=checkbox]:not(:checked) ~ pre s {
+div.listing input[type=checkbox]:not(:checked) ~ pre span[data-optional] {
 	display: none;
 }
 div.listing, div.syntax {

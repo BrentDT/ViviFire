@@ -64,15 +64,16 @@ End Class&#10;</code></pre>
 <pre><code>Require ViviFire.Math
 
 @Abstract Class Shape
-    Method Area() As Real64
+    Method Area As Real64
 End Class
 
 Class Circle Is Shape
-    Constructor Var
-        radius As Real64
+    radius As Real64
+    Constructor Self.radius
     End Constructor
-    @Override Method Area() As Real64
-        Return Pi * radius ^ 2
+
+    @Override Method Area As Real64
+        Return PI * radius ^ 2
     End Method
 End Class&#10;</code></pre>
 </div>

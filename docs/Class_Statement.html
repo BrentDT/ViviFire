@@ -110,18 +110,20 @@ See <a href="Declaration_Contexts_and_Default_Access_Levels.html">Declaration Co
 
 Class Person
     // Private members.
-    Constructor Var my_name As String
+    Var my_name As String
+
+    Constructor Self.my_name
         // Validate here.
-    End <s>Constructor</s>
+    End <span data-optional>Constructor</span>
 
     // Public members.
     Method SayHello
         PrintLine $"Hello, I'm <span class="token strint">{<span class="token id">my_name</span>}</span>!"
-    End <s>Method</s>
-End <s>Class</s>
+    End <span data-optional>Method</span>
+End <span data-optional>Class</span>
 
-<s>New </s>Person a, "Alice"
-<s>New </s>Person b, "Bob"
+<span data-optional>New </span>Person a, "Alice"
+<span data-optional>New </span>Person b, "Bob"
 
 a.SayHello
 b.SayHello&#10;</code></pre>
