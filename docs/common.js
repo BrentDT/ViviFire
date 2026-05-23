@@ -43,9 +43,15 @@ document.write('</footer>');
 // Add 'Help' to the heading 'Syntax'.
 var syntax = document.querySelector('h2+div.language-vivifire.syntax')?.previousElementSibling;
 if (syntax) {
-	syntax.style.position = 'relative';
-	syntax.innerHTML +=
-		'<span style="display: inline-block; position: absolute; right: 20px; font-size: 1rem; font-wait: normal;">[<a href="Typographic_Conventions.html" target="_blank">Help</a>]</span>';
+	const help = document.createElement('A');
+	help.href = 'Typographic_Conventions.html';
+	help.target = '_blank';
+	help.textContent = 'help';
+	const hs = help.style;
+	hs.float = 'right';
+	hs.fontSize = '1rem';
+	hs.fontWeight = 'normal';
+	syntax.appendChild(help);
 }
 
 function getFileName(uri) {
