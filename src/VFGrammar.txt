@@ -1283,9 +1283,11 @@ Yield       = "Yield".
 PRAGMAS
 
 LineContinuation = "_". (.
-	la = scanner->Scan();  // Ignore underscore. Possibly more code from `Parser::Get()` will be necessary.
-	if (la->kind != _line_break && la->kind != _InlineComment)
-	    Err(la->line, la->col, L"Newline or inline comment must follow line continuation"); .)
+	int next = scanner->Peek()->kind;
+	if (next == _line_break || next == _InlineComment) {
+	    scanner->Scan();
+	    la = scanner->Scan();
+	} else Err(la->line, la->col, L"Newline or inline comment must follow line continuation"); .)
 
 // Directives
 
@@ -2340,6 +2342,9 @@ IdentifierStatement (. ID(L"IdentifierStatement", STMT) .)
 	}
 	[ IF (IsAssignmentOp())
 		AssignmentStatement
+		[ IdentifierStatementCommaError ]
+	| IF (_comma == la->kind) // Conflict with >CallOrNew>UnenclosedArgumentList.
+		IdentifierStatementCommaError
 	|
 		// Variable declaration (`foo AS type` or `bar IN unit`).
 		TypeClause
@@ -2347,12 +2352,19 @@ IdentifierStatement (. ID(L"IdentifierStatement", STMT) .)
 			"=" [OptionalNewline]
 			InitializationExpression
 		]
+		[ IdentifierStatementCommaError ]
 	|
 		(. // Check for typo.
 		if ( _identifier == t->kind && Matches(L"ForEach") ) Warn(t->line, t->col, L"Possibly you want FOR EACH?");
 		.)
 		CallOrNew<0, nullptr>
 	]
+.
+IdentifierStatementCommaError
+=
+	comma
+	(. Err(la->line, la->col, L"Cannot declare two or more variables without DIM or VAR"); .)
+	(. while (la->kind != _EOF && la->kind != _line_break) Get(); /* Ignore all tokens until EOL. */ .)
 .
 IfBlockStatement<bool bBlock, int line, int col, option_type nThen> (. ID(L"IfBlockStatement", STMT) .)
 =
