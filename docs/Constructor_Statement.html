@@ -33,14 +33,17 @@ End [ Constructor ]&#10;</code></pre>
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="at">@Deprecated</code></dt>
-<dd>Optional modifier.
+<dd>Optional modifier shows a warning if a person tries to use the given constructor.
+This lets you remove the constructor in a subsequent release.
 See <a href="Deprecated.html">@Deprecated</a> for more information.</dd>
 <dt><code class="id">parameter_list</code></dt>
 <dd>Optional, one or more variable declarations with a comma between each.
-Parentheses (<code class="op">( )</code>) around the parameters are optional unless you use <code class="at">@Option</code> to make them mandatory.</dd>
+Parentheses (<code class="op">( )</code>) around the parameters are optional unless you use <code class="at">@Option</code> to make them mandatory.
+See <a href="Parameter_List.html">Parameter List</a> for more information.</dd>
 <dd>Usually the variable is local to the constructor.
 But if you put <code class="kw">Self</code> and a dot (<code class="op">.</code>) befor the name, the parameter refers to the member of the parent construct with that name.
-See <a href="Parameter_List.html">Parameter List</a> for more information.</dd>
+The parameter cannot include type information, for example, <code class="kw">As</code> or <code class="kw">In</code>.
+But the parameter can be <code class="kw">ByRef</code> and/or <code class="kw">Optional</code>, and can have a default value.</dd>
 <dt><code class="id">statements</code></dt>
 <dd>Optional statements.</dd>
 <dt><code class="kw">End</code></dt>
