@@ -65,9 +65,15 @@ void Modifiers::Check() const {
 		}
 	}
 
-	// ReadOnly v WriteOnly.
-	if ((pMod = find(s_ReadOnly)) && Has(s_WriteOnly)) {
-		parser->errors->Error(pMod->line, pMod->col, L"Cannot use @READONLY with @WRITEONLY");
+	if ((pMod = find(s_ReadOnly))) {
+		// ReadOnly v Shared.
+		if (Has(s_Shared)) {
+			parser->errors->Error(pMod->line, pMod->col, L"Cannot use @READONLY with @SHARED");
+		}
+		// ReadOnly v WriteOnly.
+		if (Has(s_WriteOnly)) {
+			parser->errors->Error(pMod->line, pMod->col, L"Cannot use @READONLY with @WRITEONLY");
+		}
 	}
 
 	// Iterator v WriteOnly.

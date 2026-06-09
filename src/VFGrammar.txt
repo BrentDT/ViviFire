@@ -1522,6 +1522,7 @@ BracketedType (. ID(L"BracketedType", EXPR) .)
 CallOrNew<int which, Modifiers *mods> (. ID(L"CallOrNew", STMT) .)
 =
 	(.
+	// TBD: Permit @ReadOnly as DIM/VAR does?
 	bool bShared = mods ? mods->Let(s_Shared) : false;
 	if (mods) mods->Check();
 	.)
@@ -1892,6 +1893,7 @@ DimOrVar (. ID(L"DimOrVar", STMT) .)
 DimStatement<Modifiers &mods> (. ID(L"DimStatement", STMT) .)
 =
 	(.
+	bool bReadOnly = mods.Let(s_ReadOnly);
 	bool bShared = mods.Let(s_Shared);
 	mods.Check();
 	.)
@@ -2997,6 +2999,7 @@ ObjectStatement<Modifiers *mods> (. ID(L"ObjectStatement", STMT) .)
 =
 	(.
 	mods ? mods->Let(s_Deprecated) : false;
+	// TBD: Permit @ReadOnly as DIM/VAR does?
 	bool bShared = mods ? mods->Let(s_Shared) : false;
 	if (mods) mods->Check();
 
