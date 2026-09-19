@@ -25,19 +25,25 @@
 <p>Declares variables and allocates memory for them.</p>
 <h2>Syntax</h2>
 <div class="language-vivifire syntax">
-<pre><code>[ @Shared ] { Dim | Var } declarator [ , declarator ]&hellip;&#10;</code></pre>
+<pre><code>[ modifier ] { Dim | Var } declarator [ , declarator ]&hellip;&#10;</code></pre>
 </div>
 <h2>Parts</h2>
 <dl class="parts">
-<dt><code class="at">@Shared</code></dt>
-<dd>Optional modifier specifies that each variable can have a small scope but keeps its value during an application's full run-time.</dd>
-<dt><code class="kw">Dim</code></dt>
-<dd>Mandatory unless you use <code class="kw">Var</code>.</dd>
-<dd>Mandatory if you use the directive <code class="at">@Option Dim</code>.
+<dt><code class="id">modifier</code></dt>
+<dd>One of these:
+	<ul>
+	<li><code class="at">@ReadOnly</code> &ndash; specifies that each variable has its value set at run-time and cannot change subsequently.
+	See <a href="ReadOnly.html">@ReadOnly</a> for more information.</li>
+	<li><code class="at">@Shared</code> &ndash; specifies that each variable can have a small scope but keeps its value during an application's full run-time.
+	See <a href="Shared.html">@Shared</a> for more information.</li>
+	</ul>
+</dd>
+<dt><code class="kw">Dim</code> or <code class="kw">Var</code></dt>
+<dd>Mandatory keyword.
+<code class="kw">Dim</code> and <code class="kw">Var</code> are usually equivalent.</dd>
+<dd>If you use the directive <code class="at">@Option Dim</code>, <code class="kw">Var</code> becomes an error.
+And if you use <code class="at">@Option Var</code>, <code class="kw">Dim</code> becomes an error.
 See <a href="Option_Directive.html">@Option Directive</a> for more information.</dd>
-<dt><code class="kw">Var</code></dt>
-<dd>Mandatory unless you use <code class="kw">Dim</code></dd>
-<dd>Mandatory if you use the directive <code class="at">@Option Var</code>.</dd>
 <dt><code class="id">declarator</code></dt>
 <dd>Mandatory one or more declarations with a comma between each.
 	<div class="language-vivifire syntax">

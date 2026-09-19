@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>@ReadOnly - The ViviFire Programming Language</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="common.css" type="text/css">
+<link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/ReadOnly.html">
+<link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+<meta name="author" content="Brent Thorn, https://github.com/brentdt">
+</head>
+<body>
+<nav class="breadcrumb" aria-labelledby="breadcrumbs">
+<p id="breadcrumbs">Breadcrumbs</p>
+<ul>
+<li><a href="http://vivifire.com/">Home</a></li>
+<li><a href="ViviFire_Manual.html">ViviFire Manual</a></li>
+<li><a rel="section" href="Language_Reference.html">Language Reference</a></li>
+<li><a rel="parent" href="Modifiers.html">Modifiers</a></li>
+</ul>
+</nav>
+<main>
+<h1 id="top"><code>@ReadOnly</code></h1>
+<p>Specifies that a variable or property can supply a value, but cannot change its value.</p>
+<h2>Instructions</h2>
+<dl>
+<dt>Combined modifiers</dt>
+<dd>You cannot use <code class="at">@Shared</code> together with <code class="at">@ReadOnly</code> in the same statement.</dd>
+<dt>Assignment operations</dt>
+<dd>Code that uses a property with <code class="at">@ReadOnly</code> cannot change its value.
+But code that has access to the reserved data can always change it.</dd>
+<dd>You can assign a value to a variable with <code class="at">@ReadOnly</code> only in a declaration or in a constructor procedure.
+The constructor must be in a class or structure that contains such a variable.</dd>
+</dl>
+<h2>When to use <code class="at">@ReadOnly</code> with a variable</h2>
+<p>There are conditions in which you cannot use the statement <a href="Const_Statement.html"><code>Const</code></a> to declare and assign a constant value.
+For example, <code class="kw">Const</code> does not let you use a given data type, or you want to assign a value that cannot be calculated at compile-time.</p>
+<h3>Using <code>@ReadOnly</code> with reference types</h3>
+<p>If the data type of the variable is a reference type, for example, an array or a class instance, its members can change their values.
+Here <code class="at">@ReadOnly</code> has almost no effect.
+It only prevents changes for which a new object replaces the initially assigned object.
+An example follows:</p>
+<div class="language-vivifire listing">
+<pre><code>@ReadOnly Var characterArray() As Char = {`F`, `I`, `L`, `E`}
+characterArray(2) = `R`&#10;</code></pre>
+</div>
+<p>When initialized, the array referred to by <code>characterArray()</code> holds &ldquo;F&rdquo;, &ldquo;I&rdquo;, &ldquo;L&rdquo;, &ldquo;E&rdquo;.
+After the second line, <code>characterArray()</code> holds &ldquo;F&rdquo;, &ldquo;I&rdquo;, &ldquo;R&rdquo;, &ldquo;E&rdquo;.</p>
+<h2>Applicable to</h2>
+<ul class="articles">
+<li><a href="Dim_Statement.html">Dim Statement</a></li>
+<li><a href="Property_Statement.html">Property Statement</a></li>
+</ul>
+<h2>Examples</h2>
+<p>TODO</p>
+</main>
+<script src="common.js"></script>
+<script src="prism.js"></script>
+</body>
+</html>

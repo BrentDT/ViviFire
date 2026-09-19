@@ -9,7 +9,6 @@
 <link rel="canonical" href="https://www.b6sw.com/ViviFire/docs/SHL_Equals_Operator.html">
 <link rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
 <meta name="author" content="Brent Thorn, https://github.com/brentdt">
-<meta name="DC.date.reviewed" content="2022-06-06">
 </head>
 <body>
 <nav class="breadcrumb" aria-labelledby="breadcrumbs">
@@ -32,9 +31,10 @@
 <h2>Parts</h2>
 <dl class="parts">
 <dt><code class="id">variable</code></dt>
-<dd>An integer variable or property.</dd>
+<dd>A variable or property of an integer type.
+Integer types include <span class="kws"><code>Int8</code>, <code>UInt8</code>, <code>Int16</code>, <code>UInt16</code>, <code>Int32</code>, <code>UInt32</code>, <code>Int64</code>, <code>UInt64</code>, <code>Int128</code>, and <code>UInt128</code></span>.</dd>
 <dt><code class="id">number</code></dt>
-<dd>An integer expression which specifies the number of bits to shift.</dd>
+<dd>A numeric expression of a data type that widens to <code class="kw">Int32</code>.</dd>
 </dl>
 <h2>Instructions</h2>
 <p>The two statements that follow operate the same.</p>
@@ -42,8 +42,25 @@
 <pre><code>variable SHL= number
 variable = variable SHL number&#10;</code></pre>
 </div>
+<p>The element on the left side of the operator <code class="op">SHL=</code> can be a scalar variable, a property, or an element of an array.
+The variable or property cannot have the modifier <a href="ReadOnly.html"><code>@ReadOnly</code></a>.</p>
+<p>The operator <code class="op">SHL=</code> first does an arithmetic left shift operation on the value of the variable or property.
+The operator then assigns the result of that operation back to the variable or property.</p>
+<p>In an arithmetic left shift, the operation discards the given number of bits from the left side of the result.
+At the same time, the same number of bits on the right side are set to zero.</p>
 <h2>Examples</h2>
-<p>TODO</p>
+<div class="language-vivifire listing">
+<pre><code>Var variable As Int32 = 10
+variable SHL= 3
+// variable is 80 (%x50).
+
+variable = -1
+variable SHL= 5
+// variable is -32 (%xFFFFFFE0).
+
+variable SHL= 27
+// variable is 0.&#10;</code></pre>
+</div>
 <h2>See also</h2>
 <ul class="articles">
 <li><a href="SHL_Operator.html">SHL Operator</a></li>
